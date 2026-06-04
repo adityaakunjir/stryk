@@ -44,7 +44,7 @@ export default function CardPage() {
   ];
 
   return (
-    <main className="relative min-h-screen text-white overflow-hidden bg-[#05070B]">
+    <main className="stryk-mobile-shell relative min-h-screen text-white overflow-hidden bg-[#05070B]">
       {/* Figma Ambient bg */}
       <div
         className="absolute inset-0"

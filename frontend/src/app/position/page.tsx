@@ -88,11 +88,11 @@ export default function PositionPage() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white">
+    <main className="stryk-mobile-shell relative min-h-screen overflow-hidden bg-[#05070B] text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_62%_18%,rgba(198,255,0,0.12),transparent_25%),radial-gradient(circle_at_22%_64%,rgba(91,140,255,0.06),transparent_28%),linear-gradient(180deg,#05070B_0%,#0B1020_48%,#05070B_100%)]" />
       <div className="absolute inset-x-0 bottom-0 h-[50%] bg-[linear-gradient(180deg,transparent,rgba(11,16,32,0.72)),repeating-linear-gradient(96deg,rgba(198,255,0,0.04)_0_1px,transparent_1px_52px)] opacity-75 pointer-events-none" />
 
-      <section className="relative mx-auto flex min-h-screen w-full max-w-5xl flex-col px-5 pb-8 pt-6 sm:px-8 lg:px-10 z-10">
+      <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-4 pt-6 sm:max-w-5xl sm:px-8 lg:px-10">
         <header className="grid grid-cols-[3rem_1fr_3rem] items-center gap-4">
           <Button asChild variant="ghost" size="icon" aria-label="Back to identity" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
             <Link href="/identity">
@@ -108,23 +108,33 @@ export default function PositionPage() {
           <div />
         </header>
 
-        <div className="mx-auto mt-6 flex w-full max-w-[56rem] flex-1 flex-col items-center">
-          <StepProgress />
+        <div className="mx-auto mt-2 flex w-full max-w-[56rem] flex-1 flex-col items-center sm:mt-6">
+          <div className="hidden sm:block"><StepProgress /></div>
 
-          <div className="mt-8 text-center">
+          <div className="mt-3 w-full text-left sm:mt-8 sm:text-center">
+            <div className="mb-3 hidden h-1 overflow-hidden rounded-full bg-white/10 sm:block">
+              <div className="h-full w-2/3 bg-[#C6FF00]" />
+            </div>
+            <div className="mb-3 flex items-center justify-center gap-12 text-[9px] font-black uppercase tracking-[0.28em] text-white/35 sm:hidden">
+              <span>Step 2 / 3</span>
+              <span>Skip</span>
+            </div>
+            <div className="mb-3 h-1 overflow-hidden rounded-full bg-white/10 sm:hidden">
+              <div className="h-full w-2/3 bg-[#C6FF00]" />
+            </div>
             <p className="text-[10px] tracking-[0.35em] uppercase text-[#C6FF00] font-bold">Pick your role</p>
-            <h2 className="font-display text-4xl sm:text-6xl uppercase italic leading-none tracking-wide text-white">
+            <h2 className="font-display text-3xl uppercase italic leading-none tracking-wide text-white sm:text-6xl">
               WHERE DO YOU PLAY?
             </h2>
-            <p className="mt-3 text-sm font-semibold text-white/60">
+            <p className="mt-3 hidden text-sm font-semibold text-white/60 sm:block">
               Tell us where you dominate the pitch.
             </p>
           </div>
 
           <form onSubmit={handleNext} className="mt-8 w-full space-y-4">
             {/* Tactical Pitch Selector */}
-            <section className="rounded-[2.2rem] border border-white/8 bg-[#0B1020]/50 p-5 shadow-[0_28px_100px_rgba(0,0,0,0.56),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:p-7">
-              <div className="flex flex-wrap items-start justify-between gap-3">
+            <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-2 shadow-[0_18px_60px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:rounded-[2.2rem] sm:border-white/8 sm:bg-[#0B1020]/50 sm:p-7">
+              <div className="hidden flex-wrap items-start justify-between gap-3 sm:flex">
                 <div>
                   <div className="flex items-center gap-2">
                     <h1 className="text-xl font-display uppercase tracking-wider">
@@ -142,7 +152,7 @@ export default function PositionPage() {
               </div>
 
               {/* Pitch layout */}
-              <div className="relative mt-6 aspect-[1.18] min-h-[300px] sm:min-h-[400px] overflow-hidden rounded-2xl border border-white/10"
+              <div className="relative aspect-[1.28] min-h-[260px] overflow-hidden rounded-xl border border-white/10 sm:mt-6 sm:aspect-[1.18] sm:min-h-[400px] sm:rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(198,255,0,0.06), rgba(91,140,255,0.06)), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 24px, transparent 24px 48px)",

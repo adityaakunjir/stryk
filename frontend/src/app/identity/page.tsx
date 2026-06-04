@@ -153,7 +153,7 @@ export default function IdentityPage() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white">
+    <main className="stryk-mobile-shell relative min-h-screen overflow-hidden bg-[#05070B] text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_16%,rgba(198,255,0,0.12),transparent_25%),radial-gradient(circle_at_22%_52%,rgba(91,140,255,0.06),transparent_28%),linear-gradient(180deg,#05070B_0%,#0B1020_48%,#05070B_100%)]" />
       <div className="absolute inset-x-0 bottom-0 h-[48%] bg-[linear-gradient(180deg,transparent,rgba(11,16,32,0.72)),repeating-linear-gradient(96deg,rgba(198,255,0,0.04)_0_1px,transparent_1px_52px)] opacity-75 pointer-events-none" />
 

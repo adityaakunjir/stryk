@@ -51,7 +51,7 @@ export default function SubmitPage() {
   };
 
   return (
-    <main className="relative min-h-screen text-white overflow-hidden bg-[#05070B]">
+    <main className="stryk-mobile-shell relative min-h-screen text-white overflow-hidden bg-[#05070B]">
       <div className="relative min-h-screen flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10">
         {/* Header */}
         <div className="flex items-center justify-between">

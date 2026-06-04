@@ -1,6 +1,10 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import {
+  useAuth as useClerkAuth,
+  useUser as useClerkUser,
+} from "@clerk/nextjs";
 
 interface StrykUser {
   id: string;
@@ -28,7 +32,38 @@ export function useMockAuth() {
 
 // Unified authentication hook
 export function useStrykAuth(): AuthContextType {
-  return useMockAuth();
+  const clerkAuth = useClerkAuth();
+  const clerkUser = useClerkUser();
+  const mockAuth = useMockAuth();
+
+  if (clerkAuth.isSignedIn) {
+    return {
+      isLoaded: clerkAuth.isLoaded && clerkUser.isLoaded,
+      isSignedIn: true,
+      user: clerkUser.user
+        ? {
+            id: clerkUser.user.id,
+            fullName: clerkUser.user.fullName || "STRYK Player",
+            primaryEmailAddress: {
+              emailAddress:
+                clerkUser.user.primaryEmailAddress?.emailAddress || "",
+            },
+          }
+        : null,
+      getToken: async () => clerkAuth.getToken(),
+    };
+  }
+
+  if (!clerkAuth.isLoaded) {
+    return {
+      isLoaded: false,
+      isSignedIn: false,
+      user: null,
+      getToken: async () => null,
+    };
+  }
+
+  return mockAuth;
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

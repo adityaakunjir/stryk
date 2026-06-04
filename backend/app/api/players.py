@@ -21,9 +21,9 @@ async def create_player(
     session: AsyncSession = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
-    """Create a new player profile linked to the authenticated Clerk user."""
-    # Ensure clerk_user_id matches the authenticated user
-    if player_in.clerk_user_id != user.get("sub"):
+    """Create a new player profile linked to the authenticated user."""
+    # Ensure the profile is linked to the authenticated user.
+    if player_in.auth_user_id != user.get("sub"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Cannot create profile for a different user",
@@ -31,7 +31,7 @@ async def create_player(
 
     # Check if player already exists
     existing = await session.execute(
-        select(Player).where(Player.clerk_user_id == player_in.clerk_user_id)
+        select(Player).where(Player.auth_user_id == player_in.auth_user_id)
     )
     if existing.scalars().first():
         raise HTTPException(
@@ -52,9 +52,9 @@ async def get_my_profile(
     user: dict = Depends(get_current_user),
 ):
     """Get the authenticated user's player profile."""
-    clerk_id = user.get("sub")
+    auth_user_id = user.get("sub")
     result = await session.execute(
-        select(Player).where(Player.clerk_user_id == clerk_id)
+        select(Player).where(Player.auth_user_id == auth_user_id)
     )
     player = result.scalars().first()
     if not player:
@@ -88,9 +88,9 @@ async def update_my_profile(
     user: dict = Depends(get_current_user),
 ):
     """Update the authenticated user's player profile."""
-    clerk_id = user.get("sub")
+    auth_user_id = user.get("sub")
     result = await session.execute(
-        select(Player).where(Player.clerk_user_id == clerk_id)
+        select(Player).where(Player.auth_user_id == auth_user_id)
     )
     player = result.scalars().first()
     if not player:

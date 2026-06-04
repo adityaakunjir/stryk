@@ -54,9 +54,9 @@ function toCamelCase(backendPlayer: any): PlayerData {
   };
 }
 
-function toSnakeCase(frontendPlayer: PlayerData, clerkUserId: string) {
+function toSnakeCase(frontendPlayer: PlayerData, authUserId: string) {
   return {
-    clerk_user_id: clerkUserId,
+    auth_user_id: authUserId,
     full_name: frontendPlayer.fullName,
     username: frontendPlayer.username,
     avatar_url: frontendPlayer.avatar,

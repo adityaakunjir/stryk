@@ -35,7 +35,7 @@ export default function HomeLobbyPage() {
   const firstName = (playerData.fullName || "PLAYER").split(" ")[0].toUpperCase();
 
   return (
-    <main className="relative min-h-screen text-white overflow-hidden bg-[#05070B]">
+    <main className="stryk-mobile-shell relative min-h-screen text-white overflow-hidden bg-[#05070B]">
       {/* Ambient bg */}
       <div
         className="absolute inset-0"

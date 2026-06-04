@@ -1,66 +1,77 @@
-# ⚡ STRYK
+# STRYK
 
-> The ultimate football social platform — build your player identity, find matches, and compete.
+STRYK is a football identity platform for real football players. It combines FIFA-style player cards, verified match stats, match lobbies, team building, and AI football insights.
 
-## 🏗️ Monorepo Structure
+## Repository Layout
 
-```
+```text
 stryk/
-├── frontend/          # Next.js 15 + TypeScript + Tailwind + shadcn/ui
-│   ├── src/
-│   │   ├── app/       # App Router pages
-│   │   └── components/# UI components & context
-│   ├── public/        # Static assets
-│   └── package.json
-│
-├── backend/           # Python FastAPI
-│   ├── app/
-│   │   ├── api/       # Route handlers
-│   │   ├── core/      # Config, auth, database
-│   │   ├── models/    # SQLModel schemas
-│   │   └── services/  # Business logic (AI, etc.)
-│   ├── requirements.txt
-│   └── .env.example
-│
-└── .gitignore
+|-- frontend/          Next.js app, UI, static assets
+|-- backend/           FastAPI app, API routes, models, services
+|-- docs/              Product, design, and architecture references
+|-- .github/           GitHub Actions workflows
+|-- CNAME              GitHub Pages custom domain
+|-- README.md          Project overview
+`-- LICENSE
 ```
 
-## 🚀 Getting Started
+## Frontend
 
-### Frontend
-
-```bash
+```powershell
 cd frontend
 npm install
-npm run dev          # → http://localhost:3000
+npm run dev
 ```
 
-### Backend
+Local app: `http://localhost:3000`
 
-```bash
+Useful commands:
+
+```powershell
+npm run build
+npm run lint
+```
+
+## Backend
+
+```powershell
 cd backend
 python -m venv .venv
-.venv\Scripts\activate    # Windows
-# source .venv/bin/activate  # macOS/Linux
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-cp .env.example .env      # Fill in your keys
-uvicorn app.main:app --reload  # → http://localhost:8000
+Copy-Item .env.example .env
+uvicorn app.main:app --reload
 ```
 
-## 🔧 Tech Stack
+Local API: `http://localhost:8000`
 
-| Layer        | Technology                        |
-|-------------|-----------------------------------|
-| Frontend    | Next.js, TypeScript, Tailwind, shadcn/ui, Framer Motion |
-| Backend     | Python FastAPI                    |
-| Database    | PostgreSQL (Supabase)             |
-| Auth        | Clerk                             |
-| AI          | OpenAI, Gemini, Replicate, LangGraph |
-| Storage     | Cloudinary                        |
-| Hosting     | Vercel (FE) + Railway (BE)        |
-| Monitoring  | Sentry                            |
-| Analytics   | PostHog                           |
+Useful endpoints:
 
-## 📄 License
+```text
+GET /health
+GET /docs
+GET /api/v1/players/me
+POST /api/v1/players/
+PATCH /api/v1/players/me
+```
 
-Private — All rights reserved.
+## Current Stack
+
+See [docs/TECH_STACK.md](docs/TECH_STACK.md) for the official V1 stack and module plan.
+
+Short version:
+
+```text
+Frontend: Next.js, TypeScript, Tailwind CSS, shadcn/ui
+Backend: FastAPI, Python, SQLModel/SQLAlchemy
+Auth: Clerk for identities, sessions, email/password, and Google login
+Database: PostgreSQL for football profile data, SQLite local fallback
+Cloud: Azure Static Web Apps, Azure App Service, Azure PostgreSQL
+AI: Azure OpenAI primary, Gemini secondary
+```
+
+## Notes
+
+- `docs/figma-export/` contains the original Figma-generated reference project. It is kept as design/source reference, not as the active frontend app.
+- `backend/stryk.db` is a local development database and should not be committed.
+- GitHub Pages currently deploys the static frontend export for `stryk.games`.

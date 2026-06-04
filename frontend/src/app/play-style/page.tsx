@@ -182,7 +182,7 @@ export default function PlayStylePage() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white">
+    <main className="stryk-mobile-shell relative min-h-screen overflow-hidden bg-[#05070B] text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_18%,rgba(198,255,0,0.14),transparent_25%),radial-gradient(circle_at_22%_58%,rgba(91,140,255,0.06),transparent_28%),linear-gradient(180deg,#05070B_0%,#0B1020_48%,#05070B_100%)]" />
       <div className="absolute inset-x-0 bottom-0 h-[50%] bg-[linear-gradient(180deg,transparent,rgba(11,16,32,0.72)),repeating-linear-gradient(96deg,rgba(198,255,0,0.07)_0_1px,transparent_1px_52px)] opacity-75 pointer-events-none" />
       <div className="absolute right-[-4rem] top-20 hidden h-[26rem] w-[24rem] opacity-40 md:block pointer-events-none">

@@ -50,7 +50,7 @@ export default function LobbiesPage() {
   });
 
   return (
-    <main className="relative min-h-screen text-white overflow-hidden bg-[#05070B]">
+    <main className="stryk-mobile-shell relative min-h-screen text-white overflow-hidden bg-[#05070B]">
       {/* Background gradients */}
       <div
         className="absolute inset-x-0 top-0 h-60 opacity-60 pointer-events-none"

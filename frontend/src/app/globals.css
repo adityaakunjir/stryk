@@ -42,6 +42,89 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  overflow-x: hidden;
+}
+
+.stryk-mobile-shell {
+  position: relative;
+}
+
+.stryk-mobile-shell::before,
+.stryk-mobile-shell::after {
+  pointer-events: none;
+  display: none;
+}
+
+@media (max-width: 767px) {
+  body {
+    background: #020306;
+  }
+
+  .stryk-mobile-shell {
+    width: min(100% - 18px, 430px);
+    min-height: calc(100svh - 18px);
+    margin: 9px auto;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 34px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(198, 255, 0, 0.08), transparent 34%),
+      linear-gradient(180deg, rgba(11, 16, 32, 0.72), #05070b 42%, #05070b);
+    box-shadow:
+      0 0 0 6px #11151d,
+      0 0 0 8px #05070b,
+      0 34px 90px rgba(0, 0, 0, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .stryk-mobile-shell * {
+    min-width: 0;
+  }
+
+  .stryk-mobile-shell input,
+  .stryk-mobile-shell button {
+    font-size: 16px;
+  }
+
+  .stryk-mobile-shell::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    z-index: 60;
+    display: block;
+    width: 92px;
+    height: 20px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at calc(100% - 16px) 50%, #c6ff00 0 2px, transparent 3px),
+      #000;
+  }
+
+  .stryk-mobile-shell::after {
+    content: "9:41                              5G 100%";
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    top: 14px;
+    z-index: 59;
+    display: block;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    white-space: pre;
+  }
+
+  .stryk-mobile-shell > * {
+    padding-top: 54px !important;
+  }
+
+  .stryk-mobile-shell main,
+  main.stryk-mobile-shell {
+    min-height: calc(100svh - 18px);
+  }
 }
 
 button,

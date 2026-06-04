@@ -1,9 +1,10 @@
 """
 STRYK Backend - Database Engine & Session
 
-Provides async SQLModel engine and session factory
-for connecting to the Supabase PostgreSQL instance.
+Provides async SQLModel engine and session factory.
 """
+
+from collections.abc import AsyncGenerator
 
 from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
@@ -11,8 +12,10 @@ from sqlalchemy.orm import sessionmaker
 
 from app.core.config import settings
 
-# Determine database URL: default to local SQLite if DATABASE_URL is not configured
+# Default to local SQLite when DATABASE_URL is not configured.
 database_url = settings.database_url or "sqlite+aiosqlite:///./stryk.db"
+if database_url.startswith("postgresql://"):
+    database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
 
 # Setup engine arguments (some are PostgreSQL-specific)
 engine_kwargs = {
@@ -38,7 +41,7 @@ async_session_factory = sessionmaker(
 )
 
 
-async def get_session():
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
     """FastAPI dependency that yields a database session."""
     async with async_session_factory() as session:
         try:

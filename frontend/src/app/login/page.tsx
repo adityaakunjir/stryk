@@ -34,7 +34,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white">
+    <main className="stryk-mobile-shell relative min-h-screen overflow-hidden bg-[#05070B] text-white">
       {/* Figma Ambient bg */}
       <div
         className="absolute inset-0"
@@ -53,8 +53,8 @@ export default function LoginPage() {
         }}
       />
 
-      <section className="relative mx-auto flex min-h-screen w-full max-w-5xl flex-col px-5 pb-8 pt-7 sm:px-8 lg:px-10 z-10">
-        <header className="flex items-center justify-between gap-4">
+      <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-5 pt-7 sm:max-w-5xl sm:px-8 lg:px-10">
+        <header className="hidden items-center justify-between gap-4 sm:flex">
           <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
             <Link href="/">
               <ArrowLeft size={16} />
@@ -65,27 +65,29 @@ export default function LoginPage() {
           </div>
         </header>
 
-        <div className="mx-auto mt-8 flex w-full max-w-[48rem] flex-1 flex-col items-center">
+        <div className="mx-auto mt-2 flex w-full max-w-[48rem] flex-1 flex-col items-center sm:mt-8">
           <div className="flex items-center gap-2 justify-center">
             <div className="w-8 h-8 rounded-lg bg-[#C6FF00] text-black flex items-center justify-center font-display text-base">S</div>
             <div className="font-display tracking-[0.35em] text-base">STRYK</div>
           </div>
 
-          <div className="mt-8 text-center">
+          <div className="mt-14 text-left sm:mt-8 sm:text-center">
             <p className="text-[10px] tracking-[0.35em] uppercase text-[#C6FF00] font-bold">Build your legend</p>
             <h1 className="font-display tracking-wide mt-2 text-4xl sm:text-6xl uppercase italic leading-none">
               YOUR FOOTBALL IDENTITY,<br/>
               <span className="text-[#C6FF00]" style={{ textShadow: "0 0 24px rgba(198,255,0,0.25)" }}>UNLOCKED.</span>
             </h1>
-            <p className="mt-4 text-[13px] text-white/55 max-w-sm mx-auto leading-relaxed">
+            <p className="mt-4 max-w-sm text-[13px] leading-relaxed text-white/55 sm:mx-auto">
               One profile. Every match. Verified stats, growing reputation, a card that evolves with you.
             </p>
           </div>
 
           <div className="mt-8 flex w-full justify-center">
-            <form onSubmit={handleDemoLogin} className="w-full max-w-md rounded-[2.2rem] border border-white/8 bg-[#0B1020]/50 p-6 shadow-[0_24px_90px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:p-8">
+            <form onSubmit={handleDemoLogin} className="w-full max-w-md rounded-2xl border border-white/10 bg-white/[0.03] p-0 shadow-none backdrop-blur-xl sm:rounded-[2.2rem] sm:border-white/8 sm:bg-[#0B1020]/50 sm:p-8 sm:shadow-[0_24px_90px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)]">
+              <div className="hidden sm:block">
                 <h2 className="text-xl font-display uppercase tracking-wider">Sign In</h2>
                 <p className="mt-1 text-xs font-semibold text-white/45">Continue with a guest profile</p>
+              </div>
                 
                 <div className="mt-6 space-y-3">
                   <div className="space-y-1">

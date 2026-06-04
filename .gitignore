@@ -36,3 +36,10 @@ backend/*.pyc
 backend/.mypy_cache/
 backend/.pytest_cache/
 backend/.ruff_cache/
+backend/*.db
+
+# ========================
+# Local/generated artifacts
+# ========================
+actions-log/
+*.zip

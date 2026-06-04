@@ -1,18 +1,21 @@
 """
 STRYK Backend - Player Model
 
-SQLModel schema for the players table in Supabase PostgreSQL.
+SQLModel schema for player profiles.
 """
 
 from datetime import datetime
 from typing import Optional
+from pydantic import ConfigDict
 from sqlmodel import SQLModel, Field
 
 
 class PlayerBase(SQLModel):
     """Shared player fields used for creation and reading."""
 
-    clerk_user_id: str = Field(index=True, unique=True)
+    model_config = ConfigDict(populate_by_name=True)
+
+    auth_user_id: str = Field(index=True, unique=True)
     full_name: str = Field(max_length=100)
     username: str = Field(max_length=40, index=True, unique=True)
     avatar_url: Optional[str] = Field(default=None, max_length=500)
