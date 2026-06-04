@@ -1,0 +1,38 @@
+# ========================
+# Monorepo Root .gitignore
+# ========================
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Environment ---
+.env
+.env.*
+!.env.example
+
+# ========================
+# Frontend (Next.js / Node)
+# ========================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.vercel/
+
+# ========================
+# Backend (Python / FastAPI)
+# ========================
+backend/.venv/
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/.mypy_cache/
+backend/.pytest_cache/
+backend/.ruff_cache/

@@ -1,0 +1,1 @@
+# STRYK Backend - App Package

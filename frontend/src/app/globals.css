@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap");
+@import "tailwindcss";
+
+:root {
+  --background: #05070B;
+  --foreground: #F5F7FA;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Bebas Neue", "Inter", sans-serif;
+
+  /* STRYK palette */
+  --stryk-bg: #05070B;
+  --stryk-surface: #0B1020;
+  --stryk-elevated: #10182B;
+  --stryk-border: rgba(255, 255, 255, 0.08);
+  --stryk-border-strong: rgba(255, 255, 255, 0.16);
+  --stryk-lime: #C6FF00;
+  --stryk-lime-dim: #9FCC1F;
+  --stryk-blue: #5B8CFF;
+  --stryk-purple: #A78BFA;
+  --stryk-text: #F5F7FA;
+  --stryk-text-secondary: rgba(245, 247, 250, 0.72);
+  --stryk-text-muted: rgba(245, 247, 250, 0.45);
+  --stryk-success: #4ADE80;
+  --stryk-warning: #FBBF24;
+  --stryk-error: #EF4444;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
+  --color-stryk-lime: var(--stryk-lime);
+  --color-stryk-bg: var(--stryk-bg);
+  --color-stryk-surface: var(--stryk-surface);
+  --color-stryk-elevated: var(--stryk-elevated);
+  --color-stryk-text-secondary: var(--stryk-text-secondary);
+  --color-stryk-text-muted: var(--stryk-text-muted);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgba(190, 255, 24, 0.32);
+  color: white;
+}
+
+@keyframes stryk-card-spin {
+  0% {
+    opacity: 0;
+    transform: perspective(900px) rotateY(-72deg) scale(0.86);
+  }
+
+  100% {
+    opacity: 1;
+    transform: perspective(900px) rotateY(0deg) scale(1);
+  }
+}
+
+.peer:checked ~ .stryk-card-spin,
+.peer:checked ~ * .stryk-card-spin {
+  animation: stryk-card-spin 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
