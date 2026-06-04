@@ -2,14 +2,10 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { ArrowLeft, Radio, UserRound, Zap, Loader2, ArrowRight, Sparkles, Mail, Lock } from "lucide-react";
-import { SignIn } from "@clerk/nextjs";
+import { type ChangeEvent, type FormEvent, useState } from "react";
+import { ArrowLeft, Radio, UserRound, Loader2, ArrowRight, Sparkles, Mail, Lock } from "lucide-react";
 
-import { StrykLogo } from "@/components/stryk-logo";
 import { Button } from "@/components/ui/button";
-
-const hasClerkKeys = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,7 +13,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleDemoLogin = async (e: React.FormEvent) => {
+  const handleDemoLogin = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     // Simulate API delay
@@ -65,7 +61,7 @@ export default function LoginPage() {
             </Link>
           </Button>
           <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-zinc-400">
-            {hasClerkKeys ? "Secure Login" : "Guest Mode"}
+            Guest Mode
           </div>
         </header>
 
@@ -86,36 +82,8 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Clerk Sign-In Component or Custom Mock Login */}
           <div className="mt-8 flex w-full justify-center">
-            {hasClerkKeys ? (
-              <SignIn
-                routing="hash"
-                appearance={{
-                  elements: {
-                    rootBox: "w-full max-w-md",
-                    cardBox: "w-full shadow-none",
-                    card: "bg-zinc-950/76 border border-[#C6FF00]/25 rounded-[2rem] shadow-[0_24px_90px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl",
-                    headerTitle: "text-white text-2xl font-black font-display uppercase tracking-wide",
-                    headerSubtitle: "text-zinc-400 text-xs font-semibold",
-                    formFieldLabel: "text-zinc-300 font-bold text-xs uppercase tracking-wide",
-                    formFieldInput:
-                      "bg-white/[0.04] border-white/10 text-white rounded-2xl h-12 pl-5 placeholder:text-zinc-500 focus:border-[#C6FF00]/50 focus:ring-[#C6FF00]/20",
-                    formButtonPrimary:
-                      "bg-[#C6FF00] text-black font-display tracking-[0.2em] uppercase h-12 rounded-2xl hover:bg-[#b0e600] shadow-[0_12px_24px_rgba(198,255,0,0.35)] transition-all",
-                    socialButtonsBlockButton:
-                      "border-white/10 bg-white/[0.04] text-white h-12 rounded-2xl hover:bg-white/[0.08] font-bold text-xs uppercase tracking-wider transition",
-                    dividerLine: "bg-white/10",
-                    dividerText: "text-zinc-500 font-black",
-                    footerActionLink:
-                      "text-[#C6FF00] font-black hover:text-lime-200",
-                    identityPreviewEditButton: "text-[#C6FF00]",
-                    formFieldAction: "text-[#C6FF00] font-black",
-                  },
-                }}
-              />
-            ) : (
-              <form onSubmit={handleDemoLogin} className="w-full max-w-md rounded-[2.2rem] border border-white/8 bg-[#0B1020]/50 p-6 shadow-[0_24px_90px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:p-8">
+            <form onSubmit={handleDemoLogin} className="w-full max-w-md rounded-[2.2rem] border border-white/8 bg-[#0B1020]/50 p-6 shadow-[0_24px_90px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:p-8">
                 <h2 className="text-xl font-display uppercase tracking-wider">Sign In</h2>
                 <p className="mt-1 text-xs font-semibold text-white/45">Continue with a guest profile</p>
                 
@@ -175,8 +143,7 @@ export default function LoginPage() {
                   <Sparkles size={13} className="fill-[#C6FF00] text-[#C6FF00]" />
                   Play as Guest
                 </button>
-              </form>
-            )}
+            </form>
           </div>
 
           <div className="mt-8 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">
@@ -190,7 +157,7 @@ export default function LoginPage() {
   );
 }
 
-function Field({ icon, placeholder, value, onChange, type = "text", required }: { icon: React.ReactNode; placeholder: string; value: string; onChange: (e: any) => void; type?: string; required?: boolean }) {
+function Field({ icon, placeholder, value, onChange, type = "text", required }: { icon: React.ReactNode; placeholder: string; value: string; onChange: (e: ChangeEvent<HTMLInputElement>) => void; type?: string; required?: boolean }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.04] h-12 flex items-center px-4 gap-2.5 focus-within:border-[#C6FF00]/50 transition duration-200">
       <span className="text-white/40 shrink-0">{icon}</span>
