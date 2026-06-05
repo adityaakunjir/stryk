@@ -553,29 +553,103 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ## Correctness Properties
 
+*A property is a characteristic or behavior that should hold true across all valid executions of a system — essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+
 ### Property 1: Viewport Lock
 
-∀ page in {`/`, `/onboarding`}: `document.body.scrollHeight === window.innerHeight` — setting `overflow: hidden` and `position: fixed` on `html` and `body` ensures no scrollable overflow exists regardless of content height.
+For any render of `/` or `/onboarding`, the root element's computed `overflow` is `hidden` and its height equals `100dvh`, ensuring `document.body.scrollHeight === window.innerHeight` and no scrollable overflow exists regardless of content height.
+
+**Validates: Requirements 1.1, 1.2, 1.3**
 
 ### Property 2: Onboarding Auth Guard
 
-∀ unauthenticated request to `/onboarding`: `clerkMiddleware` intercepts the request and redirects to Clerk sign-in before the page component ever renders — the page is never accessible without a valid Clerk session.
+For any unauthenticated HTTP request whose path matches `/onboarding` or `/onboarding/*`, the `Middleware` intercepts the request and redirects to Clerk sign-in before the `Onboarding_Page` component renders.
+
+**Validates: Requirements 5.4, 5.5, 11.2, 11.3**
 
 ### Property 3: Submit Idempotency
 
-∀ `handleSubmit` invocation while `isSubmitting === true`: the function returns immediately without triggering a second `fetch` call — the submit button is disabled and the guard condition `if (isSubmitting) return` prevents duplicate POSTs.
+For any invocation of `handleSubmit` while `isSubmitting === true`, the function returns immediately without initiating a second `fetch` call — the guard condition prevents duplicate `POST /players/` requests.
+
+**Validates: Requirements 10.6**
 
 ### Property 4: Single Redirect on Success
 
-∀ successful `POST /players/` where `res.status === 201`: `router.push("/dashboard")` is called exactly once — the `try/catch/finally` structure ensures `isSubmitting` resets and only one redirect fires.
+For any successful `POST /players/` response where `res.status === 201`, `router.push("/dashboard")` is called exactly once and `isSubmitting` is reset to `false` in the `finally` block.
+
+**Validates: Requirements 10.4, 10.7**
 
 ### Property 5: Removed UI Elements
 
-The "Explore Demo" button text and the social proof row (avatar circles + "10K+ players") are absent from the DOM in all render states of `app/page.tsx` — verified by checking the component source contains no such strings.
+For all render states of `app/page.tsx`, neither the text "Explore Demo" nor any social-proof element (avatar circles or player-count labels such as "10K+ players") appears in the rendered DOM.
 
-### Property 6: Demo Card Resilience
+**Validates: Requirements 3.3, 3.4, 3.5**
 
-∀ `PlayerCard` renders with `DEMO_PLAYER` (empty `avatarUrl`): `ImageWithFallback` shows the placeholder SVG rather than a broken `<img>` element — the `onError` handler fires and switches to the fallback data URI.
+### Property 6: PlayerCard Field Completeness
+
+For any valid `Player` object, the `PlayerCard` component renders the player's OVR rating, position, name, username, play style, strong foot, nation, and all six stats (PAC, SHO, PAS, DRI, DEF, PHY) in the output DOM.
+
+**Validates: Requirements 6.2**
+
+### Property 7: Demo Card Resilience
+
+For any `PlayerCard` render where `avatarUrl` is an empty string or absent, `ImageWithFallback` displays the placeholder SVG rather than a broken `<img>` element.
+
+**Validates: Requirements 6.4, 13.4**
+
+### Property 8: Step Navigation — Forward
+
+For any `currentStep` in `[1, 4]` and any form state that passes `validateStep(currentStep, formState)`, calling `goNext` increments `currentStep` by exactly 1.
+
+**Validates: Requirements 8.2**
+
+### Property 9: Step Navigation — Backward
+
+For any `currentStep` in `[2, 5]`, calling `goPrev` decrements `currentStep` by exactly 1.
+
+**Validates: Requirements 8.3**
+
+### Property 10: Invalid Step Blocks Progression
+
+For any `currentStep` in `[1, 5]` and any form state that fails `validateStep(currentStep, formState)`, calling `goNext` does not change `currentStep` and sets at least one field-level error.
+
+**Validates: Requirements 8.4**
+
+### Property 11: Back-Navigation Preserves Form State
+
+For any `OnboardingFormState` and any `currentStep > 1`, calling `goPrev` then inspecting the form state yields a value equal to the original form state — no field is cleared or mutated by backward navigation.
+
+**Validates: Requirements 8.5**
+
+### Property 12: Progress Indicator Accuracy
+
+For any `currentStep` in `[1, 5]`, the progress indicator rendered by `Onboarding_Page` reflects that exact step number out of five.
+
+**Validates: Requirements 8.6**
+
+### Property 13: Username Validation — Reject Invalid Inputs
+
+For any string that violates the username rules (length outside `[3, 40]`, contains spaces, contains characters other than alphanumerics/dots/underscores, or starts/ends with a dot), the `OnboardingForm` validator returns an error for the `username` field.
+
+**Validates: Requirements 9.2**
+
+### Property 14: Payload Construction Invariants
+
+For any valid `OnboardingFormState` and any Clerk `user.id` string, `buildPayload(user.id, formState)` produces a `PlayerCreatePayload` where `auth_user_id === user.id` and `rating === 80`.
+
+**Validates: Requirements 10.2, 10.3**
+
+### Property 15: Error Response Prevents Redirect
+
+For any non-2xx HTTP status code or any network error returned by `POST /players/`, the `Onboarding_Page` sets `submitError` to a non-empty string and does not call `router.push`.
+
+**Validates: Requirements 10.5**
+
+### Property 16: Middleware Route Matcher Completeness
+
+For any URL path string matching the pattern `/dashboard` or `/dashboard/*` or `/onboarding` or `/onboarding/*`, the `isProtected` matcher returns `true`.
+
+**Validates: Requirements 11.2**
 
 ---
 

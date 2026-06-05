@@ -132,7 +132,7 @@ export default function PositionPage() {
             </p>
           </div>
 
-          <form onSubmit={handleNext} className="mt-4 w-full space-y-2.5 sm:mt-8 sm:space-y-4">
+          <form data-scroll-panel onSubmit={handleNext} className="mt-4 w-full space-y-2.5 sm:mt-8 sm:space-y-4">
             {/* Tactical Pitch Selector */}
             <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-2 shadow-[0_18px_60px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:rounded-[2.2rem] sm:border-white/8 sm:bg-[#0B1020]/50 sm:p-7">
               <div className="hidden flex-wrap items-start justify-between gap-3 sm:flex">
