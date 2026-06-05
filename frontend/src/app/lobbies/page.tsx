@@ -97,7 +97,7 @@ export default function LobbiesPage() {
         </div>
 
         {/* Lobbies List */}
-        <div className="mt-4 flex-1 space-y-3 overflow-y-auto pr-0.5">
+        <div data-scroll-panel className="mt-4 flex-1 space-y-3 pr-0.5">
           {filteredLobbies.map((l, i) => (
             <div
               key={l.id}

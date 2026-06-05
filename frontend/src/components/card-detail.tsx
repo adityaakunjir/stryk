@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowLeft, Share2, Trophy, TrendingUp, ShieldCheck, Flame } from "lucide-react";
 import { PlayerCard, type PlayerMockType } from "./player-card";
 import { PlayerData } from "./player-context";

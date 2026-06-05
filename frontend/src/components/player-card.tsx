@@ -189,7 +189,15 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
               className="w-full h-full object-cover object-top"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-zinc-700 via-zinc-950 to-black opacity-80" />
+            <div className="relative h-full w-full overflow-hidden bg-gradient-to-br from-zinc-800 via-zinc-950 to-black">
+              <div className="absolute left-1/2 top-[18%] h-[28%] w-[28%] -translate-x-1/2 rounded-full bg-gradient-to-br from-zinc-300 via-zinc-700 to-black shadow-[0_0_24px_rgba(255,255,255,0.12)]" />
+              <div className="absolute left-1/2 top-[41%] h-[46%] w-[58%] -translate-x-1/2 rounded-t-[42%] bg-gradient-to-br from-zinc-100 via-zinc-800 to-black shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]" />
+              <div className="absolute left-[17%] top-[55%] h-[27%] w-[34%] -rotate-12 rounded-[45%] bg-gradient-to-br from-white/85 to-zinc-400/60" />
+              <div className="absolute right-[17%] top-[55%] h-[27%] w-[34%] rotate-12 rounded-[45%] bg-gradient-to-bl from-white/85 to-zinc-400/60" />
+              <div className="absolute left-1/2 top-[50%] h-[32%] w-[22%] -translate-x-1/2 rounded-b-[35%] bg-gradient-to-b from-zinc-950/95 to-black/70" />
+              <div className="absolute left-1/2 top-[49%] h-[8%] w-[38%] -translate-x-1/2 rounded-full bg-white/75" />
+              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#05070B] to-transparent" />
+            </div>
           )}
         </div>
       </div>

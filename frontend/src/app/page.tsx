@@ -1,31 +1,24 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
-  ArrowRight,
-  BarChart3,
-  CirclePlay,
-  ShieldCheck,
-  Trophy,
-  UserRound,
-  UsersRound,
-  Zap,
+  SignInButton,
+  SignUpButton,
+  useAuth,
+} from "@clerk/nextjs";
+import {
   RotateCcw,
-  LayoutDashboard,
-  Sparkles
+  Sparkles,
+  Zap,
 } from "lucide-react";
 
 import { StrykLogo } from "@/components/stryk-logo";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { usePlayer } from "@/components/player-context";
-import { PlayerCard } from "@/components/player-card";
 import { PhoneFrame } from "@/components/phone-frame";
 
 // Import page components for desktop gallery preview
-import LoginPage from "./login/page";
 import PositionPage from "./position/page";
 import HomeLobbyPage from "./home/page";
 import CardPage from "./card/page";
@@ -34,226 +27,139 @@ import TeamBuilderPage from "./team-builder/page";
 import SubmitPage from "./submit/page";
 import VerifyPage from "./verify/page";
 
-const features = [
-  {
-    title: "Player Cards",
-    copy: "Your football identity",
-    icon: UserRound,
-  },
-  {
-    title: "Match Lobbies",
-    copy: "Play with your squad",
-    icon: UsersRound,
-  },
-  {
-    title: "Real Stats",
-    copy: "Verify. Trust. Level up.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Grow & Earn",
-    copy: "Badges. Titles. Respect.",
-    icon: BarChart3,
-  },
-];
-
-const mockRahul = {
-  name: "Rahul",
-  username: "rahul.9",
-  position: "ST",
-  ovr: 79,
-  style: "Poacher",
-  foot: "R" as const,
-  nation: "IND",
-  matches: 84,
-  avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200",
-  stats: { PAC: 82, SHO: 85, PAS: 71, DRI: 78, DEF: 38, PHY: 74 }
-};
-
-const mockAditya = {
-  name: "Aditya",
-  username: "aditya10",
-  position: "CAM",
-  ovr: 84,
-  style: "Playmaker",
-  foot: "L" as const,
-  nation: "IND",
-  matches: 142,
-  avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200",
-  stats: { PAC: 80, SHO: 79, PAS: 87, DRI: 85, DEF: 52, PHY: 71 }
-};
-
-const mockOm = {
-  name: "Om",
-  username: "om.cb",
-  position: "CB",
-  ovr: 81,
-  style: "Box-to-Box",
-  foot: "R" as const,
-  nation: "IND",
-  matches: 98,
-  avatarUrl: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200",
-  stats: { PAC: 74, SHO: 55, PAS: 70, DRI: 72, DEF: 82, PHY: 81 }
-};
-
-export default function Home() {
-  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
-  const { updatePlayerData, resetPlayerData } = usePlayer();
+/* ─── Mobile Landing ─── */
+function MobileLanding() {
+  const { isSignedIn } = useAuth();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const checkViewport = () => {
-      setIsDesktop(window.innerWidth >= 1024);
-    };
-    checkViewport();
-    window.addEventListener("resize", checkViewport);
-    return () => window.removeEventListener("resize", checkViewport);
+    setMounted(true);
   }, []);
 
-  const handleExploreDemo = () => {
-    updatePlayerData({
-      fullName: "Aditya Akunjir",
-      username: "aditya10",
-      avatar: "",
-      position: "CAM",
-      secondaryPosition: "ST",
-      strongFoot: "Left",
-      playStyle: "Playmaker",
-      bio: "Midfield wizard who loves unlocking defenses with key passes.",
-    });
-    router.push("/home");
-  };
+  // If already signed in, go straight to home
+  useEffect(() => {
+    if (mounted && isSignedIn) {
+      const hasProfile = localStorage.getItem("stryk_player_data");
+      if (hasProfile) {
+        router.replace("/home");
+      } else {
+        router.replace("/identity");
+      }
+    }
+  }, [mounted, isSignedIn, router]);
 
-  const handleJoinStryk = () => {
-    resetPlayerData();
-    router.push("/identity");
-  };
+  return (
+    <main className="stryk-mobile-shell relative min-h-screen overflow-hidden bg-[#05070B] text-white">
+      {/* Ambient background layers */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(198,255,0,0.14) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 50% 110%, rgba(91,140,255,0.08) 0%, transparent 55%), #05070B",
+        }}
+      />
+      {/* Perspective grid floor */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-52 opacity-[0.10] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(transparent, rgba(198,255,0,0.5)), repeating-linear-gradient(90deg, transparent 0 28px, rgba(255,255,255,0.4) 28px 29px)",
+          transform: "perspective(400px) rotateX(70deg)",
+          transformOrigin: "bottom",
+        }}
+      />
+      {/* Floating orbs */}
+      <div className="absolute top-[18%] left-[12%] w-32 h-32 rounded-full bg-[#C6FF00]/[0.04] blur-3xl pointer-events-none animate-pulse" />
+      <div className="absolute bottom-[22%] right-[8%] w-40 h-40 rounded-full bg-[#5B8CFF]/[0.04] blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: "1.5s" }} />
 
-  // Prevent hydration flash: default to mobile-like landing page view during SSR
-  if (isDesktop === null || !isDesktop) {
-    return (
-      <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(198,255,0,0.06),transparent_32%),radial-gradient(circle_at_18%_75%,rgba(91,140,255,0.04),transparent_28%),linear-gradient(180deg,#05070B_0%,#0B1020_44%,#05070B_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-[44%] bg-[linear-gradient(180deg,transparent,rgba(11,16,32,0.72)),repeating-linear-gradient(92deg,rgba(198,255,0,0.04)_0_1px,transparent_1px_42px)] opacity-70" />
-        <div className="absolute inset-x-[-10%] bottom-[-12%] h-[34%] rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(198,255,0,0.1),rgba(5,7,11,0.72)_55%,transparent_72%)] blur-sm" />
-        <div className="absolute left-[8%] top-[42%] h-72 w-1 rounded-full bg-white/70 blur-[2px] opacity-20" />
-        <div className="absolute right-[7%] top-[39%] h-80 w-1 rounded-full bg-white/70 blur-[2px] opacity-20" />
+      {/* Content */}
+      <section className="relative z-10 flex flex-col items-center justify-between h-full px-6 py-8">
+        {/* Top — Status pill */}
+        <div className="flex items-center gap-2 rounded-full border border-white/8 bg-white/[0.03] px-4 py-1.5 backdrop-blur-sm">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] animate-pulse" />
+          <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/50">Season 1 — Live</span>
+        </div>
 
-        <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col px-5 pb-8 pt-7 sm:px-8 lg:px-10">
-          <header className="flex items-center justify-between">
-            <StrykLogo />
-            <Button asChild variant="outline" className="h-12 px-6 normal-case tracking-normal border-white/10 bg-white/5 hover:bg-white/10">
-              <Link href="/login">Log in</Link>
-            </Button>
-          </header>
-
-          <div className="mx-auto mt-12 flex w-full max-w-5xl flex-1 flex-col items-center text-center">
-            <p className="mb-4 max-w-full text-center text-xs font-black uppercase tracking-[0.22em] text-[var(--stryk-lime)] sm:text-base sm:tracking-[0.28em]">
-              YOUR FOOTBALL IDENTITY
-            </p>
-            <h1 className="font-display max-w-4xl text-balance text-center text-[3.5rem] leading-[0.92] tracking-wide text-white sm:text-8xl lg:text-[7rem]">
-              BUILT. PLAYED.<br />
-              <span className="text-[#C6FF00]" style={{ textShadow: "0 0 40px rgba(198,255,0,0.3)" }}>
-                REMEMBERED.
-              </span>
-            </h1>
-            <p className="mt-6 max-w-xl text-pretty text-lg font-semibold leading-7 text-zinc-300 sm:text-xl">
-              Real matches. Real stats. Real you. This is your{" "}
-              <span className="font-display text-[#C6FF00] tracking-wider">STRYK</span>.
-            </p>
-
-            <div className="relative mt-10 flex w-full items-center justify-center overflow-visible min-h-[22rem]">
-              <div className="absolute left-[2%] hidden lg:block opacity-45 scale-90 blur-[0.5px]">
-                <PlayerCard player={mockRahul} />
-              </div>
-              <div className="z-20 relative">
-                <div
-                  aria-hidden
-                  className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-56 h-8 rounded-[50%] blur-2xl pointer-events-none"
-                  style={{ background: "rgba(198,255,0,0.35)" }}
-                />
-                <PlayerCard player={mockAditya} />
-              </div>
-              <div className="absolute right-[2%] hidden lg:block opacity-45 scale-90 blur-[0.5px]">
-                <PlayerCard player={mockOm} />
-              </div>
-            </div>
-
-            <div className="mt-8 grid w-full grid-cols-2 overflow-hidden rounded-[1.75rem] border border-white/8 bg-white/[0.03] shadow-[0_20px_80px_rgba(0,0,0,0.42)] backdrop-blur-xl md:grid-cols-4">
-              {features.map((feature, index) => (
-                <div
-                  key={feature.title}
-                  className={cn(
-                    "flex min-h-36 flex-col items-center justify-center px-4 py-6 text-center",
-                    index % 2 === 1 && "border-l border-white/10",
-                    index > 1 && "border-t border-white/10 md:border-t-0",
-                    index > 0 && "md:border-l md:border-white/10",
-                  )}
-                >
-                  <feature.icon className="mb-4 size-10 text-[#C6FF00]" />
-                  <p className="text-sm font-black uppercase text-white sm:text-base">
-                    {feature.title}
-                  </p>
-                  <p className="mt-1 max-w-32 text-sm leading-5 text-zinc-400">
-                    {feature.copy}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 grid w-full gap-4 sm:grid-cols-[1fr_0.8fr]">
-              <Button size="lg" className="h-16 px-6 text-base sm:text-lg cursor-pointer bg-[#C6FF00] hover:bg-[#b0e600] text-black font-display tracking-[0.2em]" onClick={handleJoinStryk}>
-                JOIN STRYK
-                <ArrowRight className="ml-auto" strokeWidth={3} />
-              </Button>
-              <Button variant="outline" size="lg" className="h-16 px-6 text-base sm:text-lg cursor-pointer border-white/10 bg-white/5 hover:bg-white/10 font-display tracking-[0.2em]" onClick={handleExploreDemo}>
-                EXPLORE DEMO
-                <CirclePlay className="ml-auto" />
-              </Button>
-            </div>
-
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-4 pb-3 text-zinc-400">
-              <div className="flex -space-x-3">
-                {["from-amber-300", "from-sky-300", "from-lime-300", "from-fuchsia-300"].map(
-                  (color, index) => (
-                    <div
-                      key={color}
-                      className={cn(
-                        "grid size-10 place-items-center rounded-full border-2 border-[#05070B] bg-gradient-to-br to-zinc-950 text-xs font-black text-black",
-                        color,
-                      )}
-                    >
-                      {index + 1}
-                    </div>
-                  ),
-                )}
-              </div>
-              <p className="text-base sm:text-lg">
-                <span className="font-black text-[#C6FF00]">10K+</span> players already building their legacy
-              </p>
-              <div className="hidden items-center gap-2 text-lime-200 md:flex">
-                <Trophy className="size-5" />
-                <span className="text-sm font-bold uppercase tracking-[0.18em]">
-                  Season Zero
-                </span>
-              </div>
-            </div>
+        {/* Center — Brand block */}
+        <div className="flex flex-col items-center text-center -mt-4">
+          {/* Logo */}
+          <div className="mb-8">
+            <StrykLogo compact centered />
           </div>
-        </section>
 
-        <Zap className="absolute bottom-[19%] left-[9%] size-5 rotate-12 text-[#C6FF00]/50" />
-        <Zap className="absolute right-[13%] top-[31%] size-4 -rotate-12 text-blue-300/40" />
-      </main>
-    );
-  }
+          {/* Tagline */}
+          <h1 className="font-display text-[2.6rem] leading-[0.92] uppercase italic tracking-wide text-white">
+            YOUR FOOTBALL<br />
+            <span
+              className="text-[#C6FF00]"
+              style={{ textShadow: "0 0 30px rgba(198,255,0,0.3)" }}
+            >
+              IDENTITY.
+            </span>
+          </h1>
 
-  // Desktop Gallery view (width >= 1024px)
+          <p className="mt-4 max-w-[260px] text-[11px] leading-relaxed text-white/45 font-medium">
+            One profile. Every match. Verified stats, growing reputation, a card that evolves with you.
+          </p>
+
+          {/* Feature pills */}
+          <div className="mt-6 flex items-center gap-3">
+            {[
+              { icon: <Zap size={10} />, label: "Real Stats" },
+              { icon: <Sparkles size={10} />, label: "Player Card" },
+            ].map((f) => (
+              <div
+                key={f.label}
+                className="flex items-center gap-1.5 rounded-full border border-white/8 bg-white/[0.03] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.15em] text-white/50"
+              >
+                <span className="text-[#C6FF00]">{f.icon}</span>
+                {f.label}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom — Auth buttons */}
+        <div className="w-full max-w-xs flex flex-col gap-3">
+          <SignInButton mode="modal" forceRedirectUrl="/home" fallbackRedirectUrl="/home">
+            <button
+              className="w-full h-[52px] rounded-2xl border border-white/10 bg-white/[0.04] text-[13px] font-display tracking-[0.22em] uppercase text-white/90 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.08] active:scale-[0.98] cursor-pointer backdrop-blur-sm"
+              type="button"
+            >
+              LOG IN
+            </button>
+          </SignInButton>
+
+          <SignUpButton mode="modal" forceRedirectUrl="/identity" fallbackRedirectUrl="/identity">
+            <button
+              className="w-full h-[52px] rounded-2xl bg-[#C6FF00] text-[13px] font-display tracking-[0.22em] uppercase text-black font-bold transition-all duration-200 hover:bg-[#d4ff33] active:scale-[0.98] cursor-pointer"
+              style={{ boxShadow: "0 16px 40px -8px rgba(198,255,0,0.45)" }}
+              type="button"
+            >
+              JOIN STRYK
+            </button>
+          </SignUpButton>
+
+          <p className="text-center text-[9px] text-white/30 font-medium tracking-wide mt-1">
+            Free to join · No credit card required
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+/* ─── Desktop Gallery ─── */
+function DesktopGallery() {
+  const { resetPlayerData } = usePlayer();
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
+
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-[#05070B] text-white flex flex-col">
       {/* Background gradients */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(198,255,0,0.06),transparent_50%),radial-gradient(circle_at_0%_100%,rgba(91,140,255,0.03),transparent_40%),linear-gradient(180deg,#05070B_0%,#080C16_50%,#05070B_100%)] pointer-events-none" />
-
-      {/* Grid line overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.007)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.007)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-60" />
 
       {/* Premium Top Bar */}
@@ -267,36 +173,50 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
-          <div className="hidden xl:flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-white/40">
-            <div className="w-2 h-2 rounded-full bg-[#C6FF00] animate-pulse" />
-            Active Player Context Sync: <span className="text-[#C6FF00]">Active</span>
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            <Button
-              onClick={() => {
-                resetPlayerData();
-                window.location.reload();
-              }}
-              variant="ghost"
-              className="h-10 text-xs font-semibold text-zinc-400 hover:text-white border border-white/5 hover:bg-white/5 cursor-pointer"
-            >
-              <RotateCcw className="size-3.5 mr-2" /> Reset Profile
-            </Button>
-            <Button
-              onClick={() => router.push("/home")}
-              className="h-10 text-xs font-semibold bg-[#C6FF00] hover:bg-[#b0e600] text-black font-display tracking-widest px-5 cursor-pointer"
-            >
-              Enter Dashboard
-            </Button>
-          </div>
+        <div className="flex items-center gap-2.5">
+          {isSignedIn ? (
+            <>
+              <Button
+                onClick={() => {
+                  resetPlayerData();
+                  window.location.reload();
+                }}
+                variant="ghost"
+                className="h-10 text-xs font-semibold text-zinc-400 hover:text-white border border-white/5 hover:bg-white/5 cursor-pointer"
+              >
+                <RotateCcw className="size-3.5 mr-2" /> Reset Profile
+              </Button>
+              <Button
+                onClick={() => router.push("/home")}
+                className="h-10 text-xs font-semibold bg-[#C6FF00] hover:bg-[#b0e600] text-black font-display tracking-widest px-5 cursor-pointer"
+              >
+                Enter Dashboard
+              </Button>
+            </>
+          ) : (
+            <>
+              <SignInButton mode="modal" forceRedirectUrl="/home" fallbackRedirectUrl="/home">
+                <Button
+                  variant="ghost"
+                  className="h-10 text-xs font-semibold text-zinc-400 hover:text-white border border-white/5 hover:bg-white/5 cursor-pointer"
+                >
+                  LOG IN
+                </Button>
+              </SignInButton>
+              <SignUpButton mode="modal" forceRedirectUrl="/identity" fallbackRedirectUrl="/identity">
+                <Button
+                  className="h-10 text-xs font-semibold bg-[#C6FF00] hover:bg-[#b0e600] text-black font-display tracking-widest px-5 cursor-pointer"
+                >
+                  JOIN STRYK
+                </Button>
+              </SignUpButton>
+            </>
+          )}
         </div>
       </header>
 
       {/* Main Canvas Area */}
       <section className="relative z-20 flex-1 flex flex-col justify-center py-6">
-        {/* Canvas Header */}
         <div className="max-w-4xl px-12 mb-6 shrink-0">
           <div className="flex items-center gap-2 text-[#C6FF00] font-bold uppercase text-[10px] tracking-[0.25em]">
             <Sparkles size={12} className="fill-[#C6FF00] stroke-[1]" />
@@ -313,7 +233,7 @@ export default function Home() {
         {/* Horizontal Scroll Row */}
         <div className="w-full overflow-x-auto flex gap-8 px-12 pb-10 pt-2 [scrollbar-width:thin] scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
           <PhoneFrame index="01" label="Sign In">
-            <LoginPage />
+            <MobileLanding />
           </PhoneFrame>
 
           <PhoneFrame index="02" label="Profile - Position">
@@ -347,4 +267,25 @@ export default function Home() {
       </section>
     </main>
   );
+}
+
+/* ─── Root Page ─── */
+export default function Home() {
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkViewport = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    checkViewport();
+    window.addEventListener("resize", checkViewport);
+    return () => window.removeEventListener("resize", checkViewport);
+  }, []);
+
+  // Prevent hydration flash
+  if (isDesktop === null || !isDesktop) {
+    return <MobileLanding />;
+  }
+
+  return <DesktopGallery />;
 }

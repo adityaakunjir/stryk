@@ -77,7 +77,7 @@ export default function SubmitPage() {
         </div>
 
         {/* Stats Steppers */}
-        <div className="mt-4 space-y-2 flex-1 overflow-y-auto pr-0.5">
+        <div data-scroll-panel className="mt-4 space-y-2 flex-1 pr-0.5">
           {Object.entries(stats).map(([key, value]) => {
             const Icon = statIcons[key as keyof typeof stats];
             return (

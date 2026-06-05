@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Bell, Settings, Play, Users, Trophy, MapPin, Loader2, ShieldCheck, X } from "lucide-react";
+import { Bell, Settings, Play, Users, Trophy, MapPin, Loader2, X } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { PlayerCard } from "@/components/player-card";
 import { CardDetail } from "@/components/card-detail";
@@ -70,7 +70,7 @@ export default function HomeLobbyPage() {
         </div>
 
         {/* Greeting */}
-        <div className="mt-5">
+        <div className="mt-4">
           <div className="text-[10px] tracking-[0.3em] uppercase text-white/40 font-bold">Welcome back</div>
           <div className="font-display tracking-wide mt-1 text-3xl">
             HEY, {firstName}
@@ -78,26 +78,26 @@ export default function HomeLobbyPage() {
         </div>
 
         {/* Hero player card display */}
-        <div className="mt-5 relative flex justify-center">
+        <div className="mt-4 relative flex justify-center">
           <div
             aria-hidden
             className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-56 h-8 rounded-[50%] blur-2xl pointer-events-none"
             style={{ background: "rgba(198,255,0,0.35)" }}
           />
-          <div className="scale-90 sm:scale-95 origin-top">
+          <div className="scale-[0.86] sm:scale-95 origin-top">
             <PlayerCard player={playerData} size="md" onClick={() => router.push("/card")} />
           </div>
         </div>
 
         {/* Quick stats row */}
-        <div className="grid grid-cols-3 gap-2 px-1 mt-4">
+        <div className="grid grid-cols-3 gap-2 px-1 mt-2 sm:mt-4">
           <Pill label="Matches" value="142" />
           <Pill label="OVR" value={playerData.rating.toString()} accent />
           <Pill label="Rep" value="A+" />
         </div>
 
         {/* Squad online strip */}
-        <div className="mt-6">
+        <div className="mt-auto pt-4 sm:mt-6 sm:pt-0">
           <div className="flex items-center justify-between mb-2.5">
             <div className="text-[10px] tracking-[0.25em] uppercase text-white/45 font-bold">Squad online</div>
             <button 
@@ -126,7 +126,7 @@ export default function HomeLobbyPage() {
         </div>
 
         {/* Action panels grid */}
-        <div className="mt-6 grid grid-cols-2 gap-2.5">
+        <div className="hidden mt-6 grid-cols-2 gap-2.5 sm:grid">
           <ActionTile 
             icon={<MapPin size={16} />} 
             label="Lobbies" 
@@ -154,7 +154,7 @@ export default function HomeLobbyPage() {
         </div>
 
         {/* Primary CTA */}
-        <div className="mt-auto pt-6">
+        <div className="hidden mt-auto pt-6 sm:block">
           <button
             onClick={() => router.push("/lobbies")}
             className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 bg-[#C6FF00] text-black font-display tracking-[0.2em] cursor-pointer hover:bg-[#b0e600] transition duration-200"

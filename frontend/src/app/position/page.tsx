@@ -12,7 +12,6 @@ import {
   Info,
 } from "lucide-react";
 
-import { StrykLogo } from "@/components/stryk-logo";
 import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/components/player-context";
 import { cn } from "@/lib/utils";
@@ -63,9 +62,11 @@ export default function PositionPage() {
 
   useEffect(() => {
     if (playerData) {
-      setSelectedPosition(playerData.position || "CAM");
-      setSecondaryPosition(playerData.secondaryPosition || "");
-      setStrongFoot(playerData.strongFoot || "Left");
+      queueMicrotask(() => {
+        setSelectedPosition(playerData.position || "CAM");
+        setSecondaryPosition(playerData.secondaryPosition || "");
+        setStrongFoot(playerData.strongFoot || "Left");
+      });
     }
   }, [playerData]);
 
@@ -131,7 +132,7 @@ export default function PositionPage() {
             </p>
           </div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full space-y-4">
+          <form onSubmit={handleNext} className="mt-4 w-full space-y-2.5 sm:mt-8 sm:space-y-4">
             {/* Tactical Pitch Selector */}
             <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-2 shadow-[0_18px_60px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:rounded-[2.2rem] sm:border-white/8 sm:bg-[#0B1020]/50 sm:p-7">
               <div className="hidden flex-wrap items-start justify-between gap-3 sm:flex">
@@ -152,7 +153,7 @@ export default function PositionPage() {
               </div>
 
               {/* Pitch layout */}
-              <div className="relative aspect-[1.28] min-h-[260px] overflow-hidden rounded-xl border border-white/10 sm:mt-6 sm:aspect-[1.18] sm:min-h-[400px] sm:rounded-2xl"
+              <div className="relative aspect-[1.44] min-h-[148px] overflow-hidden rounded-xl border border-white/10 sm:mt-6 sm:aspect-[1.18] sm:min-h-[400px] sm:rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(198,255,0,0.06), rgba(91,140,255,0.06)), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 24px, transparent 24px 48px)",
@@ -168,7 +169,7 @@ export default function PositionPage() {
                     <button
                       key={i}
                       onClick={() => handleSelectPosition(p.code)}
-                      className="absolute -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center font-display tracking-wider text-xs cursor-pointer transition duration-300"
+                      className="absolute flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full font-display text-[9px] tracking-wider transition duration-300 cursor-pointer sm:h-9 sm:w-9 sm:text-xs"
                       type="button"
                       style={{
                         left: `${p.x}%`,
@@ -188,20 +189,30 @@ export default function PositionPage() {
             </section>
 
             {/* Secondary Position */}
-            <section className="grid gap-4 rounded-3xl border border-white/8 bg-[#0B1020]/40 p-5 shadow-[0_18px_70px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:grid-cols-[1fr_0.9fr] sm:items-center sm:p-6">
-              <div>
-                <h2 className="text-lg font-display uppercase tracking-wider">
-                  Secondary Position <span className="text-xs text-white/45">(Optional)</span>
-                </h2>
-                <p className="mt-0.5 text-xs text-white/50">
-                  Your next best position
+            <section className="grid grid-cols-2 gap-2 sm:gap-4 sm:rounded-3xl sm:border sm:border-white/8 sm:bg-[#0B1020]/40 sm:p-5 sm:shadow-[0_18px_70px_rgba(0,0,0,0.42)] sm:backdrop-blur-xl md:grid-cols-[1fr_0.9fr] md:items-center md:p-6">
+              <div className="rounded-2xl border border-[#C6FF00]/45 bg-[#C6FF00]/8 px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                <div className="text-[9px] font-black uppercase tracking-[0.22em] text-white/40">Primary</div>
+                <div className="font-display text-xl leading-none text-[#C6FF00]">{selectedPosition}</div>
+                <p className="mobile-compact-hidden mt-0.5 text-xs text-white/50">
+                  Your primary position on the field
                 </p>
               </div>
-              
+
               <div className="relative">
+                <div className="sm:hidden rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2.5">
+                  <div className="text-[9px] font-black uppercase tracking-[0.22em] text-white/40">Secondary</div>
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="mt-1 flex w-full items-center justify-between text-left font-display text-xl leading-none text-white/80 cursor-pointer"
+                    type="button"
+                  >
+                    {secondaryPosition || "CM"}
+                    <ChevronDown className="size-4 text-white/50" />
+                  </button>
+                </div>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex h-12 w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 text-left text-xs font-semibold text-white/80 transition hover:border-[#C6FF00]/45 hover:text-white cursor-pointer"
+                  className="hidden h-12 w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 text-left text-xs font-semibold text-white/80 transition hover:border-[#C6FF00]/45 hover:text-white sm:flex cursor-pointer"
                   type="button"
                 >
                   {secondaryPosition ? positions.find(p => p.code.split("_")[0] === secondaryPosition)?.name || secondaryPosition : "Select position"}
@@ -245,12 +256,12 @@ export default function PositionPage() {
             </section>
 
             {/* Strong Foot */}
-            <section className="grid gap-4 rounded-3xl border border-white/8 bg-[#0B1020]/40 p-5 shadow-[0_18px_70px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:grid-cols-[1fr_1.1fr] sm:items-center sm:p-6">
+            <section className="grid gap-2 rounded-2xl border border-white/8 bg-[#0B1020]/40 p-3 shadow-[0_18px_70px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:grid-cols-[1fr_1.1fr] sm:items-center sm:gap-4 sm:rounded-3xl sm:p-6">
               <div>
-                <h2 className="text-lg font-display uppercase tracking-wider">
+                <h2 className="text-xs font-black uppercase tracking-[0.22em] text-white/45 sm:text-lg sm:font-display sm:tracking-wider sm:text-white">
                   Strong Foot
                 </h2>
-                <p className="mt-0.5 text-xs text-white/50">
+                <p className="mobile-compact-hidden mt-0.5 text-xs text-white/50">
                   Which foot do you trust the most?
                 </p>
               </div>
@@ -284,14 +295,14 @@ export default function PositionPage() {
               </div>
             </section>
 
-            <button className="h-14 w-full rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600]" type="submit">
+            <button className="h-12 w-full rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] sm:h-14" type="submit">
               CONTINUE <ArrowRight className="ml-auto" strokeWidth={3} size={16} />
             </button>
 
             <Button
               asChild
               variant="ghost"
-              className="mx-auto flex h-10 w-fit px-4 text-white/50 hover:text-lime-200 cursor-pointer"
+              className="mobile-compact-hidden mx-auto flex h-10 w-fit px-4 text-white/50 hover:text-lime-200 cursor-pointer"
             >
               <Link href="/identity">
                 <ArrowLeft className="size-4" />

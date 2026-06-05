@@ -77,7 +77,7 @@ export default function VerifyPage() {
         </div>
 
         {/* Pending Requests List */}
-        <div className="mt-4 flex-1 space-y-3 overflow-y-auto pr-0.5">
+        <div data-scroll-panel className="mt-4 flex-1 space-y-3 pr-0.5">
           {requests.map((r) => (
             <div key={r.id} className="rounded-2xl p-4 border border-white/10 bg-white/[0.02]">
               <div className="flex items-center gap-3">

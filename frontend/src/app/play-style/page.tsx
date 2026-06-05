@@ -19,7 +19,6 @@ import {
   Zap,
 } from "lucide-react";
 
-import { StrykLogo } from "@/components/stryk-logo";
 import { Button } from "@/components/ui/button";
 import { usePlayer, PlayStyleType } from "@/components/player-context";
 import { cn } from "@/lib/utils";
@@ -155,8 +154,10 @@ export default function PlayStylePage() {
 
   useEffect(() => {
     if (playerData) {
-      setSelectedStyle(playerData.playStyle || "Playmaker");
-      setBio(playerData.bio || "");
+      queueMicrotask(() => {
+        setSelectedStyle(playerData.playStyle || "Playmaker");
+        setBio(playerData.bio || "");
+      });
     }
   }, [playerData]);
 
@@ -220,7 +221,7 @@ export default function PlayStylePage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="mt-8 w-full space-y-5">
+          <form data-scroll-panel onSubmit={handleSubmit} className="mt-8 w-full flex-1 space-y-5 pr-0.5 sm:flex-none">
             <section>
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-7 w-px bg-white/25" />

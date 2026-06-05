@@ -18,9 +18,7 @@ import {
   X,
 } from "lucide-react";
 
-import { StrykLogo } from "@/components/stryk-logo";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { usePlayer } from "@/components/player-context";
 import { PlayerCard } from "@/components/player-card";
 import { cn } from "@/lib/utils";
@@ -62,12 +60,14 @@ export default function IdentityPage() {
   // Sync with context on load
   useEffect(() => {
     if (playerData) {
-      setFullName(playerData.fullName || "");
-      setUsername(playerData.username || "");
-      setAvatar(playerData.avatar || "");
-      if (playerData.username) {
-        setUsernameStatus("available");
-      }
+      queueMicrotask(() => {
+        setFullName(playerData.fullName || "");
+        setUsername(playerData.username || "");
+        setAvatar(playerData.avatar || "");
+        if (playerData.username) {
+          setUsernameStatus("available");
+        }
+      });
     }
   }, [playerData]);
 
@@ -159,8 +159,8 @@ export default function IdentityPage() {
 
       <section className="relative mx-auto flex min-h-screen w-full max-w-5xl flex-col px-5 pb-7 pt-6 sm:px-8 lg:px-10 z-10">
         <header className="flex items-center justify-between gap-4">
-          <Button asChild variant="ghost" size="icon" aria-label="Back to login" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
-            <Link href="/login">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
+            <Link href="/">
               <ArrowLeft size={16} />
             </Link>
           </Button>
@@ -184,7 +184,7 @@ export default function IdentityPage() {
             </p>
           </div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full rounded-[2rem] border border-white/8 bg-[#0B1020]/50 p-5 shadow-[0_28px_100px_rgba(0,0,0,0.58),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:p-8">
+          <form data-scroll-panel onSubmit={handleNext} className="mt-8 w-full flex-1 rounded-[2rem] border border-white/8 bg-[#0B1020]/50 p-5 shadow-[0_28px_100px_rgba(0,0,0,0.58),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:flex-none sm:p-8">
             <input 
               type="file" 
               ref={fileInputRef} 
@@ -363,4 +363,3 @@ export default function IdentityPage() {
     </main>
   );
 }
-

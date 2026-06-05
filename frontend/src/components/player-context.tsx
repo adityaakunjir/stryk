@@ -26,6 +26,18 @@ interface PlayerContextType {
   isBackendSynced: boolean;
 }
 
+type BackendPlayer = {
+  full_name?: string;
+  username?: string;
+  avatar_url?: string;
+  position?: string;
+  secondary_position?: string;
+  strong_foot?: string;
+  play_style?: PlayStyleType;
+  bio?: string;
+  rating?: number;
+};
+
 const defaultPlayerData: PlayerData = {
   fullName: "Aditya Akunjir",
   username: "aditya10",
@@ -40,7 +52,7 @@ const defaultPlayerData: PlayerData = {
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 
-function toCamelCase(backendPlayer: any): PlayerData {
+function toCamelCase(backendPlayer: BackendPlayer): PlayerData {
   return {
     fullName: backendPlayer.full_name || "",
     username: backendPlayer.username || "",
@@ -81,12 +93,17 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     try {
       const stored = localStorage.getItem("stryk_player_data");
       if (stored) {
-        setPlayerData(JSON.parse(stored));
+        const parsedPlayer = JSON.parse(stored);
+        queueMicrotask(() => {
+          setPlayerData(parsedPlayer);
+        });
       }
     } catch (e) {
       console.error("Error loading player data from localStorage", e);
     }
-    setIsLoaded(true);
+    queueMicrotask(() => {
+      setIsLoaded(true);
+    });
   }, []);
 
   // Push local changes to the backend
