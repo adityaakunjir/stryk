@@ -6,17 +6,19 @@ on:
       - main
     paths:
       - "frontend/**"
+      - "clerk-nextjs/**"
       - ".github/workflows/frontend-build.yml"
   pull_request:
     paths:
       - "frontend/**"
+      - "clerk-nextjs/**"
       - ".github/workflows/frontend-build.yml"
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  build-frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,3 +38,27 @@ jobs:
       - name: Build Next.js
         run: npm run build
         working-directory: frontend
+
+  build-clerk-nextjs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: clerk-nextjs/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: clerk-nextjs
+
+      - name: Build Next.js
+        run: npm run build
+        working-directory: clerk-nextjs
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_placeholder' }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY || 'sk_test_placeholder' }}
