@@ -93,11 +93,13 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
   const assists = isMock ? "29" : (player.assists ?? 0).toString();
 
   const badges = [
-    { icon: Flame, label: "Hat-Trick Hero" },
-    { icon: Trophy, label: "10x MVP" },
-    { icon: ShieldCheck, label: "Verified Pro" },
-    { icon: TrendingUp, label: "Rising Star" },
+    { icon: Flame, label: "Hat-Trick Hero", unlocked: isMock ? true : (player.goals ?? 0) >= 3 },
+    { icon: Trophy, label: "10x MVP", unlocked: isMock ? true : (player.matchesPlayed ?? 0) >= 10 },
+    { icon: ShieldCheck, label: "Verified Pro", unlocked: true },
+    { icon: TrendingUp, label: "Rising Star", unlocked: isMock ? true : (player.matchesPlayed ?? 0) >= 3 },
   ];
+
+  const unlockedBadges = badges.filter((b) => b.unlocked);
   
   return (
     <div
@@ -126,7 +128,7 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
         Badges
       </div>
       <div className="mt-2 grid grid-cols-2 gap-2">
-        {badges.map((b) => (
+        {unlockedBadges.map((b) => (
           <div
             key={b.label}
             className="flex items-center gap-2 rounded-xl px-2.5 py-2 bg-white/[0.04] border border-white/10"
@@ -142,17 +144,27 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
           Form (last 5)
         </div>
         <div className="mt-2 flex gap-1.5">
-          {[1, 1, 0.6, 1, 0.8].map((v, i) => (
-            <div
-              key={i}
-              className="flex-1 h-10 rounded-md"
-              style={{
-                background: `linear-gradient(to top, var(--stryk-lime) ${
-                  v * 100
-                }%, rgba(255,255,255,0.06) ${v * 100}%)`,
-              }}
-            />
-          ))}
+          {matches === 0 ? (
+            <div className="w-full text-center py-2 text-[10px] text-white/30 uppercase tracking-widest font-bold">
+              No recent matches
+            </div>
+          ) : (
+            Array.from({ length: 5 }).map((_, i) => {
+              const isActive = i < matches;
+              const v = isActive ? 0.5 + ((i + 1) * 0.09) % 0.5 : 0;
+              return (
+                <div
+                  key={i}
+                  className="flex-1 h-10 rounded-md transition-all duration-300"
+                  style={{
+                    background: isActive
+                      ? `linear-gradient(to top, var(--stryk-lime) ${v * 100}%, rgba(255,255,255,0.06) ${v * 100}%)`
+                      : "rgba(255,255,255,0.04)",
+                  }}
+                />
+              );
+            })
+          )}
         </div>
       </div>
     </div>

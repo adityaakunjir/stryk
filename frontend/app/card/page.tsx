@@ -37,11 +37,21 @@ export default function CardPage() {
   };
 
   const badges = [
-    { icon: Flame, label: "Hat-Trick" },
-    { icon: Trophy, label: "10× MVP" },
-    { icon: ShieldCheck, label: "Verified" },
-    { icon: TrendingUp, label: "Rising" },
+    { icon: Flame, label: "Hat-Trick", unlocked: (playerData.goals ?? 0) >= 3 },
+    { icon: Trophy, label: "10× MVP", unlocked: (playerData.matchesPlayed ?? 0) >= 10 },
+    { icon: ShieldCheck, label: "Verified", unlocked: true },
+    { icon: TrendingUp, label: "Rising", unlocked: (playerData.matchesPlayed ?? 0) >= 3 },
   ];
+
+  const matchesCount = playerData.matchesPlayed ?? 0;
+  const formOvrChange = matchesCount === 0 ? 0 : Math.min(5, Math.floor(matchesCount * 0.5));
+  const formOvrText = formOvrChange >= 0 ? `+${formOvrChange} OVR` : `${formOvrChange} OVR`;
+
+  const formBars = Array.from({ length: 8 }, (_, i) => {
+    const isActive = i < matchesCount;
+    const val = 0.5 + ((i + 1) * 0.09) % 0.5;
+    return { isActive, val };
+  });
 
   return (
     <main className="stryk-mobile-shell text-white bg-[#05070B]">
@@ -95,9 +105,20 @@ export default function CardPage() {
         {/* Badges strip */}
         <div className="grid grid-cols-4 gap-2">
           {badges.map((b, i) => (
-            <div key={i} className="rounded-xl px-2 py-3 border border-white/5 bg-white/[0.02] flex flex-col items-center gap-1.5 transition hover:border-[#C6FF00]/30">
-              <span className="text-[#C6FF00] shrink-0"><b.icon size={13} /></span>
-              <span className="text-[9px] text-white/70 tracking-wider uppercase font-bold text-center leading-tight">{b.label}</span>
+            <div 
+              key={i} 
+              className={`rounded-xl px-2 py-3 border flex flex-col items-center gap-1.5 transition ${
+                b.unlocked 
+                  ? "border-white/5 bg-white/[0.02] hover:border-[#C6FF00]/30" 
+                  : "border-white/5 bg-white/[0.01] opacity-25"
+              }`}
+            >
+              <span className={b.unlocked ? "text-[#C6FF00] shrink-0" : "text-white/30 shrink-0"}>
+                <b.icon size={13} />
+              </span>
+              <span className="text-[9px] text-white/70 tracking-wider uppercase font-bold text-center leading-tight">
+                {b.unlocked ? b.label : "Locked"}
+              </span>
             </div>
           ))}
         </div>
@@ -106,18 +127,30 @@ export default function CardPage() {
         <div className="mt-3.5 rounded-2xl p-4 border border-white/5 bg-white/[0.02] transition hover:border-white/10">
           <div className="flex items-center justify-between">
             <div className="text-[10px] tracking-[0.25em] uppercase text-white/45 font-bold">Recent Form</div>
-            <div className="text-[10px] tracking-[0.2em] uppercase text-[#C6FF00] font-bold">+3 OVR</div>
+            <div className="text-[10px] tracking-[0.2em] uppercase text-[#C6FF00] font-bold">
+              {matchesCount === 0 ? "No matches" : formOvrText}
+            </div>
           </div>
-          <div className="mt-3 flex items-end gap-2 h-10">
-            {[0.5, 0.65, 0.55, 0.8, 0.7, 0.95, 1, 0.85].map((v, i) => (
-              <div key={i} className="flex-1 rounded-sm"
-                style={{
-                  height: `${v * 100}%`,
-                  background: i >= 5 ? "linear-gradient(to top, #C6FF00, rgba(198,255,0,0.4))" : "rgba(255,255,255,0.1)",
-                }}
-              />
-            ))}
-          </div>
+          {matchesCount === 0 ? (
+            <div className="text-center py-4 text-[10px] text-white/35 font-bold uppercase tracking-wider">
+              Play matches to generate form data
+            </div>
+          ) : (
+            <div className="mt-3 flex items-end gap-2 h-10">
+              {formBars.map((bar, i) => (
+                <div 
+                  key={i} 
+                  className="flex-1 rounded-sm transition-all duration-300"
+                  style={{
+                    height: `${bar.val * 100}%`,
+                    background: bar.isActive 
+                      ? "linear-gradient(to top, #C6FF00, rgba(198,255,0,0.4))" 
+                      : "rgba(255,255,255,0.04)",
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

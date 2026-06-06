@@ -47,6 +47,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
   const foot = isMock ? player.foot : player.strongFoot === "Left" ? "L" : "R";
   const nation = isMock ? player.nation : "IND";
   const matches = isMock ? player.matches : (player.matchesPlayed ?? 0);
+  const playerId = isMock ? player.matches : (("id" in player && player.id) ? player.id : 142);
   const avatar = isMock ? player.avatarUrl : player.avatar;
 
   const dims = {
@@ -114,7 +115,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
         <div className="text-right">
           <div className="text-[10px] tracking-[0.25em] text-white/40 uppercase">STRYK</div>
           <div className="font-display text-white/80" style={{ fontSize: "0.875rem" }}>
-            ID · {matches.toString().padStart(3, "0")}
+            ID · {playerId.toString().padStart(3, "0")}
           </div>
         </div>
       </div>

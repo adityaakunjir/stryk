@@ -86,6 +86,15 @@ export default function HomeLobbyPage() {
 
   const firstName = (playerData.fullName || "PLAYER").split(" ")[0].toUpperCase();
 
+  const getReputationValue = () => {
+    const matches = playerData.matchesPlayed ?? 0;
+    if (matches === 0) return "N/A";
+    if (matches < 3) return "C";
+    if (matches < 8) return "B";
+    if (matches < 15) return "A";
+    return "A+";
+  };
+
   return (
     <main className="stryk-mobile-shell text-white bg-[#05070B]">
       {/* Ambient bg */}
@@ -145,7 +154,7 @@ export default function HomeLobbyPage() {
         <div className="grid grid-cols-3 gap-2 px-1 mt-2 sm:mt-4">
           <Pill label="Matches" value={(playerData.matchesPlayed ?? 0).toString()} />
           <Pill label="OVR" value={playerData.rating.toString()} accent />
-          <Pill label="Rep" value="A+" />
+          <Pill label="Rep" value={getReputationValue()} />
         </div>
 
         {/* Squad online strip */}

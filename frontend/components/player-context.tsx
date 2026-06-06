@@ -7,6 +7,7 @@ import { calculateStats, calculateOvr } from "@/lib/stat-utils";
 export type PlayStyleType = "Speedster" | "Playmaker" | "Poacher" | "Box-to-Box";
 
 export interface PlayerData {
+  id?: number;
   fullName: string;
   username: string;
   avatar: string; // base64 or url
@@ -34,6 +35,7 @@ interface PlayerContextType {
 }
 
 type BackendPlayer = {
+  id?: number;
   full_name?: string;
   username?: string;
   avatar_url?: string;
@@ -73,6 +75,7 @@ const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 
 function toCamelCase(backendPlayer: BackendPlayer): PlayerData {
   return {
+    id: backendPlayer.id,
     fullName: backendPlayer.full_name || "",
     username: backendPlayer.username || "",
     avatar: backendPlayer.avatar_url || "",
