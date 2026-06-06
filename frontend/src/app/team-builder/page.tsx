@@ -1,21 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Shuffle, Check, Loader2 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
-
-const BENCH_FRIENDS = [
-  { name: "Vikram", pos: "ST", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200" },
-  { name: "Rohan", pos: "CM", avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200" },
-  { name: "Kabir", pos: "GK", avatar: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200" },
-  { name: "Dev", pos: "CB", avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200" },
-];
 
 export default function TeamBuilderPage() {
   const router = useRouter();
   const { playerData, isLoaded } = usePlayer();
   const [activeTeamTab, setActiveTeamTab] = useState("alpha");
+
+  // Load squad / friends dynamically
+  const [friends, setFriends] = useState<{ name: string; handle: string; ovr: number; online: boolean; pos: string; avatar: string }[]>([]);
+
+  useEffect(() => {
+    const storedFriends = localStorage.getItem("stryk_friends");
+    if (storedFriends) {
+      try {
+        const parsed = JSON.parse(storedFriends);
+        queueMicrotask(() => {
+          setFriends(parsed);
+        });
+      } catch (_) {
+        queueMicrotask(() => {
+          setFriends([]);
+        });
+      }
+    }
+  }, []);
 
   if (!isLoaded) {
     return (
@@ -25,22 +37,55 @@ export default function TeamBuilderPage() {
     );
   }
 
-  const userFirstName = (playerData.fullName || "Player").split(" ")[0];
+  const userFirstName = (playerData.fullName || "Player").split(" ")[0].toUpperCase();
   const userPosition = playerData.position || "CAM";
   const userOVR = playerData.rating || 82;
 
-  // Render player layout dynamically
+  // Render player layout dynamically (Alpha team)
   const teamA = [
     { name: userFirstName, pos: userPosition, ovr: userOVR, x: 50, y: 55, isUser: true },
-    { name: "Kabir", pos: "GK", ovr: 84, x: 50, y: 90 },
-    { name: "Dev", pos: "CB", ovr: 76, x: 30, y: 72 },
-    { name: "Yash", pos: "RB", ovr: 74, x: 75, y: 70 },
-    { name: "Ishaan", pos: "LW", ovr: 81, x: 22, y: 35 },
   ];
 
+  const coords = [
+    { pos: "GK", defaultOvr: 84, x: 50, y: 90 },
+    { pos: "CB", defaultOvr: 76, x: 30, y: 72 },
+    { pos: "RB", defaultOvr: 74, x: 75, y: 70 },
+    { pos: "LW", defaultOvr: 81, x: 22, y: 35 },
+  ];
+
+  for (let i = 0; i < 4; i++) {
+    const friend = friends[i];
+    const coord = coords[i];
+    if (friend) {
+      teamA.push({
+        name: friend.name.split(" ")[0].toUpperCase(),
+        pos: friend.pos,
+        ovr: friend.ovr,
+        x: coord.x,
+        y: coord.y,
+        isUser: false,
+      });
+    } else {
+      teamA.push({
+        name: "GUEST",
+        pos: coord.pos,
+        ovr: coord.defaultOvr,
+        x: coord.x,
+        y: coord.y,
+        isUser: false,
+      });
+    }
+  }
+
+  const bench = friends.slice(4).map((f) => ({
+    name: f.name.split(" ")[0].toUpperCase(),
+    pos: f.pos,
+    avatar: f.avatar,
+  }));
+
   return (
-    <main className="stryk-mobile-shell relative min-h-screen text-white overflow-hidden bg-[#05070B]">
-      <div className="relative min-h-screen flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10">
+    <main className="stryk-mobile-shell text-white bg-[#05070B]">
+      <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">
           <Btn onClick={() => router.push("/lobbies")}><ArrowLeft size={16} /></Btn>
@@ -56,8 +101,8 @@ export default function TeamBuilderPage() {
           <TeamChip 
             color="#C6FF00" 
             name="TEAM ALPHA" 
-            avg={80} 
-            count={5} 
+            avg={Math.round(teamA.reduce((sum, p) => sum + p.ovr, 0) / teamA.length)} 
+            count={teamA.length} 
             active={activeTeamTab === "alpha"} 
             onClick={() => setActiveTeamTab("alpha")}
           />
@@ -90,7 +135,7 @@ export default function TeamBuilderPage() {
           {activeTeamTab === "alpha" ? (
             teamA.map((p) => (
               <div
-                key={p.name}
+                key={p.name + "-" + p.pos}
                 className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center select-none"
                 style={{ left: `${p.x}%`, top: `${p.y}%` }}
               >
@@ -119,28 +164,28 @@ export default function TeamBuilderPage() {
               <div className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center" style={{ left: "50%", top: "25%" }}>
                 <div className="w-9 h-9 rounded-full bg-[#5B8CFF] text-[#05070B] flex items-center justify-center font-display text-xs">82</div>
                 <div className="mt-0.5 px-1.5 py-0.5 rounded text-[8px] bg-black/60 tracking-wider uppercase font-bold">ST</div>
-                <div className="text-[9px] mt-0.5 font-bold">VIKRAM</div>
+                <div className="text-[9px] mt-0.5 font-bold text-white/85">GUEST</div>
               </div>
               <div className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center" style={{ left: "30%", top: "50%" }}>
                 <div className="w-9 h-9 rounded-full bg-[#5B8CFF] text-[#05070B] flex items-center justify-center font-display text-xs">79</div>
                 <div className="mt-0.5 px-1.5 py-0.5 rounded text-[8px] bg-black/60 tracking-wider uppercase font-bold">CM</div>
-                <div className="text-[9px] mt-0.5 font-bold">ROHAN</div>
+                <div className="text-[9px] mt-0.5 font-bold text-white/85">GUEST</div>
               </div>
               <div className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center" style={{ left: "70%", top: "50%" }}>
                 <div className="w-9 h-9 rounded-full bg-[#5B8CFF] text-[#05070B] flex items-center justify-center font-display text-xs">81</div>
                 <div className="mt-0.5 px-1.5 py-0.5 rounded text-[8px] bg-black/60 tracking-wider uppercase font-bold">LW</div>
-                <div className="text-[9px] mt-0.5 font-bold">ISHAAN</div>
+                <div className="text-[9px] mt-0.5 font-bold text-white/85">GUEST</div>
               </div>
               <div className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center" style={{ left: "50%", top: "90%" }}>
                 <div className="w-9 h-9 rounded-full bg-white/10 text-white/75 border border-white/20 flex items-center justify-center font-display text-xs">75</div>
                 <div className="mt-0.5 px-1.5 py-0.5 rounded text-[8px] bg-black/60 tracking-wider uppercase font-bold">GK</div>
-                <div className="text-[9px] mt-0.5 font-bold">GUEST</div>
+                <div className="text-[9px] mt-0.5 font-bold text-white/85">GUEST</div>
               </div>
             </>
           )}
 
           {/* Empty slot on pitch (Team Alpha) */}
-          {activeTeamTab === "alpha" && (
+          {activeTeamTab === "alpha" && teamA.length < 5 && (
             <div className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center" style={{ left: "78%", top: "35%" }}>
               <div className="w-9 h-9 rounded-full border border-dashed border-white/30 flex items-center justify-center text-white/40 text-xs hover:border-white/50 cursor-pointer">+</div>
               <div className="mt-0.5 px-1.5 py-0.5 rounded text-[8px] bg-black/40 tracking-[0.15em] uppercase text-white/45 font-bold">RW</div>
@@ -150,17 +195,23 @@ export default function TeamBuilderPage() {
 
         {/* Bench Row */}
         <div className="mt-4">
-          <div className="text-[10px] tracking-[0.25em] uppercase text-white/45 mb-2 font-bold">Bench · Drag to assign</div>
-          <div className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {BENCH_FRIENDS.map((f) => (
-              <div key={f.name} className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group">
-                <div className="relative">
-                  <img src={f.avatar} alt={f.name} className="w-10 h-10 rounded-full object-cover border border-white/10 transition group-hover:border-[#C6FF00]/40" />
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded text-[7px] bg-black/80 tracking-wider uppercase font-bold border border-white/10 text-white/80">{f.pos}</span>
-                </div>
-                <span className="text-[10px] text-white/60">{f.name}</span>
+          <div className="text-[10px] tracking-[0.25em] uppercase text-white/45 mb-2 font-bold">Bench · roster</div>
+          <div className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden min-h-[50px]">
+            {bench.length === 0 ? (
+              <div className="text-[10px] text-white/30 font-medium py-3 border border-dashed border-white/5 rounded-xl w-full text-center bg-white/[0.01]">
+                Bench is empty. Add squad members on the Home page.
               </div>
-            ))}
+            ) : (
+              bench.map((f) => (
+                <div key={f.name + "-" + f.pos} className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group">
+                  <div className="relative">
+                    <img src={f.avatar} alt={f.name} className="w-10 h-10 rounded-full object-cover border border-white/10 transition group-hover:border-[#C6FF00]/40" />
+                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded text-[7px] bg-black/80 tracking-wider uppercase font-bold border border-white/10 text-white/80">{f.pos}</span>
+                  </div>
+                  <span className="text-[10px] text-white/60">{f.name}</span>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

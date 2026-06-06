@@ -4,35 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Check, X, ShieldCheck } from "lucide-react";
 
-const INITIAL_REQUESTS = [
-  { 
-    id: 1,
-    name: "Vikram",
-    handle: "vik.7",
-    ovr: 82,
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200",
-    match: "Friday League · Turf Yard", 
-    stats: [{ k: "Goals", v: "2" }, { k: "Assists", v: "1" }, { k: "MVP", v: "Yes" }] 
-  },
-  { 
-    id: 2,
-    name: "Rohan",
-    handle: "rohan.k",
-    ovr: 79,
-    avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200",
-    match: "Friday League · Turf Yard", 
-    stats: [{ k: "Tackles", v: "5" }, { k: "Intercepts", v: "3" }] 
-  },
-  { 
-    id: 3,
-    name: "Kabir",
-    handle: "kabir.gk",
-    ovr: 84,
-    avatar: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200",
-    match: "Sunday Sweat 7s", 
-    stats: [{ k: "Saves", v: "8" }, { k: "Clean Sheet", v: "Yes" }] 
-  },
-];
+const INITIAL_REQUESTS: {
+  id: number;
+  name: string;
+  handle: string;
+  ovr: number;
+  avatar: string;
+  match: string;
+  stats: { k: string; v: string }[];
+}[] = [];
 
 export default function VerifyPage() {
   const router = useRouter();
@@ -47,8 +27,8 @@ export default function VerifyPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell relative min-h-screen text-white overflow-hidden bg-[#05070B]">
-      <div className="relative min-h-screen flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10">
+    <main className="stryk-mobile-shell text-white bg-[#05070B]">
+      <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">
           <Btn onClick={() => router.push("/home")}><ArrowLeft size={16} /></Btn>
@@ -77,7 +57,7 @@ export default function VerifyPage() {
         </div>
 
         {/* Pending Requests List */}
-        <div data-scroll-panel className="mt-4 flex-1 space-y-3 pr-0.5">
+        <div className="mt-4 flex-1 space-y-3 pr-0.5">
           {requests.map((r) => (
             <div key={r.id} className="rounded-2xl p-4 border border-white/10 bg-white/[0.02]">
               <div className="flex items-center gap-3">

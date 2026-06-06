@@ -44,7 +44,7 @@ export default function CardPage() {
   ];
 
   return (
-    <main className="stryk-mobile-shell relative min-h-screen text-white overflow-hidden bg-[#05070B]">
+    <main className="stryk-mobile-shell text-white bg-[#05070B]">
       {/* Figma Ambient bg */}
       <div
         className="absolute inset-0"
@@ -54,7 +54,7 @@ export default function CardPage() {
         }}
       />
 
-      <div className="relative min-h-screen flex flex-col px-5 pt-6 pb-5 max-w-md mx-auto z-10">
+      <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">
           <Btn onClick={() => router.push("/home")}><ArrowLeft size={16} /></Btn>

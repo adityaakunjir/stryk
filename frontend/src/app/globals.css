@@ -61,17 +61,18 @@ body {
 }
 
 .stryk-mobile-shell {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
+  position: fixed !important;
+  inset: 0 !important;
+  overflow: hidden !important;
 }
 
-.stryk-mobile-shell > * {
+.stryk-mobile-shell > :not([class*="absolute"]) {
   min-height: 0;
   height: 100%;
 }
 
 [data-scroll-panel] {
+  height: 100%;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;

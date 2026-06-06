@@ -1,27 +1,79 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Bell, Settings, Play, Users, Trophy, MapPin, Loader2, X } from "lucide-react";
+import { Bell, Settings, Play, Users, Trophy, MapPin, Loader2, X, Plus } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { PlayerCard } from "@/components/player-card";
 import { CardDetail } from "@/components/card-detail";
 import { AnimatePresence } from "framer-motion";
-
-const FRIENDS = [
-  { name: "Vikram", handle: "vik.7", ovr: 82, online: true, pos: "ST", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200" },
-  { name: "Rohan", handle: "rohan.k", ovr: 79, online: true, pos: "CM", avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200" },
-  { name: "Kabir", handle: "kabir.gk", ovr: 84, online: false, pos: "GK", avatar: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200" },
-  { name: "Dev", handle: "dev.cb", ovr: 76, online: true, pos: "CB", avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200" },
-  { name: "Ishaan", handle: "ish.lw", ovr: 81, online: true, pos: "LW", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200" },
-  { name: "Yash", handle: "yashy", ovr: 74, online: false, pos: "RB", avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200" },
-];
 
 export default function HomeLobbyPage() {
   const router = useRouter();
   const { playerData, isLoaded } = usePlayer();
   const [showCardDossier, setShowCardDossier] = useState(false);
   const [showSquadModal, setShowSquadModal] = useState(false);
+
+  // Squad / Friends state - empty by default, loaded from localStorage
+  const [friends, setFriends] = useState<{ name: string; handle: string; ovr: number; online: boolean; pos: string; avatar: string }[]>([]);
+  const [newFriendName, setNewFriendName] = useState("");
+  const [newFriendHandle, setNewFriendHandle] = useState("");
+  const [newFriendPos, setNewFriendPos] = useState("CM");
+  const [newFriendOvr, setNewFriendOvr] = useState(80);
+
+  // Lobbies count state to display
+  const [lobbiesCount, setLobbiesCount] = useState(0);
+
+  useEffect(() => {
+    // Load friends from localStorage
+    const storedFriends = localStorage.getItem("stryk_friends");
+    if (storedFriends) {
+      try {
+        const parsedFriends = JSON.parse(storedFriends);
+        queueMicrotask(() => {
+          setFriends(parsedFriends);
+        });
+      } catch (_) {
+        queueMicrotask(() => {
+          setFriends([]);
+        });
+      }
+    }
+
+    // Load lobbies count
+    const storedLobbies = localStorage.getItem("stryk_lobbies");
+    if (storedLobbies) {
+      try {
+        const parsed = JSON.parse(storedLobbies);
+        queueMicrotask(() => {
+          setLobbiesCount(parsed.length);
+        });
+      } catch (_) {
+        queueMicrotask(() => {
+          setLobbiesCount(0);
+        });
+      }
+    }
+  }, []);
+
+  const handleAddFriend = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newFriendName.trim() || !newFriendHandle.trim()) return;
+    const cleanHandle = newFriendHandle.trim().replace("@", "");
+    const newFriend = {
+      name: newFriendName.trim(),
+      handle: cleanHandle,
+      ovr: newFriendOvr,
+      online: true,
+      pos: newFriendPos,
+      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(newFriendName.trim())}`
+    };
+    const updated = [...friends, newFriend];
+    setFriends(updated);
+    localStorage.setItem("stryk_friends", JSON.stringify(updated));
+    setNewFriendName("");
+    setNewFriendHandle("");
+  };
 
   // Prevent flashing before context loaded
   if (!isLoaded) {
@@ -35,7 +87,7 @@ export default function HomeLobbyPage() {
   const firstName = (playerData.fullName || "PLAYER").split(" ")[0].toUpperCase();
 
   return (
-    <main className="stryk-mobile-shell relative min-h-screen text-white overflow-hidden bg-[#05070B]">
+    <main className="stryk-mobile-shell text-white bg-[#05070B]">
       {/* Ambient bg */}
       <div
         className="absolute inset-0"
@@ -54,7 +106,7 @@ export default function HomeLobbyPage() {
         }}
       />
 
-      <div className="relative min-h-screen flex flex-col px-5 pt-6 pb-6 max-w-md mx-auto z-10">
+      <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Top bar */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -97,18 +149,18 @@ export default function HomeLobbyPage() {
         </div>
 
         {/* Squad online strip */}
-        <div className="mt-auto pt-4 sm:mt-6 sm:pt-0">
+        <div className="mt-6 pt-4 sm:pt-0">
           <div className="flex items-center justify-between mb-2.5">
             <div className="text-[10px] tracking-[0.25em] uppercase text-white/45 font-bold">Squad online</div>
             <button 
               onClick={() => setShowSquadModal(true)} 
               className="text-[10px] tracking-[0.2em] uppercase text-[#C6FF00] font-bold cursor-pointer hover:underline"
             >
-              {FRIENDS.filter((f) => f.online).length} LIVE
+              {friends.filter((f) => f.online).length} LIVE
             </button>
           </div>
           <div className="flex gap-2.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-1">
-            {FRIENDS.slice(0, 5).map((f) => (
+            {friends.slice(0, 5).map((f) => (
               <div key={f.name} className="relative shrink-0 cursor-pointer" onClick={() => setShowSquadModal(true)}>
                 <img src={f.avatar} alt={f.name} className="w-11 h-11 rounded-full object-cover border border-white/10" />
                 {f.online && (
@@ -125,18 +177,18 @@ export default function HomeLobbyPage() {
           </div>
         </div>
 
-        {/* Action panels grid */}
-        <div className="hidden mt-6 grid-cols-2 gap-2.5 sm:grid">
+        {/* Action panels grid - always visible */}
+        <div className="grid mt-6 grid-cols-2 gap-2.5">
           <ActionTile 
             icon={<MapPin size={16} />} 
             label="Lobbies" 
-            meta="3 nearby" 
+            meta={`${lobbiesCount} active`} 
             onClick={() => router.push("/lobbies")} 
           />
           <ActionTile 
             icon={<Users size={16} />} 
             label="Friends" 
-            meta="6 players" 
+            meta={`${friends.length} players`} 
             onClick={() => setShowSquadModal(true)} 
           />
           <ActionTile 
@@ -153,8 +205,8 @@ export default function HomeLobbyPage() {
           />
         </div>
 
-        {/* Primary CTA */}
-        <div className="hidden mt-auto pt-6 sm:block">
+        {/* Primary CTA - always visible */}
+        <div className="block mt-6 pt-2">
           <button
             onClick={() => router.push("/lobbies")}
             className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 bg-[#C6FF00] text-black font-display tracking-[0.2em] cursor-pointer hover:bg-[#b0e600] transition duration-200"
@@ -179,7 +231,7 @@ export default function HomeLobbyPage() {
       {/* Squad/Friends Modal */}
       {showSquadModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-5">
-          <div className="relative w-full max-w-sm rounded-[2rem] border border-[#C6FF00]/30 bg-[#050a0d] p-6 shadow-[0_34px_100px_rgba(0,0,0,0.8)]">
+          <div className="relative w-full max-w-sm rounded-[2rem] border border-[#C6FF00]/30 bg-[#050a0d] p-6 shadow-[0_34px_100px_rgba(0,0,0,0.8)] flex flex-col max-h-[85vh] overflow-hidden min-h-0">
             <button 
               onClick={() => setShowSquadModal(false)}
               className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-white/10 text-zinc-400 hover:text-white cursor-pointer"
@@ -192,47 +244,92 @@ export default function HomeLobbyPage() {
               Manage your active matchmaking roster.
             </p>
             
-            <div className="mt-6 space-y-2.5">
+            {/* Squad List container - scrollable */}
+            <div className="mt-6 space-y-2.5 overflow-y-auto flex-1 pr-0.5">
               <div className="flex items-center justify-between rounded-xl bg-white/[0.03] p-3 border border-white/5">
                 <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-full overflow-hidden bg-[#C6FF00]/10 border border-[#C6FF00] grid place-items-center text-[#C6FF00] font-display text-sm uppercase">
+                  <div className="size-10 rounded-full overflow-hidden bg-[#C6FF00]/10 border border-[#C6FF00] grid place-items-center text-[#C6FF00] font-display text-sm uppercase shrink-0">
                     {playerData.avatar ? (
                       <img src={playerData.avatar} className="h-full w-full object-cover" alt="User avatar" />
                     ) : (
                       playerData.fullName[0]
                     )}
                   </div>
-                  <div>
-                    <span className="block text-sm font-bold text-white">{playerData.fullName} (You)</span>
-                    <span className="block text-[11px] text-[#C6FF00] uppercase font-bold tracking-wider">{playerData.position} • {playerData.playStyle}</span>
+                  <div className="min-w-0">
+                    <span className="block text-sm font-bold text-white truncate">{playerData.fullName} (You)</span>
+                    <span className="block text-[11px] text-[#C6FF00] uppercase font-bold tracking-wider truncate">{playerData.position} • {playerData.playStyle}</span>
                   </div>
                 </div>
-                <span className="rounded-full bg-[#C6FF00]/10 border border-[#C6FF00]/30 px-3 py-0.5 text-[10px] font-bold text-[#C6FF00] uppercase tracking-wider">Ready</span>
+                <span className="rounded-full bg-[#C6FF00]/10 border border-[#C6FF00]/30 px-3 py-0.5 text-[10px] font-bold text-[#C6FF00] uppercase tracking-wider shrink-0">Ready</span>
               </div>
               
-              {FRIENDS.map((f) => (
-                <div key={f.name} className="flex items-center justify-between rounded-xl bg-white/[0.01] border border-white/5 p-3">
-                  <div className="flex items-center gap-3">
-                    <div className="size-10 rounded-full overflow-hidden border border-white/10">
-                      <img src={f.avatar} className="h-full w-full object-cover" alt={f.name} />
-                    </div>
-                    <div>
-                      <span className="block text-sm font-semibold text-white">{f.name}</span>
-                      <span className="block text-[11px] text-white/40 uppercase font-bold tracking-wider">{f.pos} • OVR {f.ovr}</span>
-                    </div>
-                  </div>
-                  {f.online ? (
-                    <span className="rounded-full bg-[#C6FF00]/10 border border-[#C6FF00]/30 px-3 py-0.5 text-[10px] font-bold text-[#C6FF00] uppercase tracking-wider">Ready</span>
-                  ) : (
-                    <span className="text-[10px] text-white/30 font-bold uppercase tracking-wider mr-2">Offline</span>
-                  )}
+              {friends.length === 0 ? (
+                <div className="text-center py-8 text-xs text-white/30 font-medium border border-dashed border-white/8 rounded-xl bg-white/[0.01]">
+                  No friends in your squad yet.<br/>Add a teammate below to build your roster.
                 </div>
-              ))}
+              ) : (
+                friends.map((f) => (
+                  <div key={f.handle} className="flex items-center justify-between rounded-xl bg-white/[0.01] border border-white/5 p-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="size-10 rounded-full overflow-hidden border border-white/10 shrink-0 bg-zinc-800">
+                        <img src={f.avatar} className="h-full w-full object-cover" alt={f.name} />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="block text-sm font-semibold text-white truncate">{f.name}</span>
+                        <span className="block text-[11px] text-white/40 uppercase font-bold tracking-wider truncate">{f.pos} • OVR {f.ovr}</span>
+                      </div>
+                    </div>
+                    {f.online ? (
+                      <span className="rounded-full bg-[#C6FF00]/10 border border-[#C6FF00]/30 px-3 py-0.5 text-[10px] font-bold text-[#C6FF00] uppercase tracking-wider shrink-0">Ready</span>
+                    ) : (
+                      <span className="text-[10px] text-white/30 font-bold uppercase tracking-wider mr-2 shrink-0">Offline</span>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
+
+            {/* Add Friend Form (always at the bottom of the modal, non-blocking) */}
+            <form onSubmit={handleAddFriend} className="mt-4 pt-4 border-t border-white/10 shrink-0">
+              <h3 className="text-[10px] font-bold uppercase tracking-wider text-white/45 mb-2">Add a Teammate</h3>
+              <div className="space-y-2">
+                <input
+                  placeholder="Teammate Full Name"
+                  required
+                  value={newFriendName}
+                  onChange={(e) => setNewFriendName(e.target.value)}
+                  className="w-full h-9 px-3 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder:text-white/35 outline-none focus:border-[#C6FF00]/50"
+                />
+                <div className="grid grid-cols-[1fr_4.5rem] gap-2">
+                  <input
+                    placeholder="Username/Handle"
+                    required
+                    value={newFriendHandle}
+                    onChange={(e) => setNewFriendHandle(e.target.value)}
+                    className="h-9 px-3 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder:text-white/35 outline-none focus:border-[#C6FF00]/50"
+                  />
+                  <select
+                    value={newFriendPos}
+                    onChange={(e) => setNewFriendPos(e.target.value)}
+                    className="h-9 px-1 rounded-xl border border-white/10 bg-[#050a0d] text-xs text-[#C6FF00] font-bold outline-none focus:border-[#C6FF00]/50"
+                  >
+                    {["ST", "CAM", "CM", "CB", "GK", "LW", "RW", "LB", "RB"].map((p) => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full h-9 rounded-xl bg-[#C6FF00] text-black font-display text-xs tracking-wider uppercase cursor-pointer hover:bg-[#b0e600] transition"
+                >
+                  ADD TO SQUAD
+                </button>
+              </div>
+            </form>
             
             <button 
               onClick={() => setShowSquadModal(false)} 
-              className="mt-6 w-full rounded-xl py-3 border border-white/10 bg-white/5 text-[11px] tracking-[0.2em] uppercase font-display cursor-pointer hover:bg-white/10"
+              className="mt-4 w-full rounded-xl py-3 border border-white/10 bg-white/5 text-[11px] tracking-[0.2em] uppercase font-display cursor-pointer hover:bg-white/10 shrink-0"
             >
               CLOSE
             </button>

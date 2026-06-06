@@ -51,8 +51,8 @@ export default function SubmitPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell relative min-h-screen text-white overflow-hidden bg-[#05070B]">
-      <div className="relative min-h-screen flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10">
+    <main className="stryk-mobile-shell text-white bg-[#05070B]">
+      <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">
           <Btn onClick={() => router.push("/home")}><ArrowLeft size={16} /></Btn>
@@ -77,7 +77,7 @@ export default function SubmitPage() {
         </div>
 
         {/* Stats Steppers */}
-        <div data-scroll-panel className="mt-4 space-y-2 flex-1 pr-0.5">
+        <div className="mt-4 space-y-2 flex-1 pr-0.5">
           {Object.entries(stats).map(([key, value]) => {
             const Icon = statIcons[key as keyof typeof stats];
             return (

@@ -1,63 +1,121 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Plus, MapPin, Clock, Users, ArrowLeft } from "lucide-react";
-
-const LOBBIES = [
-  {
-    id: 1,
-    name: "Friday Night League",
-    venue: "Turf Yard · Indiranagar",
-    time: "Today · 9:00 PM",
-    host: "Vikram",
-    going: 8,
-    total: 10,
-    live: true,
-  },
-  {
-    id: 2,
-    name: "Sunday Sweat 7s",
-    venue: "Goalpoint Arena · HSR",
-    time: "Jun 7 · 6:30 PM",
-    host: "Kabir",
-    going: 6,
-    total: 14,
-    live: false,
-  },
-  {
-    id: 3,
-    name: "Corporate Cup Qualifier",
-    venue: "Decathlon Turf · WF",
-    time: "Jun 9 · 8:00 PM",
-    host: "Rohan",
-    going: 11,
-    total: 12,
-    live: false,
-  },
-];
+import { Search, Plus, MapPin, Clock, Users, ArrowLeft, X } from "lucide-react";
 
 export default function LobbiesPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const filteredLobbies = LOBBIES.filter((l) => {
+  // Lobbies state - empty by default, loaded from localStorage
+  const [lobbies, setLobbies] = useState<{
+    id: number;
+    name: string;
+    venue: string;
+    time: string;
+    host: string;
+    going: number;
+    total: number;
+    live: boolean;
+  }[]>([]);
+
+  // Create lobby form states
+  const [newLobbyName, setNewLobbyName] = useState("");
+  const [newLobbyVenue, setNewLobbyVenue] = useState("");
+  const [newLobbyTime, setNewLobbyTime] = useState("");
+  const [newLobbyTotal, setNewLobbyTotal] = useState(10);
+
+  // Sync lobbies from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("stryk_lobbies");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        queueMicrotask(() => {
+          setLobbies(parsed);
+        });
+      } catch (_) {
+        queueMicrotask(() => {
+          setLobbies([]);
+        });
+      }
+    } else {
+      queueMicrotask(() => {
+        setLobbies([]); // Empty by default
+      });
+    }
+  }, []);
+
+  const handleCreateLobby = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLobbyName.trim() || !newLobbyVenue.trim() || !newLobbyTime.trim()) return;
+
+    // Retrieve full name of current player for the host field
+    let currentHostName = "Player";
+    const storedPlayer = localStorage.getItem("stryk_player_data");
+    if (storedPlayer) {
+      try {
+        const parsed = JSON.parse(storedPlayer);
+        currentHostName = parsed.fullName || currentHostName;
+      } catch (_) {}
+    }
+
+    const newLobby = {
+      id: Date.now(),
+      name: newLobbyName.trim(),
+      venue: newLobbyVenue.trim(),
+      time: newLobbyTime.trim(),
+      host: currentHostName,
+      going: 1, // Host is going
+      total: Number(newLobbyTotal) || 10,
+      live: true,
+    };
+
+    const updated = [...lobbies, newLobby];
+    setLobbies(updated);
+    localStorage.setItem("stryk_lobbies", JSON.stringify(updated));
+
+    // Reset form
+    setNewLobbyName("");
+    setNewLobbyVenue("");
+    setNewLobbyTime("");
+    setNewLobbyTotal(10);
+    setShowCreateModal(false);
+  };
+
+  const filteredLobbies = lobbies.filter((l) => {
     const matchesSearch = l.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           l.venue.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           l.host.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (activeTab === "my") {
+      // Show lobbies hosted by current user
+      let currentHostName = "Player";
+      const storedPlayer = localStorage.getItem("stryk_player_data");
+      if (storedPlayer) {
+        try {
+          const parsed = JSON.parse(storedPlayer);
+          currentHostName = parsed.fullName || currentHostName;
+        } catch (_) {}
+      }
+      return matchesSearch && l.host === currentHostName;
+    }
+
     return matchesSearch;
   });
 
   return (
-    <main className="stryk-mobile-shell relative min-h-screen text-white overflow-hidden bg-[#05070B]">
+    <main className="stryk-mobile-shell text-white bg-[#05070B]">
       {/* Background gradients */}
       <div
         className="absolute inset-x-0 top-0 h-60 opacity-60 pointer-events-none"
         style={{ background: "radial-gradient(60% 100% at 50% 0%, rgba(198,255,0,0.10), transparent 60%)" }}
       />
 
-      <div className="relative min-h-screen flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10">
+      <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-6 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -72,14 +130,17 @@ export default function LobbiesPage() {
               <div className="font-display tracking-wide text-2xl uppercase">FIND A GAME</div>
             </div>
           </div>
-          <button className="w-10 h-10 rounded-full bg-[#C6FF00] text-black flex items-center justify-center cursor-pointer hover:bg-[#b0e600] transition"
-            style={{ boxShadow: "0 14px 30px -8px rgba(198,255,0,0.55)" }}>
+          <button 
+            onClick={() => setShowCreateModal(true)}
+            className="w-10 h-10 rounded-full bg-[#C6FF00] text-black flex items-center justify-center cursor-pointer hover:bg-[#b0e600] transition"
+            style={{ boxShadow: "0 14px 30px -8px rgba(198,255,0,0.55)" }}
+          >
             <Plus size={18} strokeWidth={2.5} />
           </button>
         </div>
 
         {/* Search */}
-        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] flex items-center px-3 h-11 focus-within:border-[#C6FF00]/40 transition">
+        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] flex items-center px-3 h-11 focus-within:border-[#C6FF00]/40 transition shrink-0">
           <Search size={14} className="text-white/50" />
           <input
             placeholder="Search venues, hosts…"
@@ -90,14 +151,13 @@ export default function LobbiesPage() {
         </div>
 
         {/* Tabs */}
-        <div className="mt-4 flex gap-2">
+        <div className="mt-4 flex gap-2 shrink-0">
           <Tab active={activeTab === "all"} onClick={() => setActiveTab("all")}>All</Tab>
           <Tab active={activeTab === "my"} onClick={() => setActiveTab("my")}>My Lobbies</Tab>
-          <Tab active={activeTab === "friends"} onClick={() => setActiveTab("friends")}>Friends</Tab>
         </div>
 
         {/* Lobbies List */}
-        <div data-scroll-panel className="mt-4 flex-1 space-y-3 pr-0.5">
+        <div className="mt-4 flex-1 space-y-3 pr-0.5">
           {filteredLobbies.map((l, i) => (
             <div
               key={l.id}
@@ -118,9 +178,12 @@ export default function LobbiesPage() {
                   <div className="mt-1 flex items-center gap-1.5 text-xs text-white/55">
                     <Clock size={11} className="shrink-0" /> {l.time}
                   </div>
+                  <div className="mt-1 text-[10px] text-white/40 uppercase tracking-wider">
+                    Host: <span className="text-[#C6FF00]/80 font-bold">{l.host}</span>
+                  </div>
                 </div>
                 {l.live && (
-                  <span className="text-[9px] tracking-[0.25em] uppercase px-2 py-0.5 rounded-full bg-[#C6FF00] text-black font-bold">Live</span>
+                  <span className="text-[9px] tracking-[0.25em] uppercase px-2 py-0.5 rounded-full bg-[#C6FF00] text-black font-bold h-fit shrink-0">Live</span>
                 )}
               </div>
 
@@ -150,12 +213,75 @@ export default function LobbiesPage() {
           ))}
 
           {filteredLobbies.length === 0 && (
-            <div className="text-center py-12 text-white/40 text-sm">
-              No lobbies found matching search query.
+            <div className="text-center py-16 text-white/30 text-xs font-medium border border-dashed border-white/8 rounded-2xl bg-white/[0.01]">
+              No active lobbies found.<br/>Press the + button in the header to host a lobby!
             </div>
           )}
         </div>
       </div>
+
+      {/* Create Lobby Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-5">
+          <form onSubmit={handleCreateLobby} className="relative w-full max-w-sm rounded-[2rem] border border-[#C6FF00]/30 bg-[#050a0d] p-6 shadow-[0_34px_100px_rgba(0,0,0,0.8)]">
+            <button 
+              type="button"
+              onClick={() => setShowCreateModal(false)}
+              className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-white/10 text-zinc-400 hover:text-white cursor-pointer"
+            >
+              <X className="size-5" />
+            </button>
+            <MapPin className="mx-auto size-12 text-[#C6FF00]" />
+            <h2 className="mt-4 text-2xl font-display uppercase tracking-wider text-center text-white italic">Host Lobby</h2>
+            <p className="mt-1.5 text-xs text-white/50 text-center leading-relaxed">
+              Create a new match lobby for players to join.
+            </p>
+            
+            <div className="mt-6 space-y-3">
+              <input
+                placeholder="Lobby Name (e.g. Friday League Match)"
+                required
+                value={newLobbyName}
+                onChange={(e) => setNewLobbyName(e.target.value)}
+                className="w-full h-11 px-3 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder:text-white/35 outline-none focus:border-[#C6FF00]/50"
+              />
+              <input
+                placeholder="Venue (e.g. Turf Yard · Indiranagar)"
+                required
+                value={newLobbyVenue}
+                onChange={(e) => setNewLobbyVenue(e.target.value)}
+                className="w-full h-11 px-3 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder:text-white/35 outline-none focus:border-[#C6FF00]/50"
+              />
+              <div className="grid grid-cols-[1fr_5rem] gap-2">
+                <input
+                  placeholder="Time (e.g. Today · 9:00 PM)"
+                  required
+                  value={newLobbyTime}
+                  onChange={(e) => setNewLobbyTime(e.target.value)}
+                  className="h-11 px-3 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder:text-white/35 outline-none focus:border-[#C6FF00]/50"
+                />
+                <input
+                  placeholder="Total Players"
+                  type="number"
+                  min="2"
+                  max="22"
+                  required
+                  value={newLobbyTotal}
+                  onChange={(e) => setNewLobbyTotal(Number(e.target.value))}
+                  className="h-11 px-3 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder:text-white/35 outline-none focus:border-[#C6FF00]/50 font-bold"
+                />
+              </div>
+              
+              <button
+                type="submit"
+                className="w-full h-11 rounded-xl bg-[#C6FF00] text-black font-display text-sm tracking-wider uppercase cursor-pointer hover:bg-[#b0e600] transition mt-2"
+              >
+                CREATE LOBBY
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </main>
   );
 }
