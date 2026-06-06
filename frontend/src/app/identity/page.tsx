@@ -170,11 +170,11 @@ export default function IdentityPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell relative min-h-screen overflow-hidden bg-[#05070B] text-white">
+    <main className="stryk-mobile-shell text-white bg-[#05070B]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_16%,rgba(198,255,0,0.12),transparent_25%),radial-gradient(circle_at_22%_52%,rgba(91,140,255,0.06),transparent_28%),linear-gradient(180deg,#05070B_0%,#0B1020_48%,#05070B_100%)]" />
       <div className="absolute inset-x-0 bottom-0 h-[48%] bg-[linear-gradient(180deg,transparent,rgba(11,16,32,0.72)),repeating-linear-gradient(96deg,rgba(198,255,0,0.04)_0_1px,transparent_1px_52px)] opacity-75 pointer-events-none" />
 
-      <section className="relative mx-auto flex min-h-screen w-full max-w-5xl flex-col px-5 pb-7 pt-6 sm:px-8 lg:px-10 z-10">
+      <section data-scroll-panel className="relative mx-auto flex h-full w-full max-w-5xl flex-col px-5 pb-7 pt-6 sm:px-8 lg:px-10 z-10 overflow-y-auto min-h-0">
         <header className="flex items-center justify-between gap-4">
           <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
             <Link href="/">
@@ -201,7 +201,7 @@ export default function IdentityPage() {
             </p>
           </div>
 
-          <form data-scroll-panel onSubmit={handleNext} className="mt-8 w-full flex-1 rounded-[2rem] border border-white/8 bg-[#0B1020]/50 p-5 shadow-[0_28px_100px_rgba(0,0,0,0.58),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:flex-none sm:p-8">
+          <form onSubmit={handleNext} className="mt-8 w-full flex-1 rounded-[2rem] border border-white/8 bg-[#0B1020]/50 p-5 shadow-[0_28px_100px_rgba(0,0,0,0.58),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:flex-none sm:p-8">
             <input 
               type="file" 
               ref={fileInputRef} 

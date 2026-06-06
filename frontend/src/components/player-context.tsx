@@ -39,8 +39,8 @@ type BackendPlayer = {
 };
 
 const defaultPlayerData: PlayerData = {
-  fullName: "Aditya Akunjir",
-  username: "aditya10",
+  fullName: "",
+  username: "",
   avatar: "",
   position: "CAM",
   secondaryPosition: "",

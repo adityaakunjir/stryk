@@ -183,7 +183,7 @@ export default function PlayStylePage() {
   };
 
   return (
-    <main className="stryk-mobile-shell relative min-h-screen overflow-hidden bg-[#05070B] text-white">
+    <main className="stryk-mobile-shell text-white bg-[#05070B]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_18%,rgba(198,255,0,0.14),transparent_25%),radial-gradient(circle_at_22%_58%,rgba(91,140,255,0.06),transparent_28%),linear-gradient(180deg,#05070B_0%,#0B1020_48%,#05070B_100%)]" />
       <div className="absolute inset-x-0 bottom-0 h-[50%] bg-[linear-gradient(180deg,transparent,rgba(11,16,32,0.72)),repeating-linear-gradient(96deg,rgba(198,255,0,0.07)_0_1px,transparent_1px_52px)] opacity-75 pointer-events-none" />
       <div className="absolute right-[-4rem] top-20 hidden h-[26rem] w-[24rem] opacity-40 md:block pointer-events-none">
@@ -192,7 +192,7 @@ export default function PlayStylePage() {
         <Zap className="absolute right-8 top-28 size-10 rotate-12 text-[#C6FF00]/45" />
       </div>
 
-      <section className="relative mx-auto flex min-h-screen w-full max-w-5xl flex-col px-5 pb-8 pt-6 sm:px-8 lg:px-10 z-10">
+      <section data-scroll-panel className="relative mx-auto flex h-full w-full max-w-5xl flex-col px-5 pb-8 pt-6 sm:px-8 lg:px-10 z-10 overflow-y-auto min-h-0">
         <header className="grid grid-cols-[3rem_1fr_3rem] items-center gap-4">
           <Button asChild variant="ghost" size="icon" aria-label="Back to position" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
             <Link href="/position">
@@ -221,7 +221,7 @@ export default function PlayStylePage() {
             </p>
           </div>
 
-          <form data-scroll-panel onSubmit={handleSubmit} className="mt-8 w-full flex-1 space-y-5 pr-0.5 sm:flex-none">
+          <form onSubmit={handleSubmit} className="mt-8 w-full flex-1 space-y-5 pr-0.5 sm:flex-none">
             <section>
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-7 w-px bg-white/25" />
