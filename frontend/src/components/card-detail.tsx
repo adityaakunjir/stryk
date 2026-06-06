@@ -41,20 +41,30 @@ export function CardDetail({ player, onClose }: Props) {
       <div className="flex-1 flex items-center justify-center px-6">
         <div className="relative" style={{ perspective: "1500px" }}>
           <motion.div
-            className="relative cursor-pointer"
+            className="relative w-72 h-[26rem] cursor-pointer"
             animate={{ rotateY: flipped ? 180 : 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            style={{ transformStyle: "preserve-3d" }}
+            style={{ transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d" }}
             onClick={() => setFlipped((f) => !f)}
           >
-            <div style={{ backfaceVisibility: "hidden" }}>
+            <div 
+              className="absolute inset-0 w-full h-full"
+              style={{ 
+                backfaceVisibility: "hidden", 
+                WebkitBackfaceVisibility: "hidden",
+                transform: "rotateY(0deg)",
+                WebkitTransform: "rotateY(0deg)"
+              }}
+            >
               <PlayerCard player={player} size="lg" />
             </div>
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 w-full h-full"
               style={{
                 backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
                 transform: "rotateY(180deg)",
+                WebkitTransform: "rotateY(180deg)",
               }}
             >
               <CardBack player={player} />
