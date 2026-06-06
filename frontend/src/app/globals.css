@@ -55,11 +55,14 @@ body {
   background: #020306;
   color: var(--foreground);
   touch-action: manipulation;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
 }
 
 .stryk-mobile-shell {
-  position: relative;
-  height: 100dvh;
+  position: fixed;
+  inset: 0;
   overflow: hidden;
 }
 
@@ -116,4 +119,10 @@ a {
 .font-display {
   font-family: var(--font-display);
   letter-spacing: 0.02em;
+}
+
+@media (hover: hover) {
+  .stryk-card-interactive:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
 }

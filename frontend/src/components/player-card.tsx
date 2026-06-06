@@ -124,7 +124,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
   return (
     <button
       onClick={onClick}
-      className={`group relative ${dims} shrink-0 rounded-[28px] overflow-hidden text-left transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.02] focus:outline-none`}
+      className={`group relative ${dims} shrink-0 rounded-[28px] overflow-hidden text-left transition-transform duration-300 stryk-card-interactive focus:outline-none`}
       style={{
         background: "linear-gradient(160deg, #1A2540 0%, #0B1020 45%, #05070B 100%)",
         boxShadow: "0 0 0 1px rgba(198,255,0,0.25), 0 30px 60px -20px rgba(198,255,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)",
