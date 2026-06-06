@@ -133,27 +133,56 @@ export default function IdentityPage() {
     }, 600);
   };
 
-  const handleNext = (e: React.FormEvent) => {
+  const handleNext = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!fullName.trim()) {
       setError("Full Name is required");
       return;
     }
+
     if (!username.trim()) {
       setError("Username is required");
       return;
     }
+
     if (usernameStatus !== "available") {
       setError("Please check and confirm your username availability first.");
       return;
     }
 
-    updatePlayerData({
-      fullName: fullName.trim(),
-      username: username.trim(),
-      avatar: avatar,
-    });
-    router.push("/position");
+    try {
+      const response = await fetch("/api/profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: fullName.trim(),
+          username: username.trim(),
+          avatarUrl: avatar,
+        }),
+      });
+
+      const data = await response.json();
+
+      console.log("Profile saved:", data);
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed");
+      }
+
+      updatePlayerData({
+        fullName: fullName.trim(),
+        username: username.trim(),
+        avatar: avatar,
+      });
+
+      router.push("/position");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to save profile");
+    }
   };
 
   // Mock player structure for the card preview
