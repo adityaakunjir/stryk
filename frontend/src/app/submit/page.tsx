@@ -7,7 +7,7 @@ import { usePlayer } from "@/components/player-context";
 
 export default function SubmitPage() {
   const router = useRouter();
-  const { playerData, isLoaded } = usePlayer();
+  const { playerData, updatePlayerData, isLoaded } = usePlayer();
   
   const [stats, setStats] = useState({
     Goals: 2,
@@ -45,6 +45,16 @@ export default function SubmitPage() {
 
   const handleSubmit = () => {
     setSubmitted(true);
+    
+    updatePlayerData({
+      matchesPlayed: (playerData.matchesPlayed ?? 0) + 1,
+      goals: (playerData.goals ?? 0) + stats.Goals,
+      assists: (playerData.assists ?? 0) + stats.Assists,
+      tackles: (playerData.tackles ?? 0) + stats.Tackles,
+      saves: (playerData.saves ?? 0) + stats.Saves,
+      intercepts: (playerData.intercepts ?? 0) + stats.Intercepts,
+    });
+
     setTimeout(() => {
       router.push("/home");
     }, 1500);

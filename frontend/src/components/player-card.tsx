@@ -1,5 +1,6 @@
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { PlayerData } from "./player-context";
+import { calculateStats } from "@/lib/stat-utils";
 
 export type PlayerStats = {
   PAC: number;
@@ -31,64 +32,7 @@ type Props = {
 };
 
 function getStatsHelper(position: string, playStyle: string) {
-  let pac = 75;
-  let sho = 70;
-  let pas = 75;
-  let dri = 75;
-  let def = 50;
-  let phy = 65;
-
-  if (position === "ST") {
-    sho += 10;
-    pac += 5;
-    def -= 10;
-  } else if (position === "CB" || position === "LB" || position === "RB") {
-    def += 25;
-    phy += 15;
-    sho -= 15;
-    dri -= 5;
-  } else if (position === "GK") {
-    def += 30;
-    phy += 10;
-    sho -= 30;
-    pac -= 10;
-  }
-
-  switch (playStyle) {
-    case "Speedster":
-      pac += 15;
-      dri += 8;
-      def -= 5;
-      break;
-    case "Playmaker":
-      pas += 14;
-      dri += 10;
-      sho += 4;
-      break;
-    case "Poacher":
-      sho += 16;
-      pac += 6;
-      pas -= 5;
-      def -= 8;
-      break;
-    case "Box-to-Box":
-      phy += 12;
-      def += 10;
-      pas += 5;
-      pac += 3;
-      break;
-  }
-
-  const clamp = (val: number) => Math.min(99, Math.max(30, val));
-
-  return [
-    { label: "PAC", value: clamp(pac) },
-    { label: "SHO", value: clamp(sho) },
-    { label: "PAS", value: clamp(pas) },
-    { label: "DRI", value: clamp(dri) },
-    { label: "DEF", value: clamp(def) },
-    { label: "PHY", value: clamp(phy) },
-  ];
+  return calculateStats({ position, playStyle });
 }
 
 export function PlayerCard({ player, size = "md", onClick, customStats }: Props) {
@@ -102,7 +46,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
   const style = isMock ? player.style : player.playStyle;
   const foot = isMock ? player.foot : player.strongFoot === "Left" ? "L" : "R";
   const nation = isMock ? player.nation : "IND";
-  const matches = isMock ? player.matches : 142;
+  const matches = isMock ? player.matches : (player.matchesPlayed ?? 0);
   const avatar = isMock ? player.avatarUrl : player.avatar;
 
   const dims = {
@@ -117,8 +61,10 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
     statsToDisplay = customStats;
   } else if (isMock && player.stats) {
     statsToDisplay = Object.entries(player.stats).map(([k, v]) => ({ label: k, value: v }));
-  } else {
+  } else if (isMock) {
     statsToDisplay = getStatsHelper(position, style);
+  } else {
+    statsToDisplay = calculateStats(player);
   }
 
   return (

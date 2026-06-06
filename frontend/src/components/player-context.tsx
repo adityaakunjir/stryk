@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useStrykAuth } from "./auth-provider";
+import { calculateStats, calculateOvr } from "@/lib/stat-utils";
 
 export type PlayStyleType = "Speedster" | "Playmaker" | "Poacher" | "Box-to-Box";
 
@@ -15,6 +16,12 @@ export interface PlayerData {
   playStyle: PlayStyleType;
   bio: string;
   rating: number;
+  matchesPlayed?: number;
+  goals?: number;
+  assists?: number;
+  tackles?: number;
+  saves?: number;
+  intercepts?: number;
 }
 
 interface PlayerContextType {
@@ -36,6 +43,12 @@ type BackendPlayer = {
   play_style?: PlayStyleType;
   bio?: string;
   rating?: number;
+  matches_played?: number;
+  goals?: number;
+  assists?: number;
+  tackles?: number;
+  saves?: number;
+  intercepts?: number;
 };
 
 const defaultPlayerData: PlayerData = {
@@ -47,7 +60,13 @@ const defaultPlayerData: PlayerData = {
   strongFoot: "Left",
   playStyle: "Playmaker",
   bio: "Creative playmaker looking to dominate the midfield and assist the attack.",
-  rating: 82,
+  rating: 60,
+  matchesPlayed: 0,
+  goals: 0,
+  assists: 0,
+  tackles: 0,
+  saves: 0,
+  intercepts: 0,
 };
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -62,7 +81,13 @@ function toCamelCase(backendPlayer: BackendPlayer): PlayerData {
     strongFoot: backendPlayer.strong_foot === "Left" ? "Left" : "Right",
     playStyle: backendPlayer.play_style || "Playmaker",
     bio: backendPlayer.bio || "",
-    rating: backendPlayer.rating || 80,
+    rating: backendPlayer.rating || 60,
+    matchesPlayed: backendPlayer.matches_played ?? 0,
+    goals: backendPlayer.goals ?? 0,
+    assists: backendPlayer.assists ?? 0,
+    tackles: backendPlayer.tackles ?? 0,
+    saves: backendPlayer.saves ?? 0,
+    intercepts: backendPlayer.intercepts ?? 0,
   };
 }
 
@@ -78,6 +103,12 @@ function toSnakeCase(frontendPlayer: PlayerData, authUserId: string) {
     play_style: frontendPlayer.playStyle,
     bio: frontendPlayer.bio || null,
     rating: frontendPlayer.rating,
+    matches_played: frontendPlayer.matchesPlayed ?? 0,
+    goals: frontendPlayer.goals ?? 0,
+    assists: frontendPlayer.assists ?? 0,
+    tackles: frontendPlayer.tackles ?? 0,
+    saves: frontendPlayer.saves ?? 0,
+    intercepts: frontendPlayer.intercepts ?? 0,
   };
 }
 
@@ -129,6 +160,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           play_style: data.playStyle,
           bio: data.bio || null,
           rating: data.rating,
+          matches_played: data.matchesPlayed ?? 0,
+          goals: data.goals ?? 0,
+          assists: data.assists ?? 0,
+          tackles: data.tackles ?? 0,
+          saves: data.saves ?? 0,
+          intercepts: data.intercepts ?? 0,
         }),
       });
 
@@ -203,14 +240,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setPlayerData((prev) => {
       const updated = { ...prev, ...data };
       
-      // Calculate rating based on playstyle and position
-      let baseRating = 80;
-      if (updated.playStyle === "Playmaker") baseRating = 82;
-      else if (updated.playStyle === "Speedster") baseRating = 84;
-      else if (updated.playStyle === "Poacher") baseRating = 83;
-      else if (updated.playStyle === "Box-to-Box") baseRating = 81;
-
-      updated.rating = baseRating;
+      // Calculate OVR dynamically
+      updated.rating = calculateOvr(updated);
 
       try {
         localStorage.setItem("stryk_player_data", JSON.stringify(updated));
@@ -243,70 +274,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   // Helper to generate football stats based on playstyle
   const getStats = () => {
-    const style = playerData.playStyle;
-    
-    // Base stats
-    let pac = 75;
-    let sho = 70;
-    let pas = 75;
-    let dri = 75;
-    let def = 50;
-    let phy = 65;
-
-    // Adjust based on position
-    if (playerData.position === "ST") {
-      sho += 10;
-      pac += 5;
-      def -= 10;
-    } else if (playerData.position === "CB" || playerData.position === "LB" || playerData.position === "RB") {
-      def += 25;
-      phy += 15;
-      sho -= 15;
-      dri -= 5;
-    } else if (playerData.position === "GK") {
-      def += 30;
-      phy += 10;
-      sho -= 30;
-      pac -= 10;
-    }
-
-    // Adjust based on PlayStyle
-    switch (style) {
-      case "Speedster":
-        pac += 15;
-        dri += 8;
-        def -= 5;
-        break;
-      case "Playmaker":
-        pas += 14;
-        dri += 10;
-        sho += 4;
-        break;
-      case "Poacher":
-        sho += 16;
-        pac += 6;
-        pas -= 5;
-        def -= 8;
-        break;
-      case "Box-to-Box":
-        phy += 12;
-        def += 10;
-        pas += 5;
-        pac += 3;
-        break;
-    }
-
-    // Keep values in normal football bounds (e.g. 30 to 99)
-    const clamp = (val: number) => Math.min(99, Math.max(30, val));
-
-    return [
-      { label: "PAC", value: clamp(pac) },
-      { label: "SHO", value: clamp(sho) },
-      { label: "PAS", value: clamp(pas) },
-      { label: "DRI", value: clamp(dri) },
-      { label: "DEF", value: clamp(def) },
-      { label: "PHY", value: clamp(phy) },
-    ];
+    return calculateStats(playerData);
   };
 
   return (

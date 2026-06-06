@@ -24,7 +24,13 @@ class PlayerBase(SQLModel):
     strong_foot: str = Field(max_length=10, default="Right")
     play_style: str = Field(max_length=20, default="Playmaker")
     bio: Optional[str] = Field(default=None, max_length=120)
-    rating: int = Field(default=80, ge=1, le=99)
+    rating: int = Field(default=60, ge=1, le=99)
+    matches_played: int = Field(default=0, ge=0)
+    goals: int = Field(default=0, ge=0)
+    assists: int = Field(default=0, ge=0)
+    tackles: int = Field(default=0, ge=0)
+    saves: int = Field(default=0, ge=0)
+    intercepts: int = Field(default=0, ge=0)
 
 
 class Player(PlayerBase, table=True):
@@ -63,3 +69,9 @@ class PlayerUpdate(SQLModel):
     play_style: Optional[str] = None
     bio: Optional[str] = None
     rating: Optional[int] = None
+    matches_played: Optional[int] = None
+    goals: Optional[int] = None
+    assists: Optional[int] = None
+    tackles: Optional[int] = None
+    saves: Optional[int] = None
+    intercepts: Optional[int] = None

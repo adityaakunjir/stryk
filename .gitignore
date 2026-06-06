@@ -43,3 +43,5 @@ backend/*.db
 # ========================
 actions-log/
 *.zip
+
+/generated/prisma

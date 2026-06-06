@@ -78,7 +78,9 @@ export function CardDetail({ player, onClose }: Props) {
 function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
   const isMock = "avatarUrl" in player;
   const name = isMock ? player.name : player.fullName;
-  const matches = isMock ? player.matches : 142;
+  const matches = isMock ? player.matches : (player.matchesPlayed ?? 0);
+  const goals = isMock ? "47" : (player.goals ?? 0).toString();
+  const assists = isMock ? "29" : (player.assists ?? 0).toString();
 
   const badges = [
     { icon: Flame, label: "Hat-Trick Hero" },
@@ -106,8 +108,8 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
       <div className="mt-4 grid grid-cols-2 gap-3">
         <Mini label="Matches" value={matches.toString()} />
         <Mini label="Trust" value="98%" />
-        <Mini label="Goals" value="47" />
-        <Mini label="Assists" value="29" />
+        <Mini label="Goals" value={goals} />
+        <Mini label="Assists" value={assists} />
       </div>
 
       <div className="mt-5 text-[10px] tracking-[0.25em] uppercase text-white/45">

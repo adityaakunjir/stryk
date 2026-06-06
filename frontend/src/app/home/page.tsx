@@ -143,7 +143,7 @@ export default function HomeLobbyPage() {
 
         {/* Quick stats row */}
         <div className="grid grid-cols-3 gap-2 px-1 mt-2 sm:mt-4">
-          <Pill label="Matches" value="142" />
+          <Pill label="Matches" value={(playerData.matchesPlayed ?? 0).toString()} />
           <Pill label="OVR" value={playerData.rating.toString()} accent />
           <Pill label="Rep" value="A+" />
         </div>
