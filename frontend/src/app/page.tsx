@@ -1,12 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   SignInButton,
   SignUpButton,
   useAuth,
-} from "@clerk/nextjs";
+} from "@clerk/clerk-react";
 
 import { StrykLogo } from "@/components/stryk-logo";
 import { usePlayer } from "@/components/player-context";
@@ -14,10 +14,11 @@ import { usePlayer } from "@/components/player-context";
 export default function Home() {
   const { isSignedIn } = useAuth();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
   const { isLoaded } = usePlayer();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

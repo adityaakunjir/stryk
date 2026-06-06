@@ -2,9 +2,10 @@
 
 import React from "react";
 import {
+  ClerkProvider,
   useAuth as useClerkAuth,
   useUser as useClerkUser,
-} from "@clerk/nextjs";
+} from "@clerk/clerk-react";
 
 interface StrykUser {
   id: string;
@@ -57,7 +58,13 @@ export function useStrykAuth(): AuthContextType {
   };
 }
 
-// AuthProvider is now a simple passthrough — kept for compatibility
+const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_test_placeholder";
+
+// AuthProvider wraps ClerkProvider on the client side
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <ClerkProvider publishableKey={publishableKey}>
+      {children}
+    </ClerkProvider>
+  );
 }
