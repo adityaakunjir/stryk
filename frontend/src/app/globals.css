@@ -79,6 +79,13 @@ body {
   display: none;
 }
 
+/* Force flex containers within the mobile shell to respect viewport boundaries and trigger internal scrolling */
+.stryk-mobile-shell .flex-1,
+.stryk-mobile-shell .flex-col:has([data-scroll-panel]),
+.stryk-mobile-shell .flex:has([data-scroll-panel]) {
+  min-height: 0;
+}
+
 button,
 a {
   -webkit-tap-highlight-color: transparent;
@@ -110,4 +117,3 @@ a {
   font-family: var(--font-display);
   letter-spacing: 0.02em;
 }
-

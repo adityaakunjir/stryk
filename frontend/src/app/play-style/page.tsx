@@ -208,7 +208,7 @@ export default function PlayStylePage() {
           <div />
         </header>
 
-        <div className="mx-auto mt-6 flex w-full max-w-[56rem] flex-1 flex-col items-center">
+        <div className="mx-auto mt-6 flex w-full max-w-[56rem] flex-1 flex-col items-center min-h-0">
           <StepProgress />
 
           <div className="mt-8 text-center">

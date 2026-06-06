@@ -109,7 +109,7 @@ export default function PositionPage() {
           <div />
         </header>
 
-        <div className="mx-auto mt-2 flex w-full max-w-[56rem] flex-1 flex-col items-center sm:mt-6">
+        <div className="mx-auto mt-2 flex w-full max-w-[56rem] flex-1 flex-col items-center sm:mt-6 min-h-0">
           <div className="hidden sm:block"><StepProgress /></div>
 
           <div className="mt-3 w-full text-left sm:mt-8 sm:text-center">

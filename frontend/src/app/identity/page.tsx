@@ -168,7 +168,7 @@ export default function IdentityPage() {
           <div className="w-9 h-9" />
         </header>
 
-        <div className="mx-auto mt-7 flex w-full max-w-[54rem] flex-1 flex-col items-center">
+        <div className="mx-auto mt-7 flex w-full max-w-[54rem] flex-1 flex-col items-center min-h-0">
           <div className="flex items-center gap-2 justify-center mb-6">
             <div className="w-8 h-8 rounded-lg bg-[#C6FF00] text-black flex items-center justify-center font-display text-base">S</div>
             <div className="font-display tracking-[0.35em] text-base">STRYK</div>
