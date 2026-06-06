@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/components/player-context";
 import { PlayerCard } from "@/components/player-card";
 import { cn } from "@/lib/utils";
+import { ImageCropper } from "@/components/image-cropper";
 
 function StepProgress() {
   return (
@@ -54,6 +55,7 @@ export default function IdentityPage() {
   const [avatar, setAvatar] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [error, setError] = useState("");
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -77,10 +79,25 @@ export default function IdentityPage() {
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
-        setAvatar(result);
-        updatePlayerData({ avatar: result });
+        setCropSrc(result);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCropComplete = (croppedBase64: string) => {
+    setAvatar(croppedBase64);
+    updatePlayerData({ avatar: croppedBase64 });
+    setCropSrc(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleCropCancel = () => {
+    setCropSrc(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -360,6 +377,13 @@ export default function IdentityPage() {
           </form>
         </div>
       </section>
+      {cropSrc && (
+        <ImageCropper
+          src={cropSrc}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
     </main>
   );
 }
