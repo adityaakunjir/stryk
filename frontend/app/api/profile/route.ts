@@ -8,12 +8,21 @@ export async function POST(req: Request) {
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, message: "Unauthorized" },
+        {
+          success: false,
+          message: "Unauthorized",
+        },
         { status: 401 }
       );
     }
 
     const body = await req.json();
+
+    console.log("=================================");
+    console.log("USER ID:", userId);
+    console.log("BODY:", body);
+    console.log("ABOUT TO UPSERT");
+    console.log("=================================");
 
     const user = await prisma.user.upsert({
       where: {
@@ -32,17 +41,21 @@ export async function POST(req: Request) {
       },
     });
 
+    console.log("USER SAVED:", user);
+
     return NextResponse.json({
       success: true,
       user,
     });
   } catch (error) {
-    console.error(error);
+    console.error("=================================");
+    console.error("PROFILE ERROR:", error);
+    console.error("=================================");
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to save profile",
+        error: String(error),
       },
       { status: 500 }
     );

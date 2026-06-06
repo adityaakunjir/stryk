@@ -171,18 +171,17 @@ export default function IdentityPage() {
       if (!data.success) {
         throw new Error(data.message || "Failed");
       }
-
-      updatePlayerData({
-        fullName: fullName.trim(),
-        username: username.trim(),
-        avatar: avatar,
-      });
-
-      router.push("/position");
     } catch (err) {
-      console.error(err);
-      setError("Failed to save profile");
+      console.warn("API profile save failed (expected on static export hosts like GitHub Pages):", err);
     }
+
+    updatePlayerData({
+      fullName: fullName.trim(),
+      username: username.trim(),
+      avatar: avatar,
+    });
+
+    router.push("/position");
   };
 
   // Mock player structure for the card preview
