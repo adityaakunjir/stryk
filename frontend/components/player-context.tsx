@@ -150,8 +150,31 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function syncFromBackend() {
       if (!isSignedIn) return;
-      // Backend API is not active yet. Relying on the mount useEffect to load from localStorage.
-      setIsBackendSynced(true);
+      try {
+        const response = await fetch("/api/profile/me");
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data) {
+            const backendUser = result.data;
+            setPlayerData((prev) => {
+              const updated = {
+                ...prev,
+                fullName: backendUser.fullName || prev.fullName,
+                username: backendUser.username || prev.username,
+                avatar: backendUser.avatarUrl || prev.avatar,
+                position: backendUser.position || prev.position,
+                playStyle: backendUser.playStyle || prev.playStyle,
+              };
+              updated.rating = calculateOvr(updated);
+              localStorage.setItem("stryk_player_data", JSON.stringify(updated));
+              return updated;
+            });
+            setIsBackendSynced(true);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to sync from /api/profile/me:", err);
+      }
     }
 
     if (isSignedIn) {
