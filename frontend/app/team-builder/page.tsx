@@ -11,10 +11,6 @@ export default function TeamBuilderPage() {
   const [creating, setCreating] = useState(false);
   const [newTeamName, setNewTeamName] = useState("");
 
-  useEffect(() => {
-    fetchTeam();
-  }, []);
-
   const fetchTeam = async () => {
     try {
       const res = await fetch("/api/team/me");
@@ -30,6 +26,10 @@ export default function TeamBuilderPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchTeam();
+  }, []);
 
   const handleCreateTeam = async (e: React.FormEvent) => {
     e.preventDefault();
