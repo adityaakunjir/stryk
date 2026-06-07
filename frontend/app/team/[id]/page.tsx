@@ -157,7 +157,7 @@ export default async function TeamProfilePage({ params }: Props) {
                   No other squad members
                 </div>
               ) : (
-                playersList.map((member) => (
+                playersList.map((member: any) => (
                   <Link 
                     key={member.id}
                     href={`/player/${member.user.username}`}
