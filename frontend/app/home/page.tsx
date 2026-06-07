@@ -184,9 +184,9 @@ export default function HomeLobbyPage() {
           />
           <ActionTile 
             icon={<Trophy size={16} />} 
-            label="Badges" 
-            meta="3 new" 
-            onClick={() => router.push("/card")} 
+            label="Leaderboards" 
+            meta="Top Ranks" 
+            onClick={() => router.push("/leaderboards")} 
           />
           <ActionTile 
             icon={<Play size={16} />} 
