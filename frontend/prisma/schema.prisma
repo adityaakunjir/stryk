@@ -54,3 +54,14 @@ model TeamMember {
 
   createdAt DateTime @default(now())
 }
+
+model TeamInvite {
+  id          String @id @default(cuid())
+
+  teamId      String
+  senderId    String
+  receiverId  String
+
+  status      String @default("pending")
+  createdAt   DateTime @default(now())
+}
