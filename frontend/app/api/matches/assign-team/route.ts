@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { triggerPusherEvent } from "@/lib/pusher";
 
 export async function POST(req: Request) {
   try {
@@ -55,6 +56,13 @@ export async function POST(req: Request) {
       data: {
         team: teamName || null,
       },
+    });
+
+    // Trigger Pusher event
+    await triggerPusherEvent(`match-${matchId}`, "team-assigned", {
+      participantId: participant.id,
+      userId: user.id,
+      team: teamName || null,
     });
 
     return NextResponse.json({

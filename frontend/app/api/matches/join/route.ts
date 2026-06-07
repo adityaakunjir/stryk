@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { triggerPusherEvent } from "@/lib/pusher";
 
 export async function POST(req: Request) {
   try {
@@ -79,12 +80,36 @@ export async function POST(req: Request) {
     });
 
     // If match is now full, update its status to "full"
-    if (currentCount + 1 >= match.maxPlayers) {
+    const isFull = currentCount + 1 >= match.maxPlayers;
+    if (isFull) {
       await prisma.match.update({
         where: { id: matchId },
         data: { status: "full" },
       });
     }
+
+    const participantWithUser = await prisma.matchParticipant.findUnique({
+      where: { id: participant.id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            fullName: true,
+            avatarUrl: true,
+            overall: true,
+            position: true,
+            playStyle: true,
+          },
+        },
+      },
+    });
+
+    // Trigger Pusher event
+    await triggerPusherEvent(`match-${matchId}`, "player-joined", {
+      participant: participantWithUser,
+      isFull,
+    });
 
     return NextResponse.json({
       success: true,
