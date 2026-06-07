@@ -165,6 +165,22 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
     }
   };
 
+  // Calculate scaled base size for styling
+  const imageRatio = naturalSize.w && naturalSize.h ? naturalSize.w / naturalSize.h : 1;
+  const viewportRatio = VIEWPORT_W / VIEWPORT_H;
+  let bW = 0;
+  let bH = 0;
+
+  if (naturalSize.w && naturalSize.h) {
+    if (imageRatio > viewportRatio) {
+      bH = VIEWPORT_H;
+      bW = VIEWPORT_H * imageRatio;
+    } else {
+      bW = VIEWPORT_W;
+      bH = VIEWPORT_W / imageRatio;
+    }
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm px-5">
       <div className="relative w-full max-w-sm rounded-[2rem] border border-[#C6FF00]/30 bg-[#050a0d] p-6 shadow-[0_34px_100px_rgba(0,0,0,0.8)] flex flex-col items-center">
@@ -201,22 +217,20 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
             alt="To crop"
             className="absolute max-w-none max-h-none pointer-events-none origin-center"
             style={{
-              width: naturalSize.w ? "auto" : "0",
-              height: naturalSize.h ? "auto" : "0",
+              width: bW ? `${bW}px` : "0",
+              height: bH ? `${bH}px` : "0",
               transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-              left: naturalSize.w ? `calc(50% - ${naturalSize.w / 2}px)` : "50%",
-              top: naturalSize.h ? `calc(50% - ${naturalSize.h / 2}px)` : "50%",
+              left: bW ? `calc(50% - ${bW / 2}px)` : "50%",
+              top: bH ? `calc(50% - ${bH / 2}px)` : "50%",
             }}
           />
 
-          {/* Mask representing the final card shape overlay */}
-          <div 
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: "radial-gradient(ellipse 60% 70% at 50% 50%, transparent 60%, rgba(5, 10, 13, 0.7) 62%)",
-            }}
-          />
-          <div className="absolute inset-3 pointer-events-none border border-dashed border-[#C6FF00]/50 rounded-xl" />
+          {/* Mask representing the final rectangular crop shape overlay with corner brackets */}
+          <div className="absolute inset-0 pointer-events-none border border-white/20 rounded-2xl" />
+          <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#C6FF00] pointer-events-none" />
+          <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#C6FF00] pointer-events-none" />
+          <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#C6FF00] pointer-events-none" />
+          <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#C6FF00] pointer-events-none" />
         </div>
 
         {/* Zoom controls */}
