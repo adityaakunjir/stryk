@@ -302,32 +302,38 @@ export default function MatchesPage() {
                     </span>
                   </div>
 
-                  {/* Turf Info */}
-                  <div className="pr-16 mb-4">
-                    <h3 className="text-base font-bold text-white leading-snug truncate">
-                      {match.title}
-                    </h3>
-                    <div className="flex items-center gap-1.5 text-xs text-white/50 mt-1">
-                      <MapPin size={12} className="text-[#C6FF00]" />
-                      <span className="truncate">{match.location}</span>
-                    </div>
-                  </div>
-
-                  {/* Date, Time & Players Row */}
-                  <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 mb-4">
-                    <div className="flex flex-col">
-                      <span className="text-[9px] uppercase tracking-widest text-white/40 mb-1 font-bold">Schedule</span>
-                      <div className="flex items-center gap-1.5 text-[11px] text-white/85 font-medium leading-none">
-                        <Calendar size={11} className="text-[#C6FF00]/70" />
-                        <span className="truncate">{formatMatchDate(match.dateTime)}</span>
+                  {/* Turf Info & Schedule (Clickable) */}
+                  <div 
+                    onClick={() => router.push(`/matches/${match.id}`)}
+                    className="cursor-pointer group"
+                  >
+                    {/* Turf Info */}
+                    <div className="pr-16 mb-4">
+                      <h3 className="text-base font-bold text-white leading-snug truncate group-hover:text-[#C6FF00] transition">
+                        {match.title}
+                      </h3>
+                      <div className="flex items-center gap-1.5 text-xs text-white/50 mt-1">
+                        <MapPin size={12} className="text-[#C6FF00]" />
+                        <span className="truncate">{match.location}</span>
                       </div>
                     </div>
 
-                    <div className="flex flex-col">
-                      <span className="text-[9px] uppercase tracking-widest text-white/40 mb-1 font-bold">Squad size</span>
-                      <div className="flex items-center gap-1.5 text-[11px] text-white/85 font-medium leading-none">
-                        <Users size={11} className="text-[#C6FF00]/70" />
-                        <span>{match.players} / {match.maxPlayers} Players</span>
+                    {/* Date, Time & Players Row */}
+                    <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 mb-4">
+                      <div className="flex flex-col">
+                        <span className="text-[9px] uppercase tracking-widest text-white/40 mb-1 font-bold">Schedule</span>
+                        <div className="flex items-center gap-1.5 text-[11px] text-white/85 font-medium leading-none">
+                          <Calendar size={11} className="text-[#C6FF00]/70" />
+                          <span className="truncate">{formatMatchDate(match.dateTime)}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <span className="text-[9px] uppercase tracking-widest text-white/40 mb-1 font-bold">Squad size</span>
+                        <div className="flex items-center gap-1.5 text-[11px] text-white/85 font-medium leading-none">
+                          <Users size={11} className="text-[#C6FF00]/70" />
+                          <span>{match.players} / {match.maxPlayers} Players</span>
+                        </div>
                       </div>
                     </div>
                   </div>
