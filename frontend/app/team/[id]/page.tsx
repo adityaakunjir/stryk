@@ -46,8 +46,8 @@ export default async function TeamProfilePage({ params }: Props) {
   }
 
   const members = team.members || [];
-  const captainMember = members.find((m) => m.role === "captain");
-  const playersList = members.filter((m) => m.role !== "captain");
+  const captainMember = members.find((m: any) => m.role === "captain");
+  const playersList = members.filter((m: any) => m.role !== "captain");
 
   return (
     <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
