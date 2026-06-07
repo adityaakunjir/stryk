@@ -116,7 +116,7 @@ export default function IdentityPage() {
     updatePlayerData({ avatar: selected });
   };
 
-  const handleCheckUsername = () => {
+  const handleCheckUsername = async () => {
     if (!username.trim()) {
       setError("Please enter a username");
       return;
@@ -124,13 +124,22 @@ export default function IdentityPage() {
     setError("");
     setUsernameStatus("checking");
 
-    setTimeout(() => {
-      if (username.toLowerCase().includes("taken")) {
-        setUsernameStatus("taken");
-      } else {
-        setUsernameStatus("available");
+    try {
+      const response = await fetch(`/api/check-username?username=${encodeURIComponent(username.trim())}`);
+      if (!response.ok) {
+        throw new Error("Failed to check username");
       }
-    }, 600);
+      const data = await response.json();
+      if (data.available) {
+        setUsernameStatus("available");
+      } else {
+        setUsernameStatus("taken");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to verify username. Please try again.");
+      setUsernameStatus("idle");
+    }
   };
 
   const handleNext = async (e: React.FormEvent) => {
