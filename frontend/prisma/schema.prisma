@@ -97,6 +97,7 @@ model MatchParticipant {
   userId      String
 
   team        String?
+  checkedIn   Boolean  @default(false)
 
   createdAt   DateTime @default(now())
 

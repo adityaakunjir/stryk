@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sparkles } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sparkles, CheckCircle2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getPusherClient } from "@/lib/pusher";
 
@@ -11,6 +11,7 @@ interface MatchParticipant {
   matchId: string;
   userId: string;
   team: string | null;
+  checkedIn: boolean;
   createdAt: string;
   user: {
     id: string;
@@ -151,9 +152,15 @@ export default function MatchDetailsPage({ params }: PageProps) {
       fetchMatchDetails();
     };
 
+    const handleCheckedIn = (data: { userId: string; username: string; fullName: string; participantId: string }) => {
+      addNotification(`${data.fullName} has checked in!`, "success");
+      fetchMatchDetails();
+    };
+
     channel.bind("player-joined", handleJoined);
     channel.bind("player-left", handleLeft);
     channel.bind("team-assigned", handleTeamAssigned);
+    channel.bind("player-checked-in", handleCheckedIn);
     channel.bind("teams-balanced", () => {
       addNotification("Teams have been auto-balanced by AI!", "success");
       fetchMatchDetails();
@@ -163,6 +170,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       channel.unbind("player-joined", handleJoined);
       channel.unbind("player-left", handleLeft);
       channel.unbind("team-assigned", handleTeamAssigned);
+      channel.unbind("player-checked-in", handleCheckedIn);
       channel.unbind("teams-balanced");
       pusher.unsubscribe(channelName);
     };
@@ -241,6 +249,30 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
+  const handleCheckIn = async () => {
+    setActionLoading(true);
+    try {
+      const res = await fetch("/api/matches/check-in", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matchId }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        addNotification("You have checked in successfully!", "success");
+        await fetchMatchDetails();
+      } else {
+        alert(data.message || "Failed to check in");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleBalanceTeams = async () => {
     if (!confirm("AI will auto-balance all players into two fair teams based on their OVR ratings. Continue?")) return;
     setActionLoading(true);
@@ -297,6 +329,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const isJoined = currentUserId && participants.some(p => p.userId === currentUserId);
   const currentUserParticipant = currentUserId && participants.find(p => p.userId === currentUserId);
   const currentTeam = currentUserParticipant ? currentUserParticipant.team : null;
+  const isCheckedIn = currentUserParticipant ? currentUserParticipant.checkedIn : false;
 
   // Group participants by teams
   const teamAPlayers = participants.filter(p => p.team === "Team A");
@@ -540,14 +573,26 @@ export default function MatchDetailsPage({ params }: PageProps) {
         {/* Bottom Primary CTAs */}
         <div className="fixed bottom-0 left-0 right-0 p-5 bg-[#05070B]/80 backdrop-blur-lg border-t border-white/5 max-w-md mx-auto z-20">
           {isJoined ? (
-            <button
-              onClick={handleLeaveMatch}
-              disabled={actionLoading}
-              className="w-full h-12 rounded-2xl border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
-            >
-              <LogOut size={14} />
-              LEAVE MATCH LOBBY
-            </button>
+            <div className="flex flex-col gap-2">
+              {!isCheckedIn && (
+                <button
+                  onClick={handleCheckIn}
+                  disabled={actionLoading}
+                  className="w-full h-12 rounded-2xl bg-[#C6FF00] hover:bg-[#b0e600] text-black text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_20px_40px_-10px_rgba(198,255,0,0.4)] animate-pulse"
+                >
+                  <CheckCircle2 size={14} />
+                  {"I'M HERE (CHECK IN)"}
+                </button>
+              )}
+              <button
+                onClick={handleLeaveMatch}
+                disabled={actionLoading}
+                className="w-full h-11 rounded-2xl border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <LogOut size={14} />
+                LEAVE MATCH LOBBY
+              </button>
+            </div>
           ) : (
             <button
               onClick={handleJoinMatch}
@@ -577,10 +622,16 @@ function PlayerRow({ participant, showJoinedIcon }: { participant: MatchParticip
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-xs font-bold text-white truncate flex items-center gap-1.5">
+        <div className="text-xs font-bold text-white truncate flex items-center gap-1.5 animate-fade-in">
           {user.fullName || user.username}
           {showJoinedIcon && (
             <span className="px-1.5 py-0.5 rounded bg-[#C6FF00]/20 text-[#C6FF00] text-[8px] uppercase tracking-wider font-bold">You</span>
+          )}
+          {participant.checkedIn && (
+            <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[7px] uppercase tracking-widest font-black flex items-center gap-0.5 border border-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.15)] scale-[0.9] origin-left shrink-0">
+              <CheckCircle2 size={7} className="fill-emerald-400/20" />
+              Here
+            </span>
           )}
         </div>
         <div className="text-[9px] text-white/40 uppercase font-medium tracking-wide mt-0.5">
