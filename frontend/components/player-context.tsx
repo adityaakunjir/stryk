@@ -18,6 +18,9 @@ export interface PlayerData {
   bio: string;
   rating: number;
   matchesPlayed?: number;
+  wins?: number;
+  losses?: number;
+  draws?: number;
   goals?: number;
   assists?: number;
   tackles?: number;
@@ -46,6 +49,9 @@ type BackendPlayer = {
   bio?: string;
   rating?: number;
   matches_played?: number;
+  wins?: number;
+  losses?: number;
+  draws?: number;
   goals?: number;
   assists?: number;
   tackles?: number;
@@ -62,13 +68,16 @@ const defaultPlayerData: PlayerData = {
   strongFoot: "Left",
   playStyle: "Playmaker",
   bio: "Creative playmaker looking to dominate the midfield and assist the attack.",
-  rating: 60,
-  matchesPlayed: 0,
-  goals: 0,
-  assists: 0,
-  tackles: 0,
+  rating: 82,
+  matchesPlayed: 25,
+  wins: 17,
+  draws: 6,
+  losses: 2,
+  goals: 12,
+  assists: 14,
+  tackles: 18,
   saves: 0,
-  intercepts: 0,
+  intercepts: 15,
 };
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -85,12 +94,15 @@ function toCamelCase(backendPlayer: BackendPlayer): PlayerData {
     playStyle: backendPlayer.play_style || "Playmaker",
     bio: backendPlayer.bio || "",
     rating: backendPlayer.rating || 60,
-    matchesPlayed: backendPlayer.matches_played ?? 0,
-    goals: backendPlayer.goals ?? 0,
-    assists: backendPlayer.assists ?? 0,
-    tackles: backendPlayer.tackles ?? 0,
+    matchesPlayed: backendPlayer.matches_played ?? 25,
+    wins: backendPlayer.wins ?? 17,
+    losses: backendPlayer.losses ?? 2,
+    draws: backendPlayer.draws ?? 6,
+    goals: backendPlayer.goals ?? 12,
+    assists: backendPlayer.assists ?? 14,
+    tackles: backendPlayer.tackles ?? 18,
     saves: backendPlayer.saves ?? 0,
-    intercepts: backendPlayer.intercepts ?? 0,
+    intercepts: backendPlayer.intercepts ?? 15,
   };
 }
 
@@ -106,12 +118,15 @@ function toSnakeCase(frontendPlayer: PlayerData, authUserId: string) {
     play_style: frontendPlayer.playStyle,
     bio: frontendPlayer.bio || null,
     rating: frontendPlayer.rating,
-    matches_played: frontendPlayer.matchesPlayed ?? 0,
-    goals: frontendPlayer.goals ?? 0,
-    assists: frontendPlayer.assists ?? 0,
-    tackles: frontendPlayer.tackles ?? 0,
+    matches_played: frontendPlayer.matchesPlayed ?? 25,
+    wins: frontendPlayer.wins ?? 17,
+    losses: frontendPlayer.losses ?? 2,
+    draws: frontendPlayer.draws ?? 6,
+    goals: frontendPlayer.goals ?? 12,
+    assists: frontendPlayer.assists ?? 14,
+    tackles: frontendPlayer.tackles ?? 18,
     saves: frontendPlayer.saves ?? 0,
-    intercepts: frontendPlayer.intercepts ?? 0,
+    intercepts: frontendPlayer.intercepts ?? 15,
   };
 }
 
@@ -164,6 +179,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 avatar: backendUser.avatarUrl || prev.avatar,
                 position: backendUser.position || prev.position,
                 playStyle: backendUser.playStyle || prev.playStyle,
+                matchesPlayed: backendUser.matchesPlayed ?? prev.matchesPlayed,
+                wins: backendUser.wins ?? prev.wins,
+                losses: backendUser.losses ?? prev.losses,
+                draws: backendUser.draws ?? prev.draws,
+                goals: backendUser.goals ?? prev.goals,
+                assists: backendUser.assists ?? prev.assists,
+                tackles: backendUser.tackles ?? prev.tackles,
+                saves: backendUser.saves ?? prev.saves,
+                intercepts: backendUser.intercepts ?? prev.intercepts,
               };
               updated.rating = calculateOvr(updated);
               localStorage.setItem("stryk_player_data", JSON.stringify(updated));

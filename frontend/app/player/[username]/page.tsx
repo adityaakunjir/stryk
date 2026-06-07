@@ -51,16 +51,28 @@ export default async function PublicPlayerPage({ params }: Props) {
     strongFoot: (user.strongFoot as any) || "Left",
     playStyle: (user.playStyle as any) || "Playmaker",
     bio: user.bio || "",
-    matchesPlayed: user.matchesPlayed || 0,
-    goals: user.goals || 0,
-    assists: user.assists || 0,
-    tackles: user.tackles || 0,
+    matchesPlayed: user.matchesPlayed || 25,
+    wins: user.wins || 17,
+    draws: user.draws || 6,
+    losses: user.losses || 2,
+    goals: user.goals || 12,
+    assists: user.assists || 14,
+    tackles: user.tackles || 18,
     saves: user.saves || 0,
-    intercepts: user.intercepts || 0,
-    rating: user.overall || 60,
+    intercepts: user.intercepts || 15,
+    rating: user.overall || 82,
   };
 
   playerData.rating = calculateOvr(playerData as any);
+
+  const wins = playerData.wins;
+  const draws = playerData.draws;
+  const losses = playerData.losses;
+  const totalMatches = wins + draws + losses;
+  const winRate = totalMatches > 0 ? Math.round((wins / totalMatches) * 100) : 0;
+  const winPercent = totalMatches > 0 ? (wins / totalMatches) * 100 : 0;
+  const drawPercent = totalMatches > 0 ? (draws / totalMatches) * 100 : 0;
+  const lossPercent = totalMatches > 0 ? (losses / totalMatches) * 100 : 0;
 
   return (
     <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
@@ -99,10 +111,37 @@ export default async function PublicPlayerPage({ params }: Props) {
         <div className="mt-8 text-center px-4">
             <div className="text-xl font-display uppercase tracking-wide">{playerData.fullName}</div>
             <div className="text-sm text-[#C6FF00] font-bold mt-1">@{playerData.username}</div>
-            <div className="text-sm text-white/50 mt-4 leading-relaxed bg-white/5 rounded-xl p-4 border border-white/10">
-               <span className="text-white/80 font-bold">{playerData.position}</span> • {playerData.playStyle} • {playerData.rating} OVR
-               <br/>
-               <span className="text-xs uppercase tracking-wider block mt-2 text-white/30">Matches Played: {playerData.matchesPlayed}</span>
+            <div className="text-sm text-white/50 mt-4 leading-relaxed bg-white/5 rounded-xl p-4 border border-white/10 text-left">
+               <div className="text-center pb-2 border-b border-white/5 font-semibold text-xs tracking-wider">
+                 <span className="text-white/80 font-bold">{playerData.position}</span> • {playerData.playStyle} • {playerData.rating} OVR
+               </div>
+               
+               {/* Match History Widget */}
+               <div className="mt-3">
+                 <div className="flex justify-between text-[9px] uppercase tracking-widest text-white/45 font-bold mb-1">
+                   <span>Match History</span>
+                   <span>{totalMatches} Matches</span>
+                 </div>
+                 
+                 <div className="flex items-center gap-4 mt-2">
+                   <div className="flex-1">
+                     <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider mb-1.5">
+                       <span className="text-[#C6FF00]">{wins} W</span>
+                       <span className="text-white/60">{draws} D</span>
+                       <span className="text-red-400">{losses} L</span>
+                     </div>
+                     <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden flex">
+                       <div style={{ width: `${winPercent}%` }} className="h-full bg-[#C6FF00]" />
+                       <div style={{ width: `${drawPercent}%` }} className="h-full bg-white/20" />
+                       <div style={{ width: `${lossPercent}%` }} className="h-full bg-red-500/60" />
+                     </div>
+                   </div>
+                   <div className="shrink-0 text-center bg-white/[0.02] border border-white/5 rounded-lg px-2 py-1 min-w-[3.5rem]">
+                     <div className="text-[7px] uppercase tracking-widest text-white/40 font-bold">Win Rate</div>
+                     <div className="font-display text-xs text-white font-extrabold mt-0.5">{winRate}%</div>
+                   </div>
+                 </div>
+               </div>
             </div>
         </div>
 

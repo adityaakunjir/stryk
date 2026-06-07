@@ -53,6 +53,15 @@ export default function CardPage() {
     return { isActive, val };
   });
 
+  const wins = playerData.wins ?? 17;
+  const draws = playerData.draws ?? 6;
+  const losses = playerData.losses ?? 2;
+  const totalMatches = wins + draws + losses;
+  const winRate = totalMatches > 0 ? Math.round((wins / totalMatches) * 100) : 0;
+  const winPercent = totalMatches > 0 ? (wins / totalMatches) * 100 : 0;
+  const drawPercent = totalMatches > 0 ? (draws / totalMatches) * 100 : 0;
+  const lossPercent = totalMatches > 0 ? (losses / totalMatches) * 100 : 0;
+
   return (
     <main className="stryk-mobile-shell text-white bg-[#05070B]">
       {/* Figma Ambient bg */}
@@ -151,6 +160,49 @@ export default function CardPage() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Match History Block */}
+        <div className="mt-3 rounded-2xl p-4 border border-white/5 bg-white/[0.02] transition hover:border-white/10">
+          <div className="flex items-center justify-between">
+            <div className="text-[10px] tracking-[0.25em] uppercase text-white/45 font-bold">Match History</div>
+            <div className="text-[10px] tracking-[0.2em] uppercase text-[#C6FF00] font-bold">
+              {totalMatches} Matches
+            </div>
+          </div>
+          
+          <div className="mt-4 flex items-center justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider mb-2">
+                <span className="text-[#C6FF00]">{wins} Wins</span>
+                <span className="text-white/60">{draws} Draws</span>
+                <span className="text-red-400">{losses} Losses</span>
+              </div>
+              
+              {/* Segmented record bar */}
+              <div className="w-full h-2 rounded-full bg-white/5 overflow-hidden flex">
+                <div 
+                  style={{ width: `${winPercent}%` }} 
+                  className="h-full bg-[#C6FF00] shadow-[0_0_8px_rgba(198,255,0,0.4)]" 
+                />
+                <div 
+                  style={{ width: `${drawPercent}%` }} 
+                  className="h-full bg-white/30" 
+                />
+                <div 
+                  style={{ width: `${lossPercent}%` }} 
+                  className="h-full bg-red-500/70" 
+                />
+              </div>
+            </div>
+            
+            <div className="shrink-0 text-right bg-white/[0.02] border border-white/5 rounded-xl px-3.5 py-1.5 min-w-[5.5rem]">
+              <div className="text-[8px] uppercase tracking-widest text-white/40 font-bold">Win Rate</div>
+              <div className="font-display text-sm text-white font-extrabold mt-0.5">
+                {winRate}%
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

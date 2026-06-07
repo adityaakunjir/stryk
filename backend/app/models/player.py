@@ -26,6 +26,9 @@ class PlayerBase(SQLModel):
     bio: Optional[str] = Field(default=None, max_length=120)
     rating: int = Field(default=60, ge=1, le=99)
     matches_played: int = Field(default=0, ge=0)
+    wins: int = Field(default=0, ge=0)
+    losses: int = Field(default=0, ge=0)
+    draws: int = Field(default=0, ge=0)
     goals: int = Field(default=0, ge=0)
     assists: int = Field(default=0, ge=0)
     tackles: int = Field(default=0, ge=0)
@@ -70,6 +73,9 @@ class PlayerUpdate(SQLModel):
     bio: Optional[str] = None
     rating: Optional[int] = None
     matches_played: Optional[int] = None
+    wins: Optional[int] = None
+    losses: Optional[int] = None
+    draws: Optional[int] = None
     goals: Optional[int] = None
     assists: Optional[int] = None
     tackles: Optional[int] = None
