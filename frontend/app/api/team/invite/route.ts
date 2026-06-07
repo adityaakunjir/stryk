@@ -100,3 +100,65 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export async function GET() {
+  try {
+    const { userId: clerkId } = await auth();
+
+    if (!clerkId) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { clerkId },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "User profile not found" },
+        { status: 404 }
+      );
+    }
+
+    const invites = await prisma.teamInvite.findMany({
+      where: {
+        receiverId: user.id,
+        status: "pending",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const populatedInvites = await Promise.all(
+      invites.map(async (invite) => {
+        const team = await prisma.team.findUnique({
+          where: { id: invite.teamId },
+          select: { name: true, logoUrl: true },
+        });
+        return {
+          id: invite.id,
+          teamId: invite.teamId,
+          teamName: team?.name || "Unknown Team",
+          teamLogo: team?.logoUrl || "",
+          status: invite.status,
+          createdAt: invite.createdAt,
+        };
+      })
+    );
+
+    return NextResponse.json({
+      success: true,
+      invites: populatedInvites,
+    });
+  } catch (error) {
+    console.error("GET INVITES ERROR:", error);
+    return NextResponse.json(
+      { success: false, error: String(error) },
+      { status: 500 }
+    );
+  }
+}
