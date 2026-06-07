@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Search, Calendar, MapPin, Users, Loader2, X, Check } from "lucide-react";
+import { ArrowLeft, Plus, Search, Calendar, MapPin, Users, Loader2, X } from "lucide-react";
 
 interface Match {
   id: string;
@@ -100,6 +100,30 @@ export default function MatchesPage() {
         await fetchMatches();
       } else {
         alert(data.message || "Failed to join match");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setJoiningId(null);
+    }
+  };
+
+  const handleLeaveMatch = async (matchId: string) => {
+    setJoiningId(matchId);
+    try {
+      const res = await fetch("/api/matches/leave", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matchId }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("Successfully left the match lobby!");
+        await fetchMatches();
+      } else {
+        alert(data.message || "Failed to leave match");
       }
     } catch (err) {
       console.error(err);
@@ -330,12 +354,16 @@ export default function MatchesPage() {
                   <div>
                     {isJoined ? (
                       <button
-                        disabled
-                        className="w-full h-11 rounded-2xl bg-white/5 border border-white/10 text-white/40 text-[10px] uppercase font-bold tracking-widest flex items-center justify-center gap-2"
+                        onClick={() => handleLeaveMatch(match.id)}
+                        disabled={joiningId !== null}
+                        className="w-full h-11 rounded-2xl border border-red-500/20 bg-red-500/5 text-red-400 text-[10px] uppercase font-bold tracking-widest hover:bg-red-500/10 transition duration-200 cursor-pointer flex items-center justify-center gap-2 animate-in fade-in zoom-in duration-200"
                         type="button"
                       >
-                        <Check size={14} className="text-[#C6FF00]" />
-                        JOINED LOBBY
+                        {joiningId === match.id ? (
+                          <Loader2 className="size-4 animate-spin text-red-400" />
+                        ) : (
+                          "LEAVE MATCH"
+                        )}
                       </button>
                     ) : isFull ? (
                       <button
