@@ -39,7 +39,7 @@ export default function CardPage() {
   const badges = [
     { icon: Flame, label: "Hat-Trick", unlocked: (playerData.goals ?? 0) >= 3 },
     { icon: Trophy, label: "10× MVP", unlocked: (playerData.matchesPlayed ?? 0) >= 10 },
-    { icon: ShieldCheck, label: "Verified", unlocked: true },
+    { icon: ShieldCheck, label: "Verified", unlocked: (playerData.matchesPlayed ?? 0) > 0 },
     { icon: TrendingUp, label: "Rising", unlocked: (playerData.matchesPlayed ?? 0) >= 3 },
   ];
 

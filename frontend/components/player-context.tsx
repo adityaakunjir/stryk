@@ -142,96 +142,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   // Push local changes to the backend
   const pushToBackend = async (data: PlayerData, token: string) => {
-    if (!user?.id) return;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    
-    try {
-      // Try to update current profile (PATCH)
-      const patchResponse = await fetch(`${apiUrl}/api/v1/players/me`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          full_name: data.fullName,
-          username: data.username,
-          avatar_url: data.avatar,
-          position: data.position,
-          secondary_position: data.secondaryPosition || null,
-          strong_foot: data.strongFoot,
-          play_style: data.playStyle,
-          bio: data.bio || null,
-          rating: data.rating,
-          matches_played: data.matchesPlayed ?? 0,
-          goals: data.goals ?? 0,
-          assists: data.assists ?? 0,
-          tackles: data.tackles ?? 0,
-          saves: data.saves ?? 0,
-          intercepts: data.intercepts ?? 0,
-        }),
-      });
-
-      if (patchResponse.ok) {
-        setIsBackendSynced(true);
-        return;
-      }
-
-      // If profile is not found (404), create it (POST)
-      if (patchResponse.status === 404) {
-        const postResponse = await fetch(`${apiUrl}/api/v1/players/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(toSnakeCase(data, user.id)),
-        });
-
-        if (postResponse.ok) {
-          setIsBackendSynced(true);
-        }
-      }
-    } catch (err) {
-      console.error("Failed to push player data to backend:", err);
-      setIsBackendSynced(false);
-    }
+    // Backend API is not active yet. Defaulting to local storage sync.
+    setIsBackendSynced(true);
   };
 
   // Sync from backend when authentication status changes
   useEffect(() => {
     async function syncFromBackend() {
       if (!isSignedIn) return;
-      
-      try {
-        const token = await getToken();
-        if (!token) return;
-
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const response = await fetch(`${apiUrl}/api/v1/players/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const backendPlayer = await response.json();
-          const camelPlayer = toCamelCase(backendPlayer);
-          setPlayerData(camelPlayer);
-          localStorage.setItem("stryk_player_data", JSON.stringify(camelPlayer));
-          setIsBackendSynced(true);
-        } else if (response.status === 404) {
-          // Profile doesn't exist on backend yet. Push current local data if available.
-          const stored = localStorage.getItem("stryk_player_data");
-          if (stored) {
-            const localData = JSON.parse(stored);
-            await pushToBackend(localData, token);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to sync player data from backend:", err);
-        setIsBackendSynced(false);
-      }
+      // Backend API is not active yet. Relying on the mount useEffect to load from localStorage.
+      setIsBackendSynced(true);
     }
 
     if (isSignedIn) {

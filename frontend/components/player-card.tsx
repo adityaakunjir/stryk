@@ -37,7 +37,7 @@ function getStatsHelper(position: string, playStyle: string) {
 
 export function PlayerCard({ player, size = "md", onClick, customStats }: Props) {
   // Normalize fields across PlayerData (Context) and PlayerMockType (Figma)
-  const isMock = "avatarUrl" in player;
+  const isMock = "stats" in player && "ovr" in player;
   
   const name = isMock ? player.name : player.fullName;
   const username = player.username;
@@ -47,7 +47,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
   const foot = isMock ? player.foot : player.strongFoot === "Left" ? "L" : "R";
   const nation = isMock ? player.nation : "IND";
   const matches = isMock ? player.matches : (player.matchesPlayed ?? 0);
-  const playerId = isMock ? player.matches : (("id" in player && player.id) ? player.id : 142);
+  const playerId = isMock ? player.matches : (("id" in player && player.id) ? player.id : 1);
   const avatar = isMock ? player.avatarUrl : player.avatar;
 
   const dims = {

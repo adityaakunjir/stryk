@@ -53,7 +53,8 @@ export function CardDetail({ player, onClose }: Props) {
                 backfaceVisibility: "hidden", 
                 WebkitBackfaceVisibility: "hidden",
                 transform: "rotateY(0deg)",
-                WebkitTransform: "rotateY(0deg)"
+                WebkitTransform: "rotateY(0deg)",
+                zIndex: flipped ? 0 : 1,
               }}
             >
               <PlayerCard player={player} size="lg" />
@@ -65,6 +66,7 @@ export function CardDetail({ player, onClose }: Props) {
                 WebkitBackfaceVisibility: "hidden",
                 transform: "rotateY(180deg)",
                 WebkitTransform: "rotateY(180deg)",
+                zIndex: flipped ? 1 : 0,
               }}
             >
               <CardBack player={player} />
@@ -86,7 +88,7 @@ export function CardDetail({ player, onClose }: Props) {
 }
 
 function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
-  const isMock = "avatarUrl" in player;
+  const isMock = "stats" in player && "ovr" in player;
   const name = isMock ? player.name : player.fullName;
   const matches = isMock ? player.matches : (player.matchesPlayed ?? 0);
   const goals = isMock ? "47" : (player.goals ?? 0).toString();
@@ -95,7 +97,7 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
   const badges = [
     { icon: Flame, label: "Hat-Trick Hero", unlocked: isMock ? true : (player.goals ?? 0) >= 3 },
     { icon: Trophy, label: "10x MVP", unlocked: isMock ? true : (player.matchesPlayed ?? 0) >= 10 },
-    { icon: ShieldCheck, label: "Verified Pro", unlocked: true },
+    { icon: ShieldCheck, label: "Verified Pro", unlocked: isMock ? true : (player.matchesPlayed ?? 0) > 0 },
     { icon: TrendingUp, label: "Rising Star", unlocked: isMock ? true : (player.matchesPlayed ?? 0) >= 3 },
   ];
 
