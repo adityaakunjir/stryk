@@ -1,3 +1,5 @@
+"use client";
+
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { PlayerData } from "./player-context";
 import { calculateStats } from "@/lib/stat-utils";
