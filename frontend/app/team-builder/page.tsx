@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Loader2, ShieldCheck, User } from "lucide-react";
+import { ArrowLeft, Plus, Loader2, ShieldCheck, User, X } from "lucide-react";
 
 export default function TeamBuilderPage() {
   const router = useRouter();
@@ -10,6 +10,13 @@ export default function TeamBuilderPage() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [newTeamName, setNewTeamName] = useState("");
+
+  // Invite states
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteUsername, setInviteUsername] = useState("");
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [inviteMessage, setInviteMessage] = useState("");
+  const [inviteError, setInviteError] = useState("");
 
   const fetchTeam = async () => {
     try {
@@ -51,6 +58,39 @@ export default function TeamBuilderPage() {
       console.error(err);
     } finally {
       setCreating(false);
+    }
+  };
+
+  const handleInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inviteUsername.trim() || !team?.id) return;
+
+    setInviteLoading(true);
+    setInviteMessage("");
+    setInviteError("");
+
+    try {
+      const res = await fetch("/api/team/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          teamId: team.id,
+          username: inviteUsername.trim(),
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setInviteMessage(`Invitation sent to @${inviteUsername}!`);
+        setInviteUsername("");
+      } else {
+        setInviteError(data.message || "Failed to send invitation");
+      }
+    } catch (err) {
+      console.error(err);
+      setInviteError("Something went wrong. Please try again.");
+    } finally {
+      setInviteLoading(false);
     }
   };
 
@@ -122,7 +162,10 @@ export default function TeamBuilderPage() {
             <ArrowLeft size={16} />
           </button>
           <div className="text-[10px] tracking-[0.3em] uppercase text-[#C6FF00] font-bold">Your Squad</div>
-          <button className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10">
+          <button 
+            onClick={() => setShowInviteModal(true)}
+            className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10"
+          >
             <Plus size={16} />
           </button>
         </div>
@@ -201,6 +244,64 @@ export default function TeamBuilderPage() {
           </div>
         </div>
       </div>
+
+      {/* Invite Modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-5">
+          <div className="relative w-full max-w-sm rounded-[2rem] border border-[#C6FF00]/30 bg-[#050a0d] p-6 shadow-[0_34px_100px_rgba(0,0,0,0.8)] flex flex-col">
+            <button 
+              onClick={() => { setShowInviteModal(false); setInviteUsername(""); setInviteMessage(""); setInviteError(""); }}
+              className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-white/10 text-zinc-400 hover:text-white cursor-pointer"
+              type="button"
+            >
+              <X className="size-5" />
+            </button>
+
+            <h3 className="font-display uppercase tracking-wider text-xl italic text-white text-center mt-2 mb-2">
+              Invite Player
+            </h3>
+            <p className="text-xs text-white/50 text-center mb-6">
+              Enter the player&apos;s username to invite them to your squad.
+            </p>
+
+            <form onSubmit={handleInvite} className="space-y-4">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Username (e.g. rahul123)"
+                  value={inviteUsername}
+                  onChange={(e) => {
+                    setInviteUsername(e.target.value.toLowerCase().replace(/\s+/g, ""));
+                    setInviteMessage("");
+                    setInviteError("");
+                  }}
+                  className="w-full h-12 px-4 rounded-xl border border-white/10 bg-white/[0.04] text-sm text-white placeholder:text-white/40 outline-none focus:border-[#C6FF00]/50 transition duration-300"
+                />
+              </div>
+
+              {inviteMessage && (
+                <div className="rounded-xl border border-[#C6FF00]/22 bg-[#C6FF00]/6 p-3 text-center text-xs font-semibold text-[#C6FF00]">
+                  {inviteMessage}
+                </div>
+              )}
+
+              {inviteError && (
+                <div className="rounded-xl border border-red-500/22 bg-red-500/7 p-3 text-center text-xs font-semibold text-red-400">
+                  {inviteError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={inviteLoading || !inviteUsername.trim()}
+                className="w-full h-12 rounded-xl bg-[#C6FF00] text-black font-display tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 text-sm font-bold"
+              >
+                {inviteLoading ? <Loader2 className="size-4 animate-spin" /> : "SEND INVITATION"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
