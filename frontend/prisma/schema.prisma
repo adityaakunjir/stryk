@@ -36,6 +36,10 @@ model Team {
 
   captainId   String
 
+  wins        Int      @default(0)
+  losses      Int      @default(0)
+  draws       Int      @default(0)
+
   createdAt   DateTime @default(now())
 
   members     TeamMember[]
