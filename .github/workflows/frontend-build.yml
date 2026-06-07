@@ -33,8 +33,8 @@ jobs:
         run: npm install
         working-directory: frontend
 
-      - name: Remove API routes for static export
-        run: rm -rf app/api
+      - name: Generate Prisma Client
+        run: npx prisma generate
         working-directory: frontend
 
       - name: Build Next.js
