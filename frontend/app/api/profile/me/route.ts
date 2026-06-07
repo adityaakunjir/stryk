@@ -21,11 +21,21 @@ export async function GET() {
         clerkId: userId,
       },
       select: {
+        id: true,
         fullName: true,
         username: true,
         position: true,
         playStyle: true,
         avatarUrl: true,
+        strongFoot: true,
+        bio: true,
+        overall: true,
+        matchesPlayed: true,
+        goals: true,
+        assists: true,
+        tackles: true,
+        saves: true,
+        intercepts: true,
       },
     });
 

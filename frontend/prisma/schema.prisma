@@ -12,9 +12,17 @@ model User {
   username  String   @unique
   fullName  String?
   avatarUrl String?
-  position  String?
-  playStyle String?
-  overall   Int      @default(50)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  position      String?
+  playStyle     String?
+  strongFoot    String?
+  bio           String?
+  overall       Int      @default(50)
+  matchesPlayed Int      @default(0)
+  goals         Int      @default(0)
+  assists       Int      @default(0)
+  tackles       Int      @default(0)
+  saves         Int      @default(0)
+  intercepts    Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
