@@ -18,12 +18,6 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    console.log("=================================");
-    console.log("USER ID:", userId);
-    console.log("BODY:", body);
-    console.log("ABOUT TO UPSERT");
-    console.log("=================================");
-
     const user = await prisma.user.upsert({
       where: {
         clerkId: userId,
@@ -41,7 +35,7 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log("USER SAVED:", user);
+
 
     return NextResponse.json({
       success: true,

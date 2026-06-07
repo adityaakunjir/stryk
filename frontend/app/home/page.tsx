@@ -107,8 +107,8 @@ export default function HomeLobbyPage() {
             <div className="font-display tracking-[0.25em] text-base">STRYK</div>
           </div>
           <div className="flex items-center gap-1.5">
-            <IconBtn><Bell size={14} /></IconBtn>
-            <IconBtn onClick={() => router.push("/")}><Settings size={14} /></IconBtn>
+            <IconBtn onClick={() => router.push("/notifications")} aria-label="Notifications"><Bell size={14} /></IconBtn>
+            <IconBtn onClick={() => router.push("/settings")} aria-label="Settings"><Settings size={14} /></IconBtn>
           </div>
         </div>
 

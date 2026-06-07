@@ -38,6 +38,9 @@ export default function MatchesPage() {
   // Join loading states
   const [joiningId, setJoiningId] = useState<string | null>(null);
 
+  // Toast state
+  const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+
   // Sync profile to get current user ID
   useEffect(() => {
     const fetchUserId = async () => {
@@ -87,6 +90,7 @@ export default function MatchesPage() {
 
   const handleJoinMatch = async (matchId: string) => {
     setJoiningId(matchId);
+    setToast(null);
     try {
       const res = await fetch("/api/matches/join", {
         method: "POST",
@@ -96,14 +100,13 @@ export default function MatchesPage() {
 
       const data = await res.json();
       if (data.success) {
-        alert("Successfully joined the match lobby!");
+        setToast({ type: "success", msg: "Successfully joined the match lobby!" });
         await fetchMatches();
       } else {
-        alert(data.message || "Failed to join match");
+        setToast({ type: "error", msg: data.message || "Failed to join match" });
       }
-    } catch (err) {
-      console.error(err);
-      alert("An error occurred. Please try again.");
+    } catch {
+      setToast({ type: "error", msg: "An error occurred. Please try again." });
     } finally {
       setJoiningId(null);
     }
@@ -111,6 +114,7 @@ export default function MatchesPage() {
 
   const handleLeaveMatch = async (matchId: string) => {
     setJoiningId(matchId);
+    setToast(null);
     try {
       const res = await fetch("/api/matches/leave", {
         method: "POST",
@@ -120,14 +124,13 @@ export default function MatchesPage() {
 
       const data = await res.json();
       if (data.success) {
-        alert("Successfully left the match lobby!");
+        setToast({ type: "success", msg: "Successfully left the match lobby!" });
         await fetchMatches();
       } else {
-        alert(data.message || "Failed to leave match");
+        setToast({ type: "error", msg: data.message || "Failed to leave match" });
       }
-    } catch (err) {
-      console.error(err);
-      alert("An error occurred. Please try again.");
+    } catch {
+      setToast({ type: "error", msg: "An error occurred. Please try again." });
     } finally {
       setJoiningId(null);
     }
@@ -210,6 +213,19 @@ export default function MatchesPage() {
             <Plus size={16} strokeWidth={2.5} />
           </button>
         </header>
+
+        {/* Toast notification */}
+        {toast && (
+          <div
+            className={`mb-4 rounded-xl border p-3 text-center text-xs font-semibold ${
+              toast.type === "success"
+                ? "border-[#C6FF00]/22 bg-[#C6FF00]/6 text-[#C6FF00]"
+                : "border-red-500/22 bg-red-500/7 text-red-400"
+            }`}
+          >
+            {toast.msg}
+          </div>
+        )}
 
         {/* Title */}
         <div className="mb-6 pl-1">

@@ -24,7 +24,12 @@ export default function Home() {
 
   useEffect(() => {
     if (mounted && isSignedIn && isLoaded) {
-      const hasProfile = localStorage.getItem("stryk_player_data");
+      let hasProfile = false;
+      try {
+        hasProfile = !!localStorage.getItem("stryk_player_data");
+      } catch {
+        // localStorage may throw in private browsing
+      }
       if (hasProfile) {
         router.replace("/home");
       } else {

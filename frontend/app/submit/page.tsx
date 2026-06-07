@@ -47,15 +47,15 @@ export default function SubmitPage() {
     setSubmitted(true);
     
     updatePlayerData({
-      matchesPlayed: (playerData.matchesPlayed ?? 25) + 1,
-      wins: (playerData.wins ?? 17) + 1,
-      draws: playerData.draws ?? 6,
-      losses: playerData.losses ?? 2,
-      goals: (playerData.goals ?? 12) + stats.Goals,
-      assists: (playerData.assists ?? 14) + stats.Assists,
-      tackles: (playerData.tackles ?? 18) + stats.Tackles,
+      matchesPlayed: (playerData.matchesPlayed ?? 0) + 1,
+      wins: (playerData.wins ?? 0) + 1,
+      draws: playerData.draws ?? 0,
+      losses: playerData.losses ?? 0,
+      goals: (playerData.goals ?? 0) + stats.Goals,
+      assists: (playerData.assists ?? 0) + stats.Assists,
+      tackles: (playerData.tackles ?? 0) + stats.Tackles,
       saves: (playerData.saves ?? 0) + stats.Saves,
-      intercepts: (playerData.intercepts ?? 15) + stats.Intercepts,
+      intercepts: (playerData.intercepts ?? 0) + stats.Intercepts,
     });
 
     setTimeout(() => {

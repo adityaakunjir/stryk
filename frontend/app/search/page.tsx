@@ -25,6 +25,7 @@ export default function SearchPage() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [searchError, setSearchError] = useState(false);
 
   const handleSearch = useCallback(async () => {
     // Need at least one filter
@@ -36,6 +37,7 @@ export default function SearchPage() {
 
     setIsSearching(true);
     setHasSearched(true);
+    setSearchError(false);
     
     try {
       const params = new URLSearchParams();
@@ -51,8 +53,8 @@ export default function SearchPage() {
       } else {
         setResults([]);
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
+      setSearchError(true);
       setResults([]);
     } finally {
       setIsSearching(false);
@@ -174,6 +176,11 @@ export default function SearchPage() {
             <div className="flex flex-col items-center justify-center h-40">
               <Loader2 className="size-8 text-[#C6FF00] animate-spin mb-4" />
               <div className="text-xs text-white/50 uppercase tracking-widest">Searching Database</div>
+            </div>
+          ) : searchError ? (
+            <div className="flex flex-col items-center justify-center h-40 border border-dashed border-red-500/20 rounded-3xl bg-red-500/[0.03]">
+              <div className="text-sm text-red-400 mb-1 font-bold">Search failed</div>
+              <div className="text-[10px] text-white/30 uppercase tracking-wider">Check your connection and try again</div>
             </div>
           ) : hasSearched && results.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40 border border-dashed border-white/10 rounded-3xl bg-white/[0.01]">

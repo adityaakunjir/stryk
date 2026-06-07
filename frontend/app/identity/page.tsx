@@ -175,7 +175,7 @@ export default function IdentityPage() {
 
       const data = await response.json();
 
-      console.log("Profile saved:", data);
+      // Profile saved successfully
 
       if (!data.success) {
         throw new Error(data.message || "Failed");

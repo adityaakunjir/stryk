@@ -53,9 +53,9 @@ export default function CardPage() {
     return { isActive, val };
   });
 
-  const wins = playerData.wins ?? 17;
-  const draws = playerData.draws ?? 6;
-  const losses = playerData.losses ?? 2;
+  const wins = playerData.wins ?? 0;
+  const draws = playerData.draws ?? 0;
+  const losses = playerData.losses ?? 0;
   const totalMatches = wins + draws + losses;
   const winRate = totalMatches > 0 ? Math.round((wins / totalMatches) * 100) : 0;
   const winPercent = totalMatches > 0 ? (wins / totalMatches) * 100 : 0;

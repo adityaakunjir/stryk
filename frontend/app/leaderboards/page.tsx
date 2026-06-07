@@ -38,6 +38,7 @@ export default function LeaderboardsPage() {
   const [activeTab, setActiveTab] = useState<Category>("CAM");
   const [data, setData] = useState<LeaderboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchLeaderboards = async () => {
@@ -47,8 +48,8 @@ export default function LeaderboardsPage() {
         if (json.success) {
           setData(json.data);
         }
-      } catch (err) {
-        console.error("Failed to load leaderboards:", err);
+      } catch {
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -61,6 +62,24 @@ export default function LeaderboardsPage() {
     return (
       <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white flex items-center justify-center">
         <Loader2 className="size-10 text-[#C6FF00] animate-spin" />
+      </main>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center text-center px-6">
+          <Trophy size={32} className="text-white/20 mb-4" />
+          <div className="text-sm font-bold uppercase tracking-wider text-white/70">Failed to load leaderboards</div>
+          <p className="text-xs text-white/40 mt-1">Please check your connection and try again.</p>
+          <button
+            onClick={() => { setError(false); setLoading(true); window.location.reload(); }}
+            className="mt-6 h-10 px-6 rounded-xl bg-[#C6FF00] text-black text-xs font-display tracking-widest uppercase cursor-pointer hover:bg-[#b0e600] transition"
+          >
+            Retry
+          </button>
+        </div>
       </main>
     );
   }

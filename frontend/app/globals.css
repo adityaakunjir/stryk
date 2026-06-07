@@ -52,7 +52,7 @@ html, body {
 }
 
 body {
-  background: #020306;
+  background: var(--stryk-bg);
   color: var(--foreground);
   touch-action: manipulation;
   position: fixed;
