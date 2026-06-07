@@ -45,10 +45,11 @@ export default function InvitesPage() {
     setErrorMsg("");
 
     try {
-      const res = await fetch("/api/team/invite/respond", {
+      const endpoint = `/api/team/invite/${action}`;
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inviteId, action }),
+        body: JSON.stringify({ inviteId }),
       });
 
       const data = await res.json();
