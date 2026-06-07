@@ -13,6 +13,7 @@ from app.core.config import settings
 from app.core.database import create_db_tables
 from app.api.health import router as health_router
 from app.api.players import router as players_router
+from app.api.balance import router as balance_router
 
 
 # ─── Sentry (Error Monitoring) ────────────────────────────────────
@@ -80,6 +81,7 @@ app.add_middleware(
 # ─── Routers ──────────────────────────────────────────────────────
 app.include_router(health_router)
 app.include_router(players_router, prefix="/api/v1")
+app.include_router(balance_router, prefix="/api/v1")
 
 
 # ─── Root ──────────────────────────────────────────────────────────

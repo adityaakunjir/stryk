@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getPusherClient } from "@/lib/pusher";
 
@@ -154,11 +154,16 @@ export default function MatchDetailsPage({ params }: PageProps) {
     channel.bind("player-joined", handleJoined);
     channel.bind("player-left", handleLeft);
     channel.bind("team-assigned", handleTeamAssigned);
+    channel.bind("teams-balanced", () => {
+      addNotification("Teams have been auto-balanced by AI!", "success");
+      fetchMatchDetails();
+    });
 
     return () => {
       channel.unbind("player-joined", handleJoined);
       channel.unbind("player-left", handleLeft);
       channel.unbind("team-assigned", handleTeamAssigned);
+      channel.unbind("teams-balanced");
       pusher.unsubscribe(channelName);
     };
   }, [matchId, fetchMatchDetails, addNotification]);
@@ -227,6 +232,34 @@ export default function MatchDetailsPage({ params }: PageProps) {
         await fetchMatchDetails();
       } else {
         alert(data.message || "Failed to assign team");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleBalanceTeams = async () => {
+    if (!confirm("AI will auto-balance all players into two fair teams based on their OVR ratings. Continue?")) return;
+    setActionLoading(true);
+    try {
+      const res = await fetch("/api/matches/balance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matchId }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        addNotification(
+          `Teams balanced! Rating diff: ${data.data.ratingDiff} (Avg A: ${data.data.avgA} vs Avg B: ${data.data.avgB})`,
+          "success"
+        );
+        await fetchMatchDetails();
+      } else {
+        alert(data.message || "Failed to balance teams");
       }
     } catch (err) {
       console.error(err);
@@ -400,6 +433,17 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
         {/* Teams Dashboard */}
         <div className="space-y-6">
+          {/* AI Balance Button */}
+          {isJoined && participants.length >= 2 && match.creatorId === currentUserId && (
+            <button
+              onClick={handleBalanceTeams}
+              disabled={actionLoading}
+              className="w-full h-11 rounded-2xl bg-gradient-to-r from-[#7c3aed] to-[#a855f7] hover:from-[#6d28d9] hover:to-[#9333ea] text-white text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_10px_30px_-8px_rgba(168,85,247,0.5)]"
+            >
+              <Sparkles size={14} />
+              AI Auto-Balance Teams
+            </button>
+          )}
           {/* Team A */}
           <div className="rounded-3xl border border-white/5 bg-[#0B1020]/10 p-4 relative">
             <div className="flex items-center justify-between mb-3.5">
