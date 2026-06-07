@@ -134,7 +134,7 @@ export async function GET() {
     });
 
     const populatedInvites = await Promise.all(
-      invites.map(async (invite) => {
+  invites.map(async (invite: any) => {
         const team = await prisma.team.findUnique({
           where: { id: invite.teamId },
           select: { name: true, logoUrl: true },
