@@ -25,4 +25,32 @@ model User {
   intercepts    Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  teamMembers   TeamMember[]
+}
+
+model Team {
+  id          String   @id @default(cuid())
+
+  name        String
+  logoUrl     String?
+
+  captainId   String
+
+  createdAt   DateTime @default(now())
+
+  members     TeamMember[]
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+
+  teamId    String
+  userId    String
+
+  role      String   @default("player")
+
+  team      Team @relation(fields: [teamId], references: [id])
+  user      User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
 }
