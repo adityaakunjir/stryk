@@ -45,9 +45,10 @@ export default function InvitesPage() {
     setErrorMsg("");
 
     try {
-      const endpoint = `/api/team/invite/${action}`;
+      const endpoint = action === "accept" ? "/api/team/accept" : "/api/team/invite";
+      const method = action === "accept" ? "POST" : "DELETE";
       const res = await fetch(endpoint, {
-        method: "POST",
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ inviteId }),
       });
