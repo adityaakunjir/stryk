@@ -21,9 +21,6 @@ export default function HomeLobbyPage() {
   const [newFriendPos, setNewFriendPos] = useState("CM");
   const [newFriendOvr, setNewFriendOvr] = useState(80);
 
-  // Lobbies count state to display
-  const [lobbiesCount, setLobbiesCount] = useState(0);
-
   useEffect(() => {
     // Load friends from localStorage
     const storedFriends = localStorage.getItem("stryk_friends");
@@ -36,21 +33,6 @@ export default function HomeLobbyPage() {
       } catch (_) {
         queueMicrotask(() => {
           setFriends([]);
-        });
-      }
-    }
-
-    // Load lobbies count
-    const storedLobbies = localStorage.getItem("stryk_lobbies");
-    if (storedLobbies) {
-      try {
-        const parsed = JSON.parse(storedLobbies);
-        queueMicrotask(() => {
-          setLobbiesCount(parsed.length);
-        });
-      } catch (_) {
-        queueMicrotask(() => {
-          setLobbiesCount(0);
         });
       }
     }
@@ -190,9 +172,9 @@ export default function HomeLobbyPage() {
         <div className="grid mt-6 grid-cols-2 gap-2.5">
           <ActionTile 
             icon={<MapPin size={16} />} 
-            label="Lobbies" 
-            meta={`${lobbiesCount} active`} 
-            onClick={() => router.push("/lobbies")} 
+            label="Matches" 
+            meta="Find games" 
+            onClick={() => router.push("/matches")} 
           />
           <ActionTile 
             icon={<Users size={16} />} 
@@ -217,7 +199,7 @@ export default function HomeLobbyPage() {
         {/* Primary CTA - always visible */}
         <div className="block mt-6 pt-2">
           <button
-            onClick={() => router.push("/lobbies")}
+            onClick={() => router.push("/matches")}
             className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 bg-[#C6FF00] text-black font-display tracking-[0.2em] cursor-pointer hover:bg-[#b0e600] transition duration-200"
             style={{
               fontSize: "0.95rem",
@@ -225,7 +207,7 @@ export default function HomeLobbyPage() {
             }}
           >
             <Play size={16} strokeWidth={3} fill="currentColor" />
-            ENTER LOBBY
+            FIND MATCH
           </button>
         </div>
       </div>
