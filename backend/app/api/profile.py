@@ -39,46 +39,50 @@ async def create_profile(
     session: AsyncSession = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
-    """Create or update the authenticated user's profile during identity setup."""
-    clerkId = user.get("sub")
-    
-    # Check if username is already taken by someone else
-    existing_username = await session.execute(
-        select(User).where(User.username == profile_data.username.lower())
-    )
-    existing_user = existing_username.scalars().first()
-    
-    if existing_user and existing_user.clerkId != clerkId:
-        return {"success": False, "message": "Username already taken."}
+    try:
+        clerkId = user.get("sub")
         
-    # Check if user already has a profile
-    result = await session.execute(
-        select(User).where(User.clerkId == clerkId)
-    )
-    db_user = result.scalars().first()
-    
-    if db_user:
-        # Update existing
-        db_user.fullName = profile_data.fullName
-        db_user.username = profile_data.username.lower()
-        if profile_data.avatarUrl:
-            db_user.avatarUrl = profile_data.avatarUrl
-        session.add(db_user)
-    else:
-        # Create new
-        db_user = User(
-            clerkId=clerkId,
-            fullName=profile_data.fullName,
-            username=profile_data.username.lower(),
-            avatarUrl=profile_data.avatarUrl,
-            overall=50
+        # Check if username is already taken by someone else
+        existing_username = await session.execute(
+            select(User).where(User.username == profile_data.username.lower())
         )
-        session.add(db_user)
+        existing_user = existing_username.scalars().first()
         
-    await session.commit()
-    await session.refresh(db_user)
-    
-    return {"success": True, "message": "Profile saved successfully."}
+        if existing_user and existing_user.clerkId != clerkId:
+            return {"success": False, "message": "Username already taken."}
+            
+        # Check if user already has a profile
+        result = await session.execute(
+            select(User).where(User.clerkId == clerkId)
+        )
+        db_user = result.scalars().first()
+        
+        if db_user:
+            # Update existing
+            db_user.fullName = profile_data.fullName
+            db_user.username = profile_data.username.lower()
+            if profile_data.avatarUrl:
+                db_user.avatarUrl = profile_data.avatarUrl
+            session.add(db_user)
+        else:
+            # Create new
+            db_user = User(
+                clerkId=clerkId,
+                fullName=profile_data.fullName,
+                username=profile_data.username.lower(),
+                avatarUrl=profile_data.avatarUrl,
+                overall=50
+            )
+            session.add(db_user)
+            
+        await session.commit()
+        await session.refresh(db_user)
+        
+        return {"success": True, "message": "Profile saved successfully."}
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise
 
 
 @router.get("/profile/me", response_model=UserRead)
