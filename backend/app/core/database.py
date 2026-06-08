@@ -60,3 +60,13 @@ async def create_db_tables():
         return
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
+        # Force avatarUrl and logoUrl to TEXT to support massive base64 strings
+        from sqlalchemy import text
+        try:
+            await conn.execute(text('ALTER TABLE users ALTER COLUMN "avatarUrl" TYPE TEXT;'))
+        except Exception:
+            pass
+        try:
+            await conn.execute(text('ALTER TABLE teams ALTER COLUMN "logoUrl" TYPE TEXT;'))
+        except Exception:
+            pass

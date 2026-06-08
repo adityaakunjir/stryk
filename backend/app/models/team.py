@@ -13,7 +13,7 @@ from sqlmodel import SQLModel, Field, Relationship
 
 class TeamBase(SQLModel):
     name: str = Field(max_length=100)
-    logoUrl: Optional[str] = Field(default=None, max_length=500)
+    logoUrl: Optional[str] = Field(default=None)
     captainId: str = Field(index=True, foreign_key="users.id")
     wins: int = Field(default=0, ge=0)
     losses: int = Field(default=0, ge=0)

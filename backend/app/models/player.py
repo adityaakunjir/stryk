@@ -18,7 +18,7 @@ class UserBase(SQLModel):
     clerkId: str = Field(index=True, unique=True)
     username: str = Field(max_length=40, index=True, unique=True)
     fullName: Optional[str] = Field(default=None, max_length=100)
-    avatarUrl: Optional[str] = Field(default=None, max_length=500)
+    avatarUrl: Optional[str] = Field(default=None)
     position: Optional[str] = Field(max_length=10, default=None)
     playStyle: Optional[str] = Field(max_length=20, default=None)
     strongFoot: Optional[str] = Field(max_length=10, default=None)
