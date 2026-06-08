@@ -58,9 +58,9 @@ export async function POST(req: Request) {
       data: newTeam,
     });
   } catch (error) {
-    console.error("TEAM CREATE ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }

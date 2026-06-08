@@ -46,8 +46,11 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data: user });
   } catch (error) {
-    console.error("GET PROFILE ERROR:", error);
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    console.error("API ROUTE ERROR:", error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }
 
@@ -102,7 +105,10 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json({ success: true, data: user });
   } catch (error) {
-    console.error("PATCH PROFILE ERROR:", error);
-    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+    console.error("API ROUTE ERROR:", error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

@@ -93,9 +93,9 @@ export async function POST(req: Request) {
       data: invite,
     });
   } catch (error) {
-    console.error("TEAM INVITE ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }
@@ -155,9 +155,9 @@ export async function GET() {
       invites: populatedInvites,
     });
   } catch (error) {
-    console.error("GET INVITES ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }
@@ -213,7 +213,10 @@ export async function DELETE(req: Request) {
       data: updatedInvite
     });
   } catch (error) {
-    console.error("DECLINE INVITE ERROR:", error);
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    console.error("API ROUTE ERROR:", error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

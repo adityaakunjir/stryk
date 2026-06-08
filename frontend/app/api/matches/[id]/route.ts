@@ -77,9 +77,9 @@ export async function GET(req: Request, { params }: RouteParams) {
       },
     });
   } catch (error) {
-    console.error("GET MATCH DETAIL ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }

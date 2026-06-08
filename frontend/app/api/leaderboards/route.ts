@@ -165,9 +165,9 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("LEADERBOARDS FETCH ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }

@@ -117,9 +117,9 @@ export async function POST(req: Request) {
       data: participant,
     });
   } catch (error) {
-    console.error("JOIN MATCH ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }

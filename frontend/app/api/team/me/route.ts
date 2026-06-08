@@ -65,9 +65,9 @@ export async function GET() {
       userId: user.id,
     });
   } catch (error) {
-    console.error("GET MY TEAM ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }
@@ -214,8 +214,11 @@ export async function PATCH(req: Request) {
       data: updatedTeam
     });
   } catch (error) {
-    console.error("TEAM UPDATE ERROR:", error);
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    console.error("API ROUTE ERROR:", error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }
 
@@ -270,7 +273,10 @@ export async function DELETE(req: Request) {
       message: "Team disbanded successfully"
     });
   } catch (error) {
-    console.error("TEAM DELETE ERROR:", error);
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    console.error("API ROUTE ERROR:", error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

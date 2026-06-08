@@ -81,9 +81,9 @@ export async function POST(req: Request) {
       data: updatedParticipant,
     });
   } catch (error) {
-    console.error("ASSIGN TEAM ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: "Internal Server Error" },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }

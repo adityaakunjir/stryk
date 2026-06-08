@@ -53,7 +53,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, message: "Friend request rejected" });
     }
   } catch (error) {
-    console.error("[POST_FRIEND_RESPOND_ERROR]", error);
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
+    console.error("API ROUTE ERROR:", error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

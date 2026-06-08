@@ -94,9 +94,9 @@ export async function POST(req: Request) {
       data: newMatch,
     });
   } catch (error) {
-    console.error("CREATE MATCH ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }

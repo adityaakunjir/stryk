@@ -71,7 +71,10 @@ export async function POST(req: Request) {
       data: updatedInvite
     });
   } catch (error) {
-    console.error("ACCEPT INVITE ERROR:", error);
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    console.error("API ROUTE ERROR:", error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

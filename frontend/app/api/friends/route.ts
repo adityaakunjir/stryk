@@ -88,7 +88,10 @@ export async function GET() {
       outgoingRequests,
     });
   } catch (error) {
-    console.error("[GET_FRIENDS_ERROR]", error);
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
+    console.error("API ROUTE ERROR:", error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

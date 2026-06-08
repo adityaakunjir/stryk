@@ -42,15 +42,9 @@ export async function POST(req: Request) {
       user,
     });
   } catch (error) {
-    console.error("=================================");
-    console.error("PROFILE ERROR:", error);
-    console.error("=================================");
-
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      {
-        success: false,
-        error: String(error),
-      },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }

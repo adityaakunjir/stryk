@@ -17,9 +17,9 @@ export async function GET() {
       clerkId: userId,
     });
   } catch (error) {
-    console.error("API/ME ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: "Internal Server Error" },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }

@@ -93,9 +93,9 @@ export async function POST(req: Request) {
       message: "Successfully left the match lobby",
     });
   } catch (error) {
-    console.error("LEAVE MATCH ERROR:", error);
+    console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
-      { success: false, error: "Internal Server Error" },
+      { success: false, message: "Something went wrong" },
       { status: 500 }
     );
   }
