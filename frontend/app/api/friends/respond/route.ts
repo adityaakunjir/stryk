@@ -16,16 +16,14 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.findUnique({
       where: { clerkId },
-      select: { id: true },
-    });
+      select: { id: true }});
 
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
     }
 
     const request = await prisma.friendRequest.findUnique({
-      where: { id: requestId },
-    });
+      where: { id: requestId }});
 
     if (!request) {
       return NextResponse.json({ success: false, message: "Friend request not found" }, { status: 404 });
@@ -42,14 +40,12 @@ export async function POST(req: Request) {
     if (action === "accept") {
       await prisma.friendRequest.update({
         where: { id: requestId },
-        data: { status: "accepted" },
-      });
+        data: { status: "accepted" }});
       return NextResponse.json({ success: true, message: "Friend request accepted" });
     } else {
       // Rejecting a request
       await prisma.friendRequest.delete({
-        where: { id: requestId },
-      });
+        where: { id: requestId }});
       return NextResponse.json({ success: true, message: "Friend request rejected" });
     }
   } catch (error) {

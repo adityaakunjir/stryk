@@ -33,9 +33,7 @@ export async function GET() {
         assists: true,
         tackles: true,
         saves: true,
-        intercepts: true,
-      },
-    });
+        intercepts: true}});
 
     if (!user) {
       return NextResponse.json(
@@ -68,7 +66,7 @@ export async function PATCH(req: Request) {
     let body;
     try {
       body = await req.json();
-    } catch (e) {
+    } catch {
       return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
     }
 
@@ -100,8 +98,7 @@ export async function PATCH(req: Request) {
 
     const user = await prisma.user.update({
       where: { clerkId: userId },
-      data: dataToUpdate,
-    });
+      data: dataToUpdate});
 
     return NextResponse.json({ success: true, data: user });
   } catch (error) {

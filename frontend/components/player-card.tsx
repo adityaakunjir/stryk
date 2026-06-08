@@ -48,15 +48,13 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
   const style = isMock ? player.style : player.playStyle;
   const foot = isMock ? player.foot : player.strongFoot === "Left" ? "L" : "R";
   const nation = isMock ? player.nation : "IND";
-  const matches = isMock ? player.matches : (player.matchesPlayed ?? 0);
   const playerId = isMock ? player.matches : (("id" in player && player.id) ? player.id : 1);
   const avatar = isMock ? player.avatarUrl : player.avatar;
 
   const dims = {
     sm: "w-44 h-64",
     md: "w-60 h-[22rem]",
-    lg: "w-72 h-[26rem]",
-  }[size];
+    lg: "w-72 h-[26rem]"}[size];
 
   // Resolve stats to display
   let statsToDisplay: { label: string; value: number }[] = [];
@@ -76,8 +74,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
       className={`group relative ${dims} shrink-0 rounded-[28px] overflow-hidden text-left transition-transform duration-300 stryk-card-interactive focus:outline-none`}
       style={{
         background: "linear-gradient(160deg, #1A2540 0%, #0B1020 45%, #05070B 100%)",
-        boxShadow: "0 0 0 1px rgba(198,255,0,0.25), 0 30px 60px -20px rgba(198,255,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)",
-      }}
+        boxShadow: "0 0 0 1px rgba(198,255,0,0.25), 0 30px 60px -20px rgba(198,255,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)"}}
     >
       {/* Holographic shimmer */}
       <div
@@ -85,15 +82,13 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
         className="absolute inset-0 opacity-60 mix-blend-screen pointer-events-none"
         style={{
           background:
-            "radial-gradient(120% 60% at 50% -10%, rgba(198,255,0,0.35) 0%, transparent 55%), radial-gradient(80% 50% at 110% 110%, rgba(91,140,255,0.25) 0%, transparent 60%)",
-        }}
+            "radial-gradient(120% 60% at 50% -10%, rgba(198,255,0,0.35) 0%, transparent 55%), radial-gradient(80% 50% at 110% 110%, rgba(91,140,255,0.25) 0%, transparent 60%)"}}
       />
       <div
         aria-hidden
         className="absolute -inset-x-10 -top-10 h-40 rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
         style={{
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent)",
-        }}
+          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent)"}}
       />
 
       {/* Top row */}
@@ -128,8 +123,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats }: Props)
           className="relative w-full h-full"
           style={{
             maskImage: "radial-gradient(60% 70% at 50% 50%, #000 60%, transparent 100%)",
-            WebkitMaskImage: "radial-gradient(60% 70% at 50% 50%, #000 60%, transparent 100%)",
-          }}
+            WebkitMaskImage: "radial-gradient(60% 70% at 50% 50%, #000 60%, transparent 100%)"}}
         >
           {avatar ? (
             <ImageWithFallback

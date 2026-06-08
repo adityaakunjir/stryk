@@ -15,8 +15,7 @@ export async function POST(req: Request) {
 
     // Get the user from the database
     const user = await prisma.user.findUnique({
-      where: { clerkId },
-    });
+      where: { clerkId }});
 
     if (!user) {
       return NextResponse.json(
@@ -67,9 +66,7 @@ export async function POST(req: Request) {
           location: location.trim(),
           dateTime: new Date(dateTime),
           maxPlayers: maxPlayersInt,
-          creatorId: user.id,
-        },
-      });
+          creatorId: user.id}});
 
       // 2. Add creator to MatchParticipant
       await tx.matchParticipant.create({
@@ -77,22 +74,18 @@ export async function POST(req: Request) {
           matchId: match.id,
           userId: user.id,
           team: null, // Initially unassigned
-        },
-      });
+        }});
 
       // 3. Return the match with participants
       return tx.match.findUnique({
         where: { id: match.id },
         include: {
-          participants: true,
-        },
-      });
+          participants: true}});
     });
 
     return NextResponse.json({
       success: true,
-      data: newMatch,
-    });
+      data: newMatch});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

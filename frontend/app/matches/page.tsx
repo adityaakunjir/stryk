@@ -50,7 +50,7 @@ export default function MatchesPage() {
         if (data.success && data.player) {
           setCurrentUserId(data.player.id);
         }
-      } catch (err) {
+      } catch {
         // Fallback handled gracefully
       }
     };
@@ -77,7 +77,7 @@ export default function MatchesPage() {
       if (data.success) {
         setMatches(data.data || []);
       }
-    } catch (err) {
+    } catch {
       // Ignored: empty state UI handles no matches
     } finally {
       setLoading(false);
@@ -86,6 +86,7 @@ export default function MatchesPage() {
 
   useEffect(() => {
     fetchMatches();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, searchQuery]);
 
   const handleJoinMatch = async (matchId: string) => {
@@ -163,7 +164,7 @@ export default function MatchesPage() {
       } else {
         setCreateError(data.message || "Failed to create match");
       }
-    } catch (err) {
+    } catch {
       setCreateError("An error occurred. Please try again.");
     } finally {
       setCreateLoading(false);
@@ -182,7 +183,7 @@ export default function MatchesPage() {
         minute: "2-digit",
         hour12: true,
       });
-    } catch (_) {
+    } catch {
       return dateStr;
     }
   };

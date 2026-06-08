@@ -5,8 +5,7 @@ import { AlertTriangle, RotateCcw } from "lucide-react";
 
 export default function Error({
   error,
-  reset,
-}: {
+  reset}: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
@@ -22,8 +21,7 @@ export default function Error({
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(60% 40% at 50% 40%, rgba(239,68,68,0.12) 0%, transparent 60%), #05070B",
-        }}
+            "radial-gradient(60% 40% at 50% 40%, rgba(239,68,68,0.12) 0%, transparent 60%), #05070B"}}
       />
 
       <div className="relative z-10 flex flex-col items-center text-center max-w-xs">
@@ -49,8 +47,7 @@ export default function Error({
           onClick={reset}
           className="mt-8 h-12 px-8 rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer hover:bg-[#b0e600] transition duration-200"
           style={{
-            boxShadow: "0 20px 40px -10px rgba(198,255,0,0.4)",
-          }}
+            boxShadow: "0 20px 40px -10px rgba(198,255,0,0.4)"}}
         >
           <RotateCcw size={14} strokeWidth={3} />
           TRY AGAIN

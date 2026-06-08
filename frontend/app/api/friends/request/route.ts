@@ -16,8 +16,7 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.findUnique({
       where: { clerkId },
-      select: { id: true },
-    });
+      select: { id: true }});
 
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
@@ -30,8 +29,7 @@ export async function POST(req: Request) {
     // Check if the target user exists
     const targetUser = await prisma.user.findUnique({
       where: { id: targetUserId },
-      select: { id: true },
-    });
+      select: { id: true }});
 
     if (!targetUser) {
       return NextResponse.json({ success: false, message: "Target user not found" }, { status: 404 });
@@ -43,9 +41,7 @@ export async function POST(req: Request) {
         OR: [
           { senderId: user.id, receiverId: targetUserId },
           { senderId: targetUserId, receiverId: user.id },
-        ],
-      },
-    });
+        ]}});
 
     if (existingRel) {
       if (existingRel.status === "accepted") {
@@ -62,9 +58,7 @@ export async function POST(req: Request) {
         data: {
           senderId: user.id,
           receiverId: targetUserId,
-          status: "pending",
-        },
-      });
+          status: "pending"}});
 
       return NextResponse.json({ success: true, message: "Friend request sent" });
     }
@@ -74,9 +68,7 @@ export async function POST(req: Request) {
       data: {
         senderId: user.id,
         receiverId: targetUserId,
-        status: "pending",
-      },
-    });
+        status: "pending"}});
 
     return NextResponse.json({ success: true, message: "Friend request sent" });
   } catch (error) {

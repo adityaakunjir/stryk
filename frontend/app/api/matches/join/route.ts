@@ -15,8 +15,7 @@ export async function POST(req: Request) {
     }
 
     const user = await prisma.user.findUnique({
-      where: { clerkId },
-    });
+      where: { clerkId }});
 
     if (!user) {
       return NextResponse.json(
@@ -38,9 +37,7 @@ export async function POST(req: Request) {
     const match = await prisma.match.findUnique({
       where: { id: matchId },
       include: {
-        participants: true,
-      },
-    });
+        participants: true}});
 
     if (!match) {
       return NextResponse.json(
@@ -76,16 +73,14 @@ export async function POST(req: Request) {
         matchId,
         userId: user.id,
         team: null, // Initially unassigned
-      },
-    });
+      }});
 
     // If match is now full, update its status to "full"
     const isFull = currentCount + 1 >= match.maxPlayers;
     if (isFull) {
       await prisma.match.update({
         where: { id: matchId },
-        data: { status: "full" },
-      });
+        data: { status: "full" }});
     }
 
     const participantWithUser = await prisma.matchParticipant.findUnique({
@@ -99,23 +94,17 @@ export async function POST(req: Request) {
             avatarUrl: true,
             overall: true,
             position: true,
-            playStyle: true,
-          },
-        },
-      },
-    });
+            playStyle: true}}}});
 
     // Trigger Pusher event
     await triggerPusherEvent(`match-${matchId}`, "player-joined", {
       participant: participantWithUser,
-      isFull,
-    });
+      isFull});
 
     return NextResponse.json({
       success: true,
       message: "Successfully joined the match lobby",
-      data: participant,
-    });
+      data: participant});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

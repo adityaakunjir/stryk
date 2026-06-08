@@ -28,28 +28,23 @@ export async function GET(req: Request) {
     // 2. Upcoming Matches filter
     if (filter === "upcoming") {
       where.dateTime = {
-        gte: new Date(),
-      };
+        gte: new Date()};
     }
 
     // 3. Nearby Matches filter
     if (locationQuery) {
       where.location = {
         contains: locationQuery,
-        mode: "insensitive",
-      };
+        mode: "insensitive"};
     }
 
     // Fetch matches from the database
     const matches = await prisma.match.findMany({
       where,
       include: {
-        participants: true,
-      },
+        participants: true},
       orderBy: {
-        dateTime: "asc",
-      },
-    });
+        dateTime: "asc"}});
 
     // Map matches to include computed properties players and spotsLeft
     const formattedMatches = matches.map((match) => {
@@ -66,14 +61,12 @@ export async function GET(req: Request) {
         creatorId: match.creatorId,
         createdAt: match.createdAt,
         players: playersCount,
-        spotsLeft: spotsLeft,
-      };
+        spotsLeft: spotsLeft};
     });
 
     return NextResponse.json({
       success: true,
-      data: formattedMatches,
-    });
+      data: formattedMatches});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

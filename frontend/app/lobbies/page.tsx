@@ -37,7 +37,7 @@ export default function LobbiesPage() {
         queueMicrotask(() => {
           setLobbies(parsed);
         });
-      } catch (_) {
+      } catch {
         queueMicrotask(() => {
           setLobbies([]);
         });
@@ -60,7 +60,7 @@ export default function LobbiesPage() {
       try {
         const parsed = JSON.parse(storedPlayer);
         currentHostName = parsed.fullName || currentHostName;
-      } catch (_) {}
+      } catch {}
     }
 
     const newLobby = {
@@ -99,7 +99,7 @@ export default function LobbiesPage() {
         try {
           const parsed = JSON.parse(storedPlayer);
           currentHostName = parsed.fullName || currentHostName;
-        } catch (_) {}
+        } catch {}
       }
       return matchesSearch && l.host === currentHostName;
     }

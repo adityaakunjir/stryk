@@ -6,8 +6,7 @@ import { PlayerProvider } from "@/components/player-context";
 export const viewport: Viewport = {
   themeColor: "#05070B",
   width: "device-width",
-  initialScale: 1,
-};
+  initialScale: 1};
 
 export const metadata: Metadata = {
   title: "STRYK | Your Football Identity",
@@ -17,20 +16,16 @@ export const metadata: Metadata = {
     title: "STRYK | Your Football Identity",
     description: "Build your football identity with real matches, real stats, and premium player cards.",
     siteName: "STRYK",
-    type: "website",
-  },
+    type: "website"},
   twitter: {
     card: "summary_large_image",
     title: "STRYK | Your Football Identity",
-    description: "Build your football identity with real matches, real stats, and premium player cards.",
-  },
-};
+    description: "Build your football identity with real matches, real stats, and premium player cards."}};
 
 import { Toaster } from "sonner";
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+  children}: Readonly<{
   children: React.ReactNode;
 }>) {
   return (

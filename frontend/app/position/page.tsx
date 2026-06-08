@@ -9,8 +9,7 @@ import {
   Check,
   ChevronDown,
   Footprints,
-  Info,
-} from "lucide-react";
+  Info} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/components/player-context";
@@ -75,8 +74,7 @@ export default function PositionPage() {
     updatePlayerData({
       position: selectedPosition,
       secondaryPosition: secondaryPosition,
-      strongFoot: strongFoot,
-    });
+      strongFoot: strongFoot});
     router.push("/play-style");
   };
 
@@ -156,8 +154,7 @@ export default function PositionPage() {
               <div className="relative aspect-[1.44] min-h-[148px] overflow-hidden rounded-xl border border-white/10 sm:mt-6 sm:aspect-[1.18] sm:min-h-[400px] sm:rounded-2xl"
                 style={{
                   background:
-                    "linear-gradient(180deg, rgba(198,255,0,0.06), rgba(91,140,255,0.06)), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 24px, transparent 24px 48px)",
-                }}>
+                    "linear-gradient(180deg, rgba(198,255,0,0.06), rgba(91,140,255,0.06)), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 24px, transparent 24px 48px)"}}>
                 <div className="absolute inset-3 border border-white/15 rounded" />
                 <div className="absolute left-3 right-3 top-1/2 h-px bg-white/15" />
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-white/15" />
@@ -177,8 +174,7 @@ export default function PositionPage() {
                         background: isActive ? "#C6FF00" : "rgba(255,255,255,0.06)",
                         color: isActive ? "#05070B" : "rgba(255,255,255,0.7)",
                         border: isActive ? "none" : "1px solid rgba(255,255,255,0.12)",
-                        boxShadow: isActive ? "0 10px 24px -6px rgba(198,255,0,0.6)" : "none",
-                      }}
+                        boxShadow: isActive ? "0 10px 24px -6px rgba(198,255,0,0.6)" : "none"}}
                       title={p.name}
                     >
                       {displayCode}

@@ -77,58 +77,9 @@ const defaultPlayerData: PlayerData = {
   assists: 0,
   tackles: 0,
   saves: 0,
-  intercepts: 0,
-};
+  intercepts: 0};
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
-
-function toCamelCase(backendPlayer: BackendPlayer): PlayerData {
-  return {
-    id: backendPlayer.id,
-    fullName: backendPlayer.full_name || "",
-    username: backendPlayer.username || "",
-    avatar: backendPlayer.avatar_url || "",
-    position: backendPlayer.position || "CAM",
-    secondaryPosition: backendPlayer.secondary_position || "",
-    strongFoot: backendPlayer.strong_foot === "Left" ? "Left" : "Right",
-    playStyle: backendPlayer.play_style || "Playmaker",
-    bio: backendPlayer.bio || "",
-    rating: backendPlayer.rating || 50,
-    matchesPlayed: backendPlayer.matches_played ?? 0,
-    wins: backendPlayer.wins ?? 0,
-    losses: backendPlayer.losses ?? 0,
-    draws: backendPlayer.draws ?? 0,
-    goals: backendPlayer.goals ?? 0,
-    assists: backendPlayer.assists ?? 0,
-    tackles: backendPlayer.tackles ?? 0,
-    saves: backendPlayer.saves ?? 0,
-    intercepts: backendPlayer.intercepts ?? 0,
-  };
-}
-
-function toSnakeCase(frontendPlayer: PlayerData, authUserId: string) {
-  return {
-    auth_user_id: authUserId,
-    full_name: frontendPlayer.fullName,
-    username: frontendPlayer.username,
-    avatar_url: frontendPlayer.avatar,
-    position: frontendPlayer.position,
-    secondary_position: frontendPlayer.secondaryPosition || null,
-    strong_foot: frontendPlayer.strongFoot,
-    play_style: frontendPlayer.playStyle,
-    bio: frontendPlayer.bio || null,
-    rating: frontendPlayer.rating,
-    matches_played: frontendPlayer.matchesPlayed ?? 0,
-    wins: frontendPlayer.wins ?? 0,
-    losses: frontendPlayer.losses ?? 0,
-    draws: frontendPlayer.draws ?? 0,
-    goals: frontendPlayer.goals ?? 0,
-    assists: frontendPlayer.assists ?? 0,
-    tackles: frontendPlayer.tackles ?? 0,
-    saves: frontendPlayer.saves ?? 0,
-    intercepts: frontendPlayer.intercepts ?? 0,
-  };
-}
 
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [playerData, setPlayerData] = useState<PlayerData>(defaultPlayerData);
@@ -162,10 +113,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
+          Authorization: `Bearer ${token}`},
+        body: JSON.stringify(data)});
       if (res.ok) {
         setIsBackendSynced(true);
       }
@@ -200,8 +149,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 assists: backendUser.assists ?? prev.assists,
                 tackles: backendUser.tackles ?? prev.tackles,
                 saves: backendUser.saves ?? prev.saves,
-                intercepts: backendUser.intercepts ?? prev.intercepts,
-              };
+                intercepts: backendUser.intercepts ?? prev.intercepts};
               updated.rating = calculateOvr(updated);
               localStorage.setItem("stryk_player_data", JSON.stringify(updated));
               return updated;
@@ -217,8 +165,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             window.location.href = "/identity";
           }
         }
-      } catch (err) {
-        console.error("Failed to sync from /api/profile/me:", err);
+      } catch (err) { console.error("Failed to sync from /api/profile/me:", err);
       }
     }
 
@@ -238,8 +185,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
       try {
         localStorage.setItem("stryk_player_data", JSON.stringify(updated));
-      } catch (e) {
-        console.error("Error saving player data to localStorage", e);
+      } catch (e) { console.error("Error saving player data to localStorage", e);
       }
 
       finalUpdated = updated;
@@ -259,8 +205,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setPlayerData(defaultPlayerData);
     try {
       localStorage.removeItem("stryk_player_data");
-    } catch (e) {
-      console.error("Error removing player data", e);
+    } catch (e) { console.error("Error removing player data", e);
     }
     setIsBackendSynced(false);
   };
@@ -278,8 +223,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         resetPlayerData,
         getStats,
         isLoaded,
-        isBackendSynced,
-      }}
+        isBackendSynced}}
     >
       {children}
     </PlayerContext.Provider>

@@ -20,8 +20,7 @@ export function CardDetail({ player, onClose }: Props) {
       className="fixed inset-0 z-50 flex flex-col"
       style={{
         background:
-          "radial-gradient(60% 50% at 50% 30%, rgba(198,255,0,0.12) 0%, transparent 60%), #05070B",
-      }}
+          "radial-gradient(60% 50% at 50% 30%, rgba(198,255,0,0.12) 0%, transparent 60%), #05070B"}}
     >
       <div className="flex items-center justify-between px-6 pt-6">
         <button
@@ -54,8 +53,7 @@ export function CardDetail({ player, onClose }: Props) {
                 WebkitBackfaceVisibility: "hidden",
                 transform: "rotateY(0deg)",
                 WebkitTransform: "rotateY(0deg)",
-                zIndex: flipped ? 0 : 1,
-              }}
+                zIndex: flipped ? 0 : 1}}
             >
               <PlayerCard player={player} size="lg" />
             </div>
@@ -66,8 +64,7 @@ export function CardDetail({ player, onClose }: Props) {
                 WebkitBackfaceVisibility: "hidden",
                 transform: "rotateY(180deg)",
                 WebkitTransform: "rotateY(180deg)",
-                zIndex: flipped ? 1 : 0,
-              }}
+                zIndex: flipped ? 1 : 0}}
             >
               <CardBack player={player} />
             </div>
@@ -110,8 +107,7 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
         background:
           "linear-gradient(160deg, #1A2540 0%, #0B1020 45%, #05070B 100%)",
         boxShadow:
-          "0 0 0 1px rgba(198,255,0,0.25), 0 30px 60px -20px rgba(198,255,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)",
-      }}
+          "0 0 0 1px rgba(198,255,0,0.25), 0 30px 60px -20px rgba(198,255,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)"}}
     >
       <div className="text-[10px] tracking-[0.35em] uppercase text-[var(--stryk-lime)]">
         Career Dossier
@@ -161,8 +157,7 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
                   style={{
                     background: isActive
                       ? `linear-gradient(to top, var(--stryk-lime) ${v * 100}%, rgba(255,255,255,0.06) ${v * 100}%)`
-                      : "rgba(255,255,255,0.04)",
-                  }}
+                      : "rgba(255,255,255,0.04)"}}
                 />
               );
             })

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Bell, Settings, Play, Users, Trophy, MapPin, Loader2, X, Plus } from "lucide-react";
+import { Bell, Settings, Play, Users, Trophy, MapPin, Loader2, X} from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { PlayerCard } from "@/components/player-card";
 import { CardDetail } from "@/components/card-detail";
@@ -31,10 +31,9 @@ export default function HomeLobbyPage() {
             ovr: f.user.overall || 50,
             pos: f.user.position || "CAM",
             avatar: f.user.avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(f.user.username)}`,
-            online: true,
-          })));
+            online: true})));
         }
-      } catch (err) {
+      } catch {
         setFriendsError(true);
       }
     }
@@ -68,8 +67,7 @@ export default function HomeLobbyPage() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(70% 50% at 50% 10%, rgba(198,255,0,0.12) 0%, transparent 60%), radial-gradient(80% 60% at 50% 100%, rgba(91,140,255,0.08) 0%, transparent 60%), #05070B",
-        }}
+            "radial-gradient(70% 50% at 50% 10%, rgba(198,255,0,0.12) 0%, transparent 60%), radial-gradient(80% 60% at 50% 100%, rgba(91,140,255,0.08) 0%, transparent 60%), #05070B"}}
       />
       <div
         className="absolute inset-x-0 bottom-0 h-40 opacity-[0.10] pointer-events-none"
@@ -77,8 +75,7 @@ export default function HomeLobbyPage() {
           background:
             "linear-gradient(transparent, rgba(198,255,0,0.5)), repeating-linear-gradient(90deg, transparent 0 28px, rgba(255,255,255,0.5) 28px 29px)",
           transform: "perspective(400px) rotateX(70deg)",
-          transformOrigin: "bottom",
-        }}
+          transformOrigin: "bottom"}}
       />
 
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
@@ -187,8 +184,7 @@ export default function HomeLobbyPage() {
             className="w-full rounded-2xl py-3.5 flex items-center justify-center gap-2 bg-[#C6FF00] text-black font-display tracking-[0.2em] cursor-pointer hover:bg-[#b0e600] transition duration-200"
             style={{
               fontSize: "0.95rem",
-              boxShadow: "0 20px 40px -10px rgba(198,255,0,0.55), inset 0 1px 0 rgba(255,255,255,0.4)",
-            }}
+              boxShadow: "0 20px 40px -10px rgba(198,255,0,0.55), inset 0 1px 0 rgba(255,255,255,0.4)"}}
           >
             <Play size={16} strokeWidth={3} fill="currentColor" />
             FIND MATCH
@@ -306,8 +302,7 @@ function Pill({ label, value, accent }: { label: string; value: string; accent?:
       className="rounded-xl py-2 text-center border"
       style={{
         background: accent ? "rgba(198,255,0,0.12)" : "rgba(255,255,255,0.03)",
-        borderColor: accent ? "rgba(198,255,0,0.35)" : "rgba(255,255,255,0.08)",
-      }}
+        borderColor: accent ? "rgba(198,255,0,0.35)" : "rgba(255,255,255,0.08)"}}
     >
       <div className="text-[9px] tracking-[0.22em] uppercase text-white/50">{label}</div>
       <div className={`font-display ${accent ? "text-[#C6FF00]" : "text-white"}`} style={{ fontSize: "1.1rem" }}>

@@ -60,8 +60,7 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
 
     return {
       x: minX <= maxX ? Math.min(maxX, Math.max(minX, x)) : 0,
-      y: minY <= maxY ? Math.min(maxY, Math.max(minY, y)) : 0,
-    };
+      y: minY <= maxY ? Math.min(maxY, Math.max(minY, y)) : 0};
   };
 
   // Keep pan bounded when zoom changes
@@ -69,6 +68,7 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
     queueMicrotask(() => {
       setPan((prev) => clampPan(prev.x, prev.y, zoom));
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoom, naturalSize]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -221,8 +221,7 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
               height: bH ? `${bH}px` : "0",
               transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
               left: bW ? `calc(50% - ${bW / 2}px)` : "50%",
-              top: bH ? `calc(50% - ${bH / 2}px)` : "50%",
-            }}
+              top: bH ? `calc(50% - ${bH / 2}px)` : "50%"}}
           />
 
           {/* Mask representing the final rectangular crop shape overlay with corner brackets */}

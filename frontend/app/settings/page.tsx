@@ -19,7 +19,7 @@ export default function SettingsPage() {
     try {
       resetPlayerData();
       await signOut({ redirectUrl: "/" });
-    } catch (err) {
+    } catch {
       toast.error("Failed to sign out. Please try again.");
       setIsSigningOut(false);
     }
@@ -33,16 +33,13 @@ export default function SettingsPage() {
           icon: User,
           label: "Edit Profile",
           meta: playerData.fullName || "Set up your profile",
-          onClick: () => router.push("/identity"),
-        },
+          onClick: () => router.push("/identity")},
         {
           icon: Bell,
           label: "Notifications",
           meta: "Manage alerts",
-          onClick: () => router.push("/notifications"),
-        },
-      ],
-    },
+          onClick: () => router.push("/notifications")},
+      ]},
   ];
 
   return (

@@ -14,8 +14,7 @@ export async function GET() {
     }
 
     const user = await prisma.user.findUnique({
-      where: { clerkId },
-    });
+      where: { clerkId }});
 
     if (!user) {
       return NextResponse.json(
@@ -27,8 +26,7 @@ export async function GET() {
     // Find the first team the user is a member of
     const teamMembership = await prisma.teamMember.findFirst({
       where: {
-        userId: user.id,
-      },
+        userId: user.id},
       include: {
         team: {
           include: {
@@ -41,29 +39,19 @@ export async function GET() {
                     username: true,
                     avatarUrl: true,
                     position: true,
-                    overall: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
+                    overall: true}}}}}}}});
 
     if (!teamMembership || !teamMembership.team) {
       return NextResponse.json({
         success: true,
-        team: null,
-      });
+        team: null});
     }
 
     return NextResponse.json({
       success: true,
       team: teamMembership.team,
       userRole: teamMembership.role,
-      userId: user.id,
-    });
+      userId: user.id});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

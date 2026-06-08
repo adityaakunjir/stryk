@@ -13,8 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const id = resolvedParams.id;
 
   const team = await prisma.team.findUnique({
-    where: { id },
-  });
+    where: { id }});
 
   if (!team) {
     return { title: "Team Not Found | STRYK" };
@@ -22,8 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${team.name} | STRYK Team Profile`,
-    description: `Check out ${team.name}'s squad, roster, and match statistics on STRYK!`,
-  };
+    description: `Check out ${team.name}'s squad, roster, and match statistics on STRYK!`};
 }
 
 export default async function TeamProfilePage({ params }: Props) {
@@ -35,11 +33,7 @@ export default async function TeamProfilePage({ params }: Props) {
     include: {
       members: {
         include: {
-          user: true,
-        },
-      },
-    },
-  });
+          user: true}}}});
 
   if (!team) {
     notFound();
@@ -55,8 +49,7 @@ export default async function TeamProfilePage({ params }: Props) {
       <div 
         className="absolute inset-0"
         style={{
-          background: "radial-gradient(60% 50% at 50% 25%, rgba(198,255,0,0.15) 0%, transparent 60%), #05070B",
-        }}
+          background: "radial-gradient(60% 50% at 50% 25%, rgba(198,255,0,0.15) 0%, transparent 60%), #05070B"}}
       />
 
       <div className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 w-full overflow-y-auto">
@@ -77,7 +70,7 @@ export default async function TeamProfilePage({ params }: Props) {
           <div className="w-24 h-24 rounded-3xl bg-[#0A0E17] border border-white/10 flex items-center justify-center shadow-2xl shadow-[#C6FF00]/10 relative overflow-hidden mb-4">
             <div className="absolute inset-0 bg-gradient-to-tr from-[#C6FF00]/15 to-transparent pointer-events-none" />
             {team.logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
+               
               <img src={team.logoUrl} alt={team.name} className="w-full h-full object-cover" />
             ) : (
               <ShieldCheck size={44} className="text-[#C6FF00]/80" />
@@ -129,7 +122,7 @@ export default async function TeamProfilePage({ params }: Props) {
                 <div className="flex items-center gap-4 w-full">
                   <div className="relative size-12 rounded-full overflow-hidden border border-[#C6FF00]/40 bg-[#0B1020] shrink-0 flex items-center justify-center">
                     {captainMember.user.avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
+                       
                       <img src={captainMember.user.avatarUrl} alt={captainMember.user.fullName || captainMember.user.username} className="w-full h-full object-cover" />
                     ) : (
                       <User size={20} className="text-[#C6FF00]/40" />
@@ -166,7 +159,7 @@ export default async function TeamProfilePage({ params }: Props) {
                     <div className="flex items-center gap-4 w-full">
                       <div className="relative size-10 rounded-full overflow-hidden border border-white/10 bg-[#0B1020] shrink-0 flex items-center justify-center">
                         {member.user.avatarUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
+                           
                           <img src={member.user.avatarUrl} alt={member.user.fullName || member.user.username} className="w-full h-full object-cover" />
                         ) : (
                           <User size={16} className="text-white/30" />

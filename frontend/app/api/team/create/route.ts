@@ -25,8 +25,7 @@ export async function POST(req: Request) {
 
     // Get the internal User ID
     const user = await prisma.user.findUnique({
-      where: { clerkId },
-    });
+      where: { clerkId }});
 
     if (!user) {
       return NextResponse.json(
@@ -44,19 +43,14 @@ export async function POST(req: Request) {
         members: {
           create: {
             userId: user.id,
-            role: "captain",
-          },
-        },
-      },
+            role: "captain"}}},
       include: {
         members: true, // Return members in the response
-      },
-    });
+      }});
 
     return NextResponse.json({
       success: true,
-      data: newTeam,
-    });
+      data: newTeam});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

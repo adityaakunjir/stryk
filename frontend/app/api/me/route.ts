@@ -14,8 +14,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      clerkId: userId,
-    });
+      clerkId: userId});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

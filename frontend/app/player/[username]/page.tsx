@@ -17,8 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const username = decodeURIComponent(resolvedParams.username).toLowerCase();
 
   const user = await prisma.user.findUnique({
-    where: { username },
-  });
+    where: { username }});
 
   if (!user) {
     return { title: "Player Not Found | STRYK" };
@@ -26,8 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${user.fullName || user.username}'s STRYK Card`,
-    description: `Check out ${user.fullName || user.username}'s football identity on STRYK!`,
-  };
+    description: `Check out ${user.fullName || user.username}'s football identity on STRYK!`};
 }
 
 export default async function PublicPlayerPage({ params }: Props) {
@@ -35,8 +33,7 @@ export default async function PublicPlayerPage({ params }: Props) {
   const username = decodeURIComponent(resolvedParams.username).toLowerCase();
 
   const user = await prisma.user.findUnique({
-    where: { username },
-  });
+    where: { username }});
 
   if (!user) {
     notFound();
@@ -62,8 +59,7 @@ export default async function PublicPlayerPage({ params }: Props) {
     tackles: user.tackles ?? 0,
     saves: user.saves ?? 0,
     intercepts: user.intercepts ?? 0,
-    rating: user.overall ?? 50,
-  };
+    rating: user.overall ?? 50};
 
   playerData.rating = calculateOvr(playerData as any);
 
@@ -92,9 +88,7 @@ export default async function PublicPlayerPage({ params }: Props) {
             OR: [
               { senderId: viewer.id, receiverId: user.id },
               { senderId: user.id, receiverId: viewer.id },
-            ],
-          },
-        });
+            ]}});
         if (rel) {
           friendRequestId = rel.id;
           if (rel.status === "accepted") {
@@ -113,8 +107,7 @@ export default async function PublicPlayerPage({ params }: Props) {
       <div
         className="absolute inset-0"
         style={{
-          background: "radial-gradient(60% 50% at 50% 25%, rgba(198,255,0,0.18) 0%, transparent 60%), #05070B",
-        }}
+          background: "radial-gradient(60% 50% at 50% 25%, rgba(198,255,0,0.18) 0%, transparent 60%), #05070B"}}
       />
 
       <div className="relative h-full flex flex-col px-5 pt-6 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">

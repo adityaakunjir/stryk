@@ -11,8 +11,7 @@ export async function GET() {
 
     const user = await prisma.user.findUnique({
       where: { clerkId },
-      select: { id: true },
-    });
+      select: { id: true }});
 
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
@@ -21,8 +20,7 @@ export async function GET() {
     // Fetch all requests involving the user
     const relationships = await prisma.friendRequest.findMany({
       where: {
-        OR: [{ senderId: user.id }, { receiverId: user.id }],
-      },
+        OR: [{ senderId: user.id }, { receiverId: user.id }]},
       include: {
         sender: {
           select: {
@@ -32,9 +30,7 @@ export async function GET() {
             avatarUrl: true,
             position: true,
             playStyle: true,
-            overall: true,
-          },
-        },
+            overall: true}},
         receiver: {
           select: {
             id: true,
@@ -43,12 +39,8 @@ export async function GET() {
             avatarUrl: true,
             position: true,
             playStyle: true,
-            overall: true,
-          },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+            overall: true}}},
+      orderBy: { createdAt: "desc" }});
 
     const friends: any[] = [];
     const incomingRequests: any[] = [];
@@ -62,21 +54,18 @@ export async function GET() {
         friends.push({
           id: rel.id, // relationship ID
           user: otherUser,
-          createdAt: rel.createdAt,
-        });
+          createdAt: rel.createdAt});
       } else if (rel.status === "pending") {
         if (isSender) {
           outgoingRequests.push({
             id: rel.id,
             user: otherUser,
-            createdAt: rel.createdAt,
-          });
+            createdAt: rel.createdAt});
         } else {
           incomingRequests.push({
             id: rel.id,
             user: otherUser,
-            createdAt: rel.createdAt,
-          });
+            createdAt: rel.createdAt});
         }
       }
     });
@@ -85,8 +74,7 @@ export async function GET() {
       success: true,
       friends,
       incomingRequests,
-      outgoingRequests,
-    });
+      outgoingRequests});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

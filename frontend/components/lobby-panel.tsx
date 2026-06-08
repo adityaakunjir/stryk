@@ -23,8 +23,7 @@ export function LobbyPanel({ icon, label, title, meta, accent, onClick }: Props)
           : "1px solid rgba(255, 255, 255, 0.08)",
         boxShadow: accent
           ? "0 20px 40px -20px rgba(198,255,0,0.4)"
-          : "0 10px 30px -20px rgba(0,0,0,0.6)",
-      }}
+          : "0 10px 30px -20px rgba(0,0,0,0.6)"}}
     >
       <div
         aria-hidden

@@ -15,8 +15,7 @@ export async function POST(req: Request) {
     }
 
     const user = await prisma.user.findUnique({
-      where: { clerkId },
-    });
+      where: { clerkId }});
 
     if (!user) {
       return NextResponse.json(
@@ -28,7 +27,7 @@ export async function POST(req: Request) {
     let body;
     try {
       body = await req.json();
-    } catch (e) {
+    } catch {
       return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
     }
     const { matchId } = body;
@@ -49,9 +48,7 @@ export async function POST(req: Request) {
     const participant = await prisma.matchParticipant.findFirst({
       where: {
         matchId,
-        userId: user.id,
-      },
-    });
+        userId: user.id}});
 
     if (!participant) {
       return NextResponse.json(
@@ -64,29 +61,25 @@ export async function POST(req: Request) {
       return NextResponse.json({
         success: true,
         message: "You are already checked in",
-        data: participant,
-      });
+        data: participant});
     }
 
     // Update checkedIn status
     const updatedParticipant = await prisma.matchParticipant.update({
       where: { id: participant.id },
-      data: { checkedIn: true },
-    });
+      data: { checkedIn: true }});
 
     // Trigger real-time update via Pusher
     await triggerPusherEvent(`match-${matchId}`, "player-checked-in", {
       userId: user.id,
       username: user.username,
       fullName: user.fullName || user.username,
-      participantId: participant.id,
-    });
+      participantId: participant.id});
 
     return NextResponse.json({
       success: true,
       message: "Successfully checked in to the match",
-      data: updatedParticipant,
-    });
+      data: updatedParticipant});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

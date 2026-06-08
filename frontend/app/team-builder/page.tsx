@@ -51,7 +51,7 @@ export default function TeamBuilderPage() {
         setTeam(null);
         setUserRole(null);
       }
-    } catch (err) {
+    } catch {
       // Handle error implicitly through loading state fallbacks
     } finally {
       setLoading(false);
@@ -89,7 +89,7 @@ export default function TeamBuilderPage() {
       } else {
         toast.error(data.message || "Failed to update team");
       }
-    } catch (err) {
+    } catch {
       toast.error("An error occurred. Please try again.");
     } finally {
       setSettingsLoading(false);
@@ -116,7 +116,7 @@ export default function TeamBuilderPage() {
       } else {
         toast.error(data.message || "Failed to remove member");
       }
-    } catch (err) {
+    } catch {
       toast.error("An error occurred. Please try again.");
     }
   };
@@ -145,7 +145,7 @@ export default function TeamBuilderPage() {
       } else {
         toast.error(data.message || "Failed to transfer captaincy");
       }
-    } catch (err) {
+    } catch {
       toast.error("An error occurred. Please try again.");
     } finally {
       setSettingsLoading(false);
@@ -172,7 +172,7 @@ export default function TeamBuilderPage() {
       } else {
         toast.error(data.message || "Failed to delete team");
       }
-    } catch (err) {
+    } catch {
       toast.error("An error occurred. Please try again.");
     } finally {
       setSettingsLoading(false);
@@ -202,7 +202,7 @@ export default function TeamBuilderPage() {
       } else {
         toast.error(data.message || "Failed to create team");
       }
-    } catch (err) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setCreating(false);
@@ -232,7 +232,7 @@ export default function TeamBuilderPage() {
       } else {
         toast.error(data.message || "Failed to send invitation");
       }
-    } catch (err) {
+    } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
       setInviteLoading(false);
@@ -338,7 +338,7 @@ export default function TeamBuilderPage() {
         <div className="flex flex-col items-center mb-10">
           <div className="w-24 h-24 rounded-3xl bg-[#0A0E17] border border-white/10 flex items-center justify-center shadow-2xl shadow-[#C6FF00]/10 relative overflow-hidden mb-5">
              {team.logoUrl ? (
-               // eslint-disable-next-line @next/next/no-img-element
+                
                <img src={team.logoUrl} alt={team.name} className="w-full h-full object-cover relative z-10" />
              ) : (
                <>
@@ -367,7 +367,7 @@ export default function TeamBuilderPage() {
               <div className="p-3 rounded-2xl border border-[#C6FF00]/30 bg-[#C6FF00]/5 flex items-center gap-4">
                  <div className="relative size-12 rounded-full overflow-hidden border border-[#C6FF00]/50 bg-[#0B1020] shrink-0 flex items-center justify-center">
                     {captain.user.avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
+                       
                       <img src={captain.user.avatarUrl} alt={captain.user.fullName || captain.user.username} className="w-full h-full object-cover" />
                     ) : (
                       <User size={20} className="text-[#C6FF00]/50" />
@@ -398,7 +398,7 @@ export default function TeamBuilderPage() {
                   <div key={m.id} className="p-3 rounded-2xl border border-white/10 bg-white/[0.03] flex items-center gap-4">
                      <div className="relative size-10 rounded-full overflow-hidden border border-white/10 bg-[#0B1020] shrink-0 flex items-center justify-center">
                         {m.user.avatarUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
+                           
                           <img src={m.user.avatarUrl} alt={m.user.fullName || m.user.username} className="w-full h-full object-cover" />
                         ) : (
                           <User size={16} className="text-white/30" />
@@ -526,7 +526,7 @@ export default function TeamBuilderPage() {
                   <div className="flex items-center gap-3">
                     <div className="w-14 h-14 rounded-xl bg-[#0A0E17] border border-white/10 flex items-center justify-center relative overflow-hidden shrink-0">
                       {editLogoUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
+                         
                         <img src={editLogoUrl} alt="Logo Preview" className="w-full h-full object-cover" />
                       ) : (
                         <ShieldCheck size={24} className="text-white/25" />

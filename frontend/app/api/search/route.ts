@@ -49,18 +49,15 @@ export async function GET(req: Request) {
         avatarUrl: true,
         position: true,
         playStyle: true,
-        overall: true,
-      },
+        overall: true},
       take: 20, // Limit results
       orderBy: {
         overall: "desc", // Show highest rated players first
-      },
-    });
+      }});
 
     return NextResponse.json({
       success: true,
-      data: users,
-    });
+      data: users});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

@@ -81,8 +81,7 @@ export default function SearchPage() {
       <div
         className="absolute inset-0"
         style={{
-          background: "radial-gradient(60% 50% at 50% 15%, rgba(198,255,0,0.1) 0%, transparent 60%), #05070B",
-        }}
+          background: "radial-gradient(60% 50% at 50% 15%, rgba(198,255,0,0.1) 0%, transparent 60%), #05070B"}}
       />
 
       <div className="relative h-full flex flex-col px-5 pt-6 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">

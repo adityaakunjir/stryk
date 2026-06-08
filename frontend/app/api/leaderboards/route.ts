@@ -66,9 +66,7 @@ export async function GET() {
         avatarUrl: true,
         overall: true,
         position: true,
-        playStyle: true,
-      },
-    });
+        playStyle: true}});
 
     // ─── Fetch real teams from DB ──────────────────────────────────
     const dbTeams = await prisma.team.findMany({
@@ -78,9 +76,7 @@ export async function GET() {
         logoUrl: true,
         wins: true,
         draws: true,
-        losses: true,
-      },
-    });
+        losses: true}});
 
     // ─── Process CAM Leaderboard ────────────────────────────────────
     const realCAMs = dbUsers
@@ -92,8 +88,7 @@ export async function GET() {
         avatarUrl: u.avatarUrl || "",
         overall: u.overall,
         position: u.position || "CAM",
-        playStyle: u.playStyle || "Playmaker",
-      }));
+        playStyle: u.playStyle || "Playmaker"}));
     const combinedCAMs = [...realCAMs, ...mockCAMs];
     // Filter duplicates by username (keeping DB version if matches)
     const uniqueCAMs = Array.from(
@@ -110,8 +105,7 @@ export async function GET() {
         avatarUrl: u.avatarUrl || "",
         overall: u.overall,
         position: u.position || "ST",
-        playStyle: u.playStyle || "Poacher",
-      }));
+        playStyle: u.playStyle || "Poacher"}));
     const combinedSTs = [...realSTs, ...mockSTs];
     const uniqueSTs = Array.from(
       combinedSTs.reduce((map, p) => map.set(p.username, p), new Map()).values()
@@ -127,8 +121,7 @@ export async function GET() {
         avatarUrl: u.avatarUrl || "",
         overall: u.overall,
         position: u.position || "GK",
-        playStyle: u.playStyle || "Goalkeeper",
-      }));
+        playStyle: u.playStyle || "Goalkeeper"}));
     const combinedGKs = [...realGKs, ...mockGKs];
     const uniqueGKs = Array.from(
       combinedGKs.reduce((map, p) => map.set(p.username, p), new Map()).values()
@@ -141,8 +134,7 @@ export async function GET() {
       logoUrl: t.logoUrl || "",
       wins: t.wins,
       draws: t.draws,
-      losses: t.losses,
-    }));
+      losses: t.losses}));
     const combinedTeams = [...realTeams, ...mockTeams];
     const uniqueTeams = Array.from(
       combinedTeams.reduce((map, t) => map.set(t.name, t), new Map()).values()
@@ -161,9 +153,7 @@ export async function GET() {
         CAM: uniqueCAMs,
         ST: uniqueSTs,
         GK: uniqueGKs,
-        Teams: uniqueTeams,
-      },
-    });
+        Teams: uniqueTeams}});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

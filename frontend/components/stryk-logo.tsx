@@ -2,8 +2,7 @@ import { cn } from "@/lib/utils";
 
 export function StrykLogo({
   compact = false,
-  centered = false,
-}: {
+  centered = false}: {
   compact?: boolean;
   centered?: boolean;
 }) {

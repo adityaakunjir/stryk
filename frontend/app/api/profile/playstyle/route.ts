@@ -16,7 +16,7 @@ export async function PATCH(req: Request) {
     let body;
     try {
       body = await req.json();
-    } catch (e) {
+    } catch {
       return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
     }
     const { playStyle } = body;
@@ -35,8 +35,7 @@ export async function PATCH(req: Request) {
 
     const user = await prisma.user.update({
       where: { clerkId: userId },
-      data: { playStyle },
-    });
+      data: { playStyle }});
 
     return NextResponse.json({ success: true, user });
   } catch (error) {

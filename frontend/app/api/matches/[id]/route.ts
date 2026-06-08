@@ -41,13 +41,7 @@ export async function GET(req: Request, { params }: RouteParams) {
                 avatarUrl: true,
                 overall: true,
                 position: true,
-                playStyle: true,
-              },
-            },
-          },
-        },
-      },
-    });
+                playStyle: true}}}}}});
 
     if (!match) {
       return NextResponse.json(
@@ -65,17 +59,13 @@ export async function GET(req: Request, { params }: RouteParams) {
         fullName: true,
         avatarUrl: true,
         overall: true,
-        position: true,
-      },
-    });
+        position: true}});
 
     return NextResponse.json({
       success: true,
       data: {
         ...match,
-        creator,
-      },
-    });
+        creator}});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

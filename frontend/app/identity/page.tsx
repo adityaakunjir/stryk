@@ -15,8 +15,7 @@ import {
   ScanFace,
   ShieldCheck,
   UserRound,
-  X,
-} from "lucide-react";
+  X} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/components/player-context";
@@ -135,7 +134,7 @@ export default function IdentityPage() {
       } else {
         setUsernameStatus("taken");
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to verify username. Please try again.");
       setUsernameStatus("idle");
     }
@@ -165,14 +164,11 @@ export default function IdentityPage() {
       const response = await fetch("/api/profile", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"},
         body: JSON.stringify({
           fullName: fullName.trim(),
           username: username.trim(),
-          avatarUrl: avatar,
-        }),
-      });
+          avatarUrl: avatar})});
 
       const data = await response.json();
 
@@ -183,7 +179,7 @@ export default function IdentityPage() {
       }
       
       toast.success("Profile saved successfully!");
-    } catch (err) {
+    } catch {
       // Ignored: expected to fail on static exports if not fully configured
     } finally {
       setSubmitting(false);
@@ -192,8 +188,7 @@ export default function IdentityPage() {
     updatePlayerData({
       fullName: fullName.trim(),
       username: username.trim(),
-      avatar: avatar,
-    });
+      avatar: avatar});
 
     router.push("/position");
   };
@@ -208,8 +203,7 @@ export default function IdentityPage() {
     strongFoot: "Left" as const,
     playStyle: "Playmaker" as const,
     bio: "",
-    rating: 82,
-  };
+    rating: 82};
 
   return (
     <main className="stryk-mobile-shell text-white bg-[#05070B]">

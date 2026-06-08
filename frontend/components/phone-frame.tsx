@@ -30,8 +30,7 @@ export function PhoneFrame({ label, index, children }: Props) {
           background:
             "linear-gradient(160deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02))",
           boxShadow:
-            "0 50px 80px -30px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.08)",
-        }}
+            "0 50px 80px -30px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.08)"}}
       >
         <div
           className="relative w-[360px] h-[640px] rounded-[38px] overflow-hidden"

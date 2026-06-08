@@ -42,8 +42,7 @@ export default function NotificationsPage() {
           teamId: inv.teamId,
           teamName: inv.teamName,
           status: inv.status,
-          createdAt: inv.createdAt,
-        }));
+          createdAt: inv.createdAt}));
         allNotifs = [...allNotifs, ...mapped];
       }
 
@@ -54,8 +53,7 @@ export default function NotificationsPage() {
           userId: req.user.id,
           userName: req.user.fullName || req.user.username,
           status: "pending",
-          createdAt: req.createdAt,
-        }));
+          createdAt: req.createdAt}));
         allNotifs = [...allNotifs, ...mapped];
       }
 
@@ -94,8 +92,7 @@ export default function NotificationsPage() {
       const res = await fetch(endpoint, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+        body: JSON.stringify(body)});
 
       const data = await res.json();
       if (data.success) {
@@ -103,8 +100,7 @@ export default function NotificationsPage() {
           type: "success",
           msg: action === "accept" 
             ? (type === "invite" ? "Successfully joined the squad!" : "Friend request accepted!") 
-            : (type === "invite" ? "Invitation declined." : "Friend request declined."),
-        });
+            : (type === "invite" ? "Invitation declined." : "Friend request declined.")});
         await fetchNotifications();
       } else {
         setFeedback({ type: "error", msg: data.message || "Action failed." });

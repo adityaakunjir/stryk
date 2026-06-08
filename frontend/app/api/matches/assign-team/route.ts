@@ -15,8 +15,7 @@ export async function POST(req: Request) {
     }
 
     const user = await prisma.user.findUnique({
-      where: { clerkId },
-    });
+      where: { clerkId }});
 
     if (!user) {
       return NextResponse.json(
@@ -28,7 +27,7 @@ export async function POST(req: Request) {
     let body;
     try {
       body = await req.json();
-    } catch (e) {
+    } catch {
       return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
     }
     const { matchId, teamName } = body; // teamName can be "Team A", "Team B", or null
@@ -49,9 +48,7 @@ export async function POST(req: Request) {
     const participant = await prisma.matchParticipant.findFirst({
       where: {
         matchId,
-        userId: user.id,
-      },
-    });
+        userId: user.id}});
 
     if (!participant) {
       return NextResponse.json(
@@ -64,22 +61,18 @@ export async function POST(req: Request) {
     const updatedParticipant = await prisma.matchParticipant.update({
       where: { id: participant.id },
       data: {
-        team: teamName || null,
-      },
-    });
+        team: teamName || null}});
 
     // Trigger Pusher event
     await triggerPusherEvent(`match-${matchId}`, "team-assigned", {
       participantId: participant.id,
       userId: user.id,
-      team: teamName || null,
-    });
+      team: teamName || null});
 
     return NextResponse.json({
       success: true,
       message: `Successfully assigned to ${teamName || "Unassigned"}`,
-      data: updatedParticipant,
-    });
+      data: updatedParticipant});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

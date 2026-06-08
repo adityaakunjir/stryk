@@ -20,22 +20,18 @@ export async function GET(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: "Username parameter is required",
-        },
+          message: "Username parameter is required"},
         { status: 400 }
       );
     }
 
     const existingUser = await prisma.user.findUnique({
       where: {
-        username: username,
-      },
-    });
+        username: username}});
 
     return NextResponse.json({
       success: true,
-      available: !existingUser,
-    });
+      available: !existingUser});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

@@ -27,7 +27,7 @@ export default function InvitesPage() {
       if (data.success) {
         setInvites(data.invites || []);
       }
-    } catch (err) {
+    } catch {
       // Handled implicitly by fallback UI
     } finally {
       setLoading(false);
@@ -47,8 +47,7 @@ export default function InvitesPage() {
       const res = await fetch(endpoint, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inviteId }),
-      });
+        body: JSON.stringify({ inviteId })});
 
       const data = await res.json();
       if (data.success) {
@@ -61,7 +60,7 @@ export default function InvitesPage() {
       } else {
         toast.error(data.message || "Failed to respond to invitation");
       }
-    } catch (err) {
+    } catch {
       toast.error("An error occurred. Please try again.");
     } finally {
       setActionLoadingId(null);

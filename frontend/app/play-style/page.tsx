@@ -16,8 +16,7 @@ import {
   Info,
   Shield,
   Sparkles,
-  Zap,
-} from "lucide-react";
+  Zap} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { usePlayer, PlayStyleType } from "@/components/player-context";
@@ -28,26 +27,22 @@ const styles = [
     title: "Speedster" as PlayStyleType,
     copy: "Explosive pace and agility.",
     icon: Gauge,
-    tone: "from-sky-300/20",
-  },
+    tone: "from-sky-300/20"},
   {
     title: "Playmaker" as PlayStyleType,
     copy: "Creates chances. Controls the game.",
     icon: Sparkles,
-    tone: "from-lime-300/28",
-  },
+    tone: "from-lime-300/28"},
   {
     title: "Poacher" as PlayStyleType,
     copy: "Always in the right place. Finishes cold.",
     icon: Crosshair,
-    tone: "from-violet-400/30",
-  },
+    tone: "from-violet-400/30"},
   {
     title: "Box-to-Box" as PlayStyleType,
     copy: "Covers ground. Impacts everywhere.",
     icon: Zap,
-    tone: "from-amber-300/20",
-  },
+    tone: "from-amber-300/20"},
 ];
 
 function StepProgress() {
@@ -93,8 +88,7 @@ function StyleCard({
   active = false,
   tone,
   icon: Icon,
-  onClick,
-}: (typeof styles)[number] & { active: boolean; onClick: () => void }) {
+  onClick}: (typeof styles)[number] & { active: boolean; onClick: () => void }) {
   return (
     <article
       onClick={onClick}
@@ -177,8 +171,7 @@ export default function PlayStylePage() {
     e.preventDefault();
     updatePlayerData({
       playStyle: selectedStyle,
-      bio: bio.trim(),
-    });
+      bio: bio.trim()});
     router.push("/home");
   };
 

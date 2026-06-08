@@ -10,8 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: "Unauthorized",
-        },
+          message: "Unauthorized"},
         { status: 401 }
       );
     }
@@ -20,27 +19,22 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.upsert({
       where: {
-        clerkId: userId,
-      },
+        clerkId: userId},
       update: {
         fullName: body.fullName,
         username: body.username,
-        avatarUrl: body.avatarUrl,
-      },
+        avatarUrl: body.avatarUrl},
       create: {
         clerkId: userId,
         fullName: body.fullName,
         username: body.username,
-        avatarUrl: body.avatarUrl,
-      },
-    });
+        avatarUrl: body.avatarUrl}});
 
 
 
     return NextResponse.json({
       success: true,
-      user,
-    });
+      user});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

@@ -5,8 +5,7 @@ import { useEffect, useState } from "react";
 import {
   SignInButton,
   SignUpButton,
-  useAuth,
-} from "@clerk/clerk-react";
+  useAuth} from "@clerk/clerk-react";
 
 import { StrykLogo } from "@/components/stryk-logo";
 import { usePlayer } from "@/components/player-context";
@@ -18,7 +17,7 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setMounted(true);
   }, []);
 
@@ -45,8 +44,7 @@ export default function Home() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(198,255,0,0.14) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 50% 110%, rgba(91,140,255,0.08) 0%, transparent 55%), #05070B",
-        }}
+            "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(198,255,0,0.14) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 50% 110%, rgba(91,140,255,0.08) 0%, transparent 55%), #05070B"}}
       />
 
       {/* Content */}

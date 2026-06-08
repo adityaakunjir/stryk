@@ -107,8 +107,7 @@ export default function LeaderboardsPage() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(70% 45% at 50% 12%, rgba(198,255,0,0.12) 0%, transparent 60%), radial-gradient(60% 40% at 50% 100%, rgba(91,140,255,0.06) 0%, transparent 65%), #05070B",
-        }}
+            "radial-gradient(70% 45% at 50% 12%, rgba(198,255,0,0.12) 0%, transparent 60%), radial-gradient(60% 40% at 50% 100%, rgba(91,140,255,0.06) 0%, transparent 65%), #05070B"}}
       />
 
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
@@ -297,8 +296,7 @@ function PodiumSlot({
   badgeColor,
   glowColor,
   pulse = false,
-  currentUser = false,
-}: PodiumSlotProps) {
+  currentUser = false}: PodiumSlotProps) {
   const isTeam = "wins" in item;
 
   return (

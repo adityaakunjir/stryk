@@ -4,8 +4,7 @@ import React from "react";
 import {
   ClerkProvider,
   useAuth as useClerkAuth,
-  useUser as useClerkUser,
-} from "@clerk/clerk-react";
+  useUser as useClerkUser} from "@clerk/clerk-react";
 
 interface StrykUser {
   id: string;
@@ -30,8 +29,7 @@ export function useStrykAuth(): AuthContextType {
       isLoaded: false,
       isSignedIn: false,
       user: null,
-      getToken: async () => null,
-    };
+      getToken: async () => null};
   }
 
   if (clerkAuth.isSignedIn && clerkUser.user) {
@@ -43,19 +41,15 @@ export function useStrykAuth(): AuthContextType {
         fullName: clerkUser.user.fullName || "STRYK Player",
         primaryEmailAddress: {
           emailAddress:
-            clerkUser.user.primaryEmailAddress?.emailAddress || "",
-        },
-      },
-      getToken: async () => clerkAuth.getToken(),
-    };
+            clerkUser.user.primaryEmailAddress?.emailAddress || ""}},
+      getToken: async () => clerkAuth.getToken()};
   }
 
   return {
     isLoaded: true,
     isSignedIn: false,
     user: null,
-    getToken: async () => null,
-  };
+    getToken: async () => null};
 }
 
 const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_test_YmVsb3ZlZC1hbHBhY2EtMTUuY2xlcmsuYWNjb3VudHMuZGV2JA";

@@ -27,8 +27,7 @@ export default function CardPage() {
       navigator.share({
         title: `${playerData.fullName}'s STRYK Card`,
         text: `Check out my football identity card on STRYK!`,
-        url: window.location.href,
-      }).catch(console.error);
+        url: window.location.href}).catch(console.error);
     } else {
       navigator.clipboard.writeText(window.location.href);
       setCopied(true);
@@ -69,8 +68,7 @@ export default function CardPage() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(60% 50% at 50% 25%, rgba(198,255,0,0.18) 0%, transparent 60%), #05070B",
-        }}
+            "radial-gradient(60% 50% at 50% 25%, rgba(198,255,0,0.18) 0%, transparent 60%), #05070B"}}
       />
 
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
@@ -154,8 +152,7 @@ export default function CardPage() {
                     height: `${bar.val * 100}%`,
                     background: bar.isActive 
                       ? "linear-gradient(to top, #C6FF00, rgba(198,255,0,0.4))" 
-                      : "rgba(255,255,255,0.04)",
-                  }}
+                      : "rgba(255,255,255,0.04)"}}
                 />
               ))}
             </div>

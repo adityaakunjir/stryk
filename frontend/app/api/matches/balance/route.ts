@@ -15,8 +15,7 @@ export async function POST(req: Request) {
     }
 
     const user = await prisma.user.findUnique({
-      where: { clerkId },
-    });
+      where: { clerkId }});
 
     if (!user) {
       return NextResponse.json(
@@ -28,7 +27,7 @@ export async function POST(req: Request) {
     let body;
     try {
       body = await req.json();
-    } catch (e) {
+    } catch {
       return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
     }
     const { matchId } = body;
@@ -54,13 +53,7 @@ export async function POST(req: Request) {
                 avatarUrl: true,
                 overall: true,
                 position: true,
-                playStyle: true,
-              },
-            },
-          },
-        },
-      },
-    });
+                playStyle: true}}}}}});
 
     if (!match) {
       return NextResponse.json(
@@ -94,8 +87,7 @@ export async function POST(req: Request) {
       avatarUrl: p.user.avatarUrl,
       position: p.user.position,
       playStyle: p.user.playStyle,
-      rating: p.user.overall,
-    }));
+      rating: p.user.overall}));
 
     // ─── Greedy Partition Algorithm ────────────────────────────────
     // Sort players by rating descending, assign to the team with
@@ -121,14 +113,12 @@ export async function POST(req: Request) {
       ...teamA.map((p) =>
         prisma.matchParticipant.update({
           where: { id: p.participantId },
-          data: { team: "Team A" },
-        })
+          data: { team: "Team A" }})
       ),
       ...teamB.map((p) =>
         prisma.matchParticipant.update({
           where: { id: p.participantId },
-          data: { team: "Team B" },
-        })
+          data: { team: "Team B" }})
       ),
     ];
 
@@ -138,8 +128,7 @@ export async function POST(req: Request) {
     await triggerPusherEvent(`match-${matchId}`, "teams-balanced", {
       teamA: teamA.map((p) => ({ id: p.id, username: p.username, fullName: p.fullName })),
       teamB: teamB.map((p) => ({ id: p.id, username: p.username, fullName: p.fullName })),
-      ratingDiff: Math.abs(sumA - sumB),
-    });
+      ratingDiff: Math.abs(sumA - sumB)});
 
     return NextResponse.json({
       success: true,
@@ -149,9 +138,7 @@ export async function POST(req: Request) {
         teamB,
         ratingDiff: Math.abs(sumA - sumB),
         avgA: teamA.length > 0 ? Math.round(sumA / teamA.length) : 0,
-        avgB: teamB.length > 0 ? Math.round(sumB / teamB.length) : 0,
-      },
-    });
+        avgB: teamB.length > 0 ? Math.round(sumB / teamB.length) : 0}});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

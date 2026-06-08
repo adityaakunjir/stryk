@@ -15,8 +15,7 @@ export async function POST(req: Request) {
     }
 
     const user = await prisma.user.findUnique({
-      where: { clerkId },
-    });
+      where: { clerkId }});
 
     if (!user) {
       return NextResponse.json(
@@ -28,7 +27,7 @@ export async function POST(req: Request) {
     let body;
     try {
       body = await req.json();
-    } catch (e) {
+    } catch {
       return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
     }
     const { matchId } = body;
@@ -57,9 +56,7 @@ export async function POST(req: Request) {
     const participant = await prisma.matchParticipant.findFirst({
       where: {
         matchId,
-        userId: user.id,
-      },
-    });
+        userId: user.id}});
 
     if (!participant) {
       return NextResponse.json(
@@ -72,26 +69,22 @@ export async function POST(req: Request) {
     await prisma.$transaction(async (tx) => {
       // 1. Delete the MatchParticipant row
       await tx.matchParticipant.delete({
-        where: { id: participant.id },
-      });
+        where: { id: participant.id }});
 
       // 2. Since a player left, make sure the Match status is set to "open"
       await tx.match.update({
         where: { id: matchId },
-        data: { status: "open" },
-      });
+        data: { status: "open" }});
     });
 
     // Trigger Pusher event
     await triggerPusherEvent(`match-${matchId}`, "player-left", {
       userId: user.id,
-      participantId: participant.id,
-    });
+      participantId: participant.id});
 
     return NextResponse.json({
       success: true,
-      message: "Successfully left the match lobby",
-    });
+      message: "Successfully left the match lobby"});
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

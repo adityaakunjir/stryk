@@ -23,8 +23,7 @@ export function FriendActionButton({ targetUserId, initialStatus, requestId }: F
       const res = await fetch("/api/friends/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetUserId }),
-      });
+        body: JSON.stringify({ targetUserId })});
       const data = await res.json();
       if (data.success) {
         setStatus("pending_sent");
@@ -43,8 +42,7 @@ export function FriendActionButton({ targetUserId, initialStatus, requestId }: F
       const res = await fetch("/api/friends/respond", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requestId, action }),
-      });
+        body: JSON.stringify({ requestId, action })});
       const data = await res.json();
       if (data.success) {
         setStatus(action === "accept" ? "accepted" : "none");

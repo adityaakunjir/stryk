@@ -177,8 +177,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       const res = await fetch("/api/matches/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ matchId }),
-      });
+        body: JSON.stringify({ matchId })});
 
       const data = await res.json();
       if (data.success) {
@@ -201,8 +200,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       const res = await fetch("/api/matches/leave", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ matchId }),
-      });
+        body: JSON.stringify({ matchId })});
 
       const data = await res.json();
       if (data.success) {
@@ -226,9 +224,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           matchId,
-          teamName,
-        }),
-      });
+          teamName})});
 
       const data = await res.json();
       if (data.success) {
@@ -250,8 +246,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       const res = await fetch("/api/matches/check-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ matchId }),
-      });
+        body: JSON.stringify({ matchId })});
 
       const data = await res.json();
       if (data.success) {
@@ -275,8 +270,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       const res = await fetch("/api/matches/balance", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ matchId }),
-      });
+        body: JSON.stringify({ matchId })});
 
       const data = await res.json();
       if (data.success) {
@@ -342,9 +336,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
         day: "numeric",
         hour: "numeric",
         minute: "2-digit",
-        hour12: true,
-      });
-    } catch (_) {
+        hour12: true});
+    } catch (err) {
       return dateStr;
     }
   };
@@ -414,7 +407,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
             <div className="p-3 rounded-2xl border border-[#C6FF00]/20 bg-[#C6FF00]/5 flex items-center gap-4">
               <div className="relative size-12 rounded-full overflow-hidden border border-[#C6FF00]/40 bg-[#0A0D15] shrink-0 flex items-center justify-center">
                 {match.creator.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
+                   
                   <img src={match.creator.avatarUrl} alt={match.creator.fullName || match.creator.username} className="w-full h-full object-cover" />
                 ) : (
                   <User size={20} className="text-[#C6FF00]/40" />
@@ -621,7 +614,7 @@ function PlayerRow({ participant, showJoinedIcon }: { participant: MatchParticip
     <div className="p-2.5 rounded-xl border border-white/5 bg-white/[0.01] flex items-center gap-3">
       <div className="relative size-8 rounded-full overflow-hidden border border-white/10 bg-[#0B1020] shrink-0 flex items-center justify-center">
         {user.avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
+           
           <img src={user.avatarUrl} alt={user.fullName || user.username} className="w-full h-full object-cover" />
         ) : (
           <User size={14} className="text-white/20" />

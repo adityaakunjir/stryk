@@ -13,19 +13,14 @@ const buttonVariants = cva(
           "bg-lime-300 text-black shadow-[0_0_34px_rgba(190,255,24,0.34)] hover:bg-lime-200",
         outline:
           "border border-lime-300/55 bg-black/20 text-white hover:border-lime-200 hover:bg-lime-300/10",
-        ghost: "text-lime-200 hover:bg-lime-300/10 hover:text-lime-100",
-      },
+        ghost: "text-lime-200 hover:bg-lime-300/10 hover:text-lime-100"},
       size: {
         default: "h-12 px-6",
         lg: "h-16 px-8 text-base",
-        icon: "size-12",
-      },
-    },
+        icon: "size-12"}},
     defaultVariants: {
       variant: "default",
-      size: "default",
-    },
-  },
+      size: "default"}},
 );
 
 export interface ButtonProps
