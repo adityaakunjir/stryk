@@ -30,6 +30,8 @@ model User {
   updatedAt     DateTime @updatedAt
   teamMembers   TeamMember[]
   matchParticipants MatchParticipant[]
+  sentFriendRequests     FriendRequest[] @relation("SentRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedRequests")
 }
 
 model Team {
@@ -113,4 +115,20 @@ model MatchParticipant {
 
   @@index([matchId])
   @@index([userId])
+}
+
+model FriendRequest {
+  id         String   @id @default(cuid())
+
+  senderId   String
+  receiverId String
+
+  status     String   @default("pending") // "pending", "accepted", "rejected"
+  createdAt  DateTime @default(now())
+
+  sender     User     @relation("SentRequests", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedRequests", fields: [receiverId], references: [id])
+
+  @@unique([senderId, receiverId])
+  @@index([receiverId, status])
 }

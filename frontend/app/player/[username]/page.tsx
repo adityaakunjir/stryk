@@ -5,6 +5,8 @@ import { calculateOvr } from "@/lib/stat-utils";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
+import { FriendActionButton } from "@/components/friend-action-button";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -74,6 +76,37 @@ export default async function PublicPlayerPage({ params }: Props) {
   const drawPercent = totalMatches > 0 ? (draws / totalMatches) * 100 : 0;
   const lossPercent = totalMatches > 0 ? (losses / totalMatches) * 100 : 0;
 
+  // Determine Friend Status
+  const { userId: clerkId } = await auth();
+  let viewerUserId: string | null = null;
+  let friendStatus: "none" | "pending_sent" | "pending_received" | "accepted" = "none";
+  let friendRequestId: string | undefined = undefined;
+
+  if (clerkId) {
+    const viewer = await prisma.user.findUnique({ where: { clerkId } });
+    if (viewer) {
+      viewerUserId = viewer.id;
+      if (viewer.id !== user.id) {
+        const rel = await prisma.friendRequest.findFirst({
+          where: {
+            OR: [
+              { senderId: viewer.id, receiverId: user.id },
+              { senderId: user.id, receiverId: viewer.id },
+            ],
+          },
+        });
+        if (rel) {
+          friendRequestId = rel.id;
+          if (rel.status === "accepted") {
+            friendStatus = "accepted";
+          } else if (rel.status === "pending") {
+            friendStatus = rel.senderId === viewer.id ? "pending_sent" : "pending_received";
+          }
+        }
+      }
+    }
+  }
+
   return (
     <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
       {/* Ambient bg */}
@@ -87,9 +120,9 @@ export default async function PublicPlayerPage({ params }: Props) {
       <div className="relative h-full flex flex-col px-5 pt-6 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <Link href="/" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition">
-            <ArrowLeft size={16} />
-          </Link>
+          <button onClick={() => {}} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition">
+             <Link href="/" className="flex items-center justify-center w-full h-full"><ArrowLeft size={16} /></Link>
+          </button>
           <div className="text-[10px] tracking-[0.35em] uppercase text-white/50 font-bold">Public Card</div>
           <div className="w-9 h-9" /> {/* Placeholder for balance */}
         </div>
@@ -146,12 +179,16 @@ export default async function PublicPlayerPage({ params }: Props) {
         </div>
 
         <div className="mt-8 block pb-8">
-          <Link
-            href="/identity"
-            className="w-full flex items-center justify-center rounded-2xl py-3.5 bg-[#C6FF00] text-black font-display tracking-[0.2em] cursor-pointer hover:bg-[#b0e600] transition duration-200 text-sm shadow-[0_20px_40px_-10px_rgba(198,255,0,0.55),inset_0_1px_0_rgba(255,255,255,0.4)]"
-          >
-            CREATE YOUR OWN CARD
-          </Link>
+          {viewerUserId && viewerUserId !== user.id ? (
+            <FriendActionButton targetUserId={user.id} initialStatus={friendStatus} requestId={friendRequestId} />
+          ) : !viewerUserId ? (
+            <Link
+              href="/identity"
+              className="w-full flex items-center justify-center rounded-2xl py-3.5 bg-[#C6FF00] text-black font-display tracking-[0.2em] cursor-pointer hover:bg-[#b0e600] transition duration-200 text-sm shadow-[0_20px_40px_-10px_rgba(198,255,0,0.55),inset_0_1px_0_rgba(255,255,255,0.4)]"
+            >
+              CREATE YOUR OWN CARD
+            </Link>
+          ) : null}
         </div>
       </div>
     </main>

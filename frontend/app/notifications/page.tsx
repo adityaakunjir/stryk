@@ -6,11 +6,15 @@ import { ArrowLeft, Loader2, Bell, Check, X, Mail, Users } from "lucide-react";
 
 interface Notification {
   id: string;
-  type: "invite";
-  teamId: string;
-  teamName: string;
+  type: "invite" | "friend_request";
   status: string;
   createdAt: string;
+  // For invites
+  teamId?: string;
+  teamName?: string;
+  // For friend requests
+  userId?: string;
+  userName?: string;
 }
 
 export default function NotificationsPage() {
@@ -22,10 +26,17 @@ export default function NotificationsPage() {
 
   const fetchNotifications = async () => {
     try {
-      const res = await fetch("/api/team/invite");
-      const data = await res.json();
-      if (data.success) {
-        const mapped: Notification[] = (data.invites || []).map((inv: any) => ({
+      const [teamRes, friendRes] = await Promise.all([
+        fetch("/api/team/invite"),
+        fetch("/api/friends")
+      ]);
+      const teamData = await teamRes.json();
+      const friendData = await friendRes.json();
+
+      let allNotifs: Notification[] = [];
+
+      if (teamData.success) {
+        const mapped: Notification[] = (teamData.invites || []).map((inv: any) => ({
           id: inv.id,
           type: "invite" as const,
           teamId: inv.teamId,
@@ -33,10 +44,25 @@ export default function NotificationsPage() {
           status: inv.status,
           createdAt: inv.createdAt,
         }));
-        setNotifications(mapped);
+        allNotifs = [...allNotifs, ...mapped];
       }
+
+      if (friendData.success) {
+        const mapped: Notification[] = (friendData.incomingRequests || []).map((req: any) => ({
+          id: req.id,
+          type: "friend_request" as const,
+          userId: req.user.id,
+          userName: req.user.fullName || req.user.username,
+          status: "pending",
+          createdAt: req.createdAt,
+        }));
+        allNotifs = [...allNotifs, ...mapped];
+      }
+
+      allNotifs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      setNotifications(allNotifs);
     } catch {
-      // Silently handle — empty notifications
+      // Silently handle
     } finally {
       setLoading(false);
     }
@@ -46,24 +72,38 @@ export default function NotificationsPage() {
     fetchNotifications();
   }, []);
 
-  const handleRespond = async (inviteId: string, action: "accept" | "decline") => {
-    setActionLoadingId(inviteId);
+  const handleRespond = async (notifId: string, type: "invite" | "friend_request", action: "accept" | "decline") => {
+    setActionLoadingId(notifId);
     setFeedback(null);
 
     try {
-      const endpoint = action === "accept" ? "/api/team/accept" : "/api/team/invite";
-      const method = action === "accept" ? "POST" : "DELETE";
+      let endpoint = "";
+      let method = "";
+      let body: any = {};
+
+      if (type === "invite") {
+        endpoint = action === "accept" ? "/api/team/accept" : "/api/team/invite";
+        method = action === "accept" ? "POST" : "DELETE";
+        body = { inviteId: notifId };
+      } else {
+        endpoint = "/api/friends/respond";
+        method = "POST";
+        body = { requestId: notifId, action: action === "accept" ? "accept" : "reject" };
+      }
+
       const res = await fetch(endpoint, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inviteId }),
+        body: JSON.stringify(body),
       });
 
       const data = await res.json();
       if (data.success) {
         setFeedback({
           type: "success",
-          msg: action === "accept" ? "Successfully joined the squad!" : "Invitation declined.",
+          msg: action === "accept" 
+            ? (type === "invite" ? "Successfully joined the squad!" : "Friend request accepted!") 
+            : (type === "invite" ? "Invitation declined." : "Friend request declined."),
         });
         await fetchNotifications();
       } else {
@@ -169,17 +209,17 @@ export default function NotificationsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold text-white leading-snug">
-                      <span className="text-[#C6FF00] font-bold">{n.teamName}</span> invited you
+                      <span className="text-[#C6FF00] font-bold">{n.type === "invite" ? n.teamName : n.userName}</span> {n.type === "invite" ? "invited you" : "sent a friend request"}
                     </div>
                     <div className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5">
-                      Squad Invitation • {formatTime(n.createdAt)}
+                      {n.type === "invite" ? "Squad Invitation" : "Friend Request"} • {formatTime(n.createdAt)}
                     </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <button
-                    onClick={() => handleRespond(n.id, "decline")}
+                    onClick={() => handleRespond(n.id, n.type, "decline")}
                     disabled={actionLoadingId !== null}
                     className="h-10 rounded-2xl border border-white/10 bg-white/5 text-xs font-display tracking-widest text-white/80 uppercase hover:bg-white/10 hover:text-white cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-1.5"
                     type="button"
@@ -193,7 +233,7 @@ export default function NotificationsPage() {
                     )}
                   </button>
                   <button
-                    onClick={() => handleRespond(n.id, "accept")}
+                    onClick={() => handleRespond(n.id, n.type, "accept")}
                     disabled={actionLoadingId !== null}
                     className="h-10 rounded-2xl bg-[#C6FF00] text-black text-xs font-display tracking-widest font-bold uppercase hover:bg-[#b0e600] cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-[0_10px_20px_-5px_rgba(198,255,0,0.3)]"
                     type="button"

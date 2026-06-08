@@ -14,48 +14,31 @@ export default function HomeLobbyPage() {
   const [showCardDossier, setShowCardDossier] = useState(false);
   const [showSquadModal, setShowSquadModal] = useState(false);
 
-  // Squad / Friends state - empty by default, loaded from localStorage
+  // Squad / Friends state - fetched from API
   const [friends, setFriends] = useState<{ name: string; handle: string; ovr: number; online: boolean; pos: string; avatar: string }[]>([]);
-  const [newFriendName, setNewFriendName] = useState("");
-  const [newFriendHandle, setNewFriendHandle] = useState("");
-  const [newFriendPos, setNewFriendPos] = useState("CM");
-  const [newFriendOvr, setNewFriendOvr] = useState(80);
 
   useEffect(() => {
-    // Load friends from localStorage
-    const storedFriends = localStorage.getItem("stryk_friends");
-    if (storedFriends) {
+    if (!isLoaded) return;
+    async function fetchFriends() {
       try {
-        const parsedFriends = JSON.parse(storedFriends);
-        queueMicrotask(() => {
-          setFriends(parsedFriends);
-        });
-      } catch (_) {
-        queueMicrotask(() => {
-          setFriends([]);
-        });
+        const res = await fetch("/api/friends");
+        const data = await res.json();
+        if (data.success) {
+          setFriends(data.friends.map((f: any) => ({
+            name: f.user.fullName || f.user.username,
+            handle: f.user.username,
+            ovr: f.user.overall || 50,
+            pos: f.user.position || "CAM",
+            avatar: f.user.avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(f.user.username)}`,
+            online: true,
+          })));
+        }
+      } catch (err) {
+        console.error("Failed to fetch friends", err);
       }
     }
-  }, []);
-
-  const handleAddFriend = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newFriendName.trim() || !newFriendHandle.trim()) return;
-    const cleanHandle = newFriendHandle.trim().replace("@", "");
-    const newFriend = {
-      name: newFriendName.trim(),
-      handle: cleanHandle,
-      ovr: newFriendOvr,
-      online: true,
-      pos: newFriendPos,
-      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(newFriendName.trim())}`
-    };
-    const updated = [...friends, newFriend];
-    setFriends(updated);
-    localStorage.setItem("stryk_friends", JSON.stringify(updated));
-    setNewFriendName("");
-    setNewFriendHandle("");
-  };
+    fetchFriends();
+  }, [isLoaded]);
 
   // Prevent flashing before context loaded
   if (!isLoaded) {
@@ -280,43 +263,16 @@ export default function HomeLobbyPage() {
               )}
             </div>
 
-            {/* Add Friend Form (always at the bottom of the modal, non-blocking) */}
-            <form onSubmit={handleAddFriend} className="mt-4 pt-4 border-t border-white/10 shrink-0">
-              <h3 className="text-[10px] font-bold uppercase tracking-wider text-white/45 mb-2">Add a Teammate</h3>
-              <div className="space-y-2">
-                <input
-                  placeholder="Teammate Full Name"
-                  required
-                  value={newFriendName}
-                  onChange={(e) => setNewFriendName(e.target.value)}
-                  className="w-full h-9 px-3 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder:text-white/35 outline-none focus:border-[#C6FF00]/50"
-                />
-                <div className="grid grid-cols-[1fr_4.5rem] gap-2">
-                  <input
-                    placeholder="Username/Handle"
-                    required
-                    value={newFriendHandle}
-                    onChange={(e) => setNewFriendHandle(e.target.value)}
-                    className="h-9 px-3 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white placeholder:text-white/35 outline-none focus:border-[#C6FF00]/50"
-                  />
-                  <select
-                    value={newFriendPos}
-                    onChange={(e) => setNewFriendPos(e.target.value)}
-                    className="h-9 px-1 rounded-xl border border-white/10 bg-[#050a0d] text-xs text-[#C6FF00] font-bold outline-none focus:border-[#C6FF00]/50"
-                  >
-                    {["ST", "CAM", "CM", "CB", "GK", "LW", "RW", "LB", "RB"].map((p) => (
-                      <option key={p} value={p}>{p}</option>
-                    ))}
-                  </select>
-                </div>
-                <button
-                  type="submit"
-                  className="w-full h-9 rounded-xl bg-[#C6FF00] text-black font-display text-xs tracking-wider uppercase cursor-pointer hover:bg-[#b0e600] transition"
-                >
-                  ADD TO SQUAD
-                </button>
-              </div>
-            </form>
+            {/* Find Teammates Button */}
+            <div className="mt-4 pt-4 border-t border-white/10 shrink-0">
+              <button
+                onClick={() => router.push("/search")}
+                className="w-full h-10 rounded-xl bg-[#C6FF00] text-black font-display text-xs tracking-wider uppercase cursor-pointer hover:bg-[#b0e600] transition flex items-center justify-center gap-2 shadow-[0_5px_15px_-5px_rgba(198,255,0,0.4)]"
+              >
+                <Users size={14} />
+                FIND TEAMMATES
+              </button>
+            </div>
             
             <button 
               onClick={() => setShowSquadModal(false)} 
