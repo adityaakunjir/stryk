@@ -170,27 +170,36 @@ export default function IdentityPage() {
           username: username.trim(),
           avatarUrl: avatar})});
 
+      if (!response.ok) {
+        // If it's a 413 Payload Too Large, the JSON parse will fail. Handle it gracefully.
+        if (response.status === 413) {
+          throw new Error("Image is too large. Please use a smaller image or click 'Generate Photo'.");
+        }
+      }
+
       const data = await response.json();
 
       // Profile saved successfully
       if (!data.success) {
         toast.error(data.message || "Failed to save profile");
+        setSubmitting(false);
         return;
       }
       
       toast.success("Profile saved successfully!");
-    } catch {
-      // Ignored: expected to fail on static exports if not fully configured
+      
+      updatePlayerData({
+        fullName: fullName.trim(),
+        username: username.trim(),
+        avatar: avatar});
+
+      router.push("/position");
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Failed to communicate with server. Profile not saved.");
     } finally {
       setSubmitting(false);
     }
-
-    updatePlayerData({
-      fullName: fullName.trim(),
-      username: username.trim(),
-      avatar: avatar});
-
-    router.push("/position");
   };
 
   // Mock player structure for the card preview
@@ -329,7 +338,11 @@ export default function IdentityPage() {
                   <input
                     placeholder="Enter your full name"
                     value={fullName}
-                    onChange={(e) => { setFullName(e.target.value); }}
+                    onChange={(e) => { 
+                      // Only allow letters and spaces
+                      const val = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                      setFullName(val); 
+                    }}
                     className="bg-transparent outline-none flex-1 text-sm placeholder:text-white/40 text-white w-full border-0 focus:ring-0 p-0 font-medium"
                   />
                 </div>
@@ -346,7 +359,9 @@ export default function IdentityPage() {
                       placeholder="Enter your username"
                       value={username}
                       onChange={(e) => { 
-                        setUsername(e.target.value.toLowerCase().replace(/\s+/g, "")); 
+                        // Only allow lowercase letters, numbers, underscores, and dots. Limit to 20 chars.
+                        const val = e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, "");
+                        setUsername(val.slice(0, 20)); 
                         setUsernameStatus("idle");
                       }}
                       className="bg-transparent outline-none flex-1 text-sm placeholder:text-white/40 text-white w-full border-0 focus:ring-0 p-0 font-medium"

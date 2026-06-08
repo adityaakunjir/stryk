@@ -25,7 +25,8 @@ export async function POST(req: Request) {
 
     // Get the sender's internal ID
     const sender = await prisma.user.findUnique({
-      where: { clerkId }});
+      where: { clerkId }
+    });
 
     if (!sender) {
       return NextResponse.json(
@@ -34,9 +35,11 @@ export async function POST(req: Request) {
       );
     }
 
-    // Find the receiver by username
+    // Find the receiver by username (strip @ if they included it)
+    const cleanUsername = username.startsWith("@") ? username.substring(1) : username;
     const receiver = await prisma.user.findUnique({
-      where: { username: username.toLowerCase() }});
+      where: { username: cleanUsername.toLowerCase() }
+    });
 
     if (!receiver) {
       return NextResponse.json(
@@ -49,7 +52,9 @@ export async function POST(req: Request) {
     const senderMembership = await prisma.teamMember.findFirst({
       where: {
         teamId,
-        userId: sender.id}});
+        userId: sender.id
+      }
+    });
 
     if (!senderMembership) {
       return NextResponse.json(
@@ -63,7 +68,9 @@ export async function POST(req: Request) {
       where: {
         teamId,
         receiverId: receiver.id,
-        status: "pending"}});
+        status: "pending"
+      }
+    });
 
     if (existingInvite) {
       return NextResponse.json(
@@ -78,11 +85,14 @@ export async function POST(req: Request) {
         teamId,
         senderId: sender.id,
         receiverId: receiver.id,
-        status: "pending"}});
+        status: "pending"
+      }
+    });
 
     return NextResponse.json({
       success: true,
-      data: invite});
+      data: invite
+    });
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(
@@ -104,7 +114,8 @@ export async function GET() {
     }
 
     const user = await prisma.user.findUnique({
-      where: { clerkId }});
+      where: { clerkId }
+    });
 
     if (!user) {
       return NextResponse.json(
@@ -116,28 +127,34 @@ export async function GET() {
     const invites = await prisma.teamInvite.findMany({
       where: {
         receiverId: user.id,
-        status: "pending"},
+        status: "pending"
+      },
       orderBy: {
-        createdAt: "desc"}});
+        createdAt: "desc"
+      }
+    });
 
     const populatedInvites = await Promise.all(
-  invites.map(async (invite: any) => {
+      invites.map(async (invite: any) => {
         const team = await prisma.team.findUnique({
           where: { id: invite.teamId },
-          select: { name: true, logoUrl: true }});
+          select: { name: true, logoUrl: true }
+        });
         return {
           id: invite.id,
           teamId: invite.teamId,
           teamName: team?.name || "Unknown Team",
           teamLogo: team?.logoUrl || "",
           status: invite.status,
-          createdAt: invite.createdAt};
+          createdAt: invite.createdAt
+        };
       })
     );
 
     return NextResponse.json({
       success: true,
-      invites: populatedInvites});
+      invites: populatedInvites
+    });
   } catch (error) {
     console.error("API ROUTE ERROR:", error);
     return NextResponse.json(

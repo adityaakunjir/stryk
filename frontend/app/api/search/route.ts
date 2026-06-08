@@ -14,7 +14,9 @@ export async function GET(req: Request) {
     }
 
     const { searchParams } = new URL(req.url);
-    const query = searchParams.get("q")?.trim() || "";
+    const rawQuery = searchParams.get("q") || "";
+    // Remove all @ symbols and trim whitespace to ensure the query works regardless of format
+    const query = rawQuery.replace(/@/g, "").trim();
     const position = searchParams.get("pos") || "";
     const playStyle = searchParams.get("style") || "";
 
