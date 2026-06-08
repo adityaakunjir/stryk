@@ -3,33 +3,33 @@ import { auth } from "@clerk/nextjs/server";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ route?: string[] }> }) {
   const resolvedParams = await params;
   return handleProxy(req, resolvedParams.route);
 }
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ route?: string[] }> }) {
   const resolvedParams = await params;
   return handleProxy(req, resolvedParams.route);
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ route?: string[] }> }) {
   const resolvedParams = await params;
   return handleProxy(req, resolvedParams.route);
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ route?: string[] }> }) {
   const resolvedParams = await params;
   return handleProxy(req, resolvedParams.route);
 }
 
-async function handleProxy(req: NextRequest, route: string[]) {
+async function handleProxy(req: NextRequest, route?: string[]) {
   console.log("PROXY EXECUTED FOR ROUTE:", route);
   try {
     const { getToken } = await auth();
     const token = await getToken();
 
-    const path = route.join("/");
+    const path = route ? route.join("/") : "";
     const searchParams = req.nextUrl.searchParams.toString();
     const url = `${API_BASE_URL}/${path}${searchParams ? `?${searchParams}` : ""}`;
 
