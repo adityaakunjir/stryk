@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.database import create_db_tables
+import app.models  # Important: Register all models with SQLModel before DB creation
 from app.api.health import router as health_router
 from app.api.players import router as players_router
 from app.api.balance import router as balance_router
