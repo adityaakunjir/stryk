@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft, User, Palette, Shield, LogOut, ChevronRight, Bell } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, User, Palette, Shield, LogOut, ChevronRight, Bell, Loader2 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { useAuth } from "@clerk/clerk-react";
 
@@ -10,9 +11,19 @@ export default function SettingsPage() {
   const { playerData, resetPlayerData } = usePlayer();
   const { signOut } = useAuth();
 
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
   const handleSignOut = async () => {
-    resetPlayerData();
-    await signOut({ redirectUrl: "/" });
+    setIsSigningOut(true);
+    setErrorMsg("");
+    try {
+      resetPlayerData();
+      await signOut({ redirectUrl: "/" });
+    } catch (err) {
+      setErrorMsg("Failed to sign out. Please try again.");
+      setIsSigningOut(false);
+    }
   };
 
   const sections = [
@@ -130,12 +141,22 @@ export default function SettingsPage() {
 
         {/* Sign Out */}
         <div className="mt-8 pt-6 border-t border-white/5">
+          {errorMsg && (
+            <div className="mb-4 rounded-xl border border-red-500/22 bg-red-500/7 p-3 text-center text-xs font-semibold text-red-400">
+              {errorMsg}
+            </div>
+          )}
           <button
             onClick={handleSignOut}
-            className="w-full h-12 rounded-2xl border border-red-500/20 bg-red-500/5 text-red-400 font-display tracking-[0.15em] text-xs uppercase flex items-center justify-center gap-2 cursor-pointer hover:bg-red-500/10 transition"
+            disabled={isSigningOut}
+            className="w-full h-12 rounded-2xl border border-red-500/20 bg-red-500/5 text-red-400 font-display tracking-[0.15em] text-xs uppercase flex items-center justify-center gap-2 cursor-pointer hover:bg-red-500/10 transition disabled:opacity-50"
             type="button"
           >
-            <LogOut size={14} />
+            {isSigningOut ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <LogOut size={14} />
+            )}
             SIGN OUT
           </button>
           <div className="text-center text-[10px] text-white/20 mt-4 tracking-wider">

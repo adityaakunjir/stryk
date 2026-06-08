@@ -16,6 +16,7 @@ export default function HomeLobbyPage() {
 
   // Squad / Friends state - fetched from API
   const [friends, setFriends] = useState<{ name: string; handle: string; ovr: number; online: boolean; pos: string; avatar: string }[]>([]);
+  const [friendsError, setFriendsError] = useState(false);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -34,7 +35,7 @@ export default function HomeLobbyPage() {
           })));
         }
       } catch (err) {
-        console.error("Failed to fetch friends", err);
+        setFriendsError(true);
       }
     }
     fetchFriends();
@@ -237,7 +238,11 @@ export default function HomeLobbyPage() {
                 <span className="rounded-full bg-[#C6FF00]/10 border border-[#C6FF00]/30 px-3 py-0.5 text-[10px] font-bold text-[#C6FF00] uppercase tracking-wider shrink-0">Ready</span>
               </div>
               
-              {friends.length === 0 ? (
+              {friendsError ? (
+                <div className="text-center py-8 text-xs text-red-400 font-medium border border-dashed border-red-500/20 rounded-xl bg-red-500/[0.02]">
+                  Failed to load squad.<br/>Please check your connection and try again.
+                </div>
+              ) : friends.length === 0 ? (
                 <div className="text-center py-8 text-xs text-white/30 font-medium border border-dashed border-white/8 rounded-xl bg-white/[0.01]">
                   No friends in your squad yet.<br/>Add a teammate below to build your roster.
                 </div>

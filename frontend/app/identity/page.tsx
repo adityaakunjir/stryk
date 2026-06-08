@@ -136,7 +136,6 @@ export default function IdentityPage() {
         setUsernameStatus("taken");
       }
     } catch (err) {
-      console.error(err);
       setError("Failed to verify username. Please try again.");
       setUsernameStatus("idle");
     }
@@ -181,7 +180,7 @@ export default function IdentityPage() {
         throw new Error(data.message || "Failed");
       }
     } catch (err) {
-      console.warn("API profile save failed (expected on static export hosts like GitHub Pages):", err);
+      // Ignored: expected to fail on static exports if not fully configured
     }
 
     updatePlayerData({

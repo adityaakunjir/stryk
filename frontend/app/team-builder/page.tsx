@@ -55,7 +55,7 @@ export default function TeamBuilderPage() {
         setUserRole(null);
       }
     } catch (err) {
-      console.error(err);
+      // Handle error implicitly through loading state fallbacks
     } finally {
       setLoading(false);
     }
@@ -97,7 +97,6 @@ export default function TeamBuilderPage() {
         setSettingsError(data.message || "Failed to update team");
       }
     } catch (err) {
-      console.error(err);
       setSettingsError("An error occurred. Please try again.");
     } finally {
       setSettingsLoading(false);
@@ -125,7 +124,6 @@ export default function TeamBuilderPage() {
         alert(data.message || "Failed to remove member");
       }
     } catch (err) {
-      console.error(err);
       alert("An error occurred. Please try again.");
     }
   };
@@ -156,7 +154,6 @@ export default function TeamBuilderPage() {
         setSettingsError(data.message || "Failed to transfer captaincy");
       }
     } catch (err) {
-      console.error(err);
       setSettingsError("An error occurred. Please try again.");
     } finally {
       setSettingsLoading(false);
@@ -185,7 +182,6 @@ export default function TeamBuilderPage() {
         setSettingsError(data.message || "Failed to delete team");
       }
     } catch (err) {
-      console.error(err);
       setSettingsError("An error occurred. Please try again.");
     } finally {
       setSettingsLoading(false);
@@ -213,7 +209,7 @@ export default function TeamBuilderPage() {
         await fetchTeam();
       }
     } catch (err) {
-      console.error(err);
+      // Ignored intentionally
     } finally {
       setCreating(false);
     }
@@ -245,7 +241,6 @@ export default function TeamBuilderPage() {
         setInviteError(data.message || "Failed to send invitation");
       }
     } catch (err) {
-      console.error(err);
       setInviteError("Something went wrong. Please try again.");
     } finally {
       setInviteLoading(false);

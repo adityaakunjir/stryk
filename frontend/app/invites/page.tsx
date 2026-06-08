@@ -29,7 +29,7 @@ export default function InvitesPage() {
         setInvites(data.invites || []);
       }
     } catch (err) {
-      console.error("Fetch invites failed:", err);
+      // Handled implicitly by fallback UI
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,6 @@ export default function InvitesPage() {
         setErrorMsg(data.message || "Failed to respond to invitation");
       }
     } catch (err) {
-      console.error(err);
       setErrorMsg("An error occurred. Please try again.");
     } finally {
       setActionLoadingId(null);

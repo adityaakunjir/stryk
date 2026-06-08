@@ -51,7 +51,7 @@ export default function MatchesPage() {
           setCurrentUserId(data.player.id);
         }
       } catch (err) {
-        console.error("Failed to fetch user profile:", err);
+        // Fallback handled gracefully
       }
     };
     fetchUserId();
@@ -78,7 +78,7 @@ export default function MatchesPage() {
         setMatches(data.data || []);
       }
     } catch (err) {
-      console.error("Failed to fetch matches:", err);
+      // Ignored: empty state UI handles no matches
     } finally {
       setLoading(false);
     }
@@ -160,12 +160,12 @@ export default function MatchesPage() {
         setCreateLocation("Phoenix Turf");
         setCreateDateTime("");
         setCreateMaxPlayers("10");
+        setToast({ type: "success", msg: "Match Lobby created successfully!" });
         await fetchMatches();
       } else {
         setCreateError(data.message || "Failed to create match");
       }
     } catch (err) {
-      console.error(err);
       setCreateError("An error occurred. Please try again.");
     } finally {
       setCreateLoading(false);
