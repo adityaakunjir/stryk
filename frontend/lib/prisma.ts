@@ -8,6 +8,10 @@ const globalForPrisma = globalThis as unknown as {
 
 const connectionString = process.env.DATABASE_URL!;
 
+if (!connectionString) {
+  console.error("CRITICAL ERROR: DATABASE_URL is not set in this environment!");
+}
+
 // Decode the password from the URL string to fix "password must be a string" error in pg-pool
 let parsedConnectionString = connectionString;
 try {
@@ -23,6 +27,9 @@ try {
 
 const pool = new Pool({
   connectionString: parsedConnectionString,
+  // Neon and other cloud databases require SSL in production. 
+  // If we are in production, enforce SSL, otherwise let the connection string decide.
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined,
 });
 
 const adapter = new PrismaPg(pool);
