@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Check, X, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
 
 const INITIAL_REQUESTS: {
   id: number;
@@ -18,17 +19,16 @@ export default function VerifyPage() {
   const router = useRouter();
   const [requests, setRequests] = useState(INITIAL_REQUESTS);
   const [trustScore, setTrustScore] = useState(98);
-  const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+
 
   const handleAction = (id: number, isVerified: boolean) => {
     setRequests((prev) => prev.filter((r) => r.id !== id));
     if (isVerified) {
       setTrustScore((prev) => Math.min(100, prev + 1));
-      setToast({ type: "success", msg: "Stats Verified! Trust score increased." });
+      toast.success("Stats Verified! Trust score increased.");
     } else {
-      setToast({ type: "error", msg: "Stats Rejected." });
+      toast.error("Stats Rejected.");
     }
-    setTimeout(() => setToast(null), 3000);
   };
 
   return (
@@ -46,18 +46,7 @@ export default function VerifyPage() {
           </div>
         </div>
 
-        {/* Toast Notification */}
-        {toast && (
-          <div
-            className={`mt-4 rounded-xl border p-3 text-center text-xs font-semibold ${
-              toast.type === "success"
-                ? "border-[#C6FF00]/22 bg-[#C6FF00]/6 text-[#C6FF00]"
-                : "border-red-500/22 bg-red-500/7 text-red-400"
-            }`}
-          >
-            {toast.msg}
-          </div>
-        )}
+
 
         {/* Score Block */}
         <div className="mt-4 rounded-2xl p-4 border border-white/8 bg-white/[0.03] flex items-center justify-between">

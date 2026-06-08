@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ArrowLeft, User, LogOut, ChevronRight, Bell, Loader2 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { useAuth } from "@clerk/clerk-react";
+import { toast } from "sonner";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -12,16 +13,14 @@ export default function SettingsPage() {
   const { signOut } = useAuth();
 
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
-    setErrorMsg("");
     try {
       resetPlayerData();
       await signOut({ redirectUrl: "/" });
     } catch (err) {
-      setErrorMsg("Failed to sign out. Please try again.");
+      toast.error("Failed to sign out. Please try again.");
       setIsSigningOut(false);
     }
   };
@@ -119,11 +118,7 @@ export default function SettingsPage() {
 
         {/* Sign Out */}
         <div className="mt-8 pt-6 border-t border-white/5">
-          {errorMsg && (
-            <div className="mb-4 rounded-xl border border-red-500/22 bg-red-500/7 p-3 text-center text-xs font-semibold text-red-400">
-              {errorMsg}
-            </div>
-          )}
+
           <button
             onClick={handleSignOut}
             disabled={isSigningOut}

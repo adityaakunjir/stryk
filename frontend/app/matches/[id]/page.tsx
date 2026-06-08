@@ -3,8 +3,8 @@
 import { useState, useEffect, use, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sparkles, CheckCircle2 } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
 import { getPusherClient } from "@/lib/pusher";
+import { toast } from "sonner";
 
 interface MatchParticipant {
   id: string;
@@ -60,19 +60,14 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
-  interface Notification {
-    id: string;
-    message: string;
-    type: "info" | "success" | "warning";
-  }
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-
   const addNotification = useCallback((message: string, type: "info" | "success" | "warning" = "info") => {
-    const id = Math.random().toString(36).substring(2, 9);
-    setNotifications(prev => [...prev, { id, message, type }]);
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-    }, 4000);
+    if (type === "success") {
+      toast.success(message);
+    } else if (type === "warning") {
+      toast.warning(message);
+    } else {
+      toast(message);
+    }
   }, []);
 
   // Fetch match details
@@ -189,11 +184,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
       if (data.success) {
         await fetchMatchDetails();
       } else {
-        alert(data.message || "Failed to join match");
+        toast.error(data.message || "Failed to join match");
       }
     } catch (err) {
       console.error(err);
-      alert("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setActionLoading(false);
     }
@@ -213,11 +208,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
       if (data.success) {
         await fetchMatchDetails();
       } else {
-        alert(data.message || "Failed to leave match");
+        toast.error(data.message || "Failed to leave match");
       }
     } catch (err) {
       console.error(err);
-      alert("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setActionLoading(false);
     }
@@ -239,11 +234,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
       if (data.success) {
         await fetchMatchDetails();
       } else {
-        alert(data.message || "Failed to assign team");
+        toast.error(data.message || "Failed to assign team");
       }
     } catch (err) {
       console.error(err);
-      alert("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setActionLoading(false);
     }
@@ -263,11 +258,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
         addNotification("You have checked in successfully!", "success");
         await fetchMatchDetails();
       } else {
-        alert(data.message || "Failed to check in");
+        toast.error(data.message || "Failed to check in");
       }
     } catch (err) {
       console.error(err);
-      alert("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setActionLoading(false);
     }
@@ -291,11 +286,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
         );
         await fetchMatchDetails();
       } else {
-        alert(data.message || "Failed to balance teams");
+        toast.error(data.message || "Failed to balance teams");
       }
     } catch (err) {
       console.error(err);
-      alert("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setActionLoading(false);
     }
@@ -358,32 +353,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
     <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(198,255,0,0.08),transparent_50%)] pointer-events-none" />
 
-      {/* Toast Notifications */}
-      <div className="fixed top-4 right-4 left-4 z-50 flex flex-col gap-2 max-w-sm mx-auto pointer-events-none">
-        <AnimatePresence>
-          {notifications.map(n => (
-            <motion.div
-              key={n.id}
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className={`p-3.5 rounded-2xl border backdrop-blur-md shadow-lg pointer-events-auto flex items-center gap-2.5 ${
-                n.type === "success"
-                  ? "bg-[#C6FF00]/10 border-[#C6FF00]/20 text-[#C6FF00]"
-                  : n.type === "warning"
-                  ? "bg-[#FFB300]/10 border-[#FFB300]/20 text-[#FFB300]"
-                  : "bg-white/10 border-white/10 text-white"
-              }`}
-            >
-              <div className={`w-2 h-2 rounded-full ${
-                n.type === "success" ? "bg-[#C6FF00]" : n.type === "warning" ? "bg-[#FFB300]" : "bg-white"
-              }`} />
-              <span className="text-xs font-semibold tracking-wide">{n.message}</span>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
+
 
       <div className="relative h-full flex flex-col px-5 pt-6 pb-28 max-w-md mx-auto z-10 w-full overflow-y-auto">
         {/* Header */}

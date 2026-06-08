@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus, Search, Calendar, MapPin, Users, Loader2, X } from "lucide-react";
+import { toast } from "sonner";
 
 interface Match {
   id: string;
@@ -38,8 +39,7 @@ export default function MatchesPage() {
   // Join loading states
   const [joiningId, setJoiningId] = useState<string | null>(null);
 
-  // Toast state
-  const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+  // Toast state removed in favor of sonner
 
   // Sync profile to get current user ID
   useEffect(() => {
@@ -90,7 +90,6 @@ export default function MatchesPage() {
 
   const handleJoinMatch = async (matchId: string) => {
     setJoiningId(matchId);
-    setToast(null);
     try {
       const res = await fetch("/api/matches/join", {
         method: "POST",
@@ -100,13 +99,13 @@ export default function MatchesPage() {
 
       const data = await res.json();
       if (data.success) {
-        setToast({ type: "success", msg: "Successfully joined the match lobby!" });
+        toast.success("Successfully joined the match lobby!");
         await fetchMatches();
       } else {
-        setToast({ type: "error", msg: data.message || "Failed to join match" });
+        toast.error(data.message || "Failed to join match");
       }
     } catch {
-      setToast({ type: "error", msg: "An error occurred. Please try again." });
+      toast.error("An error occurred. Please try again.");
     } finally {
       setJoiningId(null);
     }
@@ -114,7 +113,6 @@ export default function MatchesPage() {
 
   const handleLeaveMatch = async (matchId: string) => {
     setJoiningId(matchId);
-    setToast(null);
     try {
       const res = await fetch("/api/matches/leave", {
         method: "POST",
@@ -124,13 +122,13 @@ export default function MatchesPage() {
 
       const data = await res.json();
       if (data.success) {
-        setToast({ type: "success", msg: "Successfully left the match lobby!" });
+        toast.success("Successfully left the match lobby!");
         await fetchMatches();
       } else {
-        setToast({ type: "error", msg: data.message || "Failed to leave match" });
+        toast.error(data.message || "Failed to leave match");
       }
     } catch {
-      setToast({ type: "error", msg: "An error occurred. Please try again." });
+      toast.error("An error occurred. Please try again.");
     } finally {
       setJoiningId(null);
     }
@@ -160,7 +158,7 @@ export default function MatchesPage() {
         setCreateLocation("Phoenix Turf");
         setCreateDateTime("");
         setCreateMaxPlayers("10");
-        setToast({ type: "success", msg: "Match Lobby created successfully!" });
+        toast.success("Match Lobby created successfully!");
         await fetchMatches();
       } else {
         setCreateError(data.message || "Failed to create match");
@@ -214,18 +212,7 @@ export default function MatchesPage() {
           </button>
         </header>
 
-        {/* Toast notification */}
-        {toast && (
-          <div
-            className={`mb-4 rounded-xl border p-3 text-center text-xs font-semibold ${
-              toast.type === "success"
-                ? "border-[#C6FF00]/22 bg-[#C6FF00]/6 text-[#C6FF00]"
-                : "border-red-500/22 bg-red-500/7 text-red-400"
-            }`}
-          >
-            {toast.msg}
-          </div>
-        )}
+
 
         {/* Title */}
         <div className="mb-6 pl-1">

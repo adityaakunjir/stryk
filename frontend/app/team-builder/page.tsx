@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus, Loader2, ShieldCheck, User, X, Settings, Trash2, Award } from "lucide-react";
+import { toast } from "sonner";
 
 export default function TeamBuilderPage() {
   const router = useRouter();
@@ -18,16 +19,14 @@ export default function TeamBuilderPage() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteUsername, setInviteUsername] = useState("");
   const [inviteLoading, setInviteLoading] = useState(false);
-  const [inviteMessage, setInviteMessage] = useState("");
-  const [inviteError, setInviteError] = useState("");
+  const [inviteLoading, setInviteLoading] = useState(false);
 
   // Settings states
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [editTeamName, setEditTeamName] = useState("");
   const [editLogoUrl, setEditLogoUrl] = useState("");
   const [settingsLoading, setSettingsLoading] = useState(false);
-  const [settingsMessage, setSettingsMessage] = useState("");
-  const [settingsError, setSettingsError] = useState("");
+  const [settingsLoading, setSettingsLoading] = useState(false);
 
   const logoFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -65,8 +64,6 @@ export default function TeamBuilderPage() {
     if (!team) return;
     setEditTeamName(team.name);
     setEditLogoUrl(team.logoUrl || "");
-    setSettingsMessage("");
-    setSettingsError("");
     setShowSettingsModal(true);
   };
 
@@ -75,8 +72,6 @@ export default function TeamBuilderPage() {
     if (!editTeamName.trim() || !team?.id) return;
 
     setSettingsLoading(true);
-    setSettingsMessage("");
-    setSettingsError("");
 
     try {
       const res = await fetch("/api/team/me", {
@@ -91,13 +86,13 @@ export default function TeamBuilderPage() {
 
       const data = await res.json();
       if (data.success) {
-        setSettingsMessage("Team updated successfully!");
+        toast.success("Team updated successfully!");
         await fetchTeam();
       } else {
-        setSettingsError(data.message || "Failed to update team");
+        toast.error(data.message || "Failed to update team");
       }
     } catch (err) {
-      setSettingsError("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setSettingsLoading(false);
     }
@@ -121,10 +116,10 @@ export default function TeamBuilderPage() {
       if (data.success) {
         await fetchTeam();
       } else {
-        alert(data.message || "Failed to remove member");
+        toast.error(data.message || "Failed to remove member");
       }
     } catch (err) {
-      alert("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     }
   };
 
@@ -132,8 +127,6 @@ export default function TeamBuilderPage() {
     if (!confirm(`Are you sure you want to transfer captaincy to ${memberName}? You will lose captain privileges.`)) return;
 
     setSettingsLoading(true);
-    setSettingsMessage("");
-    setSettingsError("");
 
     try {
       const res = await fetch("/api/team/me", {
@@ -149,12 +142,13 @@ export default function TeamBuilderPage() {
       const data = await res.json();
       if (data.success) {
         setShowSettingsModal(false);
+        toast.success("Captaincy transferred.");
         await fetchTeam();
       } else {
-        setSettingsError(data.message || "Failed to transfer captaincy");
+        toast.error(data.message || "Failed to transfer captaincy");
       }
     } catch (err) {
-      setSettingsError("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setSettingsLoading(false);
     }
@@ -164,8 +158,6 @@ export default function TeamBuilderPage() {
     if (!confirm("WARNING: Are you sure you want to disband this team? All members will be removed and this action CANNOT be undone.")) return;
 
     setSettingsLoading(true);
-    setSettingsMessage("");
-    setSettingsError("");
 
     try {
       const res = await fetch(`/api/team/me?teamId=${team.id}`, {
@@ -177,12 +169,13 @@ export default function TeamBuilderPage() {
         setShowSettingsModal(false);
         setTeam(null);
         setUserRole(null);
+        toast.success("Team disbanded successfully");
         router.push("/home");
       } else {
-        setSettingsError(data.message || "Failed to delete team");
+        toast.error(data.message || "Failed to delete team");
       }
     } catch (err) {
-      setSettingsError("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setSettingsLoading(false);
     }
@@ -205,11 +198,14 @@ export default function TeamBuilderPage() {
       });
       const data = await res.json();
       if (data.success) {
+        toast.success("Team created successfully!");
         // Fetch full populated team info
         await fetchTeam();
+      } else {
+        toast.error(data.message || "Failed to create team");
       }
     } catch (err) {
-      // Ignored intentionally
+      toast.error("Something went wrong");
     } finally {
       setCreating(false);
     }
@@ -220,8 +216,6 @@ export default function TeamBuilderPage() {
     if (!inviteUsername.trim() || !team?.id) return;
 
     setInviteLoading(true);
-    setInviteMessage("");
-    setInviteError("");
 
     try {
       const res = await fetch("/api/team/invite", {
@@ -235,13 +229,13 @@ export default function TeamBuilderPage() {
 
       const data = await res.json();
       if (data.success) {
-        setInviteMessage(`Invitation sent to @${inviteUsername}!`);
+        toast.success(`Invitation sent to @${inviteUsername}!`);
         setInviteUsername("");
       } else {
-        setInviteError(data.message || "Failed to send invitation");
+        toast.error(data.message || "Failed to send invitation");
       }
     } catch (err) {
-      setInviteError("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setInviteLoading(false);
     }
@@ -444,7 +438,7 @@ export default function TeamBuilderPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-5">
           <div className="relative w-full max-w-sm rounded-[2rem] border border-[#C6FF00]/30 bg-[#050a0d] p-6 shadow-[0_34px_100px_rgba(0,0,0,0.8)] flex flex-col">
             <button 
-              onClick={() => { setShowInviteModal(false); setInviteUsername(""); setInviteMessage(""); setInviteError(""); }}
+              onClick={() => { setShowInviteModal(false); setInviteUsername(""); }}
               className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-white/10 text-zinc-400 hover:text-white cursor-pointer"
               type="button"
             >
@@ -466,24 +460,12 @@ export default function TeamBuilderPage() {
                   value={inviteUsername}
                   onChange={(e) => {
                     setInviteUsername(e.target.value.toLowerCase().replace(/\s+/g, ""));
-                    setInviteMessage("");
-                    setInviteError("");
                   }}
                   className="w-full h-12 px-4 rounded-xl border border-white/10 bg-white/[0.04] text-sm text-white placeholder:text-white/40 outline-none focus:border-[#C6FF00]/50 transition duration-300"
                 />
               </div>
 
-              {inviteMessage && (
-                <div className="rounded-xl border border-[#C6FF00]/22 bg-[#C6FF00]/6 p-3 text-center text-xs font-semibold text-[#C6FF00]">
-                  {inviteMessage}
-                </div>
-              )}
 
-              {inviteError && (
-                <div className="rounded-xl border border-red-500/22 bg-red-500/7 p-3 text-center text-xs font-semibold text-red-400">
-                  {inviteError}
-                </div>
-              )}
 
               <button
                 type="submit"
@@ -590,17 +572,7 @@ export default function TeamBuilderPage() {
                   </div>
                 </div>
 
-                {settingsMessage && (
-                  <div className="rounded-xl border border-[#C6FF00]/22 bg-[#C6FF00]/6 p-3 text-center text-xs font-semibold text-[#C6FF00]">
-                    {settingsMessage}
-                  </div>
-                )}
 
-                {settingsError && (
-                  <div className="rounded-xl border border-red-500/22 bg-red-500/7 p-3 text-center text-xs font-semibold text-red-400">
-                    {settingsError}
-                  </div>
-                )}
 
                 <button
                   type="submit"

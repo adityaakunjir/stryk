@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Mail, Check, X } from "lucide-react";
+import { toast } from "sonner";
 
 interface Invite {
   id: string;
@@ -18,8 +19,6 @@ export default function InvitesPage() {
   const [invites, setInvites] = useState<Invite[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
 
   const fetchInvites = async () => {
     try {
@@ -41,8 +40,6 @@ export default function InvitesPage() {
 
   const handleRespond = async (inviteId: string, action: "accept" | "decline") => {
     setActionLoadingId(inviteId);
-    setSuccessMsg("");
-    setErrorMsg("");
 
     try {
       const endpoint = action === "accept" ? "/api/team/accept" : "/api/team/invite";
@@ -55,17 +52,17 @@ export default function InvitesPage() {
 
       const data = await res.json();
       if (data.success) {
-        setSuccessMsg(
+        toast.success(
           action === "accept"
             ? "Successfully joined the squad!"
             : "Invitation declined."
         );
         await fetchInvites();
       } else {
-        setErrorMsg(data.message || "Failed to respond to invitation");
+        toast.error(data.message || "Failed to respond to invitation");
       }
     } catch (err) {
-      setErrorMsg("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setActionLoadingId(null);
     }
@@ -94,17 +91,7 @@ export default function InvitesPage() {
           Notifications
         </h1>
 
-        {successMsg && (
-          <div className="mb-6 rounded-xl border border-[#C6FF00]/22 bg-[#C6FF00]/6 p-4 text-center text-xs font-semibold text-[#C6FF00] animate-pulse">
-            {successMsg}
-          </div>
-        )}
 
-        {errorMsg && (
-          <div className="mb-6 rounded-xl border border-red-500/22 bg-red-500/7 p-4 text-center text-xs font-semibold text-red-400">
-            {errorMsg}
-          </div>
-        )}
 
         {loading ? (
           <div className="flex-1 flex items-center justify-center py-20">

@@ -26,6 +26,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { Toaster } from "sonner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -40,6 +42,7 @@ export default function RootLayout({
         <AuthProvider>
           <PlayerProvider>
             {children}
+            <Toaster theme="dark" position="top-center" richColors />
           </PlayerProvider>
         </AuthProvider>
       </body>

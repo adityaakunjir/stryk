@@ -23,6 +23,7 @@ import { usePlayer } from "@/components/player-context";
 import { PlayerCard } from "@/components/player-card";
 import { cn } from "@/lib/utils";
 import { ImageCropper } from "@/components/image-cropper";
+import { toast } from "sonner";
 
 function StepProgress() {
   return (
@@ -54,7 +55,6 @@ export default function IdentityPage() {
   const [username, setUsername] = useState("");
   const [avatar, setAvatar] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
-  const [error, setError] = useState("");
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   
@@ -119,10 +119,9 @@ export default function IdentityPage() {
 
   const handleCheckUsername = async () => {
     if (!username.trim()) {
-      setError("Please enter a username");
+      toast.error("Please enter a username");
       return;
     }
-    setError("");
     setUsernameStatus("checking");
 
     try {
@@ -137,7 +136,7 @@ export default function IdentityPage() {
         setUsernameStatus("taken");
       }
     } catch (err) {
-      setError("Failed to verify username. Please try again.");
+      toast.error("Failed to verify username. Please try again.");
       setUsernameStatus("idle");
     }
   };
@@ -146,17 +145,17 @@ export default function IdentityPage() {
     e.preventDefault();
 
     if (!fullName.trim()) {
-      setError("Full Name is required");
+      toast.error("Full Name is required");
       return;
     }
 
     if (!username.trim()) {
-      setError("Username is required");
+      toast.error("Username is required");
       return;
     }
 
     if (usernameStatus !== "available") {
-      setError("Please check and confirm your username availability first.");
+      toast.error("Please check and confirm your username availability first.");
       return;
     }
 
@@ -178,10 +177,12 @@ export default function IdentityPage() {
       const data = await response.json();
 
       // Profile saved successfully
-
       if (!data.success) {
-        throw new Error(data.message || "Failed");
+        toast.error(data.message || "Failed to save profile");
+        return;
       }
+      
+      toast.success("Profile saved successfully!");
     } catch (err) {
       // Ignored: expected to fail on static exports if not fully configured
     } finally {
@@ -322,11 +323,7 @@ export default function IdentityPage() {
               </div>
             </div>
 
-            {error && (
-              <div className="mt-5 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-center text-xs font-semibold text-red-400">
-                {error}
-              </div>
-            )}
+
 
             <div className="mt-6 space-y-4">
               <label className="block">
@@ -338,7 +335,7 @@ export default function IdentityPage() {
                   <input
                     placeholder="Enter your full name"
                     value={fullName}
-                    onChange={(e) => { setFullName(e.target.value); setError(""); }}
+                    onChange={(e) => { setFullName(e.target.value); }}
                     className="bg-transparent outline-none flex-1 text-sm placeholder:text-white/40 text-white w-full border-0 focus:ring-0 p-0 font-medium"
                   />
                 </div>
@@ -357,7 +354,6 @@ export default function IdentityPage() {
                       onChange={(e) => { 
                         setUsername(e.target.value.toLowerCase().replace(/\s+/g, "")); 
                         setUsernameStatus("idle");
-                        setError("");
                       }}
                       className="bg-transparent outline-none flex-1 text-sm placeholder:text-white/40 text-white w-full border-0 focus:ring-0 p-0 font-medium"
                     />
