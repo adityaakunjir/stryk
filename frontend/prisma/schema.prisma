@@ -7,60 +7,69 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  clerkId   String   @unique
-  username  String   @unique
-  fullName  String?
-  avatarUrl String?
-  position      String?
-  playStyle     String?
-  strongFoot    String?
-  bio           String?
-  overall       Int      @default(50)
-  matchesPlayed Int      @default(0)
-  wins          Int      @default(0)
-  losses        Int      @default(0)
-  draws         Int      @default(0)
-  goals         Int      @default(0)
-  assists       Int      @default(0)
-  tackles       Int      @default(0)
-  saves         Int      @default(0)
-  intercepts    Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  teamMembers   TeamMember[]
-  matchParticipants MatchParticipant[]
-  sentFriendRequests     FriendRequest[] @relation("SentRequests")
-  receivedFriendRequests FriendRequest[] @relation("ReceivedRequests")
+  id                     String             @id @default(cuid())
+  clerkId                String             @unique
+  username               String             @unique
+  fullName               String?
+  avatarUrl              String?
+  position               String?
+  playStyle              String?
+  strongFoot             String?
+  bio                    String?
+  overall                Int                @default(50)
+  matchesPlayed          Int                @default(0)
+  wins                   Int                @default(0)
+  losses                 Int                @default(0)
+  draws                  Int                @default(0)
+  goals                  Int                @default(0)
+  assists                Int                @default(0)
+  tackles                Int                @default(0)
+  saves                  Int                @default(0)
+  intercepts             Int                @default(0)
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+  teamMembers            TeamMember[]
+  matchParticipants      MatchParticipant[]
+  sentFriendRequests     FriendRequest[]    @relation("SentRequests")
+  receivedFriendRequests FriendRequest[]    @relation("ReceivedRequests")
+
+  captainedTeams      Team[]       @relation("TeamCaptain")
+  createdMatches      Match[]      @relation("MatchCreator")
+  sentTeamInvites     TeamInvite[] @relation("InviteSender")
+  receivedTeamInvites TeamInvite[] @relation("InviteReceiver")
 }
 
 model Team {
-  id          String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  name        String
-  logoUrl     String?
+  name    String
+  logoUrl String?
 
-  captainId   String
+  captainId String
+  captain   User   @relation("TeamCaptain", fields: [captainId], references: [id])
 
-  wins        Int      @default(0)
-  losses      Int      @default(0)
-  draws       Int      @default(0)
+  wins   Int @default(0)
+  losses Int @default(0)
+  draws  Int @default(0)
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  members     TeamMember[]
+  members TeamMember[]
+  invites TeamInvite[]
+
+  @@index([captainId])
 }
 
 model TeamMember {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  teamId    String
-  userId    String
+  teamId String
+  userId String
 
-  role      String   @default("player")
+  role String @default("player")
 
-  team      Team @relation(fields: [teamId], references: [id])
-  user      User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -68,66 +77,77 @@ model TeamMember {
 }
 
 model TeamInvite {
-  id          String @id @default(cuid())
+  id String @id @default(cuid())
 
-  teamId      String
-  senderId    String
-  receiverId  String
+  teamId     String
+  senderId   String
+  receiverId String
 
-  status      String @default("pending")
-  createdAt   DateTime @default(now())
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
 
+  team     Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  sender   User @relation("InviteSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("InviteReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, receiverId])
+  @@index([teamId])
   @@index([receiverId, status])
 }
 
 model Match {
-  id            String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  title         String
-  location      String
+  title    String
+  location String
 
-  dateTime      DateTime
+  dateTime DateTime
 
-  maxPlayers    Int
+  maxPlayers Int
 
-  status        String   @default("open")
+  status String @default("open")
 
-  creatorId     String
+  creatorId String
+  creator   User   @relation("MatchCreator", fields: [creatorId], references: [id])
 
-  createdAt     DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  participants  MatchParticipant[]
+  participants MatchParticipant[]
+
+  @@index([creatorId])
+  @@index([status, dateTime])
 }
 
 model MatchParticipant {
-  id          String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  matchId     String
-  userId      String
+  matchId String
+  userId  String
 
-  team        String?
-  checkedIn   Boolean  @default(false)
+  team      String?
+  checkedIn Boolean @default(false)
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  match       Match    @relation(fields: [matchId], references: [id])
-  user        User     @relation(fields: [userId], references: [id])
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([matchId, userId])
   @@index([matchId])
   @@index([userId])
 }
 
 model FriendRequest {
-  id         String   @id @default(cuid())
+  id String @id @default(cuid())
 
   senderId   String
   receiverId String
 
-  status     String   @default("pending") // "pending", "accepted", "rejected"
-  createdAt  DateTime @default(now())
+  status    String   @default("pending") // "pending", "accepted", "rejected"
+  createdAt DateTime @default(now())
 
-  sender     User     @relation("SentRequests", fields: [senderId], references: [id])
-  receiver   User     @relation("ReceivedRequests", fields: [receiverId], references: [id])
+  sender   User @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
 
   @@unique([senderId, receiverId])
   @@index([receiverId, status])
