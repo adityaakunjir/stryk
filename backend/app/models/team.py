@@ -14,7 +14,7 @@ from sqlmodel import SQLModel, Field, Relationship
 class TeamBase(SQLModel):
     name: str = Field(max_length=100)
     logoUrl: Optional[str] = Field(default=None, max_length=500)
-    captainId: str = Field(index=True)
+    captainId: str = Field(index=True, foreign_key="users.id")
     wins: int = Field(default=0, ge=0)
     losses: int = Field(default=0, ge=0)
     draws: int = Field(default=0, ge=0)
@@ -32,8 +32,8 @@ class Team(TeamBase, table=True):
 
 
 class TeamMemberBase(SQLModel):
-    teamId: str = Field(index=True)
-    userId: str = Field(index=True)
+    teamId: str = Field(index=True, foreign_key="teams.id")
+    userId: str = Field(index=True, foreign_key="users.id")
     role: str = Field(default="player", max_length=50)
 
 
@@ -47,9 +47,9 @@ class TeamMember(TeamMemberBase, table=True):
 
 
 class TeamInviteBase(SQLModel):
-    teamId: str = Field(index=True)
-    senderId: str = Field(index=True)
-    receiverId: str = Field(index=True)
+    teamId: str = Field(index=True, foreign_key="teams.id")
+    senderId: str = Field(index=True, foreign_key="users.id")
+    receiverId: str = Field(index=True, foreign_key="users.id")
     status: str = Field(default="pending", max_length=20)
 
 

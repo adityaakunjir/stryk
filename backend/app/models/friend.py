@@ -11,8 +11,8 @@ from sqlmodel import SQLModel, Field, Relationship
 
 
 class FriendRequestBase(SQLModel):
-    senderId: str = Field(index=True)
-    receiverId: str = Field(index=True)
+    senderId: str = Field(index=True, foreign_key="users.id")
+    receiverId: str = Field(index=True, foreign_key="users.id")
     status: str = Field(default="pending", max_length=20)
 
 

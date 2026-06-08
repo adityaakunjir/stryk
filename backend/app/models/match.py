@@ -17,7 +17,7 @@ class MatchBase(SQLModel):
     dateTime: datetime
     maxPlayers: int = Field(default=22)
     status: str = Field(default="open", max_length=20)
-    creatorId: str = Field(index=True)
+    creatorId: str = Field(index=True, foreign_key="users.id")
 
 
 class Match(MatchBase, table=True):
@@ -31,8 +31,8 @@ class Match(MatchBase, table=True):
 
 
 class MatchParticipantBase(SQLModel):
-    matchId: str = Field(index=True)
-    userId: str = Field(index=True)
+    matchId: str = Field(index=True, foreign_key="matches.id")
+    userId: str = Field(index=True, foreign_key="users.id")
     team: Optional[str] = Field(default=None, max_length=50)
     checkedIn: bool = Field(default=False)
 
