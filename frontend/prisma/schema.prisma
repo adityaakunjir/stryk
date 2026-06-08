@@ -46,7 +46,7 @@ model Team {
   logoUrl String?
 
   captainId String
-  captain   User   @relation("TeamCaptain", fields: [captainId], references: [id])
+  captain   User   @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: Cascade)
 
   wins   Int @default(0)
   losses Int @default(0)
@@ -90,7 +90,7 @@ model TeamInvite {
   sender   User @relation("InviteSender", fields: [senderId], references: [id], onDelete: Cascade)
   receiver User @relation("InviteReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
 
-  @@unique([teamId, receiverId])
+  @@unique([teamId, receiverId, status])
   @@index([teamId])
   @@index([receiverId, status])
 }
@@ -108,7 +108,7 @@ model Match {
   status String @default("open")
 
   creatorId String
-  creator   User   @relation("MatchCreator", fields: [creatorId], references: [id])
+  creator   User   @relation("MatchCreator", fields: [creatorId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
