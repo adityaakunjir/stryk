@@ -83,6 +83,14 @@ app.include_router(health_router)
 app.include_router(players_router, prefix="/api/v1")
 app.include_router(balance_router, prefix="/api/v1")
 
+from app.api.teams import router as teams_router
+from app.api.matches import router as matches_router
+from app.api.search import router as search_router
+
+app.include_router(teams_router, prefix="/api/v1")
+app.include_router(matches_router, prefix="/api/v1")
+app.include_router(search_router, prefix="/api/v1")
+
 
 # ─── Root ──────────────────────────────────────────────────────────
 @app.get("/")

@@ -68,10 +68,10 @@ Data ownership:
 
 ## Cloud Infrastructure
 
-- Frontend hosting: Azure Static Web Apps
-- Backend hosting: Azure App Service
-- Database: Azure Database for PostgreSQL
-- Storage: Azure Blob Storage
+- Frontend hosting: Vercel (or Railway)
+- Backend hosting: Railway
+- Database: Railway PostgreSQL
+- Storage: Amazon S3 / R2
 - Monitoring: Sentry
 - CI/CD: GitHub Actions
 - Version control: GitHub

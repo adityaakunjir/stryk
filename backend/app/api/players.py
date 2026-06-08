@@ -10,20 +10,20 @@ from sqlmodel import select
 
 from app.core.auth import get_current_user
 from app.core.database import get_session
-from app.models.player import Player, PlayerCreate, PlayerRead, PlayerUpdate
+from app.models.player import User, UserCreate, UserRead, UserUpdate
 
 router = APIRouter(prefix="/players", tags=["players"])
 
 
-@router.post("/", response_model=PlayerRead, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 async def create_player(
-    player_in: PlayerCreate,
+    player_in: UserCreate,
     session: AsyncSession = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
     """Create a new player profile linked to the authenticated user."""
     # Ensure the profile is linked to the authenticated user.
-    if player_in.auth_user_id != user.get("sub"):
+    if player_in.clerkId != user.get("sub"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Cannot create profile for a different user",
@@ -31,7 +31,7 @@ async def create_player(
 
     # Check if player already exists
     existing = await session.execute(
-        select(Player).where(Player.auth_user_id == player_in.auth_user_id)
+        select(User).where(User.clerkId == player_in.clerkId)
     )
     if existing.scalars().first():
         raise HTTPException(
@@ -39,22 +39,22 @@ async def create_player(
             detail="Player profile already exists",
         )
 
-    player = Player.model_validate(player_in)
+    player = User.model_validate(player_in)
     session.add(player)
     await session.flush()
     await session.refresh(player)
     return player
 
 
-@router.get("/me", response_model=PlayerRead)
+@router.get("/me", response_model=UserRead)
 async def get_my_profile(
     session: AsyncSession = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
     """Get the authenticated user's player profile."""
-    auth_user_id = user.get("sub")
+    clerkId = user.get("sub")
     result = await session.execute(
-        select(Player).where(Player.auth_user_id == auth_user_id)
+        select(User).where(User.clerkId == clerkId)
     )
     player = result.scalars().first()
     if not player:
@@ -65,13 +65,13 @@ async def get_my_profile(
     return player
 
 
-@router.get("/{player_id}", response_model=PlayerRead)
+@router.get("/{player_id}", response_model=UserRead)
 async def get_player(
-    player_id: int,
+    player_id: str,
     session: AsyncSession = Depends(get_session),
 ):
     """Get a player profile by ID (public)."""
-    result = await session.execute(select(Player).where(Player.id == player_id))
+    result = await session.execute(select(User).where(User.id == player_id))
     player = result.scalars().first()
     if not player:
         raise HTTPException(
@@ -81,16 +81,16 @@ async def get_player(
     return player
 
 
-@router.patch("/me", response_model=PlayerRead)
+@router.patch("/me", response_model=UserRead)
 async def update_my_profile(
-    player_update: PlayerUpdate,
+    player_update: UserUpdate,
     session: AsyncSession = Depends(get_session),
     user: dict = Depends(get_current_user),
 ):
     """Update the authenticated user's player profile."""
-    auth_user_id = user.get("sub")
+    clerkId = user.get("sub")
     result = await session.execute(
-        select(Player).where(Player.auth_user_id == auth_user_id)
+        select(User).where(User.clerkId == clerkId)
     )
     player = result.scalars().first()
     if not player:

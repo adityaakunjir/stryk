@@ -4,28 +4,28 @@ STRYK Backend - Player Model
 SQLModel schema for player profiles.
 """
 
+import uuid
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import ConfigDict
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 
 
-class PlayerBase(SQLModel):
-    """Shared player fields used for creation and reading."""
-
+class UserBase(SQLModel):
+    """Shared user fields used for creation and reading."""
     model_config = ConfigDict(populate_by_name=True)
 
-    auth_user_id: str = Field(index=True, unique=True)
-    full_name: str = Field(max_length=100)
+    clerkId: str = Field(index=True, unique=True)
     username: str = Field(max_length=40, index=True, unique=True)
-    avatar_url: Optional[str] = Field(default=None, max_length=500)
-    position: str = Field(max_length=10, default="CAM")
-    secondary_position: Optional[str] = Field(default=None, max_length=10)
-    strong_foot: str = Field(max_length=10, default="Right")
-    play_style: str = Field(max_length=20, default="Playmaker")
+    fullName: Optional[str] = Field(default=None, max_length=100)
+    avatarUrl: Optional[str] = Field(default=None, max_length=500)
+    position: Optional[str] = Field(max_length=10, default=None)
+    playStyle: Optional[str] = Field(max_length=20, default=None)
+    strongFoot: Optional[str] = Field(max_length=10, default=None)
     bio: Optional[str] = Field(default=None, max_length=120)
-    rating: int = Field(default=60, ge=1, le=99)
-    matches_played: int = Field(default=0, ge=0)
+    
+    overall: int = Field(default=50, ge=1, le=99)
+    matchesPlayed: int = Field(default=0, ge=0)
     wins: int = Field(default=0, ge=0)
     losses: int = Field(default=0, ge=0)
     draws: int = Field(default=0, ge=0)
@@ -36,43 +36,64 @@ class PlayerBase(SQLModel):
     intercepts: int = Field(default=0, ge=0)
 
 
-class Player(PlayerBase, table=True):
-    """Database table model for players."""
+class User(UserBase, table=True):
+    """Database table model for users."""
+    __tablename__ = "users"
 
-    __tablename__ = "players"
+    id: str = Field(default_factory=lambda: uuid.uuid4().hex, primary_key=True)
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    updatedAt: datetime = Field(default_factory=datetime.utcnow)
 
-    id: Optional[int] = Field(default=None, primary_key=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    # Relationships (defined as strings to avoid circular imports initially)
+    team_members: List["TeamMember"] = Relationship(back_populates="user")
+    match_participants: List["MatchParticipant"] = Relationship(back_populates="user")
+    
+    # Captain of teams
+    captained_teams: List["Team"] = Relationship(back_populates="captain")
+    # Creator of matches
+    created_matches: List["Match"] = Relationship(back_populates="creator")
+
+    # Friend requests
+    sent_friend_requests: List["FriendRequest"] = Relationship(
+        back_populates="sender",
+        sa_relationship_kwargs={"foreign_keys": "FriendRequest.senderId"}
+    )
+    received_friend_requests: List["FriendRequest"] = Relationship(
+        back_populates="receiver",
+        sa_relationship_kwargs={"foreign_keys": "FriendRequest.receiverId"}
+    )
+    
+    # Team invites
+    sent_team_invites: List["TeamInvite"] = Relationship(
+        back_populates="sender",
+        sa_relationship_kwargs={"foreign_keys": "TeamInvite.senderId"}
+    )
+    received_team_invites: List["TeamInvite"] = Relationship(
+        back_populates="receiver",
+        sa_relationship_kwargs={"foreign_keys": "TeamInvite.receiverId"}
+    )
 
 
-class PlayerCreate(PlayerBase):
-    """Schema for creating a new player."""
-
+class UserCreate(UserBase):
     pass
 
 
-class PlayerRead(PlayerBase):
-    """Schema for reading a player (includes id and timestamps)."""
-
-    id: int
-    created_at: datetime
-    updated_at: datetime
+class UserRead(UserBase):
+    id: str
+    createdAt: datetime
+    updatedAt: datetime
 
 
-class PlayerUpdate(SQLModel):
-    """Schema for updating a player (all fields optional)."""
-
-    full_name: Optional[str] = None
+class UserUpdate(SQLModel):
+    fullName: Optional[str] = None
     username: Optional[str] = None
-    avatar_url: Optional[str] = None
+    avatarUrl: Optional[str] = None
     position: Optional[str] = None
-    secondary_position: Optional[str] = None
-    strong_foot: Optional[str] = None
-    play_style: Optional[str] = None
+    playStyle: Optional[str] = None
+    strongFoot: Optional[str] = None
     bio: Optional[str] = None
-    rating: Optional[int] = None
-    matches_played: Optional[int] = None
+    overall: Optional[int] = None
+    matchesPlayed: Optional[int] = None
     wins: Optional[int] = None
     losses: Optional[int] = None
     draws: Optional[int] = None

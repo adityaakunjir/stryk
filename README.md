@@ -63,10 +63,10 @@ Short version:
 
 ```text
 Frontend: Next.js, TypeScript, Tailwind CSS, shadcn/ui
-Backend: FastAPI, Python, SQLModel/SQLAlchemy
-Auth: Clerk for identities, sessions, email/password, and Google login
+Backend: FastAPI, Python, SQLModel/SQLAlchemy, AsyncPG, Alembic, REST APIs
+Auth: Clerk for identities, JWT Authentication
 Database: PostgreSQL for football profile data, SQLite local fallback
-Cloud: Azure Static Web Apps, Azure App Service, Azure PostgreSQL
+Cloud: Vercel (Frontend), Railway (Backend & PostgreSQL)
 AI: Azure OpenAI primary, Gemini secondary
 ```
 

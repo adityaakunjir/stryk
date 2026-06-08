@@ -29,7 +29,7 @@ if database_url.startswith("postgresql"):
         "pool_size": 5,
         "max_overflow": 10,
     })
-
+print(f"DATABASE_URL = {database_url}")
 # Create async engine
 engine = create_async_engine(database_url, **engine_kwargs)
 
