@@ -19,13 +19,11 @@ export default function TeamBuilderPage() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteUsername, setInviteUsername] = useState("");
   const [inviteLoading, setInviteLoading] = useState(false);
-  const [inviteLoading, setInviteLoading] = useState(false);
 
   // Settings states
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [editTeamName, setEditTeamName] = useState("");
   const [editLogoUrl, setEditLogoUrl] = useState("");
-  const [settingsLoading, setSettingsLoading] = useState(false);
   const [settingsLoading, setSettingsLoading] = useState(false);
 
   const logoFileInputRef = useRef<HTMLInputElement>(null);
