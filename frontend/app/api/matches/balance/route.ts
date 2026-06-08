@@ -14,6 +14,17 @@ export async function POST(req: Request) {
       );
     }
 
+    const user = await prisma.user.findUnique({
+      where: { clerkId },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "User profile not found" },
+        { status: 404 }
+      );
+    }
+
     let body;
     try {
       body = await req.json();
@@ -58,7 +69,7 @@ export async function POST(req: Request) {
       );
     }
 
-    if (match.creatorId !== clerkId) {
+    if (match.creatorId !== user.id) {
       return NextResponse.json(
         { success: false, message: "Forbidden: Only the match creator can balance teams." },
         { status: 403 }
