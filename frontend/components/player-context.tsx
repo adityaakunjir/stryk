@@ -208,6 +208,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             });
             setIsBackendSynced(true);
           }
+        } else if (response.status === 404) {
+          // New User Flow: User is logged into Clerk, but has no STRYK profile
+          // Prevent redirect loops if they are already on an onboarding page
+          const currentPath = window.location.pathname;
+          const isOnboarding = ['/identity', '/position', '/play-style'].includes(currentPath);
+          if (!isOnboarding) {
+            window.location.href = "/identity";
+          }
         }
       } catch (err) {
         console.error("Failed to sync from /api/profile/me:", err);
