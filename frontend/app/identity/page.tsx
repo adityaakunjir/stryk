@@ -230,7 +230,7 @@ export default function IdentityPage() {
           <div className="w-9 h-9" />
         </header>
 
-        <div className="mx-auto mt-7 flex w-full max-w-[54rem] flex-1 flex-col items-center min-h-0">
+        <div className="mx-auto mt-7 flex w-full max-w-[54rem] flex-1 shrink-0 flex-col items-center min-h-[min-content] pb-8">
           <div className="flex items-center gap-2 justify-center mb-6">
             <div className="w-8 h-8 rounded-lg bg-[#C6FF00] text-black flex items-center justify-center font-display text-base">S</div>
             <div className="font-display tracking-[0.35em] text-base">STRYK</div>
@@ -246,7 +246,7 @@ export default function IdentityPage() {
             </p>
           </div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full flex-1 rounded-[2rem] border border-white/8 bg-[#0B1020]/50 p-5 shadow-[0_28px_100px_rgba(0,0,0,0.58),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:flex-none sm:p-8">
+          <form onSubmit={handleNext} className="mt-8 w-full flex-1 shrink-0 rounded-[2rem] border border-white/8 bg-[#0B1020]/50 p-5 shadow-[0_28px_100px_rgba(0,0,0,0.58),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:flex-none sm:p-8">
             <input 
               type="file" 
               ref={fileInputRef} 
