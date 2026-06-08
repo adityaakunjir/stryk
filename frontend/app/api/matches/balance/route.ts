@@ -14,7 +14,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
+    }
     const { matchId } = body;
 
     if (!matchId) {
@@ -50,6 +55,13 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { success: false, message: "Match not found" },
         { status: 404 }
+      );
+    }
+
+    if (match.creatorId !== clerkId) {
+      return NextResponse.json(
+        { success: false, message: "Forbidden: Only the match creator can balance teams." },
+        { status: 403 }
       );
     }
 
@@ -132,7 +144,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("BALANCE TEAMS ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

@@ -62,7 +62,12 @@ export async function PATCH(req: Request) {
       );
     }
 
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
+    }
 
     const dataToUpdate: any = {};
     if (body.fullName !== undefined) dataToUpdate.fullName = body.fullName;
@@ -85,6 +90,11 @@ export async function PATCH(req: Request) {
     if (typeof body.saves === 'number') dataToUpdate.saves = body.saves;
     if (typeof body.intercepts === 'number') dataToUpdate.intercepts = body.intercepts;
 
+    const existingUser = await prisma.user.findUnique({ where: { clerkId: userId } });
+    if (!existingUser) {
+      return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+    }
+
     const user = await prisma.user.update({
       where: { clerkId: userId },
       data: dataToUpdate,
@@ -93,6 +103,6 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ success: true, data: user });
   } catch (error) {
     console.error("PATCH PROFILE ERROR:", error);
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }

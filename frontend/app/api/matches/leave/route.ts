@@ -25,13 +25,31 @@ export async function POST(req: Request) {
       );
     }
 
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
+    }
     const { matchId } = body;
 
     if (!matchId) {
       return NextResponse.json(
         { success: false, message: "matchId is required" },
         { status: 400 }
+      );
+    }
+
+    // Check if match exists and if user is creator
+    const match = await prisma.match.findUnique({ where: { id: matchId } });
+    if (!match) {
+      return NextResponse.json({ success: false, message: "Match not found" }, { status: 404 });
+    }
+
+    if (match.creatorId === user.id) {
+      return NextResponse.json(
+        { success: false, message: "Match creator cannot leave. Please cancel the match instead." },
+        { status: 403 }
       );
     }
 
@@ -46,7 +64,7 @@ export async function POST(req: Request) {
     if (!participant) {
       return NextResponse.json(
         { success: false, message: "You are not a participant in this match" },
-        { status: 400 }
+        { status: 404 }
       );
     }
 
@@ -77,7 +95,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("LEAVE MATCH ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

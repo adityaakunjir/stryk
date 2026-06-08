@@ -25,7 +25,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
+    }
     const { matchId, teamName } = body; // teamName can be "Team A", "Team B", or null
 
     if (!matchId) {
@@ -33,6 +38,11 @@ export async function POST(req: Request) {
         { success: false, message: "matchId is required" },
         { status: 400 }
       );
+    }
+
+    const match = await prisma.match.findUnique({ where: { id: matchId } });
+    if (!match) {
+      return NextResponse.json({ success: false, message: "Match not found" }, { status: 404 });
     }
 
     // Find the participant entry for this user in the match
@@ -46,7 +56,7 @@ export async function POST(req: Request) {
     if (!participant) {
       return NextResponse.json(
         { success: false, message: "You are not a participant in this match. Join the match lobby first." },
-        { status: 400 }
+        { status: 404 }
       );
     }
 
@@ -73,7 +83,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("ASSIGN TEAM ERROR:", error);
     return NextResponse.json(
-      { success: false, error: String(error) },
+      { success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

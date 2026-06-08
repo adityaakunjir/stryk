@@ -8,48 +8,41 @@ export async function PATCH(req: Request) {
 
     if (!userId) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Unauthorized",
-        },
+        { success: false, message: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      return NextResponse.json({ success: false, message: "Invalid JSON payload" }, { status: 400 });
+    }
     const { position } = body;
 
     if (!position) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Position is required",
-        },
+        { success: false, message: "Position is required" },
         { status: 400 }
       );
     }
 
+    const existingUser = await prisma.user.findUnique({ where: { clerkId: userId } });
+    if (!existingUser) {
+      return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+    }
+
     const user = await prisma.user.update({
-      where: {
-        clerkId: userId,
-      },
-      data: {
-        position,
-      },
+      where: { clerkId: userId },
+      data: { position },
     });
 
-    return NextResponse.json({
-      success: true,
-      user,
-    });
+    return NextResponse.json({ success: true, user });
   } catch (error) {
     console.error("POSITION UPDATE ERROR:", error);
-
     return NextResponse.json(
-      {
-        success: false,
-        error: String(error),
-      },
+      { success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

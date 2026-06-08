@@ -1,8 +1,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET(req: Request) {
   try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(req.url);
     const username = searchParams.get("username");
 
@@ -23,6 +33,7 @@ export async function GET(req: Request) {
     });
 
     return NextResponse.json({
+      success: true,
       available: !existingUser,
     });
   } catch (error) {
@@ -31,7 +42,7 @@ export async function GET(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: String(error),
+        error: "Internal Server Error",
       },
       { status: 500 }
     );
