@@ -24,6 +24,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ r
 }
 
 async function handleProxy(req: NextRequest, route: string[]) {
+  console.log("PROXY EXECUTED FOR ROUTE:", route);
   try {
     const { getToken } = await auth();
     const token = await getToken();

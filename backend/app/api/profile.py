@@ -71,7 +71,6 @@ async def create_profile(
             fullName=profile_data.fullName,
             username=profile_data.username.lower(),
             avatarUrl=profile_data.avatarUrl,
-            email=user.get("email", ""),
             overall=50
         )
         session.add(db_user)
