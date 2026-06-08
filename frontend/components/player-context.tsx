@@ -30,7 +30,7 @@ export interface PlayerData {
 
 interface PlayerContextType {
   playerData: PlayerData;
-  updatePlayerData: (data: Partial<PlayerData>) => void;
+  updatePlayerData: (data: Partial<PlayerData>) => Promise<void>;
   resetPlayerData: () => void;
   getStats: () => { label: string; value: number }[];
   isLoaded: boolean;
@@ -157,8 +157,21 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   // Push local changes to the backend
   const pushToBackend = async (data: PlayerData, token: string) => {
-    // Backend API is not active yet. Defaulting to local storage sync.
-    setIsBackendSynced(true);
+    try {
+      const res = await fetch("/api/profile/me", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        setIsBackendSynced(true);
+      }
+    } catch (err) {
+      console.error("Failed to push data to backend", err);
+    }
   };
 
   // Sync from backend when authentication status changes
@@ -206,7 +219,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isSignedIn, user?.id]);
 
-  const updatePlayerData = (data: Partial<PlayerData>) => {
+  const updatePlayerData = async (data: Partial<PlayerData>) => {
+    let finalUpdated: PlayerData | undefined;
+
     setPlayerData((prev) => {
       const updated = { ...prev, ...data };
       
@@ -219,17 +234,17 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         console.error("Error saving player data to localStorage", e);
       }
 
-      // Sync changes to backend in the background if signed in
-      if (isSignedIn) {
-        getToken().then((token) => {
-          if (token) {
-            pushToBackend(updated, token);
-          }
-        });
-      }
-
+      finalUpdated = updated;
       return updated;
     });
+
+    // Sync changes to backend if signed in
+    if (isSignedIn && finalUpdated) {
+      const token = await getToken();
+      if (token) {
+        await pushToBackend(finalUpdated, token);
+      }
+    }
   };
 
   const resetPlayerData = () => {

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Minus, Plus, Crown, Target, Zap, Shield, Hand, Footprints, Loader2, Check } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Target, Zap, Shield, Hand, Footprints, Loader2, Check } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 
 export default function SubmitPage() {
@@ -17,6 +17,7 @@ export default function SubmitPage() {
     Intercepts: 3,
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   if (!isLoaded) {
@@ -43,10 +44,10 @@ export default function SubmitPage() {
     setStats((prev) => ({ ...prev, [key]: Math.max(0, prev[key] - 1) }));
   };
 
-  const handleSubmit = () => {
-    setSubmitted(true);
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
     
-    updatePlayerData({
+    await updatePlayerData({
       matchesPlayed: (playerData.matchesPlayed ?? 0) + 1,
       wins: (playerData.wins ?? 0) + 1,
       draws: playerData.draws ?? 0,
@@ -57,6 +58,9 @@ export default function SubmitPage() {
       saves: (playerData.saves ?? 0) + stats.Saves,
       intercepts: (playerData.intercepts ?? 0) + stats.Intercepts,
     });
+
+    setIsSubmitting(false);
+    setSubmitted(true);
 
     setTimeout(() => {
       router.push("/home");
@@ -109,38 +113,21 @@ export default function SubmitPage() {
           })}
         </div>
 
-        {/* MVP Vote */}
-        <div className="mt-4 rounded-2xl p-4 border border-[#C6FF00]/30"
-          style={{ background: "linear-gradient(135deg, rgba(198,255,0,0.10), transparent)" }}>
-          <div className="flex items-center gap-2 mb-3">
-            <Crown size={14} className="text-[#C6FF00]" />
-            <div className="text-[10px] tracking-[0.25em] uppercase text-[#C6FF00] font-bold">MVP Vote</div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="size-9 rounded-full overflow-hidden border border-white/10 bg-zinc-800">
-              {playerData.avatar ? (
-                <img src={playerData.avatar} alt="User Avatar" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-zinc-700 via-zinc-950 to-black opacity-80" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-white truncate">{playerData.fullName || "Player"}</div>
-              <div className="text-[10px] text-white/50 truncate font-semibold">@{playerData.username || "username"} · {playerData.position || "CAM"}</div>
-            </div>
-            <button className="rounded-full px-3 py-1.5 text-[10px] tracking-[0.2em] uppercase bg-white/5 border border-white/10 font-bold hover:bg-white/10 cursor-pointer">Change</button>
-          </div>
-        </div>
+
 
         {/* Submit */}
         <div className="mt-4">
           <button 
             onClick={handleSubmit}
-            disabled={submitted}
+            disabled={isSubmitting || submitted}
             className="w-full rounded-2xl py-3.5 bg-[#C6FF00] text-black font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-80" 
             style={{ fontSize: "0.875rem", boxShadow: "0 20px 40px -10px rgba(198,255,0,0.5)" }}
           >
-            {submitted ? (
+            {isSubmitting ? (
+              <>
+                <Loader2 size={14} className="animate-spin" /> SUBMITTING...
+              </>
+            ) : submitted ? (
               <>
                 <Check size={14} strokeWidth={3} /> STATS SUBMITTED!
               </>

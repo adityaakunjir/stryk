@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft, User, Palette, Shield, LogOut, ChevronRight, Bell, Loader2 } from "lucide-react";
+import { ArrowLeft, User, LogOut, ChevronRight, Bell, Loader2 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { useAuth } from "@clerk/clerk-react";
 
@@ -41,28 +41,6 @@ export default function SettingsPage() {
           label: "Notifications",
           meta: "Manage alerts",
           onClick: () => router.push("/notifications"),
-        },
-      ],
-    },
-    {
-      title: "Preferences",
-      items: [
-        {
-          icon: Palette,
-          label: "Appearance",
-          meta: "Dark mode",
-          onClick: undefined,
-        },
-      ],
-    },
-    {
-      title: "About",
-      items: [
-        {
-          icon: Shield,
-          label: "Privacy Policy",
-          meta: "Data & security",
-          onClick: undefined,
         },
       ],
     },
