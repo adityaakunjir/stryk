@@ -291,7 +291,14 @@ export default function TeamBuilderPage() {
                 disabled={creating || !newTeamName.trim()}
                 className="w-full h-14 rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50"
               >
-                {creating ? <Loader2 className="size-5 animate-spin" /> : "CREATE TEAM"}
+                {creating ? (
+                  <>
+                    <Loader2 className="size-5 animate-spin" />
+                    CREATING TEAM...
+                  </>
+                ) : (
+                  "CREATE TEAM"
+                )}
               </button>
             </form>
           </div>
@@ -483,7 +490,14 @@ export default function TeamBuilderPage() {
                 disabled={inviteLoading || !inviteUsername.trim()}
                 className="w-full h-12 rounded-xl bg-[#C6FF00] text-black font-display tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 text-sm font-bold"
               >
-                {inviteLoading ? <Loader2 className="size-4 animate-spin" /> : "SEND INVITATION"}
+                {inviteLoading ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    SENDING...
+                  </>
+                ) : (
+                  "SEND INVITATION"
+                )}
               </button>
             </form>
           </div>
@@ -593,7 +607,14 @@ export default function TeamBuilderPage() {
                   disabled={settingsLoading || !editTeamName.trim()}
                   className="w-full h-11 rounded-xl bg-[#C6FF00] text-black font-display tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 text-xs font-bold"
                 >
-                  {settingsLoading ? <Loader2 className="size-4 animate-spin" /> : "SAVE CHANGES"}
+                  {settingsLoading ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      SAVING...
+                    </>
+                  ) : (
+                    "SAVE CHANGES"
+                  )}
                 </button>
               </form>
 

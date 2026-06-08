@@ -56,6 +56,7 @@ export default function IdentityPage() {
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [error, setError] = useState("");
   const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -159,6 +160,8 @@ export default function IdentityPage() {
       return;
     }
 
+    setSubmitting(true);
+
     try {
       const response = await fetch("/api/profile", {
         method: "POST",
@@ -181,6 +184,8 @@ export default function IdentityPage() {
       }
     } catch (err) {
       // Ignored: expected to fail on static exports if not fully configured
+    } finally {
+      setSubmitting(false);
     }
 
     updatePlayerData({
@@ -400,10 +405,20 @@ export default function IdentityPage() {
             </div>
 
             <button 
-              className="mt-6 h-14 w-full rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600]" 
+              disabled={submitting}
+              className="mt-6 h-14 w-full rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50" 
               type="submit"
             >
-              CONTINUE <ArrowRight className="ml-auto" strokeWidth={3} size={16} />
+              {submitting ? (
+                <>
+                  <Loader2 className="size-5 animate-spin" />
+                  SAVING PROFILE...
+                </>
+              ) : (
+                <>
+                  CONTINUE <ArrowRight className="ml-auto" strokeWidth={3} size={16} />
+                </>
+              )}
             </button>
 
             <div className="mt-5 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">

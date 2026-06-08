@@ -473,8 +473,17 @@ export default function MatchDetailsPage({ params }: PageProps) {
               disabled={actionLoading}
               className="w-full h-11 rounded-2xl bg-gradient-to-r from-[#7c3aed] to-[#a855f7] hover:from-[#6d28d9] hover:to-[#9333ea] text-white text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_10px_30px_-8px_rgba(168,85,247,0.5)]"
             >
-              <Sparkles size={14} />
-              AI Auto-Balance Teams
+              {actionLoading ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  BALANCING...
+                </>
+              ) : (
+                <>
+                  <Sparkles size={14} />
+                  AI Auto-Balance Teams
+                </>
+              )}
             </button>
           )}
           {/* Team A */}
@@ -580,8 +589,17 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   disabled={actionLoading}
                   className="w-full h-12 rounded-2xl bg-[#C6FF00] hover:bg-[#b0e600] text-black text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_20px_40px_-10px_rgba(198,255,0,0.4)] animate-pulse"
                 >
-                  <CheckCircle2 size={14} />
-                  {"I'M HERE (CHECK IN)"}
+                  {actionLoading ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin text-black" />
+                      CHECKING IN...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={14} />
+                      {"I'M HERE (CHECK IN)"}
+                    </>
+                  )}
                 </button>
               )}
               <button
@@ -589,8 +607,17 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 disabled={actionLoading}
                 className="w-full h-11 rounded-2xl border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
               >
-                <LogOut size={14} />
-                LEAVE MATCH LOBBY
+                {actionLoading ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin text-red-400" />
+                    LEAVING...
+                  </>
+                ) : (
+                  <>
+                    <LogOut size={14} />
+                    LEAVE MATCH LOBBY
+                  </>
+                )}
               </button>
             </div>
           ) : (
@@ -599,8 +626,17 @@ export default function MatchDetailsPage({ params }: PageProps) {
               disabled={actionLoading || participants.length >= match.maxPlayers}
               className="w-full h-12 rounded-2xl bg-[#C6FF00] hover:bg-[#b0e600] text-black text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_20px_40px_-10px_rgba(198,255,0,0.4)]"
             >
-              <UserPlus size={14} />
-              {participants.length >= match.maxPlayers ? "LOBBY FULL" : "JOIN MATCH LOBBY"}
+              {actionLoading ? (
+                <>
+                  <Loader2 className="size-4 animate-spin text-black" />
+                  JOINING...
+                </>
+              ) : (
+                <>
+                  <UserPlus size={14} />
+                  {participants.length >= match.maxPlayers ? "LOBBY FULL" : "JOIN MATCH LOBBY"}
+                </>
+              )}
             </button>
           )}
         </div>

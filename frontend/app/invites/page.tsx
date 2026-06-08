@@ -150,7 +150,10 @@ export default function InvitesPage() {
                     type="button"
                   >
                     {actionLoadingId === invite.id ? (
-                      <Loader2 className="size-3.5 animate-spin" />
+                      <>
+                        <Loader2 className="size-3.5 animate-spin" />
+                        DECLINING...
+                      </>
                     ) : (
                       <>
                         <X size={13} /> Decline
@@ -164,7 +167,10 @@ export default function InvitesPage() {
                     type="button"
                   >
                     {actionLoadingId === invite.id ? (
-                      <Loader2 className="size-3.5 animate-spin text-black" />
+                      <>
+                        <Loader2 className="size-3.5 animate-spin text-black" />
+                        JOINING...
+                      </>
                     ) : (
                       <>
                         <Check size={13} strokeWidth={3} /> Accept

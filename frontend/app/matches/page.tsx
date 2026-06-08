@@ -382,7 +382,10 @@ export default function MatchesPage() {
                         type="button"
                       >
                         {joiningId === match.id ? (
-                          <Loader2 className="size-4 animate-spin text-red-400" />
+                          <>
+                            <Loader2 className="size-4 animate-spin text-red-400" />
+                            LEAVING...
+                          </>
                         ) : (
                           "LEAVE MATCH"
                         )}
@@ -403,7 +406,10 @@ export default function MatchesPage() {
                         type="button"
                       >
                         {joiningId === match.id ? (
-                          <Loader2 className="size-4 animate-spin text-black" />
+                          <>
+                            <Loader2 className="size-4 animate-spin text-black" />
+                            JOINING...
+                          </>
                         ) : (
                           "JOIN MATCH"
                         )}
@@ -506,7 +512,14 @@ export default function MatchesPage() {
                 disabled={createLoading || !createTitle.trim() || !createLocation.trim() || !createDateTime}
                 className="w-full h-12 rounded-xl bg-[#C6FF00] text-black font-display tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 text-sm font-bold mt-2"
               >
-                {createLoading ? <Loader2 className="size-4 animate-spin" /> : "CREATE LOBBY"}
+                {createLoading ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    CREATING MATCH...
+                  </>
+                ) : (
+                  "CREATE LOBBY"
+                )}
               </button>
             </form>
           </div>
