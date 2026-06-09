@@ -26,6 +26,7 @@ if settings.sentry_dsn:
             traces_sample_rate=0.2 if settings.is_production else 1.0,
             profiles_sample_rate=0.1,
             environment=settings.app_env,
+            send_default_pii=True,
         )
     except ImportError:
         pass
