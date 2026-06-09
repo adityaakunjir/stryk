@@ -201,13 +201,13 @@ export default function PositionPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="sm" className="h-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/60">
+          <Button asChild variant="ghost" className="h-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/60">
             <Link href="/identity">
               <ArrowLeft size={14} className="mr-1.5" /> Identity
             </Link>
           </Button>
           <div className="hidden sm:block"><Stepper /></div>
-          <Button variant="ghost" size="sm" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-white/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/40 hover:text-white">
+          <Button variant="ghost" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-white/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/40 hover:text-white">
             Skip
           </Button>
         </motion.header>
