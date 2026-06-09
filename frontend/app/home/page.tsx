@@ -23,12 +23,6 @@ const getStyleColor = (styleName: string) => {
   return "#3B82F6";
 };
 
-// Dummy recommendations
-const DUMMY_RECS = [
-  { name: "Alex R.", pos: "ST", ovr: 64, style: "Poacher", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=AR&backgroundColor=000000" },
-  { name: "Marcus T.", pos: "CB", ovr: 61, style: "Defender", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=MT&backgroundColor=000000" },
-  { name: "Sam J.", pos: "LW", ovr: 66, style: "Speedster", avatar: "https://api.dicebear.com/7.x/initials/svg?seed=SJ&backgroundColor=000000" }
-];
 
 export default function HomeLobbyPage() {
   const router = useRouter();
@@ -299,24 +293,8 @@ export default function HomeLobbyPage() {
                       <button onClick={() => router.push("/search")} className="px-4 py-2 rounded-xl bg-white/10 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/20 transition">Invite Friends</button>
                     </div>
                     
-                    <div className="w-full">
-                      <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-3">Suggested Players</h3>
-                      <div className="space-y-2">
-                        {DUMMY_RECS.map((rec, i) => (
-                          <div key={i} className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
-                            <div className="flex items-center gap-3">
-                              <img src={rec.avatar} alt={rec.name} className="w-10 h-10 rounded-full border border-white/10" />
-                              <div>
-                                <div className="text-sm font-bold">{rec.name}</div>
-                                <div className="text-[10px] uppercase font-bold text-white/40 tracking-wider">{rec.pos} • {rec.style}</div>
-                              </div>
-                            </div>
-                            <button className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20">
-                              <Users size={12} />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
+                    <div className="w-full text-center">
+                      <p className="text-[10px] uppercase font-bold text-white/30 tracking-widest mt-4">Invite players to start a squad</p>
                     </div>
                   </div>
                 ) : (

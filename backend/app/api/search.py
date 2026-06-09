@@ -45,5 +45,5 @@ async def search_users(
         stmt = stmt.where(and_(*filters))
         
     stmt = stmt.limit(50)
-    results = await session.exec(stmt)
-    return results.all()
+    results = await session.execute(stmt)
+    return results.scalars().all()
