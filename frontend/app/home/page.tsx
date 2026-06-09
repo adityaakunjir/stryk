@@ -240,7 +240,7 @@ export default function HomeLobbyPage() {
           {/* Tier 2 (Small) */}
           <div className="grid grid-cols-2 gap-2.5">
             <Tier2Tile icon={<Trophy size={14} />} label="Leaderboards" onClick={() => router.push("/leaderboards")} />
-            <Tier2Tile icon={<Activity size={14} />} label="History" onClick={() => router.push("/submit")} />
+            <Tier2Tile icon={<Activity size={14} />} label="History" onClick={() => router.push("/history")} />
           </div>
         </div>
 
