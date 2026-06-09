@@ -3,13 +3,18 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
-  ArrowRight,
   Check,
   ChevronDown,
   Footprints,
-  Info} from "lucide-react";
+  Info,
+  Target,
+  Zap,
+  Loader2,
+  AlertTriangle
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/components/player-context";
@@ -32,20 +37,49 @@ const positions = [
   { code: "RW", name: "Right Winger", x: 78, y: 18 },
 ];
 
-function StepProgress() {
+const positionRoles: Record<string, { role: string; desc: string }> = {
+  "GK": { role: "Shot Stopper", desc: "Commands the box, last line of defense" },
+  "LB": { role: "Wing Back", desc: "Defends the flank, overlaps attack" },
+  "CB": { role: "Defensive Anchor", desc: "Wins aerial duels, organizes backline" },
+  "RB": { role: "Wing Back", desc: "Defends the flank, overlaps attack" },
+  "CDM": { role: "Holding Mid", desc: "Breaks up play, shields defense" },
+  "LM": { role: "Wide Mid", desc: "Provides width, crosses the ball" },
+  "CM": { role: "Box-to-Box", desc: "Controls possession, links play" },
+  "RM": { role: "Wide Mid", desc: "Provides width, crosses the ball" },
+  "CAM": { role: "Playmaker", desc: "Creates chances, operates between lines" },
+  "LW": { role: "Wide Attacker", desc: "Fast, cuts inside to shoot" },
+  "ST": { role: "Target Man", desc: "Scores goals, leads the line" },
+  "RW": { role: "Wide Attacker", desc: "Fast, cuts inside to shoot" },
+};
+
+const smartSecondary: Record<string, string[]> = {
+  "GK": [],
+  "LB": ["LM", "CB", "CDM"],
+  "CB": ["CDM", "RB", "LB"],
+  "RB": ["RM", "CB", "CDM"],
+  "CDM": ["CM", "CB"],
+  "LM": ["LW", "LB", "CM"],
+  "CM": ["CDM", "CAM", "LM", "RM"],
+  "RM": ["RW", "RB", "CM"],
+  "CAM": ["CM", "LW", "RW", "ST"],
+  "LW": ["LM", "ST", "CAM"],
+  "ST": ["LW", "RW", "CAM"],
+  "RW": ["RM", "ST", "CAM"],
+};
+
+function Stepper() {
   return (
-    <div className="flex items-center gap-2" aria-label="Step 2 of 3">
-      <div className="grid size-9 place-items-center rounded-full bg-[#C6FF00] text-black shadow-[0_0_24px_rgba(198,255,0,0.34)]">
-        <Check className="size-5 stroke-[3]" />
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-white/40">
+      <div className="flex items-center gap-1.5 text-white/70">
+        IDENTITY <Check size={12} className="text-[#C6FF00]" />
       </div>
-      <div className="h-px w-10 bg-[#C6FF00] sm:w-16" />
-      <div className="grid size-10 place-items-center rounded-full bg-[#C6FF00] text-sm font-display tracking-wider text-black shadow-[0_0_26px_rgba(198,255,0,0.45)]">
-        2
+      <div className="w-4 sm:w-6 h-[1px] bg-white/20" />
+      <div className="text-[#C6FF00] flex items-center gap-1.5">
+        <div className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] shadow-[0_0_8px_rgba(198,255,0,0.8)]" />
+        POSITION
       </div>
-      <div className="h-px w-10 bg-white/10 sm:w-16" />
-      <div className="grid size-9 place-items-center rounded-full border border-white/12 bg-white/5 text-white/55 text-sm font-display">
-        3
-      </div>
+      <div className="w-4 sm:w-6 h-[1px] bg-white/20" />
+      <div>STATS <div className="inline-block w-1.5 h-1.5 rounded-full border border-white/40 ml-1.5" /></div>
     </div>
   );
 }
@@ -58,256 +92,409 @@ export default function PositionPage() {
   const [secondaryPosition, setSecondaryPosition] = useState("");
   const [strongFoot, setStrongFoot] = useState<"Left" | "Right">("Left");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
+  const [showToast, setShowToast] = useState(true);
+  const [showSkipModal, setShowSkipModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Auto-dismiss toast
+    const timer = setTimeout(() => setShowToast(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (playerData) {
       queueMicrotask(() => {
-        setSelectedPosition(playerData.position || "CAM");
-        setSecondaryPosition(playerData.secondaryPosition || "");
-        setStrongFoot(playerData.strongFoot || "Left");
+        if (playerData.position) setSelectedPosition(playerData.position);
+        if (playerData.secondaryPosition) setSecondaryPosition(playerData.secondaryPosition);
+        if (playerData.strongFoot) setStrongFoot(playerData.strongFoot);
       });
     }
   }, [playerData]);
 
-  const handleNext = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Optimistic context updates
+  useEffect(() => {
     updatePlayerData({
       position: selectedPosition,
       secondaryPosition: secondaryPosition,
-      strongFoot: strongFoot});
+      strongFoot: strongFoot
+    });
+  }, [selectedPosition, secondaryPosition, strongFoot]);
+
+  const handleNext = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate API call and Analytics event
+    console.log("Analytics: position_selected", selectedPosition);
+    console.log("Analytics: step2_completed");
+
+    setTimeout(() => {
+      setIsSuccess(true);
+      setTimeout(() => {
+        router.push("/play-style");
+      }, 800);
+    }, 600);
+  };
+
+  const handleSkip = () => {
+    console.log("Analytics: step2_skipped");
     router.push("/play-style");
   };
 
   const handleSelectPosition = (code: string) => {
-    const cleanCode = code.split("_")[0]; // GK, CB, CM, etc.
+    const cleanCode = code.split("_")[0];
     setSelectedPosition(cleanCode);
     if (secondaryPosition === cleanCode) {
       setSecondaryPosition("");
     }
   };
 
-  return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_62%_18%,rgba(198,255,0,0.12),transparent_25%),radial-gradient(circle_at_22%_64%,rgba(91,140,255,0.06),transparent_28%),linear-gradient(180deg,#05070B_0%,#0B1020_48%,#05070B_100%)]" />
-      <div className="absolute inset-x-0 bottom-0 h-[50%] bg-[linear-gradient(180deg,transparent,rgba(11,16,32,0.72)),repeating-linear-gradient(96deg,rgba(198,255,0,0.04)_0_1px,transparent_1px_52px)] opacity-75 pointer-events-none" />
+  const roleInfo = positionRoles[selectedPosition] || positionRoles["CAM"];
+  const suggestedSecondaries = smartSecondary[selectedPosition] || [];
 
-      <section data-scroll-panel className="relative z-10 mx-auto flex h-full w-full max-w-md flex-col px-5 pb-4 pt-6 sm:max-w-5xl sm:px-8 lg:px-10 overflow-y-auto min-h-0">
-        <header className="grid grid-cols-[3rem_1fr_3rem] items-center gap-4">
-          <Button asChild variant="ghost" size="icon" aria-label="Back to identity" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
+  return (
+    <main className="stryk-mobile-shell text-white bg-[#05070B] overflow-hidden">
+      {/* Background Layer 1: Base Gradient */}
+      <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(198,255,0,0.08)_0%,transparent_60%),radial-gradient(ellipse_60%_40%_at_50%_110%,rgba(91,140,255,0.05)_0%,transparent_55%),#05070B]" />
+      
+      {/* Background Layer 2: Noise Texture */}
+      <div className="fixed inset-0 z-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('data:image/svg+xml,%3Csvg_viewBox=%220_0_200_200%22_xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter_id=%22noiseFilter%22%3E%3CfeTurbulence_type=%22fractalNoise%22_baseFrequency=%220.65%22_numOctaves=%223%22_stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect_width=%22100%25%22_height=%22100%25%22_filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')]" />
+      
+      {/* Background Layer 3: Moving Glow */}
+      <motion.div
+        className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[120px] bg-[#C6FF00]/10 z-0 pointer-events-none"
+        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* Background Layer 4: Football Pitch Grid */}
+      <div className="fixed inset-x-0 bottom-0 h-[48%] bg-[linear-gradient(180deg,transparent,rgba(11,16,32,0.72)),repeating-linear-gradient(96deg,rgba(198,255,0,0.08)_0_1px,transparent_1px_52px)] opacity-60 pointer-events-none z-0" />
+
+      {/* Custom Animated Success Toast */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div 
+            initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 10 }} exit={{ opacity: 0, y: -50, filter: "blur(10px)" }}
+            className="fixed top-safe inset-x-4 z-50 flex justify-center pointer-events-none"
+          >
+            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3 pr-5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+              <div className="w-8 h-8 rounded-full bg-[#C6FF00] flex items-center justify-center text-black">
+                <Check size={16} strokeWidth={3} />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-white uppercase tracking-wider">Identity Created</div>
+                <div className="text-[10px] text-white/50">Let's build your player profile.</div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <section data-scroll-panel className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col px-5 pb-4 pt-6 sm:px-8 lg:px-10 overflow-y-auto min-h-0"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
+        <motion.header 
+          initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+          className="flex items-center justify-between gap-4"
+        >
+          <Button asChild variant="ghost" size="sm" className="h-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/60">
             <Link href="/identity">
-              <ArrowLeft size={16} />
+              <ArrowLeft size={14} className="mr-1.5" /> Identity
             </Link>
           </Button>
-          <div className="flex justify-center">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#C6FF00] text-black flex items-center justify-center font-display text-base">S</div>
-              <div className="font-display tracking-[0.35em] text-base">STRYK</div>
-            </div>
-          </div>
-          <div />
-        </header>
+          <div className="hidden sm:block"><Stepper /></div>
+          <Button variant="ghost" size="sm" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-white/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/40 hover:text-white">
+            Skip
+          </Button>
+        </motion.header>
 
-        <div className="mx-auto mt-2 flex w-full max-w-[56rem] flex-1 flex-col items-center sm:mt-6 min-h-0">
-          <div className="hidden sm:block"><StepProgress /></div>
+        <div className="mx-auto mt-6 flex w-full max-w-[56rem] flex-1 flex-col items-center min-h-0 pb-8">
+          <div className="sm:hidden mb-6"><Stepper /></div>
 
-          <div className="mt-3 w-full text-left sm:mt-8 sm:text-center">
-            <div className="mb-3 hidden h-1 overflow-hidden rounded-full bg-white/10 sm:block">
-              <div className="h-full w-2/3 bg-[#C6FF00]" />
-            </div>
-            <div className="mb-3 flex items-center justify-center gap-12 text-[9px] font-black uppercase tracking-[0.28em] text-white/35 sm:hidden">
-              <span>Step 2 / 3</span>
-              <span>Skip</span>
-            </div>
-            <div className="mb-3 h-1 overflow-hidden rounded-full bg-white/10 sm:hidden">
-              <div className="h-full w-2/3 bg-[#C6FF00]" />
-            </div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="w-full text-center">
             <p className="text-[10px] tracking-[0.35em] uppercase text-[#C6FF00] font-bold">Pick your role</p>
-            <h2 className="font-display text-3xl uppercase italic leading-none tracking-wide text-white sm:text-6xl">
+            <h2 className="font-display text-4xl sm:text-6xl uppercase italic leading-none tracking-wide text-white mt-1">
               WHERE DO YOU PLAY?
             </h2>
-            <p className="mt-3 hidden text-sm font-semibold text-white/60 sm:block">
-              Tell us where you dominate the pitch.
-            </p>
-          </div>
+          </motion.div>
 
-          <form onSubmit={handleNext} className="mt-4 w-full space-y-2.5 sm:mt-8 sm:space-y-4">
-            {/* Tactical Pitch Selector */}
-            <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-2 shadow-[0_18px_60px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:rounded-[2.2rem] sm:border-white/8 sm:bg-[#0B1020]/50 sm:p-7">
-              <div className="hidden flex-wrap items-start justify-between gap-3 sm:flex">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-xl font-display uppercase tracking-wider">
-                      Preferred Position
-                    </h1>
-                    <Info className="size-4 text-white/40" />
-                  </div>
-                  <p className="mt-0.5 text-xs text-white/50">
-                    Your primary position on the field
-                  </p>
+          {/* Live Mini Card Continuity */}
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.2 }} className="mt-6 flex items-center justify-center pointer-events-none">
+            <div className="flex items-center gap-4 rounded-full border border-white/10 bg-white/5 p-2 pr-6 shadow-xl backdrop-blur-md">
+              {playerData?.avatar ? (
+                <img src={playerData.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover border border-white/20" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-white/20" />
                 </div>
-                <div className="rounded-full border border-[#C6FF00]/22 bg-[#C6FF00]/8 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[#C6FF00]">
-                  {selectedPosition} Selected
+              )}
+              <div className="flex flex-col">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-white">{playerData?.fullName || "Player Name"}</span>
+                <div className="flex items-center gap-2 mt-0.5 text-[9px] font-bold tracking-[0.1em] text-[#C6FF00]">
+                  {selectedPosition} <span className="text-white/30">•</span> {strongFoot} Foot
                 </div>
               </div>
+            </div>
+          </motion.div>
 
+          <form onSubmit={handleNext} className="mt-8 w-full space-y-4">
+            
+            {/* Tactical Pitch Selector */}
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-3xl border border-white/10 bg-[#0B1020]/40 p-4 shadow-[0_28px_80px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-2xl">
+              
               {/* Pitch layout */}
-              <div className="relative aspect-[1.44] min-h-[148px] overflow-hidden rounded-xl border border-white/10 sm:mt-6 sm:aspect-[1.18] sm:min-h-[400px] sm:rounded-2xl"
+              <div className="relative aspect-[1.3] w-full overflow-visible rounded-2xl border border-white/10 sm:aspect-[1.8]"
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(198,255,0,0.06), rgba(91,140,255,0.06)), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 24px, transparent 24px 48px)"}}>
                 <div className="absolute inset-3 border border-white/15 rounded" />
                 <div className="absolute left-3 right-3 top-1/2 h-px bg-white/15" />
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border border-white/15" />
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-white/15" />
 
                 {positions.map((p, i) => {
                   const displayCode = p.codeDisplay || p.code.split("_")[0];
                   const isActive = selectedPosition === displayCode;
+                  const isHovered = hoveredNode === displayCode;
+                  
                   return (
-                    <button
+                    <motion.div
                       key={i}
-                      onClick={() => handleSelectPosition(p.code)}
-                      className="absolute flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full font-display text-[9px] tracking-wider transition duration-300 cursor-pointer sm:h-9 sm:w-9 sm:text-xs"
-                      type="button"
-                      style={{
-                        left: `${p.x}%`,
-                        top: `${p.y}%`,
-                        background: isActive ? "#C6FF00" : "rgba(255,255,255,0.06)",
-                        color: isActive ? "#05070B" : "rgba(255,255,255,0.7)",
-                        border: isActive ? "none" : "1px solid rgba(255,255,255,0.12)",
-                        boxShadow: isActive ? "0 10px 24px -6px rgba(198,255,0,0.6)" : "none"}}
-                      title={p.name}
+                      className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
+                      style={{ left: `${p.x}%`, top: `${p.y}%` }}
                     >
-                      {displayCode}
-                    </button>
+                      <motion.button
+                        type="button"
+                        onClick={() => handleSelectPosition(p.code)}
+                        onMouseEnter={() => setHoveredNode(displayCode)}
+                        onMouseLeave={() => setHoveredNode(null)}
+                        className={cn(
+                          "flex items-center justify-center rounded-full font-display text-[9px] tracking-wider cursor-pointer sm:text-xs",
+                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#C6FF00] text-black" : "w-7 h-7 sm:w-9 sm:h-9 bg-white/5 border border-white/10 text-white/60 hover:text-white"
+                        )}
+                        layout
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        animate={{
+                          scale: isActive ? 1.1 : 1,
+                          opacity: isActive ? 1 : 0.6,
+                          boxShadow: isActive ? "0 0 20px rgba(198,255,0,0.5)" : "none",
+                        }}
+                      >
+                        {displayCode}
+                      </motion.button>
+                      
+                      {/* Breathing glow for active node */}
+                      {isActive && (
+                        <motion.div 
+                          className="absolute inset-0 rounded-full bg-[#C6FF00] -z-10"
+                          animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0, 0.2] }}
+                          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                      )}
+
+                      {/* Tooltip on Hover/Active */}
+                      <AnimatePresence>
+                        {(isHovered || (isActive && !isHovered)) && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                            animate={{ opacity: isActive ? 1 : 0.8, y: -45, scale: 1 }}
+                            exit={{ opacity: 0, y: 0, scale: 0.9 }}
+                            className="absolute left-1/2 -translate-x-1/2 w-max max-w-[140px] pointer-events-none z-20"
+                          >
+                            <div className="bg-black/80 backdrop-blur-md border border-white/10 rounded-lg p-2 text-center shadow-xl">
+                              <div className="text-[9px] font-bold text-[#C6FF00] uppercase tracking-wider">{positionRoles[displayCode]?.role}</div>
+                              {isActive && <div className="text-[8px] text-white/60 mt-0.5 leading-tight">{positionRoles[displayCode]?.desc}</div>}
+                            </div>
+                            <div className="w-2 h-2 bg-black/80 border-b border-r border-white/10 rotate-45 mx-auto -mt-1" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
                   );
                 })}
               </div>
-            </section>
+            </motion.section>
 
-            {/* Secondary Position */}
-            <section className="grid grid-cols-2 gap-2 sm:gap-4 sm:rounded-3xl sm:border sm:border-white/8 sm:bg-[#0B1020]/40 sm:p-5 sm:shadow-[0_18px_70px_rgba(0,0,0,0.42)] sm:backdrop-blur-xl md:grid-cols-[1fr_0.9fr] md:items-center md:p-6">
-              <div className="rounded-2xl border border-[#C6FF00]/45 bg-[#C6FF00]/8 px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-                <div className="text-[9px] font-black uppercase tracking-[0.22em] text-white/40">Primary</div>
-                <div className="font-display text-xl leading-none text-[#C6FF00]">{selectedPosition}</div>
-                <p className="mobile-compact-hidden mt-0.5 text-xs text-white/50">
-                  Your primary position on the field
-                </p>
-              </div>
-
-              <div className="relative">
-                <div className="sm:hidden rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2.5">
-                  <div className="text-[9px] font-black uppercase tracking-[0.22em] text-white/40">Secondary</div>
-                  <button
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="mt-1 flex w-full items-center justify-between text-left font-display text-xl leading-none text-white/80 cursor-pointer"
-                    type="button"
-                  >
-                    {secondaryPosition || "CM"}
-                    <ChevronDown className="size-4 text-white/50" />
-                  </button>
+            {/* Role Cards & Secondary Suggestions */}
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              {/* PRIMARY ROLE CARD */}
+              <div className="rounded-3xl border border-[#C6FF00]/30 bg-[#C6FF00]/5 p-5 shadow-[inset_0_0_20px_rgba(198,255,0,0.05)] backdrop-blur-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <Target size={64} />
                 </div>
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="hidden h-12 w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 text-left text-xs font-semibold text-white/80 transition hover:border-[#C6FF00]/45 hover:text-white sm:flex cursor-pointer"
-                  type="button"
-                >
-                  {secondaryPosition ? positions.find(p => p.code.split("_")[0] === secondaryPosition)?.name || secondaryPosition : "Select position"}
-                  <ChevronDown className="size-5 text-white/50" />
-                </button>
-                
-                {isDropdownOpen && (
-                  <div className="absolute right-0 top-[110%] z-50 max-h-48 w-full overflow-y-auto rounded-xl border border-white/10 bg-[#0B1020] p-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.8)] backdrop-blur-md">
-                    <button
-                      onClick={() => { setSecondaryPosition(""); setIsDropdownOpen(false); }}
-                      className="block w-full rounded-lg px-4 py-2 text-left text-xs font-semibold text-white/45 hover:bg-white/5 hover:text-white cursor-pointer"
-                      type="button"
-                    >
-                      None (Optional)
-                    </button>
-                    {positions
-                      .filter(p => p.code.split("_")[0] !== selectedPosition)
-                      .reduce((acc, current) => {
-                        // Unique filter
-                        const code = current.code.split("_")[0];
-                        const found = acc.find(item => item.code.split("_")[0] === code);
-                        if (!found) acc.push(current);
-                        return acc;
-                      }, [] as typeof positions)
-                      .map((p) => {
-                        const displayCode = p.codeDisplay || p.code.split("_")[0];
-                        return (
-                          <button
-                            key={p.code}
-                            onClick={() => { setSecondaryPosition(displayCode); setIsDropdownOpen(false); }}
-                            className="block w-full rounded-lg px-4 py-2 text-left text-xs font-semibold text-white/85 hover:bg-[#C6FF00]/10 hover:text-[#C6FF00] cursor-pointer"
-                            type="button"
-                          >
-                            {displayCode} - {p.name}
-                          </button>
-                        );
-                      })}
-                  </div>
-                )}
+                <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-[#C6FF00]">
+                  <Target size={12} /> PRIMARY ROLE
+                </div>
+                <div className="mt-2 font-display text-4xl leading-none text-white">{selectedPosition}</div>
+                <div className="mt-1 text-xs font-bold text-[#C6FF00]/80 uppercase tracking-wider">{roleInfo.role}</div>
+                <p className="mt-2 text-[11px] text-white/50 leading-relaxed max-w-[80%]">{roleInfo.desc}</p>
               </div>
-            </section>
+
+              {/* SECONDARY ROLE CARD */}
+              <div className="rounded-3xl border border-white/10 bg-[#0B1020]/40 p-5 shadow-xl backdrop-blur-xl flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-white/50">
+                    <Zap size={12} /> SECONDARY (OPTIONAL)
+                  </div>
+                  
+                  {secondaryPosition ? (
+                    <>
+                      <div className="mt-2 font-display text-4xl leading-none text-white flex items-center justify-between">
+                        {secondaryPosition}
+                        <button type="button" onClick={() => setSecondaryPosition("")} className="text-[10px] font-sans font-bold uppercase tracking-wider text-white/40 hover:text-red-400 bg-white/5 px-3 py-1.5 rounded-full cursor-pointer">Clear</button>
+                      </div>
+                      <div className="mt-1 text-xs font-bold text-white/60 uppercase tracking-wider">{positionRoles[secondaryPosition]?.role}</div>
+                    </>
+                  ) : (
+                    <div className="mt-2 font-display text-2xl leading-none text-white/30 italic">None Selected</div>
+                  )}
+                </div>
+
+                <div className="mt-4">
+                  {suggestedSecondaries.length > 0 && !secondaryPosition && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {suggestedSecondaries.map(pos => (
+                        <button key={pos} type="button" onClick={() => setSecondaryPosition(pos)} className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 hover:border-[#C6FF00]/50 text-[10px] font-bold text-white uppercase tracking-wider transition cursor-pointer">
+                          + {pos}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <div className="relative">
+                    <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="h-10 w-full flex items-center justify-between rounded-xl border border-white/10 bg-black/40 px-4 text-xs font-bold text-white/60 hover:text-white transition cursor-pointer">
+                      Select other position... <ChevronDown size={14} />
+                    </button>
+                    <AnimatePresence>
+                      {isDropdownOpen && (
+                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute bottom-full mb-2 w-full max-h-48 overflow-y-auto rounded-xl border border-white/10 bg-[#0B1020] p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
+                          {positions.filter(p => p.code.split("_")[0] !== selectedPosition).reduce((acc, current) => {
+                            const code = current.code.split("_")[0];
+                            if (!acc.find(item => item.code.split("_")[0] === code)) acc.push(current);
+                            return acc;
+                          }, [] as typeof positions).map((p) => {
+                            const displayCode = p.code.split("_")[0];
+                            return (
+                              <button key={p.code} onClick={() => { setSecondaryPosition(displayCode); setIsDropdownOpen(false); }} className="block w-full rounded-lg px-4 py-2.5 text-left text-xs font-bold text-white/70 hover:bg-[#C6FF00]/10 hover:text-[#C6FF00] cursor-pointer" type="button">
+                                {displayCode} <span className="font-normal text-white/40 ml-2">{p.name}</span>
+                              </button>
+                            );
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              </div>
+            </motion.section>
 
             {/* Strong Foot */}
-            <section className="grid gap-2 rounded-2xl border border-white/8 bg-[#0B1020]/40 p-3 shadow-[0_18px_70px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:grid-cols-[1fr_1.1fr] sm:items-center sm:gap-4 sm:rounded-3xl sm:p-6">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-3xl border border-white/10 bg-[#0B1020]/40 p-4 sm:p-5 shadow-xl backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-xs font-black uppercase tracking-[0.22em] text-white/45 sm:text-lg sm:font-display sm:tracking-wider sm:text-white">
-                  Strong Foot
-                </h2>
-                <p className="mobile-compact-hidden mt-0.5 text-xs text-white/50">
-                  Which foot do you trust the most?
-                </p>
+                <h2 className="text-xs font-black uppercase tracking-[0.22em] text-white/50">Strong Foot</h2>
+                <p className="mt-1 text-[11px] text-white/40">Which foot do you trust the most?</p>
               </div>
-              <div className="grid grid-cols-2 overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-0.5">
+              <div className="grid grid-cols-2 gap-2 sm:w-[300px]">
                 <button
                   onClick={() => setStrongFoot("Left")}
                   className={cn(
-                    "flex h-11 items-center justify-center gap-2 rounded-lg text-xs font-display tracking-wider transition cursor-pointer",
-                    strongFoot === "Left"
-                      ? "border border-[#C6FF00]/40 bg-[#C6FF00]/10 text-[#C6FF00] shadow-[0_0_16px_rgba(198,255,0,0.15)]"
-                      : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                    "relative flex h-12 items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer overflow-hidden",
+                    strongFoot === "Left" ? "border border-[#C6FF00]/50 bg-[#C6FF00]/10 text-[#C6FF00] shadow-[0_0_20px_rgba(198,255,0,0.15)] scale-[1.02]" : "border border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
                   )}
                   type="button"
                 >
-                  <Footprints className="size-4" />
-                  LEFT FOOT
+                  <AnimatePresence>
+                    {strongFoot === "Left" && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,255,0,0.1)_0%,transparent_70%)]" />
+                    )}
+                  </AnimatePresence>
+                  <Footprints size={14} className={strongFoot === "Left" ? "text-[#C6FF00]" : "opacity-50"} />
+                  {strongFoot === "Left" ? "✓ LEFT" : "LEFT"}
                 </button>
                 <button
                   onClick={() => setStrongFoot("Right")}
                   className={cn(
-                    "flex h-11 items-center justify-center gap-2 rounded-lg text-xs font-display tracking-wider transition cursor-pointer",
-                    strongFoot === "Right"
-                      ? "border border-[#C6FF00]/40 bg-[#C6FF00]/10 text-[#C6FF00] shadow-[0_0_16px_rgba(198,255,0,0.15)]"
-                      : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                    "relative flex h-12 items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer overflow-hidden",
+                    strongFoot === "Right" ? "border border-[#C6FF00]/50 bg-[#C6FF00]/10 text-[#C6FF00] shadow-[0_0_20px_rgba(198,255,0,0.15)] scale-[1.02]" : "border border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
                   )}
                   type="button"
                 >
-                  <Footprints className="size-4 opacity-70" />
-                  RIGHT FOOT
+                  <AnimatePresence>
+                    {strongFoot === "Right" && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,255,0,0.1)_0%,transparent_70%)]" />
+                    )}
+                  </AnimatePresence>
+                  <Footprints size={14} className={strongFoot === "Right" ? "text-[#C6FF00]" : "opacity-50"} style={{ transform: "scaleX(-1)" }} />
+                  {strongFoot === "Right" ? "✓ RIGHT" : "RIGHT"}
                 </button>
               </div>
-            </section>
+            </motion.section>
 
-            <button className="h-12 w-full rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] sm:h-14" type="submit">
-              CONTINUE <ArrowRight className="ml-auto" strokeWidth={3} size={16} />
-            </button>
-
-            <Button
-              asChild
-              variant="ghost"
-              className="mobile-compact-hidden mx-auto flex h-10 w-fit px-4 text-white/50 hover:text-lime-200 cursor-pointer"
-            >
-              <Link href="/identity">
-                <ArrowLeft className="size-4" />
-                Back to previous step
-              </Link>
-            </Button>
+            {/* CTA Button */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.75 }} className="mt-8 relative group pb-4">
+              <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
+              <motion.button 
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.97 }}
+                disabled={isSubmitting || isSuccess}
+                className="relative w-full h-14 rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(198,255,0,0)] hover:shadow-[0_0_30px_-5px_rgba(198,255,0,0.6)]" 
+                type="submit"
+              >
+                {!isSubmitting && !isSuccess && (
+                  <motion.div 
+                    className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
+                    animate={{ translateX: ["-100%", "200%"] }}
+                    transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 8, ease: "easeInOut" }}
+                  />
+                )}
+                
+                {isSuccess ? (
+                  <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex items-center gap-2">
+                    <Check className="size-5 stroke-[3]" /> SAVED
+                  </motion.div>
+                ) : isSubmitting ? (
+                  <>
+                    <Loader2 className="size-5 animate-spin" /> SAVING POSITION...
+                  </>
+                ) : (
+                  <>
+                    CONTINUE <ArrowLeft className="rotate-180 size-4" strokeWidth={3} />
+                  </>
+                )}
+              </motion.button>
+            </motion.div>
           </form>
         </div>
       </section>
+
+      {/* Skip Confirmation Modal */}
+      <AnimatePresence>
+        {showSkipModal && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+              className="bg-[#0B1020] border border-white/10 rounded-3xl p-6 w-full max-w-sm shadow-2xl"
+            >
+              <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+                <AlertTriangle className="text-yellow-500" />
+              </div>
+              <h3 className="text-lg font-display uppercase tracking-wider text-white">Are you sure?</h3>
+              <p className="text-sm text-white/50 mt-2 mb-6">Position helps other players discover you and is crucial for your STRYK card rating calculations.</p>
+              <div className="flex gap-3">
+                <button onClick={() => setShowSkipModal(false)} className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-bold uppercase tracking-wider transition cursor-pointer">Cancel</button>
+                <button onClick={handleSkip} className="flex-1 py-3 rounded-xl bg-white text-black hover:bg-white/90 text-xs font-bold uppercase tracking-wider transition cursor-pointer">Skip for now</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
