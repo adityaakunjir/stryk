@@ -88,11 +88,13 @@ from app.api.teams import router as teams_router
 from app.api.matches import router as matches_router
 from app.api.search import router as search_router
 from app.api.profile import router as profile_router
+from app.api.ai import router as ai_router
 
 app.include_router(teams_router, prefix="/api/v1")
 app.include_router(matches_router, prefix="/api/v1")
 app.include_router(search_router, prefix="/api/v1")
 app.include_router(profile_router, prefix="/api/v1")
+app.include_router(ai_router, prefix="/api/v1/ai")
 
 
 # ─── Root ──────────────────────────────────────────────────────────
@@ -103,3 +105,9 @@ async def root():
         "version": "0.1.0",
         "docs": "/docs" if settings.app_debug else "disabled",
     }
+
+
+@app.get("/test-gemini")
+async def test_gemini():
+    import os
+    return {"key_found": bool(os.getenv("GEMINI_API_KEY") or settings.gemini_api_key or settings.google_api_key)}

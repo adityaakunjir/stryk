@@ -34,6 +34,7 @@ class Settings(BaseSettings):
 
     # --- Google Gemini ---
     google_api_key: str = Field(default="", validation_alias="GOOGLE_API_KEY")
+    gemini_api_key: str = Field(default="", validation_alias="GEMINI_API_KEY")
 
     # --- Replicate ---
     replicate_api_token: str = Field(default="", validation_alias="REPLICATE_API_TOKEN")
