@@ -48,8 +48,8 @@ export default function SearchPage() {
       const res = await fetch(`/api/search?${params.toString()}`);
       const data = await res.json();
       
-      if (data.success) {
-        setResults(data.data);
+      if (Array.isArray(data)) {
+        setResults(data);
       } else {
         setResults([]);
       }
