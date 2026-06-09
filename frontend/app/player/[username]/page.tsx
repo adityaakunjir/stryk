@@ -14,14 +14,50 @@ type Props = {
 };
 
 async function getUserByUsername(username: string) {
-  try {
-    const res = await fetch(`${API_BASE_URL}/search?q=${encodeURIComponent(username)}`, { cache: "no-store" });
-    if (!res.ok) return null;
-    const users = await res.json();
-    return users.find((u: any) => u.username.toLowerCase() === username.toLowerCase()) || null;
-  } catch (e) {
-    return null;
+  const urls = [
+    `${API_BASE_URL}/players/username/${encodeURIComponent(username)}`,
+  ];
+  
+  // If API_BASE_URL has localhost, also try 127.0.0.1 as a fallback due to Windows IPv6 resolution issues in Node.js
+  if (API_BASE_URL.includes("localhost")) {
+    const ipv4Base = API_BASE_URL.replace("localhost", "127.0.0.1");
+    urls.push(`${ipv4Base}/players/username/${encodeURIComponent(username)}`);
   }
+  
+  // Try search fallback if direct username endpoint fails/isn't found
+  urls.push(`${API_BASE_URL}/search?q=${encodeURIComponent(username)}`);
+  if (API_BASE_URL.includes("localhost")) {
+    const ipv4Base = API_BASE_URL.replace("localhost", "127.0.0.1");
+    urls.push(`${ipv4Base}/search?q=${encodeURIComponent(username)}`);
+  }
+
+  for (const url of urls) {
+    try {
+      console.log(`[STRYK Profile] Fetching player profile from: ${url}`);
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) {
+        console.warn(`[STRYK Profile] Fetch to ${url} failed with status: ${res.status}`);
+        continue;
+      }
+      const data = await res.json();
+      
+      // If the URL was a search endpoint, it returns an array
+      if (Array.isArray(data)) {
+        const matched = data.find((u: any) => u.username.toLowerCase() === username.toLowerCase());
+        if (matched) {
+          console.log(`[STRYK Profile] Successfully found player via search fallback at: ${url}`);
+          return matched;
+        }
+      } else if (data && data.username) {
+        // Direct player object
+        console.log(`[STRYK Profile] Successfully fetched player via direct endpoint at: ${url}`);
+        return data;
+      }
+    } catch (e) {
+      console.error(`[STRYK Profile] Error fetching from ${url}:`, e);
+    }
+  }
+  return null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

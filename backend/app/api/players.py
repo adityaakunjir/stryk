@@ -65,6 +65,25 @@ async def get_my_profile(
     return player
 
 
+@router.get("/username/{username}", response_model=UserRead)
+async def get_player_by_username(
+    username: str,
+    session: AsyncSession = Depends(get_session),
+):
+    """Get a player profile by username (public)."""
+    from sqlalchemy import func
+    result = await session.execute(
+        select(User).where(func.lower(User.username) == username.lower())
+    )
+    player = result.scalars().first()
+    if not player:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Player not found",
+        )
+    return player
+
+
 @router.get("/{player_id}", response_model=UserRead)
 async def get_player(
     player_id: str,
@@ -79,6 +98,7 @@ async def get_player(
             detail="Player not found",
         )
     return player
+
 
 
 @router.patch("/me", response_model=UserRead)
