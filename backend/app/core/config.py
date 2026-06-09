@@ -44,7 +44,9 @@ class Settings(BaseSettings):
     azure_storage_container: str = Field(default="player-media", validation_alias="AZURE_STORAGE_CONTAINER")
 
     # --- Cloudinary ---
-    cloudinary_url: str = Field(default="", validation_alias="CLOUDINARY_URL")
+    cloudinary_cloud_name: str = Field(default="", validation_alias="CLOUDINARY_CLOUD_NAME")
+    cloudinary_api_key: str = Field(default="", validation_alias="CLOUDINARY_API_KEY")
+    cloudinary_api_secret: str = Field(default="", validation_alias="CLOUDINARY_API_SECRET")
 
     # --- Sentry ---
     sentry_dsn: str = Field(default="", validation_alias="SENTRY_DSN")

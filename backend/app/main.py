@@ -44,9 +44,12 @@ if settings.posthog_api_key:
 
 
 # ─── Cloudinary ───────────────────────────────────────────────────
-if settings.cloudinary_url:
+if settings.cloudinary_cloud_name and settings.cloudinary_api_key and settings.cloudinary_api_secret:
     import cloudinary
     cloudinary.config(
+        cloud_name=settings.cloudinary_cloud_name,
+        api_key=settings.cloudinary_api_key,
+        api_secret=settings.cloudinary_api_secret,
         secure=True
     )
 
