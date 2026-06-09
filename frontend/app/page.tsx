@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 import { StrykLogo } from "@/components/stryk-logo";
 
 export default function Home() {
+  const router = useRouter();
+  const { isSignedIn, isLoaded } = useAuth();
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handleJoinTap = () => {
@@ -102,47 +105,68 @@ export default function Home() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.8 }}
           className="w-full flex flex-col gap-4 mt-auto mb-10 relative"
         >
-          {/* JOIN STRYK */}
-          <div className="relative group w-full">
-            {/* Subtle soft green reflection underneath */}
-            <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
-            
-            <SignUpButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
+          {isLoaded && isSignedIn ? (
+            <div className="relative group w-full">
+              <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
               <motion.button
-                onClick={handleJoinTap}
+                onClick={() => {
+                  setIsTransitioning(true);
+                  router.push("/sync");
+                }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
-                aria-label="Join STRYK"
-                className="relative w-full h-[56px] rounded-2xl bg-[#C6FF00] text-[14px] font-display tracking-[0.2em] uppercase text-black font-bold shadow-[0_0_0_0_rgba(198,255,0,0)] hover:shadow-[0_0_30px_-5px_rgba(198,255,0,0.6)] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white overflow-hidden cursor-pointer flex items-center justify-center"
+                className="relative w-full h-[56px] rounded-2xl bg-[#C6FF00] text-[14px] font-display tracking-[0.2em] uppercase text-black font-bold shadow-[0_0_0_0_rgba(198,255,0,0)] hover:shadow-[0_0_30px_-5px_rgba(198,255,0,0.6)] transition-all duration-300 focus-visible:outline-none overflow-hidden cursor-pointer flex items-center justify-center"
               >
-                {/* Idle Shimmer Effect */}
                 <motion.div 
                   className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
                   animate={{ translateX: ["-100%", "200%"] }}
                   transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 8, ease: "easeInOut" }}
                 />
-                JOIN STRYK
+                GO TO DASHBOARD
               </motion.button>
-            </SignUpButton>
-          </div>
+            </div>
+          ) : (
+            <>
+              {/* JOIN STRYK */}
+              <div className="relative group w-full">
+                <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
+                
+                <SignUpButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
+                  <motion.button
+                    onClick={handleJoinTap}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    aria-label="Join STRYK"
+                    className="relative w-full h-[56px] rounded-2xl bg-[#C6FF00] text-[14px] font-display tracking-[0.2em] uppercase text-black font-bold shadow-[0_0_0_0_rgba(198,255,0,0)] hover:shadow-[0_0_30px_-5px_rgba(198,255,0,0.6)] transition-all duration-300 focus-visible:outline-none overflow-hidden cursor-pointer flex items-center justify-center"
+                  >
+                    <motion.div 
+                      className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
+                      animate={{ translateX: ["-100%", "200%"] }}
+                      transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 8, ease: "easeInOut" }}
+                    />
+                    JOIN STRYK
+                  </motion.button>
+                </SignUpButton>
+              </div>
 
-          <p className="text-center text-[11px] text-white/40 font-medium tracking-wide">
-            Setup takes less than 60 seconds
-          </p>
+              <p className="text-center text-[11px] text-white/40 font-medium tracking-wide">
+                Setup takes less than 60 seconds
+              </p>
 
-          {/* LOG IN */}
-          <SignInButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
-            <motion.button
-              whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
-              whileTap={{ scale: 0.98 }}
-              aria-label="Log in to STRYK"
-              className="relative w-full h-[56px] rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 text-[13px] font-display tracking-[0.2em] uppercase text-white shadow-inner shadow-white/5 hover:border-white/20 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6FF00] cursor-pointer overflow-hidden flex items-center justify-center mt-2"
-            >
-              {/* Inner highlight for glassmorphism */}
-              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-50" />
-              LOG IN
-            </motion.button>
-          </SignInButton>
+              {/* LOG IN */}
+              <SignInButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
+                <motion.button
+                  whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+                  whileTap={{ scale: 0.98 }}
+                  aria-label="Log in to STRYK"
+                  className="relative w-full h-[56px] rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 text-[13px] font-display tracking-[0.2em] uppercase text-white shadow-inner shadow-white/5 hover:border-white/20 transition-all duration-300 focus-visible:outline-none cursor-pointer overflow-hidden flex items-center justify-center mt-2"
+                >
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-50" />
+                  LOG IN
+                </motion.button>
+              </SignInButton>
+            </>
+          )}
         </motion.div>
 
         {/* Trust Block */}
