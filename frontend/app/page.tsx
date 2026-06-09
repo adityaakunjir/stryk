@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SignInButton, SignUpButton } from "@clerk/clerk-react";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 import { StrykLogo } from "@/components/stryk-logo";
@@ -63,7 +63,7 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0 }}
-            className="flex flex-col items-center"
+            className="flex flex-col items-center mb-5"
           >
             {/* Subtle electric pulse on logo every 4s */}
             <motion.div
@@ -73,15 +73,6 @@ export default function Home() {
               <StrykLogo compact centered />
             </motion.div>
           </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="text-[28px] font-display font-bold tracking-[0.08em] uppercase text-white mt-5 text-center"
-          >
-            STRYK
-          </motion.h1>
 
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
@@ -116,7 +107,7 @@ export default function Home() {
             {/* Subtle soft green reflection underneath */}
             <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
             
-            <SignUpButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
+            <SignUpButton asChild mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
               <motion.button
                 onClick={handleJoinTap}
                 whileHover={{ scale: 1.02 }}
@@ -140,7 +131,7 @@ export default function Home() {
           </p>
 
           {/* LOG IN */}
-          <SignInButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
+          <SignInButton asChild mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
             <motion.button
               whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
               whileTap={{ scale: 0.98 }}
