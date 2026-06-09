@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ArrowLeft, User, LogOut, ChevronRight, Bell, Loader2 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
 
 export default function SettingsPage() {

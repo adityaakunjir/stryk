@@ -4,7 +4,7 @@ import React from "react";
 import {
   ClerkProvider,
   useAuth as useClerkAuth,
-  useUser as useClerkUser} from "@clerk/clerk-react";
+  useUser as useClerkUser} from "@clerk/nextjs";
 
 interface StrykUser {
   id: string;

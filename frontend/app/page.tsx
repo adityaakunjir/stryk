@@ -107,7 +107,7 @@ export default function Home() {
             {/* Subtle soft green reflection underneath */}
             <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
             
-            <SignUpButton asChild mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
+            <SignUpButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
               <motion.button
                 onClick={handleJoinTap}
                 whileHover={{ scale: 1.02 }}
@@ -131,7 +131,7 @@ export default function Home() {
           </p>
 
           {/* LOG IN */}
-          <SignInButton asChild mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
+          <SignInButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
             <motion.button
               whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
               whileTap={{ scale: 0.98 }}

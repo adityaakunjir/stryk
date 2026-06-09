@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { StrykLogo } from "@/components/stryk-logo";
 import { motion } from "framer-motion";
 
