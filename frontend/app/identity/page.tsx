@@ -24,6 +24,8 @@ import { usePlayer } from "@/components/player-context";
 import { PlayerCard } from "@/components/player-card";
 import { ImageCropper } from "@/components/image-cropper";
 import { toast } from "sonner";
+import * as Sentry from "@sentry/nextjs";
+
 
 function Stepper() {
   return (
@@ -196,6 +198,9 @@ export default function IdentityPage() {
         router.push("/position");
       }, 800);
     } catch (err: any) {
+      Sentry.captureException(err, {
+        tags: { action: "identity_creation" }
+      });
       toast.error(err.message || "Failed to communicate with server.");
       setIsSubmitting(false);
     }

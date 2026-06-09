@@ -84,6 +84,11 @@ async def create_profile(
                 profile_data.avatarUrl = upload_result.get("secure_url")
             except Exception as e:
                 print(f"Cloudinary upload failed: {e}")
+                try:
+                    import sentry_sdk
+                    sentry_sdk.capture_exception(e)
+                except ImportError:
+                    pass
                 # Log error but don't crash, just set to None to avoid huge DB strings
                 profile_data.avatarUrl = None
 
