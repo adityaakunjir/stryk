@@ -51,6 +51,42 @@ async def create_profile(
         if existing_user and existing_user.clerkId != clerkId:
             return {"success": False, "message": "Username already taken."}
             
+        # Process Base64 avatar if provided
+        if profile_data.avatarUrl and profile_data.avatarUrl.startswith("data:image/"):
+            try:
+                import base64
+                from io import BytesIO
+                from PIL import Image
+                import cloudinary.uploader
+                
+                # Extract base64
+                header, encoded = profile_data.avatarUrl.split(",", 1)
+                image_data = base64.b64decode(encoded)
+                
+                # Open with Pillow
+                img = Image.open(BytesIO(image_data))
+                img.thumbnail((500, 500)) # Resize for profile
+                
+                # Save as WebP to buffer
+                webp_buffer = BytesIO()
+                img.save(webp_buffer, format="WebP", quality=85)
+                webp_buffer.seek(0)
+                
+                # Upload to Cloudinary
+                upload_result = cloudinary.uploader.upload(
+                    webp_buffer,
+                    folder=f"stryk/avatars/{clerkId}",
+                    overwrite=True,
+                    resource_type="image",
+                    format="webp"
+                )
+                
+                profile_data.avatarUrl = upload_result.get("secure_url")
+            except Exception as e:
+                print(f"Cloudinary upload failed: {e}")
+                # Log error but don't crash, just set to None to avoid huge DB strings
+                profile_data.avatarUrl = None
+
         # Check if user already has a profile
         result = await session.execute(
             select(User).where(User.clerkId == clerkId)

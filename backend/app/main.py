@@ -43,6 +43,15 @@ if settings.posthog_api_key:
         pass
 
 
+# ─── Cloudinary ───────────────────────────────────────────────────
+if settings.cloudinary_url:
+    import cloudinary
+    cloudinary.config(
+        secure=True
+    )
+
+
+
 # ─── Lifespan Events ──────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):

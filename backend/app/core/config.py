@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     azure_storage_connection_string: str = Field(default="", validation_alias="AZURE_STORAGE_CONNECTION_STRING")
     azure_storage_container: str = Field(default="player-media", validation_alias="AZURE_STORAGE_CONTAINER")
 
+    # --- Cloudinary ---
+    cloudinary_url: str = Field(default="", validation_alias="CLOUDINARY_URL")
+
     # --- Sentry ---
     sentry_dsn: str = Field(default="", validation_alias="SENTRY_DSN")
 
