@@ -57,9 +57,9 @@ export default function IdentityPage() {
   const { user, isLoaded: clerkLoaded } = useUser();
   const { playerData, updatePlayerData } = usePlayer();
 
-  const [fullName, setFullName] = useState("");
-  const [username, setUsername] = useState("");
-  const [avatar, setAvatar] = useState("");
+  const [fullName, setFullName] = useState(playerData?.fullName || "");
+  const [username, setUsername] = useState(playerData?.username || "");
+  const [avatar, setAvatar] = useState(playerData?.avatar || "");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken" | "invalid">("idle");
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   
@@ -100,6 +100,10 @@ export default function IdentityPage() {
       }
       if (cleanUsername.length < 3) {
         setUsernameStatus("invalid");
+        return;
+      }
+      if (playerData?.username && cleanUsername === playerData.username) {
+        setUsernameStatus("available");
         return;
       }
       

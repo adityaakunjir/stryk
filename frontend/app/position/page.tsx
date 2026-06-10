@@ -88,9 +88,9 @@ export default function PositionPage() {
   const router = useRouter();
   const { playerData, updatePlayerData } = usePlayer();
 
-  const [selectedPosition, setSelectedPosition] = useState("CAM");
-  const [secondaryPosition, setSecondaryPosition] = useState("");
-  const [strongFoot, setStrongFoot] = useState<"Left" | "Right">("Left");
+  const [selectedPosition, setSelectedPosition] = useState(playerData?.position || "CAM");
+  const [secondaryPosition, setSecondaryPosition] = useState(playerData?.secondaryPosition || "");
+  const [strongFoot, setStrongFoot] = useState<"Left" | "Right">(playerData?.strongFoot || "Left");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   const [showToast, setShowToast] = useState(true);
@@ -108,21 +108,12 @@ export default function PositionPage() {
   useEffect(() => {
     if (playerData) {
       queueMicrotask(() => {
-        if (playerData.position) setSelectedPosition(playerData.position);
-        if (playerData.secondaryPosition) setSecondaryPosition(playerData.secondaryPosition);
-        if (playerData.strongFoot) setStrongFoot(playerData.strongFoot);
+        if (playerData.position && playerData.position !== selectedPosition) setSelectedPosition(playerData.position);
+        if (playerData.secondaryPosition !== undefined && playerData.secondaryPosition !== secondaryPosition) setSecondaryPosition(playerData.secondaryPosition);
+        if (playerData.strongFoot && playerData.strongFoot !== strongFoot) setStrongFoot(playerData.strongFoot);
       });
     }
   }, [playerData]);
-
-  // Optimistic context updates
-  useEffect(() => {
-    updatePlayerData({
-      position: selectedPosition,
-      secondaryPosition: secondaryPosition,
-      strongFoot: strongFoot
-    });
-  }, [selectedPosition, secondaryPosition, strongFoot]);
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,9 +139,12 @@ export default function PositionPage() {
   const handleSelectPosition = (code: string) => {
     const cleanCode = code.split("_")[0];
     setSelectedPosition(cleanCode);
+    let newSec = secondaryPosition;
     if (secondaryPosition === cleanCode) {
       setSecondaryPosition("");
+      newSec = "";
     }
+    updatePlayerData({ position: cleanCode, secondaryPosition: newSec });
   };
 
   const roleInfo = positionRoles[selectedPosition] || positionRoles["CAM"];
@@ -297,8 +291,9 @@ export default function PositionPage() {
 
                       {/* Tooltip on Hover/Active */}
                       <AnimatePresence>
-                        {(isHovered || (isActive && !isHovered)) && (
+                        {(isHovered || isActive) && (
                           <motion.div
+                            key="tooltip"
                             initial={{ opacity: 0, y: 10, scale: 0.9 }}
                             animate={{ opacity: isActive ? 1 : 0.8, y: -45, scale: 1 }}
                             exit={{ opacity: 0, y: 0, scale: 0.9 }}
@@ -345,7 +340,7 @@ export default function PositionPage() {
                     <>
                       <div className="mt-2 font-display text-4xl leading-none text-white flex items-center justify-between">
                         {secondaryPosition}
-                        <button type="button" onClick={() => setSecondaryPosition("")} className="text-[10px] font-sans font-bold uppercase tracking-wider text-white/40 hover:text-red-400 bg-white/5 px-3 py-1.5 rounded-full cursor-pointer">Clear</button>
+                        <button type="button" onClick={() => { setSecondaryPosition(""); updatePlayerData({ secondaryPosition: "" }); }} className="text-[10px] font-sans font-bold uppercase tracking-wider text-white/40 hover:text-red-400 bg-white/5 px-3 py-1.5 rounded-full cursor-pointer">Clear</button>
                       </div>
                       <div className="mt-1 text-xs font-bold text-white/60 uppercase tracking-wider">{positionRoles[secondaryPosition]?.role}</div>
                     </>
@@ -358,7 +353,7 @@ export default function PositionPage() {
                   {suggestedSecondaries.length > 0 && !secondaryPosition && (
                     <div className="flex flex-wrap gap-2 mb-3">
                       {suggestedSecondaries.map(pos => (
-                        <button key={pos} type="button" onClick={() => setSecondaryPosition(pos)} className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 hover:border-[#C6FF00]/50 text-[10px] font-bold text-white uppercase tracking-wider transition cursor-pointer">
+                        <button key={pos} type="button" onClick={() => { setSecondaryPosition(pos); updatePlayerData({ secondaryPosition: pos }); }} className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 hover:border-[#C6FF00]/50 text-[10px] font-bold text-white uppercase tracking-wider transition cursor-pointer">
                           + {pos}
                         </button>
                       ))}
@@ -379,7 +374,7 @@ export default function PositionPage() {
                           }, [] as typeof positions).map((p) => {
                             const displayCode = p.code.split("_")[0];
                             return (
-                              <button key={p.code} onClick={() => { setSecondaryPosition(displayCode); setIsDropdownOpen(false); }} className="block w-full rounded-lg px-4 py-2.5 text-left text-xs font-bold text-white/70 hover:bg-[#C6FF00]/10 hover:text-[#C6FF00] cursor-pointer" type="button">
+                              <button key={p.code} onClick={() => { setSecondaryPosition(displayCode); setIsDropdownOpen(false); updatePlayerData({ secondaryPosition: displayCode }); }} className="block w-full rounded-lg px-4 py-2.5 text-left text-xs font-bold text-white/70 hover:bg-[#C6FF00]/10 hover:text-[#C6FF00] cursor-pointer" type="button">
                                 {displayCode} <span className="font-normal text-white/40 ml-2">{p.name}</span>
                               </button>
                             );
@@ -400,7 +395,7 @@ export default function PositionPage() {
               </div>
               <div className="grid grid-cols-2 gap-2 sm:w-[300px]">
                 <button
-                  onClick={() => setStrongFoot("Left")}
+                  onClick={() => { setStrongFoot("Left"); updatePlayerData({ strongFoot: "Left" }); }}
                   className={cn(
                     "relative flex h-12 items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer overflow-hidden",
                     strongFoot === "Left" ? "border border-[#C6FF00]/50 bg-[#C6FF00]/10 text-[#C6FF00] shadow-[0_0_20px_rgba(198,255,0,0.15)] scale-[1.02]" : "border border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
@@ -416,7 +411,7 @@ export default function PositionPage() {
                   {strongFoot === "Left" ? "✓ LEFT" : "LEFT"}
                 </button>
                 <button
-                  onClick={() => setStrongFoot("Right")}
+                  onClick={() => { setStrongFoot("Right"); updatePlayerData({ strongFoot: "Right" }); }}
                   className={cn(
                     "relative flex h-12 items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer overflow-hidden",
                     strongFoot === "Right" ? "border border-[#C6FF00]/50 bg-[#C6FF00]/10 text-[#C6FF00] shadow-[0_0_20px_rgba(198,255,0,0.15)] scale-[1.02]" : "border border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
