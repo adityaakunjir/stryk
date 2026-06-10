@@ -89,8 +89,9 @@ async def create_profile(
                     sentry_sdk.capture_exception(e)
                 except ImportError:
                     pass
-                # Log error but don't crash, just set to None to avoid huge DB strings
-                profile_data.avatarUrl = None
+                # Fallback to the original base64 string if Cloudinary is not configured or fails
+                # The avatarUrl already contains the base64 string.
+                pass
 
         # Check if user already has a profile
         result = await session.execute(
