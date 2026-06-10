@@ -133,8 +133,8 @@ export default function PlayStylePage() {
   const router = useRouter();
   const { playerData, updatePlayerData } = usePlayer();
 
-  const [selectedStyle, setSelectedStyle] = useState<PlayStyleType>("Playmaker");
-  const [bio, setBio] = useState("");
+  const [selectedStyle, setSelectedStyle] = useState<PlayStyleType>(playerData?.playStyle || "Playmaker");
+  const [bio, setBio] = useState(playerData?.bio || "");
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   
   // Launch Sequence States
@@ -147,16 +147,11 @@ export default function PlayStylePage() {
   useEffect(() => {
     if (playerData) {
       queueMicrotask(() => {
-        if (playerData.playStyle) setSelectedStyle(playerData.playStyle);
-        if (playerData.bio) setBio(playerData.bio);
+        if (playerData.playStyle && playerData.playStyle !== selectedStyle) setSelectedStyle(playerData.playStyle);
+        if (playerData.bio !== undefined && playerData.bio !== bio) setBio(playerData.bio);
       });
     }
   }, [playerData]);
-
-  // Optimistic context updates
-  useEffect(() => {
-    updatePlayerData({ playStyle: selectedStyle });
-  }, [selectedStyle]);
 
   // Rotating placeholder
   useEffect(() => {
@@ -344,6 +339,7 @@ export default function PlayStylePage() {
                       key={style.title}
                       onClick={() => {
                         setSelectedStyle(style.title);
+                        updatePlayerData({ playStyle: style.title });
                         if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
                       }}
                       className="snap-center relative h-[26rem] min-w-[16rem] sm:min-w-[18rem] rounded-[2rem] border bg-[#0B1020]/60 p-5 cursor-pointer select-none overflow-hidden"
@@ -411,7 +407,7 @@ export default function PlayStylePage() {
                   <button
                     key={style.title}
                     type="button"
-                    onClick={() => { setSelectedStyle(style.title); scrollToCard(styles.findIndex(s => s.title === style.title)); }}
+                    onClick={() => { setSelectedStyle(style.title); updatePlayerData({ playStyle: style.title }); scrollToCard(styles.findIndex(s => s.title === style.title)); }}
                     className={cn(
                       "size-8 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer",
                       selectedStyle === style.title ? "bg-white/10 scale-110" : "hover:bg-white/5 opacity-40"
