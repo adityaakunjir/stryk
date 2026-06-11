@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Search, Loader2, SlidersHorizontal, User } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 
 type SearchResult = {
   id: string;
@@ -17,6 +18,7 @@ type SearchResult = {
 
 export default function SearchPage() {
   const router = useRouter();
+  const { user: clerkUser } = useUser();
   
   const [query, setQuery] = useState("");
   const [position, setPosition] = useState("");
@@ -49,7 +51,11 @@ export default function SearchPage() {
       const data = await res.json();
       
       if (Array.isArray(data)) {
-        setResults(data);
+        let finalData = data;
+        if (clerkUser?.username) {
+          finalData = data.filter((p: any) => p.username?.toLowerCase() !== clerkUser.username?.toLowerCase());
+        }
+        setResults(finalData);
       } else {
         setResults([]);
       }
@@ -59,7 +65,7 @@ export default function SearchPage() {
     } finally {
       setIsSearching(false);
     }
-  }, [query, position, playStyle]);
+  }, [query, position, playStyle, clerkUser?.username]);
 
   // Debounce search when typing query
   useEffect(() => {
