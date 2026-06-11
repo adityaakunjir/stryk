@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Search, Loader2, SlidersHorizontal, User } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+import { usePlayer } from "@/components/player-context";
 
 type SearchResult = {
   id: string;
@@ -18,7 +18,7 @@ type SearchResult = {
 
 export default function SearchPage() {
   const router = useRouter();
-  const { user: clerkUser } = useUser();
+  const { playerData } = usePlayer();
   
   const [query, setQuery] = useState("");
   const [position, setPosition] = useState("");
@@ -52,8 +52,8 @@ export default function SearchPage() {
       
       if (Array.isArray(data)) {
         let finalData = data;
-        if (clerkUser?.username) {
-          finalData = data.filter((p: any) => p.username?.toLowerCase() !== clerkUser.username?.toLowerCase());
+        if (playerData?.username) {
+          finalData = data.filter((p: any) => p.username?.toLowerCase() !== playerData.username?.toLowerCase());
         }
         setResults(finalData);
       } else {
@@ -65,7 +65,7 @@ export default function SearchPage() {
     } finally {
       setIsSearching(false);
     }
-  }, [query, position, playStyle, clerkUser?.username]);
+  }, [query, position, playStyle, playerData?.username]);
 
   // Debounce search when typing query
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function SearchPage() {
       <div className="relative h-full flex flex-col px-5 pt-6 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <button onClick={() => router.back()} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition">
+          <button onClick={() => router.push("/home")} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition">
             <ArrowLeft size={16} />
           </button>
           <div className="text-[10px] tracking-[0.35em] uppercase text-[#C6FF00] font-bold">Player Search</div>
