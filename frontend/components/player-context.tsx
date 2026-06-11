@@ -131,17 +131,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         const response = await fetch("/api/profile/me");
         if (response.ok) {
           const result = await response.json();
-          if (result.success && result.data) {
-            const backendUser = result.data;
+          const backendUser = result.data || result;
+          
+          if (backendUser && backendUser.id) {
             setPlayerData((prev) => {
               const updated = {
                 ...prev,
-                fullName: backendUser.fullName || "",
+                fullName: backendUser.fullName || backendUser.full_name || "",
                 username: backendUser.username || "",
-                avatar: backendUser.avatarUrl || "",
+                avatar: backendUser.avatarUrl || backendUser.avatar_url || "",
                 position: backendUser.position || "CAM",
-                playStyle: backendUser.playStyle || "Playmaker",
-                matchesPlayed: backendUser.matchesPlayed ?? 0,
+                playStyle: backendUser.playStyle || backendUser.play_style || "Playmaker",
+                matchesPlayed: backendUser.matchesPlayed ?? backendUser.matches_played ?? 0,
                 wins: backendUser.wins ?? 0,
                 losses: backendUser.losses ?? 0,
                 draws: backendUser.draws ?? 0,
