@@ -159,7 +159,7 @@ export default async function PublicPlayerPage({ params }: Props) {
       <div className="relative h-full flex flex-col px-5 pt-6 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <button onClick={() => {}} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition">
+          <button className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition">
              <Link href="/" className="flex items-center justify-center w-full h-full"><ArrowLeft size={16} /></Link>
           </button>
           <div className="text-[10px] tracking-[0.35em] uppercase text-white/50 font-bold">Public Card</div>
