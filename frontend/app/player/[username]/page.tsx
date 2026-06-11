@@ -7,10 +7,10 @@ import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { FriendActionButton } from "@/components/friend-action-button";
 
-let API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
-if (!API_BASE_URL.endsWith("/api/v1") && !API_BASE_URL.endsWith("/api/v1/")) {
-  API_BASE_URL = API_BASE_URL.replace(/\/$/, "") + "/api/v1";
-}
+const BASE_URL_RAW = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+const API_BASE_URL = (!BASE_URL_RAW.endsWith("/api/v1") && !BASE_URL_RAW.endsWith("/api/v1/")) 
+  ? BASE_URL_RAW.replace(/\/$/, "") + "/api/v1"
+  : BASE_URL_RAW;
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -79,6 +79,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PublicPlayerPage({ params }: Props) {
+  // Determine Friend Status securely at the top to avoid Next.js context loss
+  const { userId: clerkId, getToken } = await auth();
+
   const resolvedParams = await params;
   const username = decodeURIComponent(resolvedParams.username).toLowerCase();
 
@@ -121,8 +124,7 @@ export default async function PublicPlayerPage({ params }: Props) {
   const drawPercent = totalMatches > 0 ? (draws / totalMatches) * 100 : 0;
   const lossPercent = totalMatches > 0 ? (losses / totalMatches) * 100 : 0;
 
-  // Determine Friend Status
-  const { userId: clerkId, getToken } = await auth();
+  // Friend Status fetch
   let viewerUserId: string | null = null;
   let friendStatus: "none" | "pending_sent" | "pending_received" | "accepted" = "none";
   let friendRequestId: string | undefined = undefined;
