@@ -33,6 +33,7 @@ export default function HomeLobbyPage() {
   const [showOvrModal, setShowOvrModal] = useState(false);
 
   const [friends, setFriends] = useState<any[]>([]);
+  const [incomingRequests, setIncomingRequests] = useState<any[]>([]);
   const [friendsError, setFriendsError] = useState(false);
 
   useEffect(() => {
@@ -50,6 +51,7 @@ export default function HomeLobbyPage() {
             avatar: f.user.avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(f.user.username)}`,
             online: true
           })));
+          setIncomingRequests(data.incomingRequests || []);
         }
       } catch {
         setFriendsError(true);
@@ -110,7 +112,14 @@ export default function HomeLobbyPage() {
             <div className="font-display tracking-[0.25em] text-base">STRYK</div>
           </div>
           <div className="flex items-center gap-1.5">
-            <IconBtn onClick={() => router.push("/notifications")}><Bell size={14} /></IconBtn>
+            <IconBtn onClick={() => router.push("/notifications")}>
+              <div className="relative">
+                <Bell size={14} />
+                {incomingRequests.length > 0 && (
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border-[1.5px] border-[#0B1020]" />
+                )}
+              </div>
+            </IconBtn>
             <IconBtn onClick={() => router.push("/settings")}><Settings size={14} /></IconBtn>
           </div>
         </header>
