@@ -169,7 +169,6 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
             scale={scale}
             rotate={rotate}
             position={position}
-            className="rounded-lg"
             style={{ pointerEvents: "none" }}
           />
 
