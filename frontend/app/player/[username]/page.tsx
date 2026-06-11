@@ -7,7 +7,10 @@ import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { FriendActionButton } from "@/components/friend-action-button";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+let API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+if (!API_BASE_URL.endsWith("/api/v1") && !API_BASE_URL.endsWith("/api/v1/")) {
+  API_BASE_URL = API_BASE_URL.replace(/\/$/, "") + "/api/v1";
+}
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -119,15 +122,27 @@ export default async function PublicPlayerPage({ params }: Props) {
   const lossPercent = totalMatches > 0 ? (losses / totalMatches) * 100 : 0;
 
   // Determine Friend Status
-  const { userId: clerkId } = await auth();
+  const { userId: clerkId, getToken } = await auth();
   let viewerUserId: string | null = null;
   let friendStatus: "none" | "pending_sent" | "pending_received" | "accepted" = "none";
   let friendRequestId: string | undefined = undefined;
 
   if (clerkId) {
-    // We cannot easily determine friend status without making complex authenticated queries to Python.
-    // For now, we will leave friend status logic up to the client component or pass minimal data.
-    // The previous implementation queried prisma directly. We skip this for now.
+    try {
+      const token = await getToken();
+      viewerUserId = clerkId; // We don't have the db id easily, but viewerUserId just needs to be truthy to show the button
+      const statusRes = await fetch(`${API_BASE_URL}/friends/status/${user.id}`, {
+        headers: { "Authorization": `Bearer ${token}` },
+        cache: "no-store"
+      });
+      if (statusRes.ok) {
+        const statusData = await statusRes.json();
+        friendStatus = statusData.status || "none";
+        friendRequestId = statusData.requestId;
+      }
+    } catch (e) {
+      console.error("[STRYK Profile] Failed to fetch friend status", e);
+    }
   }
 
   return (

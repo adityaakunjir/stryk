@@ -146,3 +146,39 @@ async def get_my_profile(
         )
         
     return db_user
+
+class ProfileUpdate(BaseModel):
+    fullName: Optional[str] = None
+    username: Optional[str] = None
+    avatarUrl: Optional[str] = None
+    position: Optional[str] = None
+    playStyle: Optional[str] = None
+    strongFoot: Optional[str] = None
+    bio: Optional[str] = None
+
+@router.patch("/profile/me", response_model=UserRead)
+async def patch_my_profile(
+    profile_update: ProfileUpdate,
+    session: AsyncSession = Depends(get_session),
+    user: dict = Depends(get_current_user),
+):
+    clerkId = user.get("sub")
+    result = await session.execute(
+        select(User).where(User.clerkId == clerkId)
+    )
+    db_user = result.scalars().first()
+    
+    if not db_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Profile not found"
+        )
+
+    update_data = profile_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_user, key, value)
+
+    session.add(db_user)
+    await session.commit()
+    await session.refresh(db_user)
+    return db_user

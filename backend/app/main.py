@@ -102,11 +102,13 @@ from app.api.matches import router as matches_router
 from app.api.search import router as search_router
 from app.api.profile import router as profile_router
 from app.api.ai import router as ai_router
+from app.api.friends import router as friends_router
 
 app.include_router(teams_router, prefix="/api/v1")
 app.include_router(matches_router, prefix="/api/v1")
 app.include_router(search_router, prefix="/api/v1")
 app.include_router(profile_router, prefix="/api/v1")
+app.include_router(friends_router, prefix="/api/v1")
 app.include_router(ai_router, prefix="/api/v1/ai")
 
 
