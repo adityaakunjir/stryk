@@ -15,7 +15,7 @@ interface ImageCropperProps {
 }
 
 export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProps) {
-  const editorRef = useRef<AvatarEditor>(null);
+  const editorRef = useRef<any>(null);
   
   const [scale, setScale] = useState<number>(1);
   const [rotate, setRotate] = useState<number>(0);
