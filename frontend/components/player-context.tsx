@@ -136,20 +136,21 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             setPlayerData((prev) => {
               const updated = {
                 ...prev,
-                fullName: backendUser.fullName || prev.fullName,
-                username: backendUser.username || prev.username,
-                avatar: backendUser.avatarUrl || prev.avatar,
-                position: backendUser.position || prev.position,
-                playStyle: backendUser.playStyle || prev.playStyle,
-                matchesPlayed: backendUser.matchesPlayed ?? prev.matchesPlayed,
-                wins: backendUser.wins ?? prev.wins,
-                losses: backendUser.losses ?? prev.losses,
-                draws: backendUser.draws ?? prev.draws,
-                goals: backendUser.goals ?? prev.goals,
-                assists: backendUser.assists ?? prev.assists,
-                tackles: backendUser.tackles ?? prev.tackles,
-                saves: backendUser.saves ?? prev.saves,
-                intercepts: backendUser.intercepts ?? prev.intercepts};
+                fullName: backendUser.fullName || "",
+                username: backendUser.username || "",
+                avatar: backendUser.avatarUrl || "",
+                position: backendUser.position || "CAM",
+                playStyle: backendUser.playStyle || "Playmaker",
+                matchesPlayed: backendUser.matchesPlayed ?? 0,
+                wins: backendUser.wins ?? 0,
+                losses: backendUser.losses ?? 0,
+                draws: backendUser.draws ?? 0,
+                goals: backendUser.goals ?? 0,
+                assists: backendUser.assists ?? 0,
+                tackles: backendUser.tackles ?? 0,
+                saves: backendUser.saves ?? 0,
+                intercepts: backendUser.intercepts ?? 0
+              };
               updated.rating = calculateOvr(updated);
               localStorage.setItem("stryk_player_data", JSON.stringify(updated));
               return updated;
@@ -158,6 +159,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           }
         } else if (response.status === 404) {
           // New User Flow: User is logged into Clerk, but has no STRYK profile
+          // Clear any stale local data from previous users!
+          resetPlayerData();
+          
           // Prevent redirect loops if they are already on an onboarding page
           const currentPath = window.location.pathname;
           const isOnboarding = ['/identity', '/position', '/play-style'].includes(currentPath);

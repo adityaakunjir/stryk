@@ -53,7 +53,32 @@ async def get_friends(
                 "status": "accepted"
             })
             
-    return {"success": True, "friends": friends_list}
+    # Incoming friend requests
+    stmt_incoming = select(FriendRequest).where(
+        and_(
+            FriendRequest.receiverId == db_user.id,
+            FriendRequest.status == "pending"
+        )
+    )
+    res_incoming = await session.execute(stmt_incoming)
+    incoming_requests_db = res_incoming.scalars().all()
+    
+    incoming_list = []
+    for req in incoming_requests_db:
+        sender_res = await session.execute(select(User).where(User.id == req.senderId))
+        sender_user = sender_res.scalars().first()
+        if sender_user:
+            incoming_list.append({
+                "id": req.id,
+                "user": sender_user,
+                "status": "pending"
+            })
+            
+    return {
+        "success": True, 
+        "friends": friends_list,
+        "incomingRequests": incoming_list
+    }
 
 @router.post("/friends/request")
 async def send_friend_request(
