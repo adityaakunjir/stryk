@@ -75,7 +75,8 @@ async def create_profile(
                 # Upload to Cloudinary
                 upload_result = cloudinary.uploader.upload(
                     webp_buffer,
-                    folder=f"stryk/avatars/{clerkId}",
+                    folder="stryk/avatars",
+                    public_id=clerkId,
                     overwrite=True,
                     resource_type="image",
                     format="webp"
