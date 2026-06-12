@@ -31,8 +31,16 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
     if (!editorRef.current) return;
     try {
       const canvas = editorRef.current.getImageScaledToCanvas();
-      // STRYK uses standard base64 strings right now
-      const dataUrl = canvas.toDataURL(IMAGE_FORMAT, 0.9);
+      
+      // Ensure high quality smoothing before export
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+      }
+
+      // STRYK uses standard base64 strings right now, using 0.95 for ultra sharp WebP
+      const dataUrl = canvas.toDataURL(IMAGE_FORMAT, 0.95);
       onCropComplete(dataUrl);
     } catch (error) {
       console.error("Error processing image:", error);
@@ -161,15 +169,15 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           <AvatarEditor
             ref={editorRef}
             image={src}
-            width={CROP_SIZE}
-            height={CROP_SIZE}
-            border={20}
-            borderRadius={140}
+            width={CROP_SIZE * 3}
+            height={CROP_SIZE * 3}
+            border={20 * 3}
+            borderRadius={140 * 3}
             color={[5, 10, 13, 0.85]} // #050a0d with opacity
             scale={scale}
             rotate={rotate}
             position={position}
-            style={{ pointerEvents: "none" }}
+            style={{ width: `${CROP_SIZE + 40}px`, height: `${CROP_SIZE + 40}px`, pointerEvents: "none" }}
           />
 
           {/* Mask representing the final circular crop shape overlay with corner brackets */}
