@@ -41,19 +41,19 @@ export default function Home() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex flex-col items-start mb-12"
+            className="flex flex-col items-start mb-6"
           >
-            <svg width="30" height="42" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-3">
+            <svg width="34" height="42" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-3">
               <path d="M13.625 0L0 17.5H10.5L8.375 32L22 14.5H11.5L13.625 0Z" fill="url(#gold-grad)"/>
               <defs>
                 <linearGradient id="gold-grad" x1="11" y1="0" x2="11" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#E6C88A" />
+                  <stop stopColor="#F5D78D" />
                   <stop offset="0.5" stopColor="#B38D40" />
                   <stop offset="1" stopColor="#7A5C22" />
                 </linearGradient>
               </defs>
             </svg>
-            <div className="text-[10px] tracking-[0.8em] text-[#997335] font-medium ml-1">STRYK</div>
+            <div className="text-[11px] tracking-[0.6em] text-[#A37B31] font-semibold ml-1">STRYK</div>
           </motion.div>
 
           {/* Headline Copy */}
@@ -61,18 +61,19 @@ export default function Home() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="relative z-20 flex flex-col"
+            className="relative z-20 flex flex-col mt-2"
           >
-            <h1 className="font-display text-[58px] sm:text-[68px] leading-[0.85] italic flex flex-col mb-6 text-[#1A1A1A]">
+            {/* Applied CSS transform to vertically stretch and horizontally condense the Bebas Neue font to perfectly match the mockup's tall typography */}
+            <h1 className="font-display text-[64px] sm:text-[76px] leading-[0.75] italic flex flex-col mb-8 text-[#181818] transform scale-y-[1.3] scale-x-[0.85] origin-top-left tracking-tight">
               <span>BUILD YOUR</span>
               <span>FOOTBALL</span>
-              <span className="bg-gradient-to-b from-[#DFBA73] via-[#CFA75C] to-[#8C6629] text-transparent bg-clip-text pr-2 pb-1">IDENTITY.</span>
+              <span className="bg-gradient-to-b from-[#EFCC85] via-[#D3A648] to-[#997026] text-transparent bg-clip-text pr-4 pb-1">IDENTITY.</span>
             </h1>
             
-            <div className="text-[#2A2A2A] text-[11px] tracking-[0.2em] font-medium mt-1 mb-5 leading-relaxed">
+            <div className="text-[#2A2A2A] text-[12px] tracking-[0.25em] font-semibold mt-4 mb-4 leading-relaxed">
               ONE PROFILE.<br/>EVERY MATCH.
             </div>
-            <div className="w-6 h-[2px] bg-[#997335]"></div>
+            <div className="w-8 h-[2px] bg-[#A37B31]"></div>
           </motion.div>
         </div>
 
