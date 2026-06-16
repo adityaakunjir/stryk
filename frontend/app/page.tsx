@@ -56,25 +56,27 @@ export default function Home() {
             <div className="text-[11px] tracking-[0.6em] text-[#A37B31] font-semibold ml-1">STRYK</div>
           </motion.div>
 
-          {/* Headline Copy */}
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="relative z-20 flex flex-col mt-0"
-          >
-            {/* Applied CSS transform to vertically stretch and horizontally condense the Bebas Neue font to perfectly match the mockup's tall typography */}
-            <h1 className="font-display text-[42px] sm:text-[52px] leading-[0.75] italic flex flex-col mb-5 text-[#181818] transform scale-y-[1.3] scale-x-[0.85] origin-top-left tracking-tight">
-              <span>BUILD YOUR</span>
-              <span>FOOTBALL</span>
-              <span className="bg-gradient-to-b from-[#EFCC85] via-[#D3A648] to-[#997026] text-transparent bg-clip-text pr-4 pb-1">IDENTITY.</span>
-            </h1>
-            
-            <div className="text-[#181818] text-[9.5px] tracking-[0.25em] font-semibold mt-3 mb-3 leading-relaxed opacity-75">
-              ONE PROFILE.<br/>EVERY MATCH.
-            </div>
-            <div className="w-6 h-[1.5px] bg-[#A37B31]"></div>
-          </motion.div>
+          {/* Headline Copy Container (centered vertically side-by-side with the player card) */}
+          <div className="flex-1 flex flex-col justify-center pb-8">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              className="relative z-20 flex flex-col"
+            >
+              {/* Applied CSS transform to vertically stretch and horizontally condense the Bebas Neue font to perfectly match the mockup's tall typography */}
+              <h1 className="font-display text-[42px] sm:text-[52px] leading-[0.75] italic flex flex-col mb-5 text-[#181818] transform scale-y-[1.3] scale-x-[0.85] origin-top-left tracking-tight">
+                <span>BUILD YOUR</span>
+                <span>FOOTBALL</span>
+                <span className="bg-gradient-to-b from-[#EFCC85] via-[#D3A648] to-[#997026] text-transparent bg-clip-text pr-4 pb-1">IDENTITY.</span>
+              </h1>
+              
+              <div className="text-[#181818] text-[9.5px] tracking-[0.25em] font-semibold mt-3 mb-3 leading-relaxed opacity-75">
+                ONE PROFILE.<br/>EVERY MATCH.
+              </div>
+              <div className="w-6 h-[1.5px] bg-[#A37B31]"></div>
+            </motion.div>
+          </div>
         </div>
 
         {/* Bottom CTAs */}
