@@ -4,25 +4,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Bell, Settings, Play, Users, Trophy, MapPin, 
-  Loader2, X, Target, Zap, Shield, Sparkles, Gauge,
-  ChevronRight, Activity, Home, User, Globe
+  Bell, Play, Users, Trophy, MapPin, 
+  Loader2, X, Target, Shield,
+  ChevronRight, Home, User, Globe
 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
-import { PlayerCard } from "@/components/player-card";
 import { CardDetail } from "@/components/card-detail";
 import { cn } from "@/lib/utils";
-
-// Helper to get color from style
-const getStyleColor = (styleName: string) => {
-  const s = styleName?.toLowerCase() || "";
-  if (s.includes("speed")) return "#00E5FF";
-  if (s.includes("playmaker")) return "#C6FF00";
-  if (s.includes("poach") || s.includes("finish")) return "#A78BFA";
-  if (s.includes("box")) return "#FCD34D";
-  return "#3B82F6";
-};
-
 
 export default function HomeLobbyPage() {
   const router = useRouter();
@@ -34,7 +22,6 @@ export default function HomeLobbyPage() {
 
   const [friends, setFriends] = useState<any[]>([]);
   const [incomingRequests, setIncomingRequests] = useState<any[]>([]);
-  const [friendsError, setFriendsError] = useState(false);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -54,7 +41,7 @@ export default function HomeLobbyPage() {
           setIncomingRequests(data.incomingRequests || []);
         }
       } catch {
-        setFriendsError(true);
+        // Friend data is nice-to-have on the home screen.
       }
     }
     fetchFriends();
@@ -69,16 +56,6 @@ export default function HomeLobbyPage() {
   }
 
   const firstName = (playerData.fullName || "PLAYER").split(" ")[0].toUpperCase();
-  const themeColor = getStyleColor(playerData.playStyle);
-  
-  // Dynamic Greeting
-  const hour = new Date().getHours();
-  let greetingSubtext = "Ready to play?";
-  if (hour < 12) greetingSubtext = "Ready for today's match?";
-  else if (hour < 18) greetingSubtext = "Afternoon grind.";
-  else greetingSubtext = "Who's winning tonight?";
-
-  const matches = playerData.matchesPlayed ?? 0;
   const xpCurrent = 45; // Dummy XP value
   const xpTotal = 100;
 
@@ -134,7 +111,7 @@ export default function HomeLobbyPage() {
           <div className="flex justify-between items-start mt-6">
             <div className="flex flex-col">
               <div className="text-[9px] font-bold tracking-[0.15em] text-[#A37B31] uppercase mb-1 drop-shadow-sm">
-                READY FOR TODAY'S MATCH?
+                READY FOR TODAY&apos;S MATCH?
               </div>
               <div className="font-display text-5xl text-[#181818] italic leading-[0.9] drop-shadow-sm tracking-tight flex items-center gap-2">
                 HEY, {firstName} <span className="text-4xl not-italic ml-1">👋</span>
@@ -156,53 +133,71 @@ export default function HomeLobbyPage() {
         </div>
 
         {/* 3D Player Card Section */}
-        <div className="relative flex-1 flex flex-col justify-center items-center min-h-[420px] shrink-0 z-[41]">
+        <div className="relative flex-1 flex flex-col justify-center items-center min-h-[455px] shrink-0 z-[41] pt-2">
           <div 
-            className="relative w-[285px] h-[400px] cursor-pointer hover:scale-105 transition-transform duration-500"
+            className="relative aspect-[1417/1878] w-[min(86vw,350px)] cursor-pointer hover:scale-[1.025] transition-transform duration-500"
             onClick={() => setShowCardDossier(true)}
           >
-            {/* Player_card.webp (Base layer, z-20) - Now cropped to exactly the card dimensions, using object-contain to fit perfectly inside the 285px container. */}
+            {/* Card art base */}
             <img 
               src="/player_card.webp" 
               alt="Player Card" 
-              className="absolute inset-0 w-full h-full object-contain pointer-events-none z-20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]" 
+              className="absolute inset-0 z-20 h-full w-full object-contain pointer-events-none drop-shadow-[0_24px_38px_rgba(40,18,4,0.42)]" 
             />
 
-            {/* Player Avatar (z-25, in front of the opaque card) */}
-            <div className="absolute top-[7%] left-[5%] right-[5%] bottom-[35%] z-[25] overflow-hidden rounded-[20px]">
+            {/* Portrait clipped into the upper shield window */}
+            <div
+              className="absolute left-[18%] right-[18%] top-[22%] bottom-[38%] z-30 overflow-visible"
+              style={{
+                clipPath: "polygon(11% 0%, 89% 0%, 100% 17%, 100% 84%, 79% 100%, 21% 100%, 0% 84%, 0% 17%)",
+              }}
+            >
               <img 
                 src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
                 alt="Avatar"
-                className="w-full h-full object-cover"
+                className="h-full w-full scale-[1.72] object-cover object-[center_22%]"
               />
-              {/* Fade out the bottom of the avatar so it blends seamlessly into the brown banner underneath */}
-              <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#20150F] to-transparent pointer-events-none opacity-90" />
+              <div className="absolute inset-x-[-22%] bottom-[-2%] h-[34%] bg-gradient-to-t from-[#2B1A0F] via-[#2B1A0F]/78 to-transparent pointer-events-none" />
             </div>
+
+            {/* Gold name plate, matching the reference card's empty banner */}
+            <div className="absolute left-[19%] right-[19%] top-[57.5%] z-40 h-[7.5%] rounded-[4px] bg-[linear-gradient(100deg,#8B5B1F_0%,#F4C867_45%,#7A4819_100%)] shadow-[0_0_18px_rgba(248,205,100,0.42),inset_0_1px_0_rgba(255,255,255,0.35)]"
+              style={{ clipPath: "polygon(8% 0%, 92% 0%, 100% 50%, 92% 100%, 8% 100%, 0% 50%)" }}
+            />
             
             {/* Card Overlays (Stats & ID at z-40) */}
-            <div className="absolute inset-0 z-[40] pointer-events-none">
+            <div className="absolute inset-0 z-[45] pointer-events-none">
               {/* Left side: Rating, Position, Badges */}
-              <div className="absolute top-[18%] left-[10%] flex flex-col items-center gap-0.5">
-                <div className="font-display text-[46px] text-[#A37B31] leading-none tracking-tight drop-shadow-md">{playerData.rating}</div>
-                <div className="font-display text-[15px] text-[#181818] leading-none font-bold mt-1 drop-shadow-sm">{playerData.position || "CAM"}</div>
-                <img src="https://flagcdn.com/w40/in.png" alt="India" className="w-[20px] h-[14px] object-cover rounded-[1px] shadow-sm mt-1 border border-black/10" />
+              <div className="absolute top-[27%] left-[16.5%] flex flex-col items-start gap-1">
+                <div className="font-display text-[clamp(48px,13vw,66px)] text-[#B9852C] leading-[0.82] tracking-normal drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]">{playerData.rating}</div>
+                <div className="font-display text-[clamp(22px,5.5vw,30px)] text-black leading-none font-bold drop-shadow-sm">{playerData.position || "CAM"}</div>
+                <img src="https://flagcdn.com/w40/in.png" alt="India" className="mt-3 h-[18px] w-[38px] object-cover rounded-[1px] shadow-sm border border-black/10" />
                 {/* Placeholder Club Badge */}
-                <div className="w-[20px] h-[24px] mt-1 bg-[#111111] rounded-b-xl rounded-t-[2px] flex items-center justify-center border border-[#B38D40]/50 shadow-md">
-                  <Shield size={10} className="text-[#B38D40]" />
+                <div className="mt-3 flex h-[38px] w-[34px] items-center justify-center rounded-b-xl rounded-t-[4px] border border-[#C89B3C]/70 bg-[#111111] shadow-md">
+                  <Shield size={17} className="text-[#C89B3C]" />
                 </div>
               </div>
 
               {/* Right side: STRYK ID */}
-              <div className="absolute top-[20%] right-[10%] flex flex-col items-end">
-                <div className="text-[7px] font-bold tracking-[0.2em] text-[#A37B31] uppercase drop-shadow-sm">STRYK</div>
-                <div className="text-[9px] font-bold tracking-[0.1em] text-[#181818] uppercase drop-shadow-sm mt-0.5">ID-001</div>
+              <div className="absolute top-[30%] right-[16%] flex flex-col items-start">
+                <div className="font-display text-[clamp(18px,4.8vw,25px)] leading-none tracking-[0.08em] text-black uppercase drop-shadow-sm">STRYK</div>
+                <div className="font-display text-[clamp(16px,4.3vw,23px)] leading-none tracking-[0.04em] text-black uppercase drop-shadow-sm mt-1">ID-001</div>
+              </div>
+
+              {/* Bottom stat grid lines */}
+              <div className="absolute left-[24%] right-[24%] top-[73%] h-[15%] opacity-65">
+                <div className="absolute left-0 right-0 top-1/2 h-px bg-[#D6B77A]/70" />
+                <div className="absolute bottom-0 top-0 left-1/3 w-px bg-[#D6B77A]/70" />
+                <div className="absolute bottom-0 top-0 right-1/3 w-px bg-[#D6B77A]/70" />
+                <div className="absolute left-0 top-[12%] h-[32%] w-px bg-[#D6B77A]/70" />
+                <div className="absolute right-0 top-[12%] h-[32%] w-px bg-[#D6B77A]/70" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Sheet Navigation */}
-        <div className="relative z-30 bg-[#0A0A0A] rounded-t-[32px] w-full px-6 pt-6 pb-24 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F] -mt-8">
+        <div className="relative z-30 bg-[#0A0A0A] rounded-t-[32px] w-full px-6 pt-6 pb-24 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F] -mt-2">
           <div className="p-6">
             
             {/* Level & XP */}
