@@ -25,13 +25,13 @@ export default function Home() {
     >
       {/* Background Layer */}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-[position:65%_center] sm:bg-center bg-no-repeat pointer-events-none"
+        className="absolute inset-0 z-0 bg-cover bg-[position:74%_center] sm:bg-center bg-no-repeat pointer-events-none"
         style={{
           backgroundImage: "url('/landing_page_bg.webp')",
         }}
       />
 
-      <section className="relative z-10 flex flex-col h-full w-full max-w-md mx-auto px-8 py-10 pb-12">
+      <section className="relative z-10 flex flex-col h-full w-full max-w-md mx-auto px-6 py-10 pb-12">
         
         {/* Top / Middle Section */}
         <div className="flex-1 relative flex flex-col pt-4">
@@ -64,13 +64,13 @@ export default function Home() {
             className="relative z-20 flex flex-col mt-0"
           >
             {/* Applied CSS transform to vertically stretch and horizontally condense the Bebas Neue font to perfectly match the mockup's tall typography */}
-            <h1 className="font-display text-[48px] sm:text-[58px] leading-[0.75] italic flex flex-col mb-6 text-[#181818] transform scale-y-[1.3] scale-x-[0.85] origin-top-left tracking-tight">
+            <h1 className="font-display text-[42px] sm:text-[52px] leading-[0.75] italic flex flex-col mb-5 text-[#181818] transform scale-y-[1.3] scale-x-[0.85] origin-top-left tracking-tight">
               <span>BUILD YOUR</span>
               <span>FOOTBALL</span>
               <span className="bg-gradient-to-b from-[#EFCC85] via-[#D3A648] to-[#997026] text-transparent bg-clip-text pr-4 pb-1">IDENTITY.</span>
             </h1>
             
-            <div className="text-[#2A2A2A] text-[10px] tracking-[0.25em] font-semibold mt-3 mb-3 leading-relaxed opacity-65">
+            <div className="text-[#181818] text-[9.5px] tracking-[0.25em] font-semibold mt-3 mb-3 leading-relaxed opacity-75">
               ONE PROFILE.<br/>EVERY MATCH.
             </div>
             <div className="w-6 h-[1.5px] bg-[#A37B31]"></div>
