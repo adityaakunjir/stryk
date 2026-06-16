@@ -161,26 +161,28 @@ export default function HomeLobbyPage() {
             className="relative w-[285px] h-[400px] cursor-pointer hover:scale-105 transition-transform duration-500"
             onClick={() => setShowCardDossier(true)}
           >
-            {/* Player Avatar (z-10, perfectly sized to fit inside the expanded transparent hole of the card frame) */}
-            <div className="absolute top-[8%] left-[8%] right-[8%] bottom-[12%] z-10 overflow-hidden rounded-[20px]">
+            {/* Player_card.webp (Base layer, z-20) - Now cropped to exactly the card dimensions, using object-contain to fit perfectly inside the 285px container. */}
+            <img 
+              src="/player_card.webp" 
+              alt="Player Card" 
+              className="absolute inset-0 w-full h-full object-contain pointer-events-none z-20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]" 
+            />
+
+            {/* Player Avatar (z-25, in front of the opaque card) */}
+            <div className="absolute top-[7%] left-[5%] right-[5%] bottom-[35%] z-[25] overflow-hidden rounded-[20px]">
               <img 
                 src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
                 alt="Avatar"
                 className="w-full h-full object-cover"
               />
+              {/* Fade out the bottom of the avatar so it blends seamlessly into the brown banner underneath */}
+              <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#20150F] to-transparent pointer-events-none opacity-90" />
             </div>
-
-            {/* Player_card.webp (Base layer, z-20) - Using object-cover to expand the full-screen 2304x4128 export, cropping the vertical padding and revealing the gorgeous gold frame! */}
-            <img 
-              src="/player_card.webp" 
-              alt="Player Card" 
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none z-20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]" 
-            />
             
-            {/* Card Overlays (Stats & ID at z-30) */}
-            <div className="absolute inset-0 z-30 pointer-events-none">
+            {/* Card Overlays (Stats & ID at z-40) */}
+            <div className="absolute inset-0 z-[40] pointer-events-none">
               {/* Left side: Rating, Position, Badges */}
-              <div className="absolute top-[18%] left-[12%] flex flex-col items-center gap-0.5">
+              <div className="absolute top-[18%] left-[10%] flex flex-col items-center gap-0.5">
                 <div className="font-display text-[46px] text-[#A37B31] leading-none tracking-tight drop-shadow-md">{playerData.rating}</div>
                 <div className="font-display text-[15px] text-[#181818] leading-none font-bold mt-1 drop-shadow-sm">{playerData.position || "CAM"}</div>
                 <img src="https://flagcdn.com/w40/in.png" alt="India" className="w-[20px] h-[14px] object-cover rounded-[1px] shadow-sm mt-1 border border-black/10" />
@@ -191,7 +193,7 @@ export default function HomeLobbyPage() {
               </div>
 
               {/* Right side: STRYK ID */}
-              <div className="absolute top-[20%] right-[12%] flex flex-col items-end">
+              <div className="absolute top-[20%] right-[10%] flex flex-col items-end">
                 <div className="text-[7px] font-bold tracking-[0.2em] text-[#A37B31] uppercase drop-shadow-sm">STRYK</div>
                 <div className="text-[9px] font-bold tracking-[0.1em] text-[#181818] uppercase drop-shadow-sm mt-0.5">ID-001</div>
               </div>
