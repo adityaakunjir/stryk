@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check } from "lucide-react";
-import { StrykLogo } from "@/components/stryk-logo";
 
 export default function Home() {
   const router = useRouter();
@@ -14,185 +12,146 @@ export default function Home() {
 
   const handleJoinTap = () => {
     setIsTransitioning(true);
-    // The Clerk modal will intercept shortly after, but we can set a slight delay if we want.
-    // However, since it's a native Clerk button, we just let it pop the modal and show our visual feedback.
     setTimeout(() => setIsTransitioning(false), 1000);
   };
 
   return (
     <main 
-      className="relative h-dvh w-dvw overflow-hidden bg-[#05070B] text-white flex flex-col items-center justify-center selection:bg-[#C6FF00]/30 selection:text-[#C6FF00]"
+      className="relative h-dvh w-dvw overflow-hidden bg-[#0A0A0A] text-white flex flex-col justify-between"
       style={{
         paddingTop: "env(safe-area-inset-top)",
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
-      {/* Background Layer 1: Base Gradient */}
+      {/* Background Layer: Marble Stadium */}
       <div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
         style={{
-          background:
-            "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(198,255,0,0.08) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 50% 110%, rgba(91,140,255,0.05) 0%, transparent 55%), #05070B",
+          backgroundImage: "url('/landing_page_bg.png')",
         }}
       />
 
-      {/* Background Layer 2: Noise Texture (2-3% opacity) */}
-      <div 
-        className="absolute inset-0 z-0 opacity-[0.03] mix-blend-overlay pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
-
-      {/* Background Layer 3: Moving Glow behind Logo (20s breathing animation) */}
-      <motion.div
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[100px] bg-[#C6FF00]/5 z-0 pointer-events-none"
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.6, 0.3],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-
-      <section className="relative z-10 flex flex-col items-center justify-center h-full w-full max-w-sm px-6">
+      <section className="relative z-10 flex flex-col h-full w-full max-w-md mx-auto px-6 py-8 pb-10">
         
-        {/* Logo & Hero Copy */}
-        <div className="flex flex-col items-center w-full mb-12 mt-auto">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0 }}
-            className="flex flex-col items-center mb-5"
+        {/* Top / Middle Section */}
+        <div className="flex-1 relative flex flex-col pt-4">
+          
+          {/* Logo */}
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="flex flex-col items-start mb-6"
           >
-            {/* Subtle electric pulse on logo every 4s */}
-            <motion.div
-              animate={{ filter: ["brightness(1)", "brightness(1.4)", "brightness(1)"] }}
-              transition={{ duration: 0.3, repeat: Infinity, repeatDelay: 4, ease: "easeOut" }}
-            >
-              <StrykLogo compact centered />
-            </motion.div>
+            <svg width="32" height="40" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-2">
+              <path d="M13.625 0L0 17.5H10.5L8.375 32L22 14.5H11.5L13.625 0Z" fill="url(#gold-grad)"/>
+              <defs>
+                <linearGradient id="gold-grad" x1="11" y1="0" x2="11" y2="32" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#F5D78D" />
+                  <stop offset="0.5" stopColor="#C1973E" />
+                  <stop offset="1" stopColor="#8A631B" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div className="text-[10px] tracking-[0.6em] text-[#A67C00] font-bold ml-1">STRYK</div>
           </motion.div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-            className="text-[14px] font-medium tracking-wide text-[#C6FF00] mt-1 text-center"
+          {/* Headline Copy */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="relative z-20 flex flex-col mt-4"
           >
-            The Athlete Identity Layer
-          </motion.h2>
+            <h1 className="font-display text-[64px] sm:text-[72px] leading-[0.85] italic flex flex-col tracking-tight mb-6">
+              <span className="text-[#1C1A17] drop-shadow-sm">BUILD YOUR</span>
+              <span className="text-[#1C1A17] drop-shadow-sm">FOOTBALL</span>
+              <span className="bg-gradient-to-b from-[#FFE380] via-[#D4A32A] to-[#8A5B12] text-transparent bg-clip-text drop-shadow-md">IDENTITY.</span>
+            </h1>
+            
+            <div className="text-[#1C1A17] text-[11px] tracking-[0.25em] font-bold mt-2 mb-3">
+              ONE PROFILE.<br/>EVERY MATCH.
+            </div>
+            <div className="w-8 h-[2px] bg-[#A67C00]"></div>
+          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-            className="flex flex-col items-center mt-6 gap-1 text-[13px] text-white/50 font-medium text-center"
+          {/* 3D Player Card */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, x: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute top-[18%] -right-[30%] sm:-right-[20%] w-[340px] sm:w-[400px] z-10 pointer-events-none drop-shadow-2xl"
           >
-            <p>Build your athlete profile.</p>
-            <p>Track achievements.</p>
-            <p>Get discovered.</p>
+            <img 
+              src="/landing_page_playercard.png" 
+              alt="STRYK Player Card" 
+              className="w-full h-auto object-contain"
+            />
           </motion.div>
         </div>
 
-        {/* Buttons & Conversion Psychology */}
-        <motion.div
+        {/* Bottom CTAs */}
+        <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.8 }}
-          className="w-full flex flex-col gap-4 mt-auto mb-10 relative"
+          transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+          className="relative z-20 flex flex-col gap-4 mt-auto w-full pt-8"
         >
           {isLoaded && isSignedIn ? (
-            <div className="relative group w-full">
-              <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
-              <motion.button
-                onClick={() => {
-                  setIsTransitioning(true);
-                  router.push("/sync");
-                }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
-                className="relative w-full h-[56px] rounded-2xl bg-[#C6FF00] text-[14px] font-display tracking-[0.2em] uppercase text-black font-bold shadow-[0_0_0_0_rgba(198,255,0,0)] hover:shadow-[0_0_30px_-5px_rgba(198,255,0,0.6)] transition-all duration-300 focus-visible:outline-none overflow-hidden cursor-pointer flex items-center justify-center"
-              >
-                <motion.div 
-                  className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
-                  animate={{ translateX: ["-100%", "200%"] }}
-                  transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 8, ease: "easeInOut" }}
-                />
-                GO TO DASHBOARD
-              </motion.button>
-            </div>
+            <button 
+              onClick={() => { setIsTransitioning(true); router.push("/sync"); }}
+              className="w-full h-[60px] rounded-2xl bg-[#D4F829] text-[15px] font-bold tracking-widest text-black flex items-center justify-center relative hover:bg-[#c3e625] transition-all shadow-[0_0_30px_rgba(212,248,41,0.2)] active:scale-95"
+            >
+              GO TO DASHBOARD
+              <svg className="absolute right-6 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
           ) : (
             <>
-              {/* JOIN STRYK */}
-              <div className="relative group w-full">
-                <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
-                
-                <SignUpButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
-                  <motion.button
-                    onClick={handleJoinTap}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
-                    aria-label="Join STRYK"
-                    className="relative w-full h-[56px] rounded-2xl bg-[#C6FF00] text-[14px] font-display tracking-[0.2em] uppercase text-black font-bold shadow-[0_0_0_0_rgba(198,255,0,0)] hover:shadow-[0_0_30px_-5px_rgba(198,255,0,0.6)] transition-all duration-300 focus-visible:outline-none overflow-hidden cursor-pointer flex items-center justify-center"
-                  >
-                    <motion.div 
-                      className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
-                      animate={{ translateX: ["-100%", "200%"] }}
-                      transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 8, ease: "easeInOut" }}
-                    />
-                    JOIN STRYK
-                  </motion.button>
-                </SignUpButton>
+              {/* JOIN Button */}
+              <SignUpButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
+                <button 
+                  onClick={handleJoinTap}
+                  className="w-full h-[60px] rounded-2xl bg-[#D4F829] text-[15px] font-bold tracking-widest text-black flex items-center justify-center relative hover:bg-[#c3e625] transition-all shadow-[0_0_30px_rgba(212,248,41,0.2)] active:scale-95"
+                >
+                  JOIN STRYK
+                  <svg className="absolute right-6 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </button>
+              </SignUpButton>
+
+              {/* Divider */}
+              <div className="flex items-center gap-4 my-1">
+                <div className="h-[1px] flex-1 bg-[#4A3D22]"></div>
+                <div className="text-[10px] tracking-widest text-[#7C6335] font-semibold">ALREADY HAVE AN ACCOUNT?</div>
+                <div className="h-[1px] flex-1 bg-[#4A3D22]"></div>
               </div>
 
-              <p className="text-center text-[11px] text-white/40 font-medium tracking-wide">
-                Setup takes less than 60 seconds
-              </p>
-
-              {/* LOG IN */}
+              {/* LOG IN Button */}
               <SignInButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
-                <motion.button
-                  whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
-                  whileTap={{ scale: 0.98 }}
-                  aria-label="Log in to STRYK"
-                  className="relative w-full h-[56px] rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 text-[13px] font-display tracking-[0.2em] uppercase text-white shadow-inner shadow-white/5 hover:border-white/20 transition-all duration-300 focus-visible:outline-none cursor-pointer overflow-hidden flex items-center justify-center mt-2"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-50" />
+                <button className="w-full h-[60px] rounded-2xl bg-black/40 backdrop-blur-sm border border-[#4A3D22] text-[15px] font-bold tracking-widest text-[#B5944B] flex items-center justify-center relative hover:bg-black/60 hover:border-[#7C6335] transition-all active:scale-95">
                   LOG IN
-                </motion.button>
+                  <svg className="absolute right-6 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </button>
               </SignInButton>
             </>
           )}
-        </motion.div>
 
-        {/* Trust Block */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.2 }}
-          className="flex flex-col items-center gap-2 pb-8 pt-4 w-full border-t border-white/5"
-        >
-          <div className="flex items-center gap-2 text-[10px] text-white/30 tracking-wider font-medium">
-            <Check className="w-3 h-3 text-[#C6FF00]/70" />
-            <span>Free Forever</span>
-          </div>
-          <div className="flex items-center gap-2 text-[10px] text-white/30 tracking-wider font-medium">
-            <Check className="w-3 h-3 text-[#C6FF00]/70" />
-            <span>Athlete Verified Profiles</span>
-          </div>
-          <div className="flex items-center gap-2 text-[10px] text-white/30 tracking-wider font-medium">
-            <Check className="w-3 h-3 text-[#C6FF00]/70" />
-            <span>Built for Competitive Players</span>
+          {/* Trust Badge */}
+          <div className="flex items-center justify-center gap-2 mt-2 text-[9px] tracking-[0.2em] font-semibold text-[#665229]">
+            <svg className="w-4 h-4 text-[#A67C00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            TRUSTED BY COMPETITIVE FOOTBALLERS
           </div>
         </motion.div>
-
       </section>
 
-      {/* Page Transition overlay (if triggered) */}
+      {/* Page Transition overlay */}
       <AnimatePresence>
         {isTransitioning && (
           <motion.div
