@@ -129,16 +129,22 @@ export default function HomeLobbyPage() {
             </div>
           </div>
 
-          {/* Greeting & Streak */}
-          <div className="flex justify-between items-start mt-2">
-            <div>
-              <div className="text-[10px] tracking-[0.2em] font-bold text-[#A37B31] uppercase mb-1">READY FOR TODAY'S MATCH?</div>
-              <div className="font-display text-4xl uppercase leading-none tracking-tight mb-2">HEY, {firstName} 👋</div>
-              <div className="text-[11px] text-[#4A4A4A] font-medium tracking-wide">Level up, compete, and build your legacy.</div>
+          {/* Greeting Area */}
+          <div className="flex justify-between items-start mt-8">
+            <div className="flex flex-col">
+              <div className="text-[9px] font-bold tracking-[0.15em] text-[#A37B31] uppercase mb-1 drop-shadow-sm">
+                READY FOR TODAY'S MATCH?
+              </div>
+              <div className="font-display text-5xl text-[#181818] italic leading-[0.9] drop-shadow-sm tracking-tight flex items-center gap-2">
+                HEY, {firstName} <span className="text-4xl not-italic ml-1">👋</span>
+              </div>
+              <div className="text-[11px] text-[#181818]/70 font-medium mt-3">
+                Level up, compete, and build your legacy.
+              </div>
             </div>
 
             {/* Streak Badge */}
-            <div className="flex flex-col items-center justify-center bg-[#110E0A] text-[#F3D17A] rounded-xl px-4 py-2 shadow-xl border border-[#2A2315] min-w-[70px]">
+            <div className="flex flex-col items-center justify-center bg-[#110E0A] text-[#F3D17A] rounded-xl px-4 py-2 shadow-[0_5px_15px_rgba(0,0,0,0.3)] border border-[#2A2315] min-w-[70px]">
               <div className="flex items-center gap-1 font-display text-2xl leading-none">
                 <span>🔥</span>
                 <span>7</span>
@@ -149,48 +155,46 @@ export default function HomeLobbyPage() {
         </div>
 
         {/* 3D Player Card Section */}
-        <div className="relative flex-1 flex flex-col justify-center items-center mt-2 min-h-[420px] shrink-0">
+        <div className="relative flex-1 flex flex-col justify-center items-center mt-0 min-h-[440px] shrink-0">
           <div 
-            className="relative w-[320px] h-[450px] cursor-pointer hover:scale-105 transition-transform duration-500"
+            className="relative w-[300px] h-[420px] rounded-[24px] border-[2px] border-[#D3A648] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-500 bg-cover bg-center"
+            style={{ backgroundImage: "url('/home_page_bg.webp')" }}
             onClick={() => setShowCardDossier(true)}
           >
-            {/* Player Avatar Placed IN FRONT of card background, clipped to fit frame */}
-            <div className="absolute top-[10%] left-[8%] right-[8%] bottom-[43%] z-[15] flex justify-center items-end overflow-hidden" style={{ borderRadius: '120px 120px 0 0' }}>
-              <img 
-                src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
-                alt="Avatar"
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Card Background image */}
+            {/* Player_card.webp (Base layer with brown banner, sits at z-10) */}
             <img 
               src="/player_card.webp" 
               alt="Player Card" 
-              className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-2xl z-10" 
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none z-10" 
             />
+
+            {/* Player Avatar (Sits at z-20, covers the top 58% to hide the gold star and meet the banner) */}
+            <img 
+              src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
+              alt="Avatar"
+              className="absolute top-0 left-0 w-full h-[58%] object-cover z-20"
+            />
+            {/* Shadow gradient to blend the avatar into the banner */}
+            <div className="absolute top-0 left-0 w-full h-[58%] z-[25] bg-gradient-to-b from-transparent via-transparent to-[#1c150c]/80 pointer-events-none" />
             
-            {/* Card Overlays */}
-            <div className="absolute inset-0 z-20">
-              {/* Top Row: Stats & ID */}
-              
+            {/* Card Overlays (Stats & ID at z-30) */}
+            <div className="absolute inset-0 z-30">
               {/* Left side: Rating, Position, Badges */}
-              <div className="absolute top-[18%] left-[12%] flex flex-col items-center gap-0.5">
-                <div className="font-display text-[50px] text-[#A37B31] leading-none tracking-tight drop-shadow-sm">{playerData.rating}</div>
-                <div className="font-display text-[16px] text-[#181818] leading-none">{playerData.position || "CAM"}</div>
+              <div className="absolute top-[12%] left-[8%] flex flex-col items-center gap-0.5">
+                <div className="font-display text-[48px] text-[#A37B31] leading-none tracking-tight drop-shadow-sm">{playerData.rating}</div>
+                <div className="font-display text-[15px] text-[#181818] leading-none font-bold mt-1">{playerData.position || "CAM"}</div>
                 <img src="https://flagcdn.com/w40/in.png" alt="India" className="w-[20px] h-[14px] object-cover rounded-[1px] shadow-sm mt-1 border border-black/10" />
                 {/* Placeholder Club Badge */}
-                <div className="w-[22px] h-[26px] mt-1 bg-[#111111] rounded-b-xl rounded-t-[2px] flex items-center justify-center border border-[#B38D40]/50 shadow-md">
+                <div className="w-[20px] h-[24px] mt-1 bg-[#111111] rounded-b-xl rounded-t-[2px] flex items-center justify-center border border-[#B38D40]/50 shadow-md">
                   <Shield size={10} className="text-[#B38D40]" />
                 </div>
               </div>
 
               {/* Right side: STRYK ID */}
-              <div className="absolute top-[20%] right-[12%] flex flex-col items-end">
+              <div className="absolute top-[15%] right-[8%] flex flex-col items-end">
                 <div className="text-[7px] font-bold tracking-[0.2em] text-[#A37B31] uppercase drop-shadow-sm">STRYK</div>
-                <div className="text-[10px] font-bold tracking-[0.1em] text-[#181818] uppercase drop-shadow-sm mt-0.5">ID-001</div>
+                <div className="text-[9px] font-bold tracking-[0.1em] text-[#181818] uppercase drop-shadow-sm mt-0.5">ID-001</div>
               </div>
-              
             </div>
           </div>
         </div>
