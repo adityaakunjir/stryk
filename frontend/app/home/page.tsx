@@ -92,7 +92,7 @@ export default function HomeLobbyPage() {
     >
       {/* Background Layer */}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+        className="absolute inset-0 z-0 bg-cover bg-[position:52%_center] bg-no-repeat pointer-events-none"
         style={{
           backgroundImage: "url('/home_page_bg.webp')",
         }}
@@ -106,13 +106,13 @@ export default function HomeLobbyPage() {
           
           {/* Top Bar: Logo & Profile */}
           <div className="flex justify-between items-center">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#D4F829] rounded-xl flex items-center justify-center font-display text-2xl text-black shadow-lg">
-                S
-              </div>
-              <div className="font-display tracking-[0.2em] text-xl text-black">STRYK</div>
+            {/* Left: Logo & Title */}
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-[#D4F829] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(212,248,41,0.3)]">
+              <span className="font-display text-2xl text-black leading-none">S</span>
             </div>
+            <div className="font-display text-[22px] tracking-[0.05em] text-[#181818] font-bold ml-1 mt-1">STRYK</div>
+          </div>
 
             {/* Profile & Notifications */}
             <div className="flex items-center gap-3">
@@ -154,16 +154,12 @@ export default function HomeLobbyPage() {
             className="relative w-[320px] h-[450px] cursor-pointer hover:scale-105 transition-transform duration-500"
             onClick={() => setShowCardDossier(true)}
           >
-            {/* Player Avatar Masked Behind Card */}
-            <div className="absolute inset-0 z-[5] flex justify-center items-start overflow-hidden">
+            {/* Player Avatar Placed IN FRONT of card background, clipped to fit frame */}
+            <div className="absolute top-[10%] left-[8%] right-[8%] bottom-[43%] z-[15] flex justify-center items-end overflow-hidden" style={{ borderRadius: '120px 120px 0 0' }}>
               <img 
                 src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
                 alt="Avatar"
-                className="absolute top-[16%] w-[220px] h-[260px] object-cover rounded-t-[110px]"
-                style={{
-                  maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
-                  WebkitMaskImage: "linear-gradient(to bottom, black 80%, transparent 100%)"
-                }}
+                className="w-full h-full object-cover"
               />
             </div>
 
@@ -179,10 +175,10 @@ export default function HomeLobbyPage() {
               {/* Top Row: Stats & ID */}
               
               {/* Left side: Rating, Position, Badges */}
-              <div className="absolute top-[22%] left-[16%] flex flex-col items-center gap-1">
-                <div className="font-display text-[44px] text-[#B38D40] leading-none tracking-tight drop-shadow-md">{playerData.rating}</div>
-                <div className="font-display text-[15px] text-[#181818] leading-none">{playerData.position || "CAM"}</div>
-                <img src="https://flagcdn.com/w40/in.png" alt="India" className="w-[22px] h-[14px] object-cover rounded-[1px] shadow-sm mt-1 border border-black/10" />
+              <div className="absolute top-[18%] left-[12%] flex flex-col items-center gap-0.5">
+                <div className="font-display text-[50px] text-[#A37B31] leading-none tracking-tight drop-shadow-sm">{playerData.rating}</div>
+                <div className="font-display text-[16px] text-[#181818] leading-none">{playerData.position || "CAM"}</div>
+                <img src="https://flagcdn.com/w40/in.png" alt="India" className="w-[20px] h-[14px] object-cover rounded-[1px] shadow-sm mt-1 border border-black/10" />
                 {/* Placeholder Club Badge */}
                 <div className="w-[22px] h-[26px] mt-1 bg-[#111111] rounded-b-xl rounded-t-[2px] flex items-center justify-center border border-[#B38D40]/50 shadow-md">
                   <Shield size={10} className="text-[#B38D40]" />
@@ -190,9 +186,9 @@ export default function HomeLobbyPage() {
               </div>
 
               {/* Right side: STRYK ID */}
-              <div className="absolute top-[26%] right-[16%] flex flex-col items-end">
-                <div className="text-[6px] font-bold tracking-[0.2em] text-[#B38D40] uppercase drop-shadow-sm">STRYK</div>
-                <div className="text-[9px] font-bold tracking-[0.1em] text-[#181818] uppercase drop-shadow-sm">ID-001</div>
+              <div className="absolute top-[20%] right-[12%] flex flex-col items-end">
+                <div className="text-[7px] font-bold tracking-[0.2em] text-[#A37B31] uppercase drop-shadow-sm">STRYK</div>
+                <div className="text-[10px] font-bold tracking-[0.1em] text-[#181818] uppercase drop-shadow-sm mt-0.5">ID-001</div>
               </div>
               
             </div>
