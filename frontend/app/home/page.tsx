@@ -161,8 +161,8 @@ export default function HomeLobbyPage() {
             className="relative w-[285px] h-[400px] cursor-pointer hover:scale-105 transition-transform duration-500"
             onClick={() => setShowCardDossier(true)}
           >
-            {/* Player Avatar (z-10, placed behind the card frame so the ornate borders perfectly frame it) */}
-            <div className="absolute top-[6%] left-[6%] right-[6%] bottom-[8%] z-10 overflow-hidden rounded-[24px]">
+            {/* Player Avatar (z-10, perfectly sized to fit inside the expanded transparent hole of the card frame) */}
+            <div className="absolute top-[8%] left-[8%] right-[8%] bottom-[12%] z-10 overflow-hidden rounded-[20px]">
               <img 
                 src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
                 alt="Avatar"
@@ -170,11 +170,11 @@ export default function HomeLobbyPage() {
               />
             </div>
 
-            {/* Player_card.webp (Base layer, z-20) - transparent in the middle, contains the ornate frame and brown banner */}
+            {/* Player_card.webp (Base layer, z-20) - Using object-cover to expand the full-screen 2304x4128 export, cropping the vertical padding and revealing the gorgeous gold frame! */}
             <img 
               src="/player_card.webp" 
               alt="Player Card" 
-              className="absolute inset-0 w-full h-full object-contain pointer-events-none z-20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]" 
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none z-20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]" 
             />
             
             {/* Card Overlays (Stats & ID at z-30) */}
