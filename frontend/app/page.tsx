@@ -75,19 +75,7 @@ export default function Home() {
             <div className="w-8 h-[2px] bg-[#A67C00]"></div>
           </motion.div>
 
-          {/* 3D Player Card */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9, x: 20 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-[18%] -right-[30%] sm:-right-[20%] w-[340px] sm:w-[400px] z-10 pointer-events-none drop-shadow-2xl"
-          >
-            <img 
-              src="/landing_page_playercard.webp" 
-              alt="STRYK Player Card" 
-              className="w-full h-auto object-contain"
-            />
-          </motion.div>
+          {/* 3D Player Card removed because it's baked into the background image */}
         </div>
 
         {/* Bottom CTAs */}
