@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Bell, Settings, Play, Users, Trophy, MapPin, 
   Loader2, X, Target, Zap, Shield, Sparkles, Gauge,
-  ChevronRight, Activity
+  ChevronRight, Activity, Home, User, Globe
 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { PlayerCard } from "@/components/player-card";
@@ -83,198 +83,192 @@ export default function HomeLobbyPage() {
   const xpTotal = 100;
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B] overflow-hidden">
-      {/* Dynamic Ambient Background */}
-      <motion.div
-        className="fixed inset-0 pointer-events-none transition-colors duration-1000"
-        style={{
-          background: `radial-gradient(70% 50% at 50% 10%, ${themeColor}15 0%, transparent 60%), radial-gradient(80% 60% at 50% 100%, ${themeColor}0A 0%, transparent 60%), #05070B`
-        }}
-      />
-      {/* 3D Floor Grid */}
+    <main 
+      className="relative h-dvh w-dvw overflow-hidden text-[#181818] flex flex-col justify-between bg-black"
+      style={{
+        paddingTop: "env(safe-area-inset-top)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+      }}
+    >
+      {/* Background Layer */}
       <div
-        className="fixed inset-x-0 bottom-0 h-56 opacity-20 pointer-events-none"
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
         style={{
-          background: `linear-gradient(transparent, ${themeColor}80), repeating-linear-gradient(90deg, transparent 0 32px, rgba(255,255,255,0.4) 32px 33px)`,
-          transform: "perspective(400px) rotateX(75deg)",
-          transformOrigin: "bottom"
+          backgroundImage: "url('/home_page_bg.webp')",
         }}
       />
 
-      <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-28 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {/* Main Scrollable Content */}
+      <div className="relative z-10 flex flex-col h-full w-full max-w-md mx-auto overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         
-        {/* Header */}
-        <header className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg text-black flex items-center justify-center font-display text-lg" style={{ backgroundColor: themeColor, boxShadow: `0 0 15px ${themeColor}60` }}>
-              S
-            </div>
-            <div className="font-display tracking-[0.25em] text-base">STRYK</div>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <IconBtn onClick={() => router.push("/notifications")}>
-              <div className="relative">
-                <Bell size={14} />
-                {incomingRequests.length > 0 && (
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border-[1.5px] border-[#0B1020]" />
-                )}
+        {/* Top Header Section (Logo, Profile, Greeting) */}
+        <div className="px-6 pt-6 flex flex-col gap-6 shrink-0">
+          
+          {/* Top Bar: Logo & Profile */}
+          <div className="flex justify-between items-center">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-[#D4F829] rounded-xl flex items-center justify-center font-display text-2xl text-black shadow-lg">
+                S
               </div>
-            </IconBtn>
-            <IconBtn onClick={() => router.push("/settings")}><Settings size={14} /></IconBtn>
-          </div>
-        </header>
+              <div className="font-display tracking-[0.2em] text-xl text-black">STRYK</div>
+            </div>
 
-        {/* Dynamic Greeting */}
-        <div className="mb-6">
-          <div className="text-[10px] tracking-[0.25em] uppercase text-white/50 font-bold mb-0.5">{greetingSubtext}</div>
-          <div className="font-display tracking-wide text-3xl">HEY, {firstName}</div>
+            {/* Profile & Notifications */}
+            <div className="flex items-center gap-3">
+              <button onClick={() => router.push("/notifications")} className="relative w-10 h-10 rounded-full bg-white/40 backdrop-blur-md border border-black/5 flex items-center justify-center shadow-sm hover:bg-white/60 transition">
+                <Bell size={18} className="text-black" />
+                {incomingRequests.length > 0 && (
+                  <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#D4F829] rounded-full border-2 border-white" />
+                )}
+              </button>
+              <button onClick={() => router.push("/settings")} className="flex items-center gap-2 p-1 pr-2 rounded-full bg-white/40 backdrop-blur-md border border-black/5 shadow-sm hover:bg-white/60 transition">
+                <img src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+                <ChevronRight size={14} className="text-black/60 rotate-90" />
+              </button>
+            </div>
+          </div>
+
+          {/* Greeting & Streak */}
+          <div className="flex justify-between items-start mt-2">
+            <div>
+              <div className="text-[10px] tracking-[0.2em] font-bold text-[#A37B31] uppercase mb-1">READY FOR TODAY'S MATCH?</div>
+              <div className="font-display text-4xl uppercase leading-none tracking-tight mb-2">HEY, {firstName} 👋</div>
+              <div className="text-[11px] text-[#4A4A4A] font-medium tracking-wide">Level up, compete, and build your legacy.</div>
+            </div>
+
+            {/* Streak Badge */}
+            <div className="flex flex-col items-center justify-center bg-[#15120F] text-[#F3D17A] rounded-2xl px-5 py-3 shadow-xl border border-[#2A2315]">
+              <div className="flex items-center gap-1 font-display text-2xl leading-none">
+                <span>🔥</span>
+                <span>7</span>
+              </div>
+              <div className="text-[8px] font-bold tracking-[0.15em] mt-1 text-[#F3D17A]/70 uppercase">DAY STREAK</div>
+            </div>
+          </div>
         </div>
 
-        {/* Hero Card & XP */}
-        <div className="relative flex flex-col items-center">
-          <div className="absolute -bottom-4 w-64 h-8 rounded-[50%] blur-3xl pointer-events-none" style={{ background: `${themeColor}60` }} />
-          <div className="scale-[0.88] sm:scale-95 origin-top relative z-10">
-            <PlayerCard player={playerData} size="md" onClick={() => setShowCardDossier(true)} />
-          </div>
-          
-          {/* XP Progress Engine */}
-          <div className="w-[88%] sm:w-[95%] -mt-6 sm:-mt-2 relative z-20 bg-black/60 backdrop-blur-md rounded-2xl border border-white/10 p-3 shadow-xl">
-            <div className="flex justify-between items-end mb-1.5">
-              <span className="text-[10px] font-bold tracking-widest text-white/70 uppercase">Level 1 Rookie</span>
-              <span className="text-[9px] font-bold text-white/40 tracking-wider">XP {xpCurrent}/{xpTotal}</span>
+        {/* 3D Player Card Section */}
+        <div className="relative flex-1 flex flex-col justify-center items-center mt-6 min-h-[380px] shrink-0">
+          <div 
+            className="relative w-[280px] h-[400px] cursor-pointer hover:scale-105 transition-transform duration-500"
+            onClick={() => setShowCardDossier(true)}
+          >
+            {/* Player Avatar Masked Behind Card */}
+            <div className="absolute inset-x-0 top-[15%] bottom-[25%] z-[5] flex justify-center items-start overflow-hidden px-4">
+              <img 
+                src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
+                alt="Avatar"
+                className="w-[180px] h-[220px] object-cover rounded-t-full drop-shadow-xl"
+                style={{
+                  maskImage: "linear-gradient(to bottom, black 70%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 70%, transparent 100%)"
+                }}
+              />
             </div>
-            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+
+            {/* Card Background image (transparent in center) */}
+            <img 
+              src="/player_card.webp" 
+              alt="Player Card" 
+              className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-2xl z-10" 
+            />
+            
+            {/* Card Overlays */}
+            <div className="absolute inset-0 z-20 p-6 flex flex-col">
+              {/* Top Row: Stats & ID */}
+              <div className="flex justify-between items-start">
+                {/* Left side: Rating, Position, Badges */}
+                <div className="flex flex-col items-center gap-1.5 mt-2 ml-1">
+                  <div className="font-display text-4xl text-[#B38D40] leading-none tracking-tight">{playerData.rating}</div>
+                  <div className="font-display text-lg text-black leading-none">{playerData.position || "CAM"}</div>
+                  <img src="https://flagcdn.com/w40/in.png" alt="India" className="w-6 h-4 object-cover rounded-[2px] shadow-sm mt-1 border border-black/10" />
+                  {/* Placeholder Club Badge */}
+                  <div className="w-7 h-8 mt-1 bg-black/80 rounded-b-xl rounded-t flex items-center justify-center border border-[#B38D40]/50 shadow-md">
+                    <Shield size={12} className="text-[#B38D40]" />
+                  </div>
+                </div>
+
+                {/* Right side: STRYK ID */}
+                <div className="flex flex-col items-end mt-4 mr-2">
+                  <div className="text-[7px] font-bold tracking-[0.2em] text-[#A37B31] uppercase">STRYK</div>
+                  <div className="text-[9px] font-bold tracking-[0.1em] text-black uppercase">ID-001</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Dashboard Panel */}
+        <div className="relative z-20 bg-[#0B0B0B] rounded-t-[32px] w-full shrink-0 shadow-[0_-10px_40px_rgba(0,0,0,0.3)] border-t border-white/5 pb-24">
+          <div className="p-6">
+            
+            {/* Level & XP */}
+            <div className="flex justify-between items-end mb-2">
+              <div className="flex gap-2 items-baseline">
+                <span className="text-[11px] font-bold tracking-[0.2em] text-[#D4F829] uppercase">LEVEL 1</span>
+                <span className="text-[11px] font-bold tracking-[0.1em] text-[#D4F829] uppercase">ROOKIE</span>
+              </div>
+              <span className="text-[10px] font-bold text-white/50 tracking-wider">XP {xpCurrent}/{xpTotal}</span>
+            </div>
+            {/* Progress Bar */}
+            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mb-6">
               <motion.div 
-                className="h-full rounded-full" style={{ backgroundColor: themeColor }}
+                className="h-full bg-[#D4F829] rounded-full"
                 initial={{ width: 0 }} animate={{ width: `${(xpCurrent/xpTotal)*100}%` }} transition={{ duration: 1.5, delay: 0.5, type: "spring" }}
               />
             </div>
-          </div>
-        </div>
 
-        {/* Next Objective (Hero Goal) */}
-        <div className="mt-6">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4 flex items-center justify-between cursor-pointer hover:bg-white/[0.04] transition">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/10 text-[#C6FF00]">
-                <Target size={16} />
-              </div>
-              <div>
-                <div className="text-[9px] tracking-[0.2em] uppercase text-[#C6FF00] font-bold">Next Objective</div>
-                <div className="font-display tracking-wider text-base mt-0.5">PLAY FIRST MATCH</div>
-                <div className="text-[11px] text-white/50 font-medium mt-0.5">+50 XP Reward</div>
-              </div>
-            </div>
-            <div className="flex flex-col items-end gap-1">
-              <span className="text-xs font-bold text-white/40">{matches}/1</span>
-              <div className="w-12 h-1 bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-[#C6FF00] rounded-full" style={{ width: `${matches > 0 ? 100 : 0}%` }} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stat Pills (Anti-Empty States) */}
-        <div className="grid grid-cols-3 gap-2 mt-2">
-          <Pill 
-            label="Matches" 
-            value={matches.toString()} 
-            subtext={matches === 0 ? "Play first game" : "View history"} 
-          />
-          <button onClick={() => setShowOvrModal(true)} className="text-left">
-            <Pill 
-              label="OVR" 
-              value={playerData.rating.toString()} 
-              subtext="How it works" 
-              accent 
-            />
-          </button>
-          <Pill 
-            label="Rep" 
-            value={matches < 3 ? "--" : "C"} 
-            subtext={matches < 3 ? "Play to earn" : "Good standing"} 
-          />
-        </div>
-
-        {/* Squad Online */}
-        <div className="mt-6">
-          <div className="flex items-center justify-between mb-3">
-            <div className="text-[10px] tracking-[0.25em] uppercase text-white/45 font-bold">Squad Online</div>
-            <button onClick={() => setShowSquadModal(true)} className="text-[10px] tracking-[0.2em] uppercase text-[#C6FF00] font-bold cursor-pointer hover:underline">
-              {friends.filter(f => f.online).length} LIVE
-            </button>
-          </div>
-          
-          {friends.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-white/20 bg-white/[0.01] p-4 flex items-center justify-between cursor-pointer hover:border-white/30 transition" onClick={() => setShowSquadModal(true)}>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full border border-dashed border-white/30 flex items-center justify-center text-white/40">
-                  <Users size={16} />
+            {/* Next Objective Card */}
+            <div className="bg-[#151515] rounded-2xl p-4 border border-white/5 flex items-center justify-between mb-4">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#D4F829] shrink-0">
+                  <Target size={18} />
                 </div>
                 <div>
-                  <div className="font-display tracking-wider text-sm">Create Your Squad</div>
-                  <div className="text-[10px] tracking-wide text-white/50 uppercase mt-0.5">Invite Teammates</div>
+                  <div className="text-[9px] tracking-[0.2em] uppercase text-[#D4F829] font-bold">NEXT OBJECTIVE</div>
+                  <div className="text-[13px] font-bold text-white uppercase mt-0.5 tracking-wider">PLAY YOUR FIRST MATCH</div>
+                  <div className="text-[10px] text-white/40 font-medium mt-0.5">Jump into a match and start your journey.</div>
                 </div>
               </div>
-              <ChevronRight size={16} className="text-white/30" />
+              <div className="text-[11px] font-bold text-[#A37B31]">0/1</div>
             </div>
-          ) : (
-            <div className="flex gap-2.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-1">
-              <button onClick={() => setShowSquadModal(true)} className="shrink-0 w-12 h-12 rounded-full border border-dashed border-[#C6FF00]/40 flex items-center justify-center text-[#C6FF00] cursor-pointer bg-[#C6FF00]/5 hover:bg-[#C6FF00]/10 transition">
-                +
-              </button>
-              {friends.slice(0, 4).map((f) => (
-                <div key={f.name} className="relative shrink-0 cursor-pointer" onClick={() => setShowSquadModal(true)}>
-                  <img src={f.avatar} alt={f.name} className="w-12 h-12 rounded-full object-cover border border-white/10" />
-                  {f.online && <div className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-[#C6FF00] border-2 border-[#05070B]" />}
-                </div>
-              ))}
+
+            {/* FIND MATCH BIG BUTTON */}
+            <button 
+              onClick={() => router.push("/matches")}
+              className="w-full h-[48px] bg-[#D4F829] text-black rounded-xl font-bold text-[12px] tracking-[0.15em] flex items-center justify-center gap-2 hover:opacity-90 transition active:scale-95 mb-4 shadow-[0_0_20px_rgba(212,248,41,0.2)]"
+            >
+              <Play size={14} fill="currentColor" /> FIND MATCH
+            </button>
+
+            {/* Action Grid (4 buttons) */}
+            <div className="grid grid-cols-4 gap-2">
+              <ActionButton icon={<MapPin size={18} />} label="FIND MATCH" subtext="Join matches near you" onClick={() => router.push("/matches")} />
+              <ActionButton icon={<Users size={18} />} label="MY SQUAD" subtext="Manage your squad" onClick={() => setShowSquadModal(true)} />
+              <ActionButton icon={<Trophy size={18} />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
+              <ActionButton icon={<Shield size={18} />} label="AI COACH" subtext="Improve your game" onClick={() => {}} />
             </div>
-          )}
-        </div>
 
-        {/* Feature Grid Hierarchy */}
-        <div className="mt-6 flex flex-col gap-2.5">
-          {/* Tier 1 (Large) */}
-          <div className="grid grid-cols-2 gap-2.5">
-            <Tier1Tile icon={<MapPin size={18} />} label="Matches" meta="Find games" onClick={() => router.push("/matches")} />
-            <Tier1Tile icon={<Users size={18} />} label="Friends" meta={`${friends.length} players`} onClick={() => setShowSquadModal(true)} />
-          </div>
-          {/* Tier 2 (Small) */}
-          <div className="grid grid-cols-2 gap-2.5">
-            <Tier2Tile icon={<Trophy size={14} />} label="Leaderboards" onClick={() => router.push("/leaderboards")} />
-            <Tier2Tile icon={<Activity size={14} />} label="History" onClick={() => router.push("/history")} />
-          </div>
-        </div>
-
-        {/* Daily Return Hook */}
-        <div className="mt-8 mb-4 border-t border-white/10 pt-6 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
-            <Zap size={12} className="text-orange-400" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/60">Day 1 Streak</span>
           </div>
         </div>
 
       </div>
 
-      {/* Floating Dominant CTA */}
-      <div className="fixed bottom-0 inset-x-0 p-5 bg-gradient-to-t from-black via-black/90 to-transparent pt-12 pb-8 sm:pb-10 z-30 pointer-events-none flex justify-center">
-        <div className="w-full max-w-md relative pointer-events-auto group">
-          <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-2xl opacity-0 group-hover:opacity-100 transition duration-500 rounded-full" />
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.96 }}
-            onClick={() => router.push("/matches")}
-            className="relative w-full h-14 rounded-[20px] bg-[#C6FF00] text-black font-display tracking-[0.2em] font-bold flex items-center justify-center gap-2 shadow-[0_0_40px_-10px_rgba(198,255,0,0.6)] cursor-pointer overflow-hidden"
-          >
-            <motion.div 
-              className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
-              animate={{ translateX: ["-100%", "200%"] }}
-              transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 6, ease: "easeInOut" }}
-            />
-            <Play size={16} fill="currentColor" /> FIND MATCH
-          </motion.button>
+      {/* Bottom Navigation Tab Bar */}
+      <div className="fixed bottom-0 inset-x-0 h-[80px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
+        <NavTab icon={<Home size={22} />} label="HOME" active={true} onClick={() => router.push("/home")} />
+        <NavTab icon={<Globe size={22} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
+        
+        {/* Floating Center Button */}
+        <div className="relative -top-6">
+          <button className="w-14 h-14 rounded-full bg-[#D4F829] border-4 border-[#0A0A0A] flex items-center justify-center shadow-lg hover:scale-105 transition active:scale-95">
+            <span className="text-black text-2xl leading-none font-light">+</span>
+          </button>
         </div>
+
+        <NavTab icon={<Users size={22} />} label="SQUAD" active={false} onClick={() => setShowSquadModal(true)} />
+        <NavTab icon={<User size={22} />} label="PROFILE" active={false} onClick={() => router.push("/profile/me")} />
       </div>
 
       {/* Card Detail Modal */}
@@ -373,40 +367,25 @@ export default function HomeLobbyPage() {
 
 // Subcomponents
 
-function IconBtn({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) {
+function ActionButton({ icon, label, subtext, onClick }: { icon: React.ReactNode; label: string; subtext: string; onClick?: () => void }) {
   return (
-    <button onClick={onClick} className="w-8 h-8 rounded-xl border border-white/10 bg-white/[0.04] text-white/80 flex items-center justify-center cursor-pointer transition hover:bg-white/10 hover:text-white">
-      {children}
+    <button onClick={onClick} className="flex flex-col items-center justify-center p-3 rounded-2xl bg-[#111111] border border-white/5 text-center cursor-pointer transition hover:bg-white/5 hover:border-white/10 h-full">
+      <div className="text-[#D4F829] mb-2">{icon}</div>
+      <div className="text-[8px] font-bold tracking-wider text-white uppercase leading-tight mb-1">{label}</div>
+      <div className="text-[7px] text-white/40 tracking-wide leading-tight">{subtext}</div>
     </button>
   );
 }
 
-function Pill({ label, value, subtext, accent }: { label: string; value: string; subtext: string; accent?: boolean }) {
+function NavTab({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active: boolean; onClick: () => void }) {
   return (
-    <div className={cn("rounded-2xl p-3 border transition-colors", accent ? "bg-[#C6FF00]/10 border-[#C6FF00]/30" : "bg-white/[0.03] border-white/10")}>
-      <div className={cn("text-[9px] tracking-[0.2em] uppercase font-bold", accent ? "text-[#C6FF00]" : "text-white/40")}>{label}</div>
-      <div className={cn("font-display text-2xl mt-0.5 leading-none", accent ? "text-[#C6FF00]" : "text-white")}>{value}</div>
-      <div className={cn("text-[8px] font-medium mt-1 uppercase tracking-wider truncate", accent ? "text-[#C6FF00]/60" : "text-white/30")}>{subtext}</div>
-    </div>
-  );
-}
-
-function Tier1Tile({ icon, label, meta, onClick }: { icon: React.ReactNode; label: string; meta: string; onClick?: () => void }) {
-  return (
-    <button onClick={onClick} className="rounded-2xl p-4 border border-white/10 bg-[#0B1020]/60 text-left cursor-pointer transition hover:bg-white/5 hover:border-white/20 shadow-lg relative overflow-hidden group">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition" />
-      <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white mb-3 shadow-inner border border-white/5">{icon}</div>
-      <div className="font-display tracking-wider text-base text-white">{label}</div>
-      <div className="text-[9px] tracking-[0.18em] uppercase text-white/40 font-bold mt-0.5">{meta}</div>
-    </button>
-  );
-}
-
-function Tier2Tile({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick?: () => void }) {
-  return (
-    <button onClick={onClick} className="rounded-2xl px-4 py-3 border border-white/5 bg-white/[0.02] text-left cursor-pointer transition hover:bg-white/5 flex items-center gap-3">
-      <div className="w-8 h-8 rounded-lg bg-black/40 flex items-center justify-center text-white/60">{icon}</div>
-      <div className="font-display tracking-wider text-sm text-white/80">{label}</div>
+    <button onClick={onClick} className="flex flex-col items-center gap-1 cursor-pointer group">
+      <div className={cn("transition-colors group-hover:text-white", active ? "text-[#D4F829]" : "text-white/40")}>
+        {icon}
+      </div>
+      <span className={cn("text-[8px] font-bold tracking-[0.1em] uppercase transition-colors group-hover:text-white", active ? "text-[#D4F829]" : "text-white/40")}>
+        {label}
+      </span>
     </button>
   );
 }
