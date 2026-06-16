@@ -65,13 +65,13 @@ export default function Home() {
               className="relative z-20 flex flex-col"
             >
               {/* Applied CSS transform to vertically stretch and horizontally condense the Bebas Neue font to perfectly match the mockup's tall typography */}
-              <h1 className="font-display text-[42px] sm:text-[52px] leading-[0.75] italic flex flex-col mb-5 text-[#181818] transform scale-y-[1.3] scale-x-[0.85] origin-top-left tracking-tight">
+              <h1 className="font-display text-[42px] sm:text-[52px] leading-[0.88] italic flex flex-col mb-5 text-[#181818] transform scale-y-[1.3] scale-x-[0.85] origin-top-left tracking-tight">
                 <span>BUILD YOUR</span>
                 <span>FOOTBALL</span>
                 <span className="bg-gradient-to-b from-[#EFCC85] via-[#D3A648] to-[#997026] text-transparent bg-clip-text pr-4 pb-1">IDENTITY.</span>
               </h1>
               
-              <div className="text-[#181818] text-[9.5px] tracking-[0.25em] font-semibold mt-3 mb-3 leading-relaxed opacity-75">
+              <div className="text-[#181818] text-[9.5px] tracking-[0.25em] font-semibold mt-8 mb-3 leading-relaxed opacity-75">
                 ONE PROFILE.<br/>EVERY MATCH.
               </div>
               <div className="w-6 h-[1.5px] bg-[#A37B31]"></div>
