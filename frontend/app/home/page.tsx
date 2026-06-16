@@ -138,36 +138,36 @@ export default function HomeLobbyPage() {
             </div>
 
             {/* Streak Badge */}
-            <div className="flex flex-col items-center justify-center bg-[#15120F] text-[#F3D17A] rounded-2xl px-5 py-3 shadow-xl border border-[#2A2315]">
+            <div className="flex flex-col items-center justify-center bg-[#110E0A] text-[#F3D17A] rounded-xl px-4 py-2 shadow-xl border border-[#2A2315] min-w-[70px]">
               <div className="flex items-center gap-1 font-display text-2xl leading-none">
                 <span>🔥</span>
                 <span>7</span>
               </div>
-              <div className="text-[8px] font-bold tracking-[0.15em] mt-1 text-[#F3D17A]/70 uppercase">DAY STREAK</div>
+              <div className="text-[7px] font-bold tracking-[0.15em] mt-1 text-[#F3D17A]/70 uppercase">DAY STREAK</div>
             </div>
           </div>
         </div>
 
         {/* 3D Player Card Section */}
-        <div className="relative flex-1 flex flex-col justify-center items-center mt-6 min-h-[380px] shrink-0">
+        <div className="relative flex-1 flex flex-col justify-center items-center mt-2 min-h-[420px] shrink-0">
           <div 
-            className="relative w-[280px] h-[400px] cursor-pointer hover:scale-105 transition-transform duration-500"
+            className="relative w-[320px] h-[450px] cursor-pointer hover:scale-105 transition-transform duration-500"
             onClick={() => setShowCardDossier(true)}
           >
             {/* Player Avatar Masked Behind Card */}
-            <div className="absolute inset-x-0 top-[15%] bottom-[25%] z-[5] flex justify-center items-start overflow-hidden px-4">
+            <div className="absolute inset-0 z-[5] flex justify-center items-start overflow-hidden">
               <img 
                 src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
                 alt="Avatar"
-                className="w-[180px] h-[220px] object-cover rounded-t-full drop-shadow-xl"
+                className="absolute top-[16%] w-[220px] h-[260px] object-cover rounded-t-[110px]"
                 style={{
-                  maskImage: "linear-gradient(to bottom, black 70%, transparent 100%)",
-                  WebkitMaskImage: "linear-gradient(to bottom, black 70%, transparent 100%)"
+                  maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 80%, transparent 100%)"
                 }}
               />
             </div>
 
-            {/* Card Background image (transparent in center) */}
+            {/* Card Background image */}
             <img 
               src="/player_card.webp" 
               alt="Player Card" 
@@ -175,26 +175,26 @@ export default function HomeLobbyPage() {
             />
             
             {/* Card Overlays */}
-            <div className="absolute inset-0 z-20 p-6 flex flex-col">
+            <div className="absolute inset-0 z-20">
               {/* Top Row: Stats & ID */}
-              <div className="flex justify-between items-start">
-                {/* Left side: Rating, Position, Badges */}
-                <div className="flex flex-col items-center gap-1.5 mt-2 ml-1">
-                  <div className="font-display text-4xl text-[#B38D40] leading-none tracking-tight">{playerData.rating}</div>
-                  <div className="font-display text-lg text-black leading-none">{playerData.position || "CAM"}</div>
-                  <img src="https://flagcdn.com/w40/in.png" alt="India" className="w-6 h-4 object-cover rounded-[2px] shadow-sm mt-1 border border-black/10" />
-                  {/* Placeholder Club Badge */}
-                  <div className="w-7 h-8 mt-1 bg-black/80 rounded-b-xl rounded-t flex items-center justify-center border border-[#B38D40]/50 shadow-md">
-                    <Shield size={12} className="text-[#B38D40]" />
-                  </div>
-                </div>
-
-                {/* Right side: STRYK ID */}
-                <div className="flex flex-col items-end mt-4 mr-2">
-                  <div className="text-[7px] font-bold tracking-[0.2em] text-[#A37B31] uppercase">STRYK</div>
-                  <div className="text-[9px] font-bold tracking-[0.1em] text-black uppercase">ID-001</div>
+              
+              {/* Left side: Rating, Position, Badges */}
+              <div className="absolute top-[22%] left-[16%] flex flex-col items-center gap-1">
+                <div className="font-display text-[44px] text-[#B38D40] leading-none tracking-tight drop-shadow-md">{playerData.rating}</div>
+                <div className="font-display text-[15px] text-[#181818] leading-none">{playerData.position || "CAM"}</div>
+                <img src="https://flagcdn.com/w40/in.png" alt="India" className="w-[22px] h-[14px] object-cover rounded-[1px] shadow-sm mt-1 border border-black/10" />
+                {/* Placeholder Club Badge */}
+                <div className="w-[22px] h-[26px] mt-1 bg-[#111111] rounded-b-xl rounded-t-[2px] flex items-center justify-center border border-[#B38D40]/50 shadow-md">
+                  <Shield size={10} className="text-[#B38D40]" />
                 </div>
               </div>
+
+              {/* Right side: STRYK ID */}
+              <div className="absolute top-[26%] right-[16%] flex flex-col items-end">
+                <div className="text-[6px] font-bold tracking-[0.2em] text-[#B38D40] uppercase drop-shadow-sm">STRYK</div>
+                <div className="text-[9px] font-bold tracking-[0.1em] text-[#181818] uppercase drop-shadow-sm">ID-001</div>
+              </div>
+              
             </div>
           </div>
         </div>
@@ -244,10 +244,10 @@ export default function HomeLobbyPage() {
 
             {/* Action Grid (4 buttons) */}
             <div className="grid grid-cols-4 gap-2">
-              <ActionButton icon={<MapPin size={18} />} label="FIND MATCH" subtext="Join matches near you" onClick={() => router.push("/matches")} />
-              <ActionButton icon={<Users size={18} />} label="MY SQUAD" subtext="Manage your squad" onClick={() => setShowSquadModal(true)} />
-              <ActionButton icon={<Trophy size={18} />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
-              <ActionButton icon={<Shield size={18} />} label="AI COACH" subtext="Improve your game" onClick={() => {}} />
+              <ActionButton icon={<MapPin size={16} />} label="FIND MATCH" subtext="Join matches near you" onClick={() => router.push("/matches")} />
+              <ActionButton icon={<Users size={16} />} label="MY SQUAD" subtext="Manage your squad" onClick={() => setShowSquadModal(true)} />
+              <ActionButton icon={<Trophy size={16} />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
+              <ActionButton icon={<Shield size={16} />} label="AI COACH" subtext="Improve your game" onClick={() => {}} />
             </div>
 
           </div>
@@ -256,19 +256,19 @@ export default function HomeLobbyPage() {
       </div>
 
       {/* Bottom Navigation Tab Bar */}
-      <div className="fixed bottom-0 inset-x-0 h-[80px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
-        <NavTab icon={<Home size={22} />} label="HOME" active={true} onClick={() => router.push("/home")} />
-        <NavTab icon={<Globe size={22} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
+      <div className="fixed bottom-0 inset-x-0 h-[65px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
+        <NavTab icon={<Home size={20} />} label="HOME" active={true} onClick={() => router.push("/home")} />
+        <NavTab icon={<Globe size={20} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
         
         {/* Floating Center Button */}
-        <div className="relative -top-6">
+        <div className="relative -top-3">
           <button className="w-14 h-14 rounded-full bg-[#D4F829] border-4 border-[#0A0A0A] flex items-center justify-center shadow-lg hover:scale-105 transition active:scale-95">
             <span className="text-black text-2xl leading-none font-light">+</span>
           </button>
         </div>
 
-        <NavTab icon={<Users size={22} />} label="SQUAD" active={false} onClick={() => setShowSquadModal(true)} />
-        <NavTab icon={<User size={22} />} label="PROFILE" active={false} onClick={() => router.push("/profile/me")} />
+        <NavTab icon={<Users size={20} />} label="SQUAD" active={false} onClick={() => setShowSquadModal(true)} />
+        <NavTab icon={<User size={20} />} label="PROFILE" active={false} onClick={() => router.push("/profile/me")} />
       </div>
 
       {/* Card Detail Modal */}
