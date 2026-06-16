@@ -130,7 +130,7 @@ export default function HomeLobbyPage() {
           </div>
 
           {/* Greeting Area */}
-          <div className="flex justify-between items-start mt-8">
+          <div className="flex justify-between items-start mt-6">
             <div className="flex flex-col">
               <div className="text-[9px] font-bold tracking-[0.15em] text-[#A37B31] uppercase mb-1 drop-shadow-sm">
                 READY FOR TODAY'S MATCH?
@@ -138,13 +138,13 @@ export default function HomeLobbyPage() {
               <div className="font-display text-5xl text-[#181818] italic leading-[0.9] drop-shadow-sm tracking-tight flex items-center gap-2">
                 HEY, {firstName} <span className="text-4xl not-italic ml-1">👋</span>
               </div>
-              <div className="text-[11px] text-[#181818]/70 font-medium mt-3">
+              <div className="text-[11px] text-[#181818]/70 font-medium mt-2">
                 Level up, compete, and build your legacy.
               </div>
             </div>
 
             {/* Streak Badge */}
-            <div className="flex flex-col items-center justify-center bg-[#110E0A] text-[#F3D17A] rounded-xl px-4 py-2 shadow-[0_5px_15px_rgba(0,0,0,0.3)] border border-[#2A2315] min-w-[70px]">
+            <div className="flex flex-col items-center justify-center bg-[#110E0A] text-[#F3D17A] rounded-xl px-4 py-2 shadow-xl border border-[#2A2315] min-w-[70px]">
               <div className="flex items-center gap-1 font-display text-2xl leading-none">
                 <span>🔥</span>
                 <span>7</span>
@@ -155,33 +155,34 @@ export default function HomeLobbyPage() {
         </div>
 
         {/* 3D Player Card Section */}
-        <div className="relative flex-1 flex flex-col justify-center items-center mt-0 min-h-[440px] shrink-0">
+        <div className="relative flex-1 flex flex-col justify-center items-center mt-2 min-h-[420px] shrink-0">
           <div 
-            className="relative w-[300px] h-[420px] rounded-[24px] border-[2px] border-[#D3A648] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-500 bg-cover bg-center"
-            style={{ backgroundImage: "url('/home_page_bg.webp')" }}
+            className="relative w-[320px] h-[450px] cursor-pointer hover:scale-105 transition-transform duration-500"
             onClick={() => setShowCardDossier(true)}
           >
-            {/* Player_card.webp (Base layer with brown banner, sits at z-10) */}
+            {/* Player_card.webp (Base layer, z-10) */}
             <img 
               src="/player_card.webp" 
               alt="Player Card" 
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none z-10" 
+              className="absolute inset-0 w-full h-full object-contain pointer-events-none z-10 drop-shadow-2xl" 
             />
 
-            {/* Player Avatar (Sits at z-20, covers the top 58% to hide the gold star and meet the banner) */}
-            <img 
-              src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
-              alt="Avatar"
-              className="absolute top-0 left-0 w-full h-[58%] object-cover z-20"
-            />
-            {/* Shadow gradient to blend the avatar into the banner */}
-            <div className="absolute top-0 left-0 w-full h-[58%] z-[25] bg-gradient-to-b from-transparent via-transparent to-[#1c150c]/80 pointer-events-none" />
+            {/* Player Avatar (z-15, in front to hide gold star, precisely sized to fit inside the card borders and above the banner) */}
+            <div className="absolute top-[12%] left-[9%] right-[9%] bottom-[42%] z-[15] overflow-hidden rounded-t-[20px]">
+              <img 
+                src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
+                alt="Avatar"
+                className="w-full h-full object-cover"
+              />
+              {/* Subtle bottom shadow to blend with the banner */}
+              <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+            </div>
             
             {/* Card Overlays (Stats & ID at z-30) */}
             <div className="absolute inset-0 z-30">
               {/* Left side: Rating, Position, Badges */}
-              <div className="absolute top-[12%] left-[8%] flex flex-col items-center gap-0.5">
-                <div className="font-display text-[48px] text-[#A37B31] leading-none tracking-tight drop-shadow-sm">{playerData.rating}</div>
+              <div className="absolute top-[18%] left-[14%] flex flex-col items-center gap-0.5">
+                <div className="font-display text-[46px] text-[#A37B31] leading-none tracking-tight drop-shadow-sm">{playerData.rating}</div>
                 <div className="font-display text-[15px] text-[#181818] leading-none font-bold mt-1">{playerData.position || "CAM"}</div>
                 <img src="https://flagcdn.com/w40/in.png" alt="India" className="w-[20px] h-[14px] object-cover rounded-[1px] shadow-sm mt-1 border border-black/10" />
                 {/* Placeholder Club Badge */}
@@ -191,7 +192,7 @@ export default function HomeLobbyPage() {
               </div>
 
               {/* Right side: STRYK ID */}
-              <div className="absolute top-[15%] right-[8%] flex flex-col items-end">
+              <div className="absolute top-[20%] right-[14%] flex flex-col items-end">
                 <div className="text-[7px] font-bold tracking-[0.2em] text-[#A37B31] uppercase drop-shadow-sm">STRYK</div>
                 <div className="text-[9px] font-bold tracking-[0.1em] text-[#181818] uppercase drop-shadow-sm mt-0.5">ID-001</div>
               </div>
