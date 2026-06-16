@@ -27,7 +27,7 @@ export default function Home() {
       <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
         style={{
-          backgroundImage: "url('/landing_page_bg.png')",
+          backgroundImage: "url('/landing_page_bg.webp')",
         }}
       />
 
@@ -83,7 +83,7 @@ export default function Home() {
             className="absolute top-[18%] -right-[30%] sm:-right-[20%] w-[340px] sm:w-[400px] z-10 pointer-events-none drop-shadow-2xl"
           >
             <img 
-              src="/landing_page_playercard.png" 
+              src="/landing_page_playercard.webp" 
               alt="STRYK Player Card" 
               className="w-full h-auto object-contain"
             />
