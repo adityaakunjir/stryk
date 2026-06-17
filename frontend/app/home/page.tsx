@@ -138,26 +138,26 @@ export default function HomeLobbyPage() {
             className="relative aspect-[1417/1878] w-[min(86vw,350px)] cursor-pointer hover:scale-[1.025] transition-transform duration-500"
             onClick={() => setShowCardDossier(true)}
           >
-            {/* Card art base */}
+            {/* The HOLED player card image */}
             <img 
-              src="/player_card.webp" 
+              src="/player_card_holed.webp" 
               alt="Player Card" 
               className="absolute inset-0 z-20 h-full w-full object-contain pointer-events-none drop-shadow-[0_24px_38px_rgba(40,18,4,0.42)]" 
             />
 
-            {/* Portrait clipped to trace inner gold borders and cut around top crest */}
+            {/* Portrait sits BEHIND the holed card, framed naturally by the transparent hole! */}
             <div
-              className="absolute left-[6%] right-[6%] top-[12%] bottom-[35%] z-30 overflow-visible"
+              className="absolute left-[3%] right-[3%] top-[15%] bottom-[35%] z-10 overflow-hidden"
               style={{
-                clipPath: "polygon(0% 6%, 7% 0%, 39% 0%, 45% 9%, 50% 10%, 55% 9%, 61% 0%, 93% 0%, 100% 6%, 100% 100%, 0% 100%)",
+                clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 100%, 0% 100%, 0% 10%)",
               }}
             >
               <img 
                 src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
                 alt="Avatar"
-                className="h-full w-full scale-[1.1] object-cover object-[center_35%]"
+                className="h-full w-full scale-[1.15] object-cover object-[center_35%]"
               />
-              <div className="absolute inset-x-[-22%] bottom-[0%] h-[25%] bg-gradient-to-t from-[#1A1108] via-[#1A1108]/80 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 bottom-0 h-[25%] bg-gradient-to-t from-[#1A1108] via-[#1A1108]/80 to-transparent pointer-events-none" />
             </div>
 
             {/* Dark middle banner plate matching Mockup */}
