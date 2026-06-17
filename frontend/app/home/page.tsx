@@ -135,7 +135,7 @@ export default function HomeLobbyPage() {
         {/* 3D Player Card Section */}
         <div className="relative flex-1 flex flex-col justify-center items-center min-h-[455px] shrink-0 z-[41] pt-2">
           <div 
-            className="relative aspect-[1417/1878] w-[min(86vw,350px)] cursor-pointer hover:scale-[1.025] transition-transform duration-500"
+            className="relative aspect-[1417/1878] w-[75vw] max-w-[300px] cursor-pointer hover:scale-[1.025] transition-transform duration-500"
             onClick={() => setShowCardDossier(true)}
           >
             {/* The Player Card Image */}
@@ -158,7 +158,7 @@ export default function HomeLobbyPage() {
               }}
             >
               <img 
-                src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
+                src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya&backgroundColor=transparent&textColor=000000"} 
                 alt="Avatar"
                 className="absolute left-[3%] right-[3%] top-[14%] bottom-[35%] w-[94%] h-[51%] scale-[1.1] object-cover object-[center_35%]"
               />
@@ -166,13 +166,13 @@ export default function HomeLobbyPage() {
             </div>
 
             {/* Dark middle banner plate matching Mockup */}
-            <div className="absolute left-[18%] right-[18%] top-[57.5%] z-40 h-[7.5%] bg-gradient-to-b from-[#25180E] to-[#120B05] drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)]"
-              style={{ clipPath: "polygon(8% 0%, 92% 0%, 100% 50%, 92% 100%, 8% 100%, 0% 50%)" }}
+            <div className="absolute left-[8%] right-[8%] top-[55%] z-40 h-[9%] bg-gradient-to-b from-[#25180E] to-[#120B05] drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)]"
+              style={{ clipPath: "polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%)" }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#D6B77A]/10 to-transparent pointer-events-none" />
               {/* Inner gold border effect since clip-path cuts real borders */}
               <div className="absolute inset-[1px] bg-gradient-to-b from-[#25180E] to-[#120B05]" 
-                style={{ clipPath: "polygon(8% 0%, 92% 0%, 100% 50%, 92% 100%, 8% 100%, 0% 50%)" }} 
+                style={{ clipPath: "polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%)" }} 
               />
             </div>
             
@@ -208,7 +208,7 @@ export default function HomeLobbyPage() {
         </div>
 
         {/* Bottom Sheet Navigation */}
-        <div className="relative z-30 bg-[#0A0A0A] rounded-t-[32px] w-full px-6 pt-6 pb-24 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F] -mt-2">
+        <div className="relative z-30 bg-[#0A0A0A] rounded-t-[32px] w-full px-6 pt-6 pb-24 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F] -mt-8">
           <div className="p-6">
             
             {/* Level & XP */}
