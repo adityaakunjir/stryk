@@ -138,26 +138,31 @@ export default function HomeLobbyPage() {
             className="relative aspect-[1417/1878] w-[min(86vw,350px)] cursor-pointer hover:scale-[1.025] transition-transform duration-500"
             onClick={() => setShowCardDossier(true)}
           >
-            {/* The HOLED player card image */}
+            {/* The Player Card Image */}
             <img 
-              src="/player_card_holed.webp" 
+              src="/player_card.webp" 
               alt="Player Card" 
               className="absolute inset-0 z-20 h-full w-full object-contain pointer-events-none drop-shadow-[0_24px_38px_rgba(40,18,4,0.42)]" 
             />
 
-            {/* Portrait sits BEHIND the holed card, framed naturally by the transparent hole! */}
+            {/* Portrait masked to perfectly trace inner gold borders and crest */}
             <div
-              className="absolute left-[3%] right-[3%] top-[15%] bottom-[35%] z-10 overflow-hidden"
+              className="absolute inset-0 z-30 pointer-events-none"
               style={{
-                clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 100%, 0% 100%, 0% 10%)",
+                maskImage: "url('/avatar_mask.svg')",
+                WebkitMaskImage: "url('/avatar_mask.svg')",
+                maskSize: "100% 100%",
+                WebkitMaskSize: "100% 100%",
+                maskRepeat: "no-repeat",
+                WebkitMaskRepeat: "no-repeat"
               }}
             >
               <img 
                 src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
                 alt="Avatar"
-                className="h-full w-full scale-[1.15] object-cover object-[center_35%]"
+                className="absolute left-[3%] right-[3%] top-[14%] bottom-[35%] w-[94%] h-[51%] scale-[1.1] object-cover object-[center_35%]"
               />
-              <div className="absolute inset-x-0 bottom-0 h-[25%] bg-gradient-to-t from-[#1A1108] via-[#1A1108]/80 to-transparent pointer-events-none" />
+              <div className="absolute left-[3%] right-[3%] bottom-[35%] h-[15%] bg-gradient-to-t from-[#25180E] via-[#25180E]/80 to-transparent pointer-events-none" />
             </div>
 
             {/* Dark middle banner plate matching Mockup */}
