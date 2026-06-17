@@ -145,24 +145,30 @@ export default function HomeLobbyPage() {
               className="absolute inset-0 z-20 h-full w-full object-contain pointer-events-none drop-shadow-[0_24px_38px_rgba(40,18,4,0.42)]" 
             />
 
-            {/* Portrait clipped into the upper shield window */}
+            {/* Portrait clipped to trace inner gold borders and cut around top crest */}
             <div
-              className="absolute left-[6%] right-[6%] top-[20%] bottom-[38%] z-30 overflow-visible"
+              className="absolute left-[6%] right-[6%] top-[12%] bottom-[35%] z-30 overflow-visible"
               style={{
-                clipPath: "polygon(14% 0%, 86% 0%, 100% 12%, 100% 100%, 0% 100%, 0% 12%)",
+                clipPath: "polygon(0% 6%, 7% 0%, 39% 0%, 45% 9%, 50% 10%, 55% 9%, 61% 0%, 93% 0%, 100% 6%, 100% 100%, 0% 100%)",
               }}
             >
               <img 
                 src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
                 alt="Avatar"
-                className="h-full w-full scale-[1.3] object-cover object-[center_30%]"
+                className="h-full w-full scale-[1.1] object-cover object-[center_35%]"
               />
-              <div className="absolute inset-x-[-22%] bottom-[0%] h-[20%] bg-gradient-to-t from-[#2B1A0F] to-transparent pointer-events-none" />
+              <div className="absolute inset-x-[-22%] bottom-[0%] h-[25%] bg-gradient-to-t from-[#1A1108] via-[#1A1108]/80 to-transparent pointer-events-none" />
             </div>
 
-            {/* The REAL middle banner extracted from player_card.webp via clip-path! */}
-            <div className="absolute inset-0 z-40 pointer-events-none" style={{ clipPath: "polygon(24% 57.5%, 76% 57.5%, 81% 61.25%, 76% 65%, 24% 65%, 19% 61.25%)" }}>
-              <img src="/player_card.webp" className="w-full h-full object-contain" />
+            {/* Dark middle banner plate matching Mockup */}
+            <div className="absolute left-[18%] right-[18%] top-[57.5%] z-40 h-[7.5%] bg-gradient-to-b from-[#25180E] to-[#120B05] drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)]"
+              style={{ clipPath: "polygon(8% 0%, 92% 0%, 100% 50%, 92% 100%, 8% 100%, 0% 50%)" }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#D6B77A]/10 to-transparent pointer-events-none" />
+              {/* Inner gold border effect since clip-path cuts real borders */}
+              <div className="absolute inset-[1px] bg-gradient-to-b from-[#25180E] to-[#120B05]" 
+                style={{ clipPath: "polygon(8% 0%, 92% 0%, 100% 50%, 92% 100%, 8% 100%, 0% 50%)" }} 
+              />
             </div>
             
             {/* Card Overlays (Stats & ID at z-40) */}
