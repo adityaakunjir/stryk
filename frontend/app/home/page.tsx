@@ -147,23 +147,23 @@ export default function HomeLobbyPage() {
 
             {/* Portrait clipped into the upper shield window */}
             <div
-              className="absolute left-[18%] right-[18%] top-[22%] bottom-[38%] z-30 overflow-visible"
+              className="absolute left-[6%] right-[6%] top-[20%] bottom-[38%] z-30 overflow-visible"
               style={{
-                clipPath: "polygon(11% 0%, 89% 0%, 100% 17%, 100% 84%, 79% 100%, 21% 100%, 0% 84%, 0% 17%)",
+                clipPath: "polygon(14% 0%, 86% 0%, 100% 12%, 100% 100%, 0% 100%, 0% 12%)",
               }}
             >
               <img 
                 src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} 
                 alt="Avatar"
-                className="h-full w-full scale-[1.72] object-cover object-[center_22%]"
+                className="h-full w-full scale-[1.3] object-cover object-[center_30%]"
               />
-              <div className="absolute inset-x-[-22%] bottom-[-2%] h-[34%] bg-gradient-to-t from-[#2B1A0F] via-[#2B1A0F]/78 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-[-22%] bottom-[0%] h-[20%] bg-gradient-to-t from-[#2B1A0F] to-transparent pointer-events-none" />
             </div>
 
-            {/* Gold name plate, matching the reference card's empty banner */}
-            <div className="absolute left-[19%] right-[19%] top-[57.5%] z-40 h-[7.5%] rounded-[4px] bg-[linear-gradient(100deg,#8B5B1F_0%,#F4C867_45%,#7A4819_100%)] shadow-[0_0_18px_rgba(248,205,100,0.42),inset_0_1px_0_rgba(255,255,255,0.35)]"
-              style={{ clipPath: "polygon(8% 0%, 92% 0%, 100% 50%, 92% 100%, 8% 100%, 0% 50%)" }}
-            />
+            {/* The REAL middle banner extracted from player_card.webp via clip-path! */}
+            <div className="absolute inset-0 z-40 pointer-events-none" style={{ clipPath: "polygon(24% 57.5%, 76% 57.5%, 81% 61.25%, 76% 65%, 24% 65%, 19% 61.25%)" }}>
+              <img src="/player_card.webp" className="w-full h-full object-contain" />
+            </div>
             
             {/* Card Overlays (Stats & ID at z-40) */}
             <div className="absolute inset-0 z-[45] pointer-events-none">
