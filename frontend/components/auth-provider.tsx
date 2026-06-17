@@ -52,7 +52,7 @@ export function useStrykAuth(): AuthContextType {
     getToken: async () => null};
 }
 
-const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_test_YmVsb3ZlZC1hbHBhY2EtMTUuY2xlcmsuYWNjb3VudHMuZGV2JA";
+const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 // AuthProvider wraps ClerkProvider on the client side
 export function AuthProvider({ children }: { children: React.ReactNode }) {
