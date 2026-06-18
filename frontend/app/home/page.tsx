@@ -60,27 +60,20 @@ export default function HomeLobbyPage() {
   const xpTotal = 100;
 
   return (
-    <main 
-      className="relative h-dvh w-dvw overflow-hidden text-[#181818] flex flex-col justify-between bg-black"
-      style={{
-        paddingTop: "env(safe-area-inset-top)",
-        paddingBottom: "env(safe-area-inset-bottom)",
-      }}
-    >
-      {/* Background Layer */}
+    <main className="relative h-screen w-full overflow-hidden bg-[#05070B]">
+      {/* Background Layer (100% width, auto height to preserve arches and pedestal proportions) */}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-no-repeat pointer-events-none"
+        className="absolute inset-0 z-0 bg-[length:100%_auto] bg-top bg-no-repeat pointer-events-none"
         style={{
           backgroundImage: "url('/home_page_bg.webp')",
-          backgroundPosition: 'center 15%',
         }}
       />
 
-      {/* Main Scrollable Content */}
-      <div className="relative z-10 flex flex-col h-full w-full max-w-md mx-auto overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {/* Main Fixed Layout Content */}
+      <div className="relative z-10 h-full w-full max-w-md mx-auto">
         
         {/* Top Header Section (Logo, Profile, Greeting) */}
-        <div className="px-6 pt-6 flex flex-col gap-6 shrink-0">
+        <div className="absolute top-0 left-0 right-0 px-6 pt-4 flex flex-col gap-4 shrink-0 z-10">
           
           {/* Top Bar: Logo & Profile */}
           <div className="flex justify-between items-center">
@@ -108,18 +101,18 @@ export default function HomeLobbyPage() {
           </div>
 
           {/* Greeting Area */}
-          <div className="flex justify-between items-start mt-6">
-            <div className="flex flex-col">
-              <div className="text-[9px] font-bold tracking-[0.15em] text-[#A37B31] uppercase mb-1 drop-shadow-sm">
-                READY FOR TODAY&apos;S MATCH?
-              </div>
-              <div className="font-display text-5xl text-[#181818] italic leading-[0.9] drop-shadow-sm tracking-tight flex items-center gap-2">
-                HEY, {firstName} <span className="text-4xl not-italic ml-1">👋</span>
-              </div>
-              <div className="text-[11px] text-[#181818]/70 font-medium mt-2">
-                Level up, compete, and build your legacy.
-              </div>
+        <div className="flex justify-between items-start mt-2">
+          <div className="flex flex-col">
+            <div className="text-[9px] font-bold tracking-[0.15em] text-[#A37B31] uppercase mb-1 drop-shadow-sm">
+              READY FOR TODAY&apos;S MATCH?
             </div>
+            <div className="font-display text-4xl text-[#181818] italic leading-[0.9] drop-shadow-sm tracking-tight flex items-center gap-2">
+              HEY, {firstName} <span className="text-3xl not-italic ml-1">👋</span>
+            </div>
+            <div className="text-[10px] text-[#181818]/70 font-medium mt-1.5">
+              Level up, compete, and build your legacy.
+            </div>
+          </div>
 
             {/* Streak Badge */}
             <div className="flex flex-col items-center justify-center bg-[#110E0A] text-[#F3D17A] rounded-xl px-4 py-2 shadow-xl border border-[#2A2315] min-w-[70px]">
@@ -130,15 +123,16 @@ export default function HomeLobbyPage() {
               <div className="text-[7px] font-bold tracking-[0.15em] mt-1 text-[#F3D17A]/70 uppercase">DAY STREAK</div>
             </div>
           </div>
-        </div>
+      </div>
 
-        {/* 3D Player Card Section */}
-        <div className="relative flex-1 flex flex-col justify-center items-center min-h-[455px] shrink-0 z-[41] pt-2">
-          <div 
-            className="relative aspect-[1417/1878] w-[75vw] max-w-[300px] cursor-pointer hover:scale-[1.025] transition-transform duration-500"
-            onClick={() => setShowCardDossier(true)}
-          >
-            {/* The Player Card Image */}
+      {/* 3D Player Card Section - Mathematically fixed to the Pedestal (which sits exactly at 116vw from top in a 100% auto bg) */}
+      <div className="absolute left-0 right-0 top-[116vw] sm:top-[464px] z-20 flex justify-center items-end pointer-events-none">
+        <div 
+          className="relative w-[65vw] max-w-[260px] pointer-events-auto cursor-pointer hover:scale-[1.025] transition-transform duration-500 -translate-y-full"
+          style={{ aspectRatio: '1417/1878' }}
+          onClick={() => setShowCardDossier(true)}
+        >
+          {/* Main Card Container */}
             <img 
               src="/player_card.webp" 
               alt="Player Card" 
@@ -188,8 +182,8 @@ export default function HomeLobbyPage() {
         </div>
 
         {/* Bottom Sheet Navigation */}
-        <div className="relative z-30 bg-[#0A0A0A] rounded-t-[32px] w-full px-6 pt-6 pb-24 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F] -mt-8">
-          <div className="p-6">
+        <div className="absolute bottom-[65px] left-0 right-0 z-30 bg-[#0A0A0A] rounded-t-[32px] w-full px-6 pt-6 pb-6 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F]">
+          <div className="p-0">
             
             {/* Level & XP */}
             <div className="flex justify-between items-end mb-2">
@@ -229,14 +223,6 @@ export default function HomeLobbyPage() {
             >
               <Play size={14} fill="currentColor" /> FIND MATCH
             </button>
-
-            {/* Action Grid (4 buttons) */}
-            <div className="grid grid-cols-4 gap-2">
-              <ActionButton icon={<MapPin size={16} />} label="FIND MATCH" subtext="Join matches near you" onClick={() => router.push("/matches")} />
-              <ActionButton icon={<Users size={16} />} label="MY SQUAD" subtext="Manage your squad" onClick={() => setShowSquadModal(true)} />
-              <ActionButton icon={<Trophy size={16} />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
-              <ActionButton icon={<Shield size={16} />} label="AI COACH" subtext="Improve your game" onClick={() => {}} />
-            </div>
 
           </div>
         </div>
