@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Bell, Play, Users, Trophy, MapPin, 
-  Loader2, X, Target, Shield,
+  Loader2, X, Target, Shield, Star,
   ChevronRight, Home, User, Globe
 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
@@ -145,24 +145,14 @@ export default function HomeLobbyPage() {
               className="absolute inset-0 z-20 h-full w-full object-contain pointer-events-none drop-shadow-[0_24px_38px_rgba(40,18,4,0.42)]" 
             />
 
-            {/* Portrait masked to perfectly trace inner gold borders and crest */}
-            <div
-              className="absolute inset-0 z-30 pointer-events-none"
-              style={{
-                maskImage: "url('/avatar_mask.svg')",
-                WebkitMaskImage: "url('/avatar_mask.svg')",
-                maskSize: "100% 100%",
-                WebkitMaskSize: "100% 100%",
-                maskRepeat: "no-repeat",
-                WebkitMaskRepeat: "no-repeat"
-              }}
-            >
+            {/* Avatar placed strictly below the crest so hair can overlap, and ending right on the dark banner. */}
+            <div className="absolute left-[3%] right-[3%] top-[10%] bottom-[45%] z-30 flex justify-center items-end overflow-visible pointer-events-none">
               <img 
-                src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya&backgroundColor=transparent&textColor=000000"} 
+                src="/reference_img.png" 
                 alt="Avatar"
-                className="absolute left-[3%] right-[3%] top-[14%] bottom-[35%] w-[94%] h-[51%] scale-[1.1] object-cover object-[center_35%]"
+                className="w-[90%] max-h-full object-cover object-bottom"
+                style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
               />
-              <div className="absolute left-[3%] right-[3%] bottom-[35%] h-[15%] bg-gradient-to-t from-[#25180E] via-[#25180E]/80 to-transparent pointer-events-none" />
             </div>
 
             {/* Dark middle banner plate matching Mockup */}
@@ -179,29 +169,37 @@ export default function HomeLobbyPage() {
             {/* Card Overlays (Stats & ID at z-40) */}
             <div className="absolute inset-0 z-[45] pointer-events-none">
               {/* Left side: Rating, Position, Badges */}
-              <div className="absolute top-[27%] left-[16.5%] flex flex-col items-start gap-1">
-                <div className="font-display text-[clamp(48px,13vw,66px)] text-[#B9852C] leading-[0.82] tracking-normal drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]">{playerData.rating}</div>
-                <div className="font-display text-[clamp(22px,5.5vw,30px)] text-black leading-none font-bold drop-shadow-sm">{playerData.position || "CAM"}</div>
-                <img src="https://flagcdn.com/w40/in.png" alt="India" className="mt-3 h-[18px] w-[38px] object-cover rounded-[1px] shadow-sm border border-black/10" />
-                {/* Placeholder Club Badge */}
-                <div className="mt-3 flex h-[38px] w-[34px] items-center justify-center rounded-b-xl rounded-t-[4px] border border-[#C89B3C]/70 bg-[#111111] shadow-md">
-                  <Shield size={17} className="text-[#C89B3C]" />
+              <div className="absolute top-[28%] left-[12%] flex flex-col items-center gap-1">
+                <div className="font-display text-[clamp(44px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]">55</div>
+                <div className="font-display text-[clamp(20px,5vw,26px)] text-black leading-none font-bold drop-shadow-sm">CAM</div>
+                <img src="https://flagcdn.com/w40/in.png" alt="India" className="mt-2 h-[16px] w-[26px] object-cover shadow-sm border border-black/10" />
+                {/* Authentic Club Badge matching Mockup */}
+                <div className="mt-2 relative flex h-[46px] w-[38px] flex-col items-center justify-start rounded-b-[18px] rounded-t-[4px] bg-[#0A0A0A] shadow-[0_2px_4px_rgba(0,0,0,0.5)] border-[1.5px] border-[#C89B3C] overflow-hidden">
+                  <div className="flex gap-[2px] mt-1.5">
+                    <Star size={6} className="text-[#C89B3C] fill-[#C89B3C]" />
+                    <Star size={7} className="text-[#C89B3C] fill-[#C89B3C] -mt-[1px]" />
+                    <Star size={6} className="text-[#C89B3C] fill-[#C89B3C]" />
+                  </div>
+                  <div className="absolute bottom-2 flex items-center justify-center">
+                    <div className="w-[22px] h-[22px] rounded-full border-[1.5px] border-[#C89B3C] flex items-center justify-center relative">
+                       <div className="w-[12px] h-[12px] bg-[#C89B3C] rounded-full" />
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Right side: STRYK ID */}
-              <div className="absolute top-[30%] right-[16%] flex flex-col items-start">
-                <div className="font-display text-[clamp(18px,4.8vw,25px)] leading-none tracking-[0.08em] text-black uppercase drop-shadow-sm">STRYK</div>
-                <div className="font-display text-[clamp(16px,4.3vw,23px)] leading-none tracking-[0.04em] text-black uppercase drop-shadow-sm mt-1">ID-001</div>
+              <div className="absolute top-[28%] right-[14%] flex flex-col items-center">
+                <div className="font-display text-[clamp(14px,3.5vw,18px)] leading-none tracking-[0.08em] text-black uppercase drop-shadow-sm">STRYK</div>
+                <div className="font-display text-[clamp(14px,3.5vw,18px)] leading-none tracking-[0.04em] text-black uppercase drop-shadow-sm mt-1">ID-001</div>
               </div>
 
-              {/* Bottom stat grid lines */}
-              <div className="absolute left-[24%] right-[24%] top-[73%] h-[15%] opacity-65">
-                <div className="absolute left-0 right-0 top-1/2 h-px bg-[#D6B77A]/70" />
-                <div className="absolute bottom-0 top-0 left-1/3 w-px bg-[#D6B77A]/70" />
-                <div className="absolute bottom-0 top-0 right-1/3 w-px bg-[#D6B77A]/70" />
-                <div className="absolute left-0 top-[12%] h-[32%] w-px bg-[#D6B77A]/70" />
-                <div className="absolute right-0 top-[12%] h-[32%] w-px bg-[#D6B77A]/70" />
+              {/* Bottom stat grid lines matching Mockup perfectly */}
+              <div className="absolute left-[18%] right-[18%] top-[72%] h-[12%] opacity-80 flex justify-between items-center px-[5%]">
+                <div className="absolute left-0 right-0 top-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#D6B77A] to-transparent opacity-60" />
+                <div className="h-[60%] w-[1px] bg-gradient-to-b from-transparent via-[#D6B77A] to-transparent" />
+                <div className="h-[90%] w-[1px] bg-gradient-to-b from-transparent via-[#D6B77A] to-transparent opacity-90" />
+                <div className="h-[60%] w-[1px] bg-gradient-to-b from-transparent via-[#D6B77A] to-transparent" />
               </div>
             </div>
           </div>
