@@ -145,28 +145,17 @@ export default function HomeLobbyPage() {
               className="absolute inset-0 z-20 h-full w-full object-contain pointer-events-none drop-shadow-[0_24px_38px_rgba(40,18,4,0.42)]" 
             />
 
-            {/* Avatar placed strictly below the crest so hair can overlap, and ending right on the dark banner. */}
+            {/* Avatar placed strictly below the crest so hair can overlap, and ending right on the golden plaque. */}
             <div className="absolute left-[3%] right-[3%] top-[10%] bottom-[45%] z-30 flex justify-center items-end overflow-visible pointer-events-none">
               <img 
-                src="/reference_img.png" 
+                src={playerData.avatar || "/placeholder_avatar.png"} 
                 alt="Avatar"
                 className="w-[90%] max-h-full object-cover object-bottom"
                 style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
               />
             </div>
-
-            {/* Dark middle banner plate matching Mockup */}
-            <div className="absolute left-[8%] right-[8%] top-[55%] z-40 h-[9%] bg-gradient-to-b from-[#25180E] to-[#120B05] drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)]"
-              style={{ clipPath: "polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%)" }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#D6B77A]/10 to-transparent pointer-events-none" />
-              {/* Inner gold border effect since clip-path cuts real borders */}
-              <div className="absolute inset-[1px] bg-gradient-to-b from-[#25180E] to-[#120B05]" 
-                style={{ clipPath: "polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%)" }} 
-              />
-            </div>
             
-            {/* Card Overlays (Stats & ID at z-40) */}
+            {/* Card Overlays (Stats & Name at z-40) */}
             <div className="absolute inset-0 z-[45] pointer-events-none">
               {/* Left side: Rating, Position, Badges */}
               <div className="absolute top-[28%] left-[12%] flex flex-col items-center gap-1">
@@ -188,18 +177,11 @@ export default function HomeLobbyPage() {
                 </div>
               </div>
 
-              {/* Right side: STRYK ID */}
-              <div className="absolute top-[28%] right-[14%] flex flex-col items-center">
-                <div className="font-display text-[clamp(14px,3.5vw,18px)] leading-none tracking-[0.08em] text-black uppercase drop-shadow-sm">STRYK</div>
-                <div className="font-display text-[clamp(14px,3.5vw,18px)] leading-none tracking-[0.04em] text-black uppercase drop-shadow-sm mt-1">ID-001</div>
-              </div>
-
-              {/* Bottom stat grid lines matching Mockup perfectly */}
-              <div className="absolute left-[18%] right-[18%] top-[72%] h-[12%] opacity-80 flex justify-between items-center px-[5%]">
-                <div className="absolute left-0 right-0 top-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#D6B77A] to-transparent opacity-60" />
-                <div className="h-[60%] w-[1px] bg-gradient-to-b from-transparent via-[#D6B77A] to-transparent" />
-                <div className="h-[90%] w-[1px] bg-gradient-to-b from-transparent via-[#D6B77A] to-transparent opacity-90" />
-                <div className="h-[60%] w-[1px] bg-gradient-to-b from-transparent via-[#D6B77A] to-transparent" />
+              {/* Name placed exactly on the golden plaque */}
+              <div className="absolute top-[55%] bottom-[38%] left-[15%] right-[15%] flex items-center justify-center">
+                <div className="font-display text-[clamp(16px,4.5vw,22px)] text-[#2A1B0A] leading-none tracking-widest uppercase font-bold drop-shadow-sm">
+                  {playerData.firstName || "PLAYER"}
+                </div>
               </div>
             </div>
           </div>
