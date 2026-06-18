@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { X, Check, ZoomIn, ZoomOut } from "lucide-react";
+import { X, Check, ZoomIn, ZoomOut, Loader2 } from "lucide-react";
 import AvatarEditor from "react-avatar-editor";
+import * as faceapi from 'face-api.js';
 
 const DRAG_SENSITIVITY = 0.5;
 const CROP_SIZE = 280;
@@ -26,6 +27,68 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [initialPosition, setInitialPosition] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
+  const [isDetecting, setIsDetecting] = useState<boolean>(true);
+
+  // Auto-detect face and set position when src loads
+  useEffect(() => {
+    let isMounted = true;
+    const detectFace = async () => {
+      try {
+        setIsDetecting(true);
+        // Load the tiny face detector model from public/models
+        await faceapi.loadTinyFaceDetectorModel('/models');
+        
+        const img = new window.Image();
+        img.crossOrigin = "anonymous";
+        img.src = src;
+        
+        await new Promise((resolve) => {
+          img.onload = resolve;
+        });
+
+        const detection = await faceapi.detectSingleFace(
+          img,
+          new faceapi.TinyFaceDetectorOptions({ 
+            inputSize: 320,
+            scoreThreshold: 0.4 
+          })
+        );
+
+        if (detection && isMounted) {
+          const imgWidth = img.naturalWidth;
+          const imgHeight = img.naturalHeight;
+          const { x, y, width, height } = detection.box;
+          
+          const faceCenterX = x + width / 2;
+          const faceCenterY = y + height / 2;
+          
+          // Target roughly face center minus a portion of height to frame chest
+          const targetY = faceCenterY - (height * 0.8);
+          
+          const xPercent = faceCenterX / imgWidth;
+          const yPercent = targetY / imgHeight;
+          
+          // Clamp to valid editor ranges
+          const clampedX = Math.max(0.2, Math.min(0.8, xPercent));
+          const clampedY = Math.max(0.0, Math.min(0.8, yPercent));
+          
+          setPosition({ x: clampedX, y: clampedY });
+        }
+      } catch (err) {
+        console.error("Face detection failed", err);
+      } finally {
+        if (isMounted) setIsDetecting(false);
+      }
+    };
+    
+    if (src) {
+      detectFace();
+    }
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [src]);
 
   const handleConfirm = useCallback(async () => {
     if (!editorRef.current) return;
@@ -165,7 +228,14 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onWheel={handleWheel}
         >
+          {isDetecting && (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-none">
+              <Loader2 className="size-8 text-[#C6FF00] animate-spin mb-3" />
+              <p className="text-white/80 font-display uppercase tracking-widest text-xs animate-pulse">Detecting Face...</p>
+            </div>
+          )}
           <AvatarEditor
             ref={editorRef}
             image={src}

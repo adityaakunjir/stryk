@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Bell, Play, Users, Trophy, MapPin, 
   Loader2, X, Target, Shield, Star,
-  ChevronRight, Home, User, Globe
+  ChevronRight, Home, User, Globe, BarChart3
 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { CardDetail } from "@/components/card-detail";
@@ -58,22 +58,22 @@ export default function HomeLobbyPage() {
   const firstName = (playerData.fullName || "PLAYER").split(" ")[0].toUpperCase();
   const xpCurrent = 45; // Dummy XP value
   const xpTotal = 100;
-
   return (
-    <main className="relative h-screen w-full overflow-hidden bg-[#05070B]">
-      {/* Background Layer (100% width, auto height to preserve arches and pedestal proportions) */}
-      <div
-        className="absolute inset-0 z-0 bg-[length:100%_auto] bg-top bg-no-repeat pointer-events-none"
-        style={{
-          backgroundImage: "url('/home_page_bg.webp')",
-        }}
-      />
-
-      {/* Main Fixed Layout Content */}
-      <div className="relative z-10 h-full w-full max-w-md mx-auto">
+    <main className="relative h-screen w-full overflow-hidden bg-[#05070B] flex justify-center">
+      
+      {/* Main App Container (Clamps at 448px for tablets/desktop) */}
+      <div className="relative h-full w-full max-w-md bg-[#05070B] overflow-hidden shadow-2xl border-x border-white/5">
+        
+        {/* Background Layer (Constrained to max-w-md) */}
+        <div
+          className="absolute inset-x-0 inset-y-0 z-0 bg-[length:107%_auto] bg-[center_top] bg-no-repeat pointer-events-none"
+          style={{
+            backgroundImage: "url('/home_page_bg.webp')",
+          }}
+        />
         
         {/* Top Header Section (Logo, Profile, Greeting) */}
-        <div className="absolute top-0 left-0 right-0 px-6 pt-4 flex flex-col gap-4 shrink-0 z-10">
+        <div className="absolute top-0 left-0 right-0 px-6 pt-5 flex flex-col gap-4 shrink-0 z-10">
           
           {/* Top Bar: Logo & Profile */}
           <div className="flex justify-between items-center">
@@ -125,118 +125,217 @@ export default function HomeLobbyPage() {
           </div>
       </div>
 
-      {/* 3D Player Card Section - Mathematically fixed to the Pedestal (which sits exactly at 116vw from top in a 100% auto bg) */}
-      <div className="absolute left-0 right-0 top-[116vw] sm:top-[464px] z-20 flex justify-center items-end pointer-events-none">
+      {/* 3D Player Card Section - Mathematically fixed to the Pedestal relative to container width */}
+      <div 
+        className="absolute left-0 right-0 z-20 flex justify-center items-end pointer-events-none"
+        style={{ top: 'calc(1.23 * min(100vw, 448px))' }}
+      >
         <div 
-          className="relative w-[65vw] max-w-[260px] pointer-events-auto cursor-pointer hover:scale-[1.025] transition-transform duration-500 -translate-y-full"
+          className="relative w-[61%] pointer-events-auto cursor-pointer hover:scale-[1.025] transition-transform duration-500 -translate-y-full"
           style={{ aspectRatio: '1417/1878' }}
           onClick={() => setShowCardDossier(true)}
         >
           {/* Main Card Container */}
+            
+            {/* 1. Card Base (Crystal Texture) - Bottom Layer */}
             <img 
               src="/player_card.webp" 
-              alt="Player Card" 
-              className="absolute inset-0 z-20 h-full w-full object-contain pointer-events-none drop-shadow-[0_24px_38px_rgba(40,18,4,0.42)]" 
+              alt="Card Base" 
+              className="absolute inset-0 z-10 h-full w-full object-contain pointer-events-none" 
             />
 
-            {/* Avatar placed strictly below the crest so hair can overlap, and ending right on the golden plaque. */}
-            <div className="absolute left-[3%] right-[3%] top-[10%] bottom-[45%] z-30 flex justify-center items-end overflow-visible pointer-events-none">
-              <img 
-                src={playerData.avatar || "/placeholder_avatar.png"} 
-                alt="Avatar"
-                className="w-[90%] max-h-full object-cover object-bottom"
-                style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
+            {/* PLAYER IMAGE */}
+            <div className="absolute inset-0 z-20 flex justify-center overflow-hidden pointer-events-none">
+              
+              {/* Soft glow behind player */}
+              <div className="absolute top-[18%] w-[55%] h-[55%] rounded-full bg-[#E5B95C]/20 blur-3xl z-10" />
+
+              {/* Blurred duplicate for depth */}
+              <img
+                src={playerData.avatar || "/avatar.png"}
+                alt=""
+                className="absolute z-10 w-[60%] h-[58%] object-cover object-top top-[17%] blur-2xl opacity-20 scale-125"
               />
+
+              {/* Main player (Masked to full frame size) */}
+              {/* Tweak `-translate-y-[1%]` below to move the mask UP or DOWN without moving the player */}
+              <div 
+                className="absolute inset-0 z-20 flex justify-center pointer-events-none -translate-y-[3.8%]"
+                style={{
+                  WebkitMaskImage: "url('/avatar_mask.webp')",
+                  WebkitMaskSize: "100% 100%",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskImage: "url('/avatar_mask.webp')",
+                  maskSize: "100% 100%",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
+                }}
+              >
+                <img
+                  src={playerData.avatar || "/avatar.png"}
+                  alt="Player"
+                  className="absolute z-20 w-[58%] h-[62%] object-cover object-top top-[16%] scale-110"
+                />
+              </div>
             </div>
+
+            {/* 3. Dark Gradient (Kills ugly backgrounds and blends legs) */}
+            {/* Tweak `-translate-y-[4px]` if the black border still peeks out the bottom */}
+            <div 
+              className="absolute inset-0 z-[12] bg-gradient-to-b from-transparent via-transparent via-55% to-black/95 pointer-events-none -translate-y-[4px]" 
+              style={{
+                maskImage: "url('/player_card.webp')",
+                WebkitMaskImage: "url('/player_card.webp')",
+                maskSize: "contain",
+                WebkitMaskSize: "contain",
+                maskRepeat: "no-repeat",
+                WebkitMaskRepeat: "no-repeat",
+                maskPosition: "center",
+                WebkitMaskPosition: "center"
+              }}
+            />
+
+            {/* 4. Gold Overlay (Optional - Add your own gold_particles.png if needed) */}
+            {/* <img src="/gold_overlay.png" className="absolute inset-0 z-[28] h-full w-full object-contain pointer-events-none mix-blend-screen" /> */}
+
+            {/* 5. Frame (Border Shell) */}
+            <img 
+              src="/player_card_frame.webp" 
+              alt="Card Frame" 
+              className="absolute inset-0 z-30 h-full w-full object-contain pointer-events-none translate-y-[0.8px] scale-[1.0]"
+            />
             
-            {/* Card Overlays (Stats & Name at z-40) */}
-            <div className="absolute inset-0 z-[45] pointer-events-none">
-              {/* Left side: Rating, Position, Badges */}
-              <div className="absolute top-[28%] left-[12%] flex flex-col items-center gap-1">
+            {/* 6. Text + Stats (Top Layer) */}
+            <div className="absolute inset-0 z-[40] pointer-events-none">
+              
+              {/* ========================================= */}
+              {/* LEFT SIDE (Rating, Position, Flag) */}
+              {/* ========================================= */}
+              <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1">
                 <div className="font-display text-[clamp(44px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]">55</div>
                 <div className="font-display text-[clamp(20px,5vw,26px)] text-black leading-none font-bold drop-shadow-sm">CAM</div>
                 <img src="https://flagcdn.com/w40/in.png" alt="India" className="mt-2 h-[16px] w-[26px] object-cover shadow-sm border border-black/10" />
-                {/* Authentic Club Badge matching Mockup */}
-                <div className="mt-2 relative flex h-[46px] w-[38px] flex-col items-center justify-start rounded-b-[18px] rounded-t-[4px] bg-[#0A0A0A] shadow-[0_2px_4px_rgba(0,0,0,0.5)] border-[1.5px] border-[#C89B3C] overflow-hidden">
-                  <div className="flex gap-[2px] mt-1.5">
-                    <Star size={6} className="text-[#C89B3C] fill-[#C89B3C]" />
-                    <Star size={7} className="text-[#C89B3C] fill-[#C89B3C] -mt-[1px]" />
-                    <Star size={6} className="text-[#C89B3C] fill-[#C89B3C]" />
-                  </div>
-                  <div className="absolute bottom-2 flex items-center justify-center">
-                    <div className="w-[22px] h-[22px] rounded-full border-[1.5px] border-[#C89B3C] flex items-center justify-center relative">
-                       <div className="w-[12px] h-[12px] bg-[#C89B3C] rounded-full" />
-                    </div>
-                  </div>
-                </div>
               </div>
 
-              {/* Name placed exactly on the golden plaque */}
-              <div className="absolute top-[55%] bottom-[38%] left-[15%] right-[15%] flex items-center justify-center">
+              {/* ========================================= */}
+              {/* CENTER NAME PLAQUE */}
+              {/* ========================================= */}
+              <div className="absolute top-[61.4%] bottom-[38%] left-[15%] right-[15%] flex items-center justify-center">
                 <div className="font-display text-[clamp(16px,4.5vw,22px)] text-[#2A1B0A] leading-none tracking-widest uppercase font-bold drop-shadow-sm">
                   {firstName}
                 </div>
               </div>
+
+              {/* ========================================= */}
+              {/* PLAYSTYLE TAG */}
+              {/* ========================================= */}
+              <div className="absolute top-[65.8%] left-0 right-0 flex justify-center">
+                <div className="font-display text-[clamp(9px,2vw,12px)] text-[#C89B3C] tracking-[0.2em] uppercase font-bold">
+                  PLAYMAKER
+                </div>
+              </div>
+
+              {/* ========================================= */}
+              {/* STATS GRID */}
+              {/* ========================================= */}
+              <div className="absolute top-[75%] left-[12%] right-[12%] flex flex-col gap-[clamp(2px,1vw,8px)]">
+                {/* Top Row */}
+                <div className="flex justify-between px-1">
+                  <div className="flex gap-1 items-baseline w-[32%] justify-center">
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">90</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">PAC</span>
+                  </div>
+                  <div className="flex gap-1 items-baseline w-[32%] justify-center">
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">78</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">SHO</span>
+                  </div>
+                  <div className="flex gap-1 items-baseline w-[32%] justify-center">
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">85</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">PAS</span>
+                  </div>
+                </div>
+                {/* Bottom Row */}
+                <div className="flex justify-between px-1 mt-1">
+                  <div className="flex gap-1 items-baseline w-[32%] justify-center">
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">88</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">DRI</span>
+                  </div>
+                  <div className="flex gap-1 items-baseline w-[32%] justify-center">
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">56</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">DEF</span>
+                  </div>
+                  <div className="flex gap-1 items-baseline w-[32%] justify-center">
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">68</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">PHY</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+      </div>
 
-        {/* Bottom Sheet Navigation */}
-        <div className="absolute bottom-[65px] left-0 right-0 z-30 bg-[#0A0A0A] rounded-t-[32px] w-full px-6 pt-6 pb-6 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F]">
-          <div className="p-0">
+      {/* Bottom Sheet Navigation */}
+      <div className="absolute bottom-[65px] left-0 right-0 z-30 bg-[#0A0A0A] rounded-t-[32px] px-5 pt-4 pb-4 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F]">
+        <div className="w-full">
             
             {/* Level & XP */}
-            <div className="flex justify-between items-end mb-2">
+            <div className="flex justify-between items-end mb-1.5">
               <div className="flex gap-2 items-baseline">
-                <span className="text-[11px] font-bold tracking-[0.2em] text-[#D4F829] uppercase">LEVEL 1</span>
-                <span className="text-[11px] font-bold tracking-[0.1em] text-[#D4F829] uppercase">ROOKIE</span>
+                <span className="text-[11px] font-bold tracking-[0.2em] text-[#C3DF1B] uppercase">LEVEL 1</span>
+                <span className="text-[11px] font-bold tracking-[0.1em] text-[#C3DF1B] uppercase">ROOKIE</span>
               </div>
               <span className="text-[10px] font-bold text-white/50 tracking-wider">XP {xpCurrent}/{xpTotal}</span>
             </div>
             {/* Progress Bar */}
-            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mb-6">
+            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-4">
               <motion.div 
-                className="h-full bg-[#D4F829] rounded-full"
+                className="h-full bg-[#C3DF1B] rounded-full"
                 initial={{ width: 0 }} animate={{ width: `${(xpCurrent/xpTotal)*100}%` }} transition={{ duration: 1.5, delay: 0.5, type: "spring" }}
               />
             </div>
 
             {/* Next Objective Card */}
-            <div className="bg-[#151515] rounded-2xl p-4 border border-white/5 flex items-center justify-between mb-4">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#D4F829] shrink-0">
-                  <Target size={18} />
+            <div className="bg-[#151515] rounded-2xl p-3 border border-white/5 flex items-center justify-between mb-3">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#C3DF1B] shrink-0">
+                  <Target size={16} />
                 </div>
                 <div>
-                  <div className="text-[9px] tracking-[0.2em] uppercase text-[#D4F829] font-bold">NEXT OBJECTIVE</div>
-                  <div className="text-[13px] font-bold text-white uppercase mt-0.5 tracking-wider">PLAY YOUR FIRST MATCH</div>
-                  <div className="text-[10px] text-white/40 font-medium mt-0.5">Jump into a match and start your journey.</div>
+                  <div className="text-[8px] tracking-[0.2em] uppercase text-[#C3DF1B] font-bold">NEXT OBJECTIVE</div>
+                  <div className="text-[12px] font-bold text-white uppercase mt-0.5 tracking-wider">PLAY YOUR FIRST MATCH</div>
+                  <div className="text-[9px] text-white/40 font-medium mt-0.5">Jump into a match and start your journey.</div>
                 </div>
               </div>
-              <div className="text-[11px] font-bold text-[#A37B31]">0/1</div>
+              <div className="text-[10px] font-bold text-[#A37B31] ml-2">0/1</div>
             </div>
 
             {/* FIND MATCH BIG BUTTON */}
             <button 
               onClick={() => router.push("/matches")}
-              className="w-full h-[48px] bg-[#D4F829] text-black rounded-xl font-bold text-[12px] tracking-[0.15em] flex items-center justify-center gap-2 hover:opacity-90 transition active:scale-95 mb-4 shadow-[0_0_20px_rgba(212,248,41,0.2)]"
+              className="w-full h-[44px] bg-[#C3DF1B] text-black rounded-xl font-bold text-[12px] tracking-[0.15em] flex items-center justify-center gap-2 hover:opacity-90 transition active:scale-95 mb-3 shadow-[0_0_20px_rgba(195,223,27,0.2)]"
             >
               <Play size={14} fill="currentColor" /> FIND MATCH
             </button>
 
+            {/* Action Grid (4 buttons) */}
+            <div className="grid grid-cols-4 gap-2">
+              <ActionButton icon={<MapPin size={18} className="text-[#C3DF1B]" />} label="FIND MATCH" subtext="Join matches near you" onClick={() => router.push("/matches")} />
+              <ActionButton icon={<Users size={18} className="text-[#C3DF1B]" />} label="MY SQUAD" subtext="Manage your squad" onClick={() => setShowSquadModal(true)} />
+              <ActionButton icon={<BarChart3 size={18} className="text-[#C3DF1B]" />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
+              <ActionButton icon={<Shield size={18} className="text-[#C89B3C]" />} label="AI COACH" subtext="Improve your game" onClick={() => {}} />
+            </div>
+
           </div>
         </div>
-
-      </div>
-
       {/* Bottom Navigation Tab Bar */}
-      <div className="fixed bottom-0 inset-x-0 h-[65px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
+      <div className="absolute bottom-0 left-0 right-0 h-[65px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
         <NavTab icon={<Home size={20} />} label="HOME" active={true} onClick={() => router.push("/home")} />
         <NavTab icon={<Globe size={20} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
         
         {/* Floating Center Button */}
-        <div className="relative -top-3">
-          <button className="w-14 h-14 rounded-full bg-[#D4F829] border-4 border-[#0A0A0A] flex items-center justify-center shadow-lg hover:scale-105 transition active:scale-95">
+        <div className="relative -top-4">
+          <button className="w-14 h-14 rounded-full bg-[#C3DF1B] border-4 border-[#0A0A0A] flex items-center justify-center shadow-[0_0_15px_rgba(195,223,27,0.3)] hover:scale-105 transition active:scale-95">
             <span className="text-black text-2xl leading-none font-light">+</span>
           </button>
         </div>
@@ -335,6 +434,7 @@ export default function HomeLobbyPage() {
           </>
         )}
       </AnimatePresence>
+      </div>
     </main>
   );
 }
@@ -343,10 +443,10 @@ export default function HomeLobbyPage() {
 
 function ActionButton({ icon, label, subtext, onClick }: { icon: React.ReactNode; label: string; subtext: string; onClick?: () => void }) {
   return (
-    <button onClick={onClick} className="flex flex-col items-center justify-center p-3 rounded-2xl bg-[#111111] border border-white/5 text-center cursor-pointer transition hover:bg-white/5 hover:border-white/10 h-full">
-      <div className="text-[#D4F829] mb-2">{icon}</div>
-      <div className="text-[8px] font-bold tracking-wider text-white uppercase leading-tight mb-1">{label}</div>
-      <div className="text-[7px] text-white/40 tracking-wide leading-tight">{subtext}</div>
+    <button onClick={onClick} className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#111111] border border-white/5 text-center cursor-pointer transition hover:bg-white/5 hover:border-white/10 h-full">
+      <div className="text-[#D4F829] mb-1.5">{icon}</div>
+      <div className="text-[8px] font-bold tracking-wider text-white uppercase leading-tight mb-0.5">{label}</div>
+      <div className="text-[7px] text-white/40 tracking-wide leading-tight hidden sm:block">{subtext}</div>
     </button>
   );
 }
