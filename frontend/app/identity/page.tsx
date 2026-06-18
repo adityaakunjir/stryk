@@ -29,14 +29,14 @@ import * as Sentry from "@sentry/nextjs";
 
 function Stepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-white/40">
-      <div className="text-[#C6FF00] flex items-center gap-1.5">
-        <div className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] shadow-[0_0_8px_rgba(198,255,0,0.8)]" />
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#1A1A1A]/60 font-medium">
+      <div className="text-[#1A1A1A] font-bold flex items-center gap-1.5">
+        <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         Identity
       </div>
-      <div className="w-4 sm:w-6 h-[1px] bg-white/20" />
+      <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
       <div>Player</div>
-      <div className="w-4 sm:w-6 h-[1px] bg-white/20" />
+      <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
       <div>Stats</div>
     </div>
   );
@@ -248,23 +248,13 @@ export default function IdentityPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B] overflow-hidden">
-      {/* Background Layer 1: Base Gradient */}
-      <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(198,255,0,0.08)_0%,transparent_60%),radial-gradient(ellipse_60%_40%_at_50%_110%,rgba(91,140,255,0.05)_0%,transparent_55%),#05070B]" />
-      
-      {/* Background Layer 2: Noise Texture */}
-      <div className="fixed inset-0 z-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('data:image/svg+xml,%3Csvg_viewBox=%220_0_200_200%22_xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter_id=%22noiseFilter%22%3E%3CfeTurbulence_type=%22fractalNoise%22_baseFrequency=%220.65%22_numOctaves=%223%22_stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect_width=%22100%25%22_height=%22100%25%22_filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')]" />
-      
-      {/* Background Layer 3: Moving Glow */}
-      <motion.div
-        className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[120px] bg-[#C6FF00]/10 z-0 pointer-events-none"
-        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+    <main className="stryk-mobile-shell bg-[#E5DCC5] overflow-hidden text-[#1A1A1A]">
+      {/* Full Screen Background Image */}
+      <div 
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+        style={{ backgroundImage: "url('/create_card_background.webp')" }}
       />
-
-      {/* Background Layer 4: Football Pitch Grid */}
-      <div className="fixed inset-x-0 bottom-0 h-[48%] bg-[linear-gradient(180deg,transparent,rgba(11,16,32,0.72)),repeating-linear-gradient(96deg,rgba(198,255,0,0.08)_0_1px,transparent_1px_52px)] opacity-60 pointer-events-none z-0" />
-
+      
       <section data-scroll-panel className="relative mx-auto flex h-full w-full max-w-5xl flex-col px-5 pb-7 pt-6 sm:px-8 lg:px-10 z-10 overflow-y-auto min-h-0"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
@@ -272,102 +262,102 @@ export default function IdentityPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-10 h-10 rounded-full bg-transparent border border-[#1A1A1A]/20 hover:bg-[#1A1A1A]/5 cursor-pointer text-[#1A1A1A]">
             <Link href="/">
-              <ArrowLeft size={16} />
+              <ArrowLeft size={20} />
             </Link>
           </Button>
           <Stepper />
-          <div className="w-9 h-9" />
+          <div className="w-10 h-10" />
         </motion.header>
 
-        <div className="mx-auto mt-7 flex w-full max-w-[54rem] flex-1 shrink-0 flex-col items-center min-h-[min-content] pb-8">
+        <div className="mx-auto mt-6 flex w-full max-w-[54rem] flex-1 shrink-0 flex-col items-center min-h-[min-content] pb-8">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.15 }}
-            className="flex items-center gap-2 justify-center mb-6"
+            className="flex items-center gap-3 justify-center mb-6"
           >
-            <div className="w-8 h-8 rounded-lg bg-[#C6FF00] text-black flex items-center justify-center font-display text-base shadow-[0_0_15px_rgba(198,255,0,0.3)]">S</div>
-            <div className="font-display tracking-[0.35em] text-base text-white/90">STRYK</div>
+            <div className="w-10 h-10 rounded-xl bg-[#D4F829] text-black flex items-center justify-center font-display text-xl shadow-[0_0_15px_rgba(212,248,41,0.2)]">S</div>
+            <div className="font-display tracking-[0.2em] text-lg text-[#1A1A1A] font-bold mt-1">STRYK</div>
           </motion.div>
 
           <motion.div 
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}
             className="text-center"
           >
-            <h2 className="font-display text-4xl sm:text-6xl uppercase italic leading-none tracking-wide text-white">
+            <h2 className="font-display text-[40px] sm:text-6xl uppercase italic leading-[0.9] tracking-wider text-[#2A261D] drop-shadow-sm font-black">
               BUILD YOUR<br/>
-              <span className="text-[#C6FF00]" style={{ textShadow: "0 0 24px rgba(198,255,0,0.25)" }}>ATHLETE IDENTITY</span>
+              <span className="text-[#A28B52]">ATHLETE IDENTITY</span>
             </h2>
-            <p className="mt-3 text-sm font-semibold text-white/50">
+            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#1A1A1A]/60">
               Start with the basics for your player card.
             </p>
           </motion.div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full flex-1 shrink-0 rounded-[2rem] border border-white/8 bg-[#0B1020]/40 p-5 shadow-[0_28px_100px_rgba(0,0,0,0.58),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl sm:flex-none sm:p-8 relative">
+          <form onSubmit={handleNext} className="mt-8 w-full flex-1 shrink-0 rounded-[2rem] border border-[#8E793E]/30 bg-[#151515] p-5 shadow-[0_28px_50px_rgba(0,0,0,0.5)] sm:flex-none sm:p-8 relative">
             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
 
             <div className="grid gap-8 md:grid-cols-[1fr_17rem] md:items-start">
               
               <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.45 }}>
                 <div className="flex items-start gap-3">
-                  <span className="text-3xl font-display italic text-[#C6FF00]">1.</span>
+                  <span className="text-4xl font-display italic text-[#A28B52]">1.</span>
                   <div>
-                    <h1 className="text-xl font-display uppercase tracking-wider text-white">Basic Info</h1>
-                    <p className="mt-1 text-xs text-white/50 leading-relaxed">This will be visible on your player card.</p>
+                    <h1 className="text-xl font-display uppercase tracking-[0.1em] text-[#E8E8E8]">Basic Info</h1>
+                    <p className="mt-0.5 text-[12px] text-[#808080]">This will be visible on your player card.</p>
                   </div>
                 </div>
 
                 {/* Avatar Redesign */}
                 <div className="mt-8">
-                  <label className="text-xs font-bold uppercase tracking-wider text-white/70">Avatar</label>
-                  <p className="text-[11px] text-white/45 mb-4">Upload or generate a front-facing photo.</p>
+                  <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52]">Avatar</label>
+                  <p className="text-[11px] text-[#808080] mb-4 mt-0.5">Upload or generate a front-facing photo.</p>
                   
                   {avatar ? (
-                    <div className="relative group rounded-2xl border border-white/10 bg-white/5 p-4 flex items-center justify-between">
+                    <div className="relative group rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <img src={avatar} alt="Avatar" className="w-14 h-14 rounded-full object-cover border border-white/20" />
+                        <img src={avatar} alt="Avatar" className="w-14 h-14 rounded-full object-cover border border-[#A28B52]" />
                         <div>
-                          <div className="text-xs font-bold text-white/90 uppercase tracking-wider">Photo Ready</div>
-                          <div className="text-[10px] text-white/40 mt-0.5">High-res uploaded</div>
+                          <div className="text-sm font-bold text-[#E8E8E8] uppercase tracking-wider">Photo Ready</div>
+                          <div className="text-[11px] text-[#808080] mt-0.5">High-res uploaded</div>
                         </div>
                       </div>
-                      <div className="flex gap-2">
-                        <button type="button" onClick={triggerFileUpload} className="text-[10px] uppercase font-bold text-[#C6FF00] hover:text-[#e0ff66] transition cursor-pointer">Replace</button>
-                        <button type="button" onClick={handleRemovePhoto} className="text-[10px] uppercase font-bold text-white/40 hover:text-red-400 transition cursor-pointer">Remove</button>
+                      <div className="flex gap-4">
+                        <button type="button" onClick={triggerFileUpload} className="text-[11px] uppercase font-bold text-[#D4F829] hover:opacity-80 transition cursor-pointer">Replace</button>
+                        <button type="button" onClick={handleRemovePhoto} className="text-[11px] uppercase font-bold text-[#808080] hover:text-red-400 transition cursor-pointer">Remove</button>
                       </div>
                     </div>
                   ) : (
                     <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
                       <motion.button
-                        whileHover={{ scale: 0.98, backgroundColor: "rgba(198,255,0,0.05)" }}
+                        whileHover={{ scale: 0.98, backgroundColor: "rgba(212,248,41,0.05)" }}
                         whileTap={{ scale: 0.95 }}
                         onClick={triggerFileUpload}
-                        className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-4 text-white/70 transition hover:border-[#C6FF00]/50 hover:text-white cursor-pointer"
+                        className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] bg-[#1A1A1A] p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-[#E8E8E8] cursor-pointer"
                         type="button"
                       >
-                        <ImageUp size={24} className="text-[#C6FF00]" />
+                        <ImageUp size={24} className="text-[#D4F829]" />
                         <span className="text-[11px] font-bold uppercase tracking-wider">Upload Photo</span>
-                        <span className="text-[9px] text-white/30 uppercase">Max 5MB • PNG JPG</span>
+                        <span className="text-[9px] text-[#808080] uppercase">Max 5MB • PNG JPG</span>
                       </motion.button>
                       
-                      <span className="text-center text-[10px] font-bold text-white/30">OR</span>
+                      <span className="text-center text-[10px] font-bold text-[#404040]">OR</span>
                       
                       <motion.button
-                        whileHover={{ scale: 0.98, backgroundColor: "rgba(255,255,255,0.06)" }}
+                        whileHover={{ scale: 0.98, backgroundColor: "rgba(255,255,255,0.02)" }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleGeneratePhoto}
                         disabled={isGenerating}
-                        className="relative overflow-hidden flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-white/70 transition hover:border-white/20 hover:text-white cursor-pointer disabled:opacity-70"
+                        className="relative overflow-hidden flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 text-[#808080] transition hover:border-[#404040] hover:text-[#E8E8E8] cursor-pointer disabled:opacity-70"
                         type="button"
                       >
                         {isGenerating ? (
-                          <Loader2 size={24} className="text-[#C6FF00] animate-spin" />
+                          <Loader2 size={24} className="text-[#D4F829] animate-spin" />
                         ) : (
                           <>
                             <div className="absolute top-2 right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
                               <Sparkles size={8} /> AI
                             </div>
-                            <Camera size={24} className="text-[#C6FF00]" />
+                            <Camera size={24} className="text-[#D4F829]" />
                             <span className="text-[11px] font-bold uppercase tracking-wider text-center">Generate Avatar</span>
                           </>
                         )}
@@ -376,20 +366,20 @@ export default function IdentityPage() {
                   )}
                 </div>
 
-                <div className="mt-8 space-y-6">
+                <div className="mt-8 space-y-4">
                   {/* Floating Label Inputs */}
                   <div className="relative group">
                     <input
                       id="fullName"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
-                      className="block w-full h-14 px-4 pt-4 pb-1 text-sm text-white bg-white/[0.03] border border-white/10 rounded-2xl appearance-none focus:outline-none focus:ring-0 focus:border-[#C6FF00]/50 focus:shadow-[0_0_15px_rgba(198,255,0,0.1)] transition-all duration-200 peer"
+                      className="block w-full h-[60px] px-4 pt-4 pb-1 text-[15px] text-[#E8E8E8] bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl appearance-none focus:outline-none focus:ring-0 focus:border-[#A28B52] transition-all duration-200 peer"
                       placeholder=" "
                     />
-                    <label htmlFor="fullName" className="absolute text-[11px] font-bold uppercase tracking-wider text-white/40 duration-200 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#C6FF00]/70">
+                    <label htmlFor="fullName" className="absolute text-[9px] font-bold uppercase tracking-[0.15em] text-[#A28B52] duration-200 transform -translate-y-3 scale-75 top-[18px] z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#A28B52]">
                       Full Name
                     </label>
-                    <UserRound size={16} className="absolute right-4 top-4 text-white/20" />
+                    <UserRound size={18} strokeWidth={1.5} className="absolute right-4 top-5 text-[#A28B52]/50" />
                   </div>
 
                   <div className="relative group">
@@ -397,18 +387,18 @@ export default function IdentityPage() {
                       id="username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, "").slice(0, 20))}
-                      className="block w-full h-14 px-4 pt-4 pb-1 text-sm text-white bg-white/[0.03] border border-white/10 rounded-2xl appearance-none focus:outline-none focus:ring-0 focus:border-[#C6FF00]/50 focus:shadow-[0_0_15px_rgba(198,255,0,0.1)] transition-all duration-200 peer"
+                      className="block w-full h-[60px] px-4 pt-4 pb-1 text-[15px] text-[#E8E8E8] bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl appearance-none focus:outline-none focus:ring-0 focus:border-[#A28B52] transition-all duration-200 peer"
                       placeholder=" "
                     />
-                    <label htmlFor="username" className="absolute text-[11px] font-bold uppercase tracking-wider text-white/40 duration-200 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#C6FF00]/70">
+                    <label htmlFor="username" className="absolute text-[9px] font-bold uppercase tracking-[0.15em] text-[#A28B52] duration-200 transform -translate-y-3 scale-75 top-[18px] z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#A28B52]">
                       Username
                     </label>
                     
-                    <div className="absolute right-4 top-4 flex items-center">
-                      {usernameStatus === "checking" && <Loader2 size={16} className="text-white/40 animate-spin" />}
-                      {usernameStatus === "available" && <Check size={16} className="text-[#C6FF00]" />}
-                      {usernameStatus === "taken" && <X size={16} className="text-red-500" />}
-                      {usernameStatus === "idle" && <AtSign size={16} className="text-white/20" />}
+                    <div className="absolute right-4 top-5 flex items-center">
+                      {usernameStatus === "checking" && <Loader2 size={18} className="text-[#A28B52]/50 animate-spin" />}
+                      {usernameStatus === "available" && <Check size={18} strokeWidth={2.5} className="text-[#D4F829]" />}
+                      {usernameStatus === "taken" && <X size={18} strokeWidth={2.5} className="text-red-500" />}
+                      {usernameStatus === "idle" && <Check size={18} strokeWidth={2.5} className="text-[#D4F829]" />}
                     </div>
                   </div>
 
@@ -426,7 +416,7 @@ export default function IdentityPage() {
                           </div>
                           <div className="flex flex-wrap gap-2">
                             {[`${username}82`, `${username}_cam`, `official${username}`].map(sug => (
-                              <button key={sug} type="button" onClick={() => setUsername(sug)} className="px-3 py-1.5 rounded-lg bg-black/20 hover:bg-black/40 text-[10px] text-white/70 transition cursor-pointer">
+                              <button key={sug} type="button" onClick={() => setUsername(sug)} className="px-3 py-1.5 rounded-lg bg-black/20 hover:bg-black/40 text-[10px] text-[#A0A0A0] hover:text-[#E8E8E8] transition cursor-pointer border border-[#2A2A2A]">
                                 {sug}
                               </button>
                             ))}
@@ -448,7 +438,7 @@ export default function IdentityPage() {
                 {/* Dynamic Ambient Glow Engine */}
                 <motion.div
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[340px] rounded-full blur-[60px] pointer-events-none"
-                  animate={{ backgroundColor: "rgba(198,255,0,1)", opacity: glowOpacity, scale: isSuccess ? 1.2 : 1 }}
+                  animate={{ backgroundColor: "rgba(212,248,41,1)", opacity: glowOpacity, scale: isSuccess ? 1.2 : 1 }}
                   transition={{ duration: 0.8 }}
                 />
                 
@@ -460,12 +450,12 @@ export default function IdentityPage() {
 
             {/* CTA Button 2.0 */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.75 }} className="mt-10 relative group">
-              <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
+              <div className="absolute -inset-1 bg-[#D4F829]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
               <motion.button 
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={isSubmitting || isSuccess || usernameStatus !== "available" || !fullName}
-                className="relative w-full h-14 rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(198,255,0,0)] hover:shadow-[0_0_30px_-5px_rgba(198,255,0,0.6)]" 
+                className="relative w-full h-[60px] rounded-[20px] bg-[#D4F829] text-[#1A1A1A] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
                 type="submit"
               >
                 {!isSubmitting && !isSuccess && (
@@ -486,7 +476,7 @@ export default function IdentityPage() {
                   </>
                 ) : (
                   <>
-                    CONTINUE <ArrowLeft className="rotate-180 size-4" strokeWidth={3} />
+                    CONTINUE <ArrowLeft className="rotate-180 size-4 ml-1" strokeWidth={3} />
                   </>
                 )}
               </motion.button>
