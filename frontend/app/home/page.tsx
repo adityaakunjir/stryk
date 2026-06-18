@@ -79,10 +79,7 @@ export default function HomeLobbyPage() {
           <div className="flex justify-between items-center">
             {/* Left: Logo & Title */}
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#D4F829] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(212,248,41,0.3)]">
-              <span className="font-display text-2xl text-black leading-none">S</span>
-            </div>
-            <div className="font-display text-[22px] tracking-[0.05em] text-[#181818] font-bold ml-1 mt-1">STRYK</div>
+            <img src="/logo.webp" alt="STRYK Logo" className="h-10 w-auto" />
           </div>
 
             {/* Profile & Notifications */}

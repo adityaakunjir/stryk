@@ -274,10 +274,9 @@ export default function IdentityPage() {
         <div className="mx-auto mt-6 flex w-full max-w-[54rem] flex-1 shrink-0 flex-col items-center min-h-[min-content] pb-8">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.15 }}
-            className="flex items-center gap-3 justify-center mb-6"
+            className="flex items-center justify-center mb-6"
           >
-            <div className="w-10 h-10 rounded-xl bg-[#D4F829] text-black flex items-center justify-center font-display text-xl shadow-[0_0_15px_rgba(212,248,41,0.2)]">S</div>
-            <div className="font-display tracking-[0.2em] text-lg text-[#1A1A1A] font-bold mt-1">STRYK</div>
+            <img src="/logo.webp" alt="STRYK Logo" className="h-[42px] w-auto" />
           </motion.div>
 
           <motion.div 

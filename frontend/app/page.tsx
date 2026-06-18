@@ -43,17 +43,7 @@ export default function Home() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="flex flex-col items-start mb-4"
           >
-            <svg width="34" height="42" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-2">
-              <path d="M13.625 0L0 17.5H10.5L8.375 32L22 14.5H11.5L13.625 0Z" fill="url(#gold-grad)"/>
-              <defs>
-                <linearGradient id="gold-grad" x1="11" y1="0" x2="11" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#F5D78D" />
-                  <stop offset="0.5" stopColor="#B38D40" />
-                  <stop offset="1" stopColor="#7A5C22" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div className="text-[11px] tracking-[0.6em] text-[#A37B31] font-semibold ml-1">STRYK</div>
+            <img src="/logo.webp" alt="STRYK Logo" className="h-[42px] w-auto mb-2" />
           </motion.div>
 
           {/* Headline Copy Container (centered vertically side-by-side with the player card) */}
