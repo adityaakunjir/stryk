@@ -59,21 +59,21 @@ export default function HomeLobbyPage() {
   const xpCurrent = 45; // Dummy XP value
   const xpTotal = 100;
   return (
-    <main className="relative h-screen w-full overflow-hidden bg-[#05070B] flex justify-center">
+    <main className="relative min-h-[100dvh] w-full bg-[#05070B] flex justify-center">
       
       {/* Main App Container (Clamps at 448px for tablets/desktop) */}
-      <div className="relative h-full w-full max-w-md bg-[#05070B] overflow-hidden shadow-2xl border-x border-white/5">
+      <div className="relative w-full max-w-md bg-[#05070B] shadow-2xl border-x border-white/5 flex flex-col min-h-[100dvh]">
         
         {/* Background Layer (Constrained to max-w-md) */}
         <div
-          className="absolute inset-x-0 inset-y-0 z-0 bg-[length:107%_auto] bg-[center_top] bg-no-repeat pointer-events-none"
+          className="absolute inset-0 z-0 bg-[length:107%_auto] bg-[center_top] bg-no-repeat pointer-events-none"
           style={{
             backgroundImage: "url('/home_page_bg.webp')",
           }}
         />
         
         {/* Top Header Section (Logo, Profile, Greeting) */}
-        <div className="absolute top-0 left-0 right-0 px-6 pt-5 flex flex-col gap-4 shrink-0 z-10">
+        <div className="relative px-6 pt-5 flex flex-col gap-4 shrink-0 z-10">
           
           {/* Top Bar: Logo & Profile */}
           <div className="flex justify-between items-center">
@@ -125,16 +125,13 @@ export default function HomeLobbyPage() {
           </div>
       </div>
 
-      {/* 3D Player Card Section - Mathematically fixed to the Pedestal relative to container width */}
-      <div 
-        className="absolute left-0 right-0 z-20 flex justify-center items-end pointer-events-none"
-        style={{ top: 'calc(1.23 * min(100vw, 448px))' }}
-      >
-        <div 
-          className="relative w-[61%] pointer-events-auto cursor-pointer hover:scale-[1.025] transition-transform duration-500 -translate-y-full"
-          style={{ aspectRatio: '1417/1878' }}
-          onClick={() => setShowCardDossier(true)}
-        >
+      {/* 3D Platform/Pedestal */}
+        <div className="relative z-20 flex-1 flex justify-center items-center pointer-events-none mt-10 mb-20 shrink-0">
+          <div 
+            className="relative w-[61%] pointer-events-auto cursor-pointer hover:scale-[1.025] transition-transform duration-500"
+            style={{ aspectRatio: '1417/1878' }}
+            onClick={() => setShowCardDossier(true)}
+          >
           {/* Main Card Container */}
             
             {/* 1. Card Base (Crystal Texture) - Bottom Layer */}
@@ -273,10 +270,10 @@ export default function HomeLobbyPage() {
               </div>
             </div>
           </div>
-      </div>
+        </div>
 
       {/* Bottom Sheet Navigation */}
-      <div className="absolute bottom-[65px] left-0 right-0 z-30 bg-[#0A0A0A] rounded-t-[32px] px-5 pt-4 pb-4 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F]">
+      <div className="relative mt-auto z-30 bg-[#0A0A0A] rounded-t-[32px] px-5 pt-4 pb-4 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F] shrink-0">
         <div className="w-full">
             
             {/* Level & XP */}
@@ -329,7 +326,7 @@ export default function HomeLobbyPage() {
           </div>
         </div>
       {/* Bottom Navigation Tab Bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-[65px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
+      <div className="sticky bottom-0 w-full h-[65px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe shrink-0">
         <NavTab icon={<Home size={20} />} label="HOME" active={true} onClick={() => router.push("/home")} />
         <NavTab icon={<Globe size={20} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
         
