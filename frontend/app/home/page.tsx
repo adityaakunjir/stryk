@@ -276,7 +276,7 @@ export default function HomeLobbyPage() {
       </div>
 
       {/* Bottom Sheet Navigation */}
-      <div className="absolute bottom-[65px] left-0 right-0 z-30 bg-[#0A0A0A] rounded-t-[32px] px-5 pt-4 pb-4 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F]">
+      <div className="absolute bottom-[65px] left-0 right-0 z-30 bg-[#0A0A0A] rounded-t-[32px] px-5 pt-4 pb-4 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F] overflow-y-auto overscroll-contain max-h-[40vh] sm:max-h-[320px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <div className="w-full">
             
             {/* Level & XP */}
