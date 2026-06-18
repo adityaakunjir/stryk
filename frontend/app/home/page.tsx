@@ -59,14 +59,14 @@ export default function HomeLobbyPage() {
   const xpCurrent = 45; // Dummy XP value
   const xpTotal = 100;
   return (
-    <main className="relative h-screen w-full overflow-hidden bg-[#05070B] flex justify-center">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden bg-[#05070B] flex justify-center custom-scrollbar">
       
       {/* Main App Container (Clamps at 448px for tablets/desktop) */}
-      <div className="relative h-full w-full max-w-md bg-[#05070B] overflow-hidden shadow-2xl border-x border-white/5">
+      <div className="relative min-h-[100dvh] w-full max-w-md bg-[#05070B] shadow-2xl border-x border-white/5 flex flex-col">
         
         {/* Background Layer (Constrained to max-w-md) */}
         <div
-          className="absolute inset-x-0 inset-y-0 z-0 bg-[length:107%_auto] bg-[center_top] bg-no-repeat pointer-events-none"
+          className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-[length:107%_auto] bg-[center_top] bg-no-repeat pointer-events-none"
           style={{
             backgroundImage: "url('/home_page_bg.webp')",
           }}
@@ -275,8 +275,11 @@ export default function HomeLobbyPage() {
           </div>
       </div>
 
+      {/* Spacer to push the drawer strictly below the absolute-positioned card */}
+      <div style={{ height: 'calc(1.35 * min(100vw, 448px))' }} className="w-full shrink-0 pointer-events-none" />
+
       {/* Bottom Sheet Navigation */}
-      <div className="absolute bottom-[65px] left-0 right-0 z-30 bg-[#0A0A0A] rounded-t-[32px] px-5 pt-4 pb-4 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F] overflow-y-auto overscroll-contain max-h-[40vh] sm:max-h-[320px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="relative mt-auto w-full z-30 bg-[#0A0A0A] rounded-t-[32px] px-5 pt-4 pb-[85px] shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F]">
         <div className="w-full">
             
             {/* Level & XP */}
@@ -329,7 +332,7 @@ export default function HomeLobbyPage() {
           </div>
         </div>
       {/* Bottom Navigation Tab Bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-[65px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
+      <div className="fixed bottom-0 w-full max-w-md h-[65px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
         <NavTab icon={<Home size={20} />} label="HOME" active={true} onClick={() => router.push("/home")} />
         <NavTab icon={<Globe size={20} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
         
