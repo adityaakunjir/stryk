@@ -196,11 +196,17 @@ export default function PositionPage() {
         <div className="mx-auto mt-6 flex w-full max-w-[56rem] flex-1 flex-col items-center min-h-0 pb-8">
           <div className="sm:hidden mb-6"><Stepper /></div>
 
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="w-full text-center">
-            <p className="text-[10px] tracking-[0.35em] uppercase text-[#B08332] font-bold">Pick your role</p>
-            <h2 className="font-display text-4xl sm:text-6xl uppercase italic leading-none tracking-tight text-[#1A1A1A] mt-1">
-              WHERE DO YOU PLAY?
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
+            className="text-center mt-6"
+          >
+            <h2 className="font-display text-[40px] sm:text-6xl uppercase italic leading-[0.9] tracking-wider text-[#2A261D] drop-shadow-sm font-black">
+              WHERE DO<br/>
+              <span className="text-[#A28B52]">YOU PLAY?</span>
             </h2>
+            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#1A1A1A]/60 uppercase tracking-[0.2em]">
+              Pick your primary position
+            </p>
           </motion.div>
 
           {/* Live Mini Card Continuity */}
@@ -222,19 +228,16 @@ export default function PositionPage() {
             </div>
           </motion.div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-4 bg-[#151515] text-white p-6 sm:p-8 rounded-[40px] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
+          <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-6 bg-[#151515] text-white p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
             
             {/* Tactical Pitch Selector */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-3xl border border-[#8E793E]/20 bg-black/40 p-4 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] backdrop-blur-2xl">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5">
               
               {/* Pitch layout */}
-              <div className="relative aspect-[1.3] w-full overflow-visible rounded-2xl border border-[#8E793E]/20 sm:aspect-[1.8]"
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(212,248,41,0.08), rgba(176,131,50,0.08)), repeating-linear-gradient(0deg, rgba(176,131,50,0.04) 0 24px, transparent 24px 48px)"}}>
-                <div className="absolute inset-3 border border-[#8E793E]/30 rounded" />
-                <div className="absolute left-3 right-3 top-1/2 h-px bg-[#8E793E]/30" />
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-[#8E793E]/30" />
+              <div className="relative aspect-[1.3] w-full overflow-visible rounded-xl border border-[#2A2A2A] bg-[#151515] sm:aspect-[1.8]">
+                <div className="absolute inset-3 border border-[#2A2A2A] rounded" />
+                <div className="absolute left-3 right-3 top-1/2 h-px bg-[#2A2A2A]" />
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-[#2A2A2A]" />
 
                 {positions.map((p, i) => {
                   const displayCode = p.codeDisplay || p.code.split("_")[0];
@@ -253,8 +256,8 @@ export default function PositionPage() {
                         onMouseEnter={() => setHoveredNode(displayCode)}
                         onMouseLeave={() => setHoveredNode(null)}
                         className={cn(
-                          "flex items-center justify-center rounded-full font-display text-[9px] tracking-wider cursor-pointer sm:text-xs",
-                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-black" : "w-7 h-7 sm:w-9 sm:h-9 bg-black/40 border border-[#8E793E]/20 text-[#B08332] hover:text-[#D4F829] hover:bg-[#8E793E]/10"
+                          "flex items-center justify-center rounded-full font-display text-[9px] tracking-wider cursor-pointer sm:text-xs transition-colors",
+                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-[#1A1A1A]" : "w-7 h-7 sm:w-9 sm:h-9 bg-[#1A1A1A] border border-[#2A2A2A] text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8]"
                         )}
                         layout
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -267,14 +270,7 @@ export default function PositionPage() {
                         {displayCode}
                       </motion.button>
                       
-                      {/* Breathing glow for active node */}
-                      {isActive && (
-                        <motion.div 
-                          className="absolute inset-0 rounded-full bg-[#D4F829] -z-10"
-                          animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0, 0.2] }}
-                          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                        />
-                      )}
+                      {/* Removed breathing glow for active node for cleaner look */}
 
                       {/* Tooltip on Hover/Active */}
                       <AnimatePresence>
@@ -286,11 +282,11 @@ export default function PositionPage() {
                             exit={{ opacity: 0, y: 0, scale: 0.9 }}
                             className="absolute left-1/2 -translate-x-1/2 w-max max-w-[140px] pointer-events-none z-20"
                           >
-                            <div className="bg-[#151515] backdrop-blur-md border border-[#8E793E]/30 rounded-lg p-2 text-center shadow-xl">
+                            <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-2 text-center shadow-xl">
                               <div className="text-[9px] font-bold text-[#D4F829] uppercase tracking-wider">{positionRoles[displayCode]?.role}</div>
-                              {isActive && <div className="text-[8px] text-white/70 mt-0.5 leading-tight">{positionRoles[displayCode]?.desc}</div>}
+                              {isActive && <div className="text-[8px] text-[#808080] mt-0.5 leading-tight">{positionRoles[displayCode]?.desc}</div>}
                             </div>
-                            <div className="w-2 h-2 bg-[#151515] border-b border-r border-[#8E793E]/30 rotate-45 mx-auto -mt-1" />
+                            <div className="w-2 h-2 bg-[#1A1A1A] border-b border-r border-[#2A2A2A] rotate-45 mx-auto -mt-1" />
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -304,35 +300,35 @@ export default function PositionPage() {
             <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               
               {/* PRIMARY ROLE CARD */}
-              <div className="rounded-3xl border border-[#D4F829]/30 bg-[#D4F829]/5 p-5 shadow-[inset_0_0_20px_rgba(212,248,41,0.05)] backdrop-blur-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10">
-                  <Target size={64} className="text-[#D4F829]" />
+              <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-5">
+                  <Target size={64} className="text-[#E8E8E8]" />
                 </div>
-                <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-[#B08332]">
-                  <Target size={12} className="text-[#D4F829]" /> PRIMARY ROLE
+                <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] mb-1">
+                  PRIMARY ROLE
                 </div>
-                <div className="mt-2 font-display text-4xl leading-none text-white">{selectedPosition}</div>
-                <div className="mt-1 text-xs font-bold text-[#D4F829]/80 uppercase tracking-wider">{roleInfo.role}</div>
-                <p className="mt-2 text-[11px] text-white/50 leading-relaxed max-w-[80%]">{roleInfo.desc}</p>
+                <div className="font-display text-3xl leading-none text-[#E8E8E8]">{selectedPosition}</div>
+                <div className="mt-2 text-xs font-bold text-[#D4F829] uppercase tracking-wider">{roleInfo.role}</div>
+                <p className="mt-1 text-[11px] text-[#808080] leading-relaxed max-w-[80%]">{roleInfo.desc}</p>
               </div>
 
               {/* SECONDARY ROLE CARD */}
-              <div className="rounded-3xl border border-[#8E793E]/20 bg-black/40 p-5 flex flex-col justify-between">
+              <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-[#B08332]">
-                    <Zap size={12} className="text-[#D4F829]" /> SECONDARY (OPTIONAL)
+                  <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] mb-1">
+                    SECONDARY (OPTIONAL)
                   </div>
                   
                   {secondaryPosition ? (
                     <>
-                      <div className="mt-2 font-display text-4xl leading-none text-white flex items-center justify-between">
+                      <div className="font-display text-3xl leading-none text-[#E8E8E8] flex items-center justify-between">
                         {secondaryPosition}
-                        <button type="button" onClick={() => { setSecondaryPosition(""); updatePlayerData({ secondaryPosition: "" }); }} className="text-[10px] font-sans font-bold uppercase tracking-wider text-[#B08332]/60 hover:text-red-400 bg-black/40 border border-[#8E793E]/20 px-3 py-1.5 rounded-full cursor-pointer transition-colors">Clear</button>
+                        <button type="button" onClick={() => { setSecondaryPosition(""); updatePlayerData({ secondaryPosition: "" }); }} className="text-[10px] font-bold uppercase tracking-wider text-[#808080] hover:text-red-400 transition-colors cursor-pointer">Remove</button>
                       </div>
-                      <div className="mt-1 text-xs font-bold text-white/60 uppercase tracking-wider">{positionRoles[secondaryPosition]?.role}</div>
+                      <div className="mt-2 text-xs font-bold text-[#808080] uppercase tracking-wider">{positionRoles[secondaryPosition]?.role}</div>
                     </>
                   ) : (
-                    <div className="mt-2 font-display text-2xl leading-none text-white/30 italic">None Selected</div>
+                    <div className="font-display text-xl leading-none text-[#404040] italic">None Selected</div>
                   )}
                 </div>
 
@@ -340,7 +336,7 @@ export default function PositionPage() {
                   {suggestedSecondaries.length > 0 && !secondaryPosition && (
                     <div className="flex flex-wrap gap-2 mb-3">
                       {suggestedSecondaries.map(pos => (
-                        <button key={pos} type="button" onClick={() => { setSecondaryPosition(pos); updatePlayerData({ secondaryPosition: pos }); }} className="px-3 py-1.5 rounded-lg border border-[#8E793E]/20 bg-black/40 hover:bg-[#8E793E]/10 hover:border-[#D4F829]/50 text-[10px] font-bold text-[#B08332] hover:text-[#D4F829] uppercase tracking-wider transition cursor-pointer">
+                        <button key={pos} type="button" onClick={() => { setSecondaryPosition(pos); updatePlayerData({ secondaryPosition: pos }); }} className="px-3 py-1.5 rounded-lg border border-[#2A2A2A] bg-[#151515] text-[10px] font-bold text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8] uppercase tracking-wider transition cursor-pointer">
                           + {pos}
                         </button>
                       ))}
@@ -348,7 +344,7 @@ export default function PositionPage() {
                   )}
                   
                   <div className="relative">
-                    <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="h-10 w-full flex items-center justify-between rounded-xl border border-[#8E793E]/20 bg-black/40 px-4 text-xs font-bold text-[#B08332] hover:text-[#D4F829] transition cursor-pointer">
+                    <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="h-10 w-full flex items-center justify-between rounded-xl border border-[#2A2A2A] bg-[#151515] px-4 text-xs font-bold text-[#808080] hover:text-[#E8E8E8] transition cursor-pointer">
                       Select other position... <ChevronDown size={14} />
                     </button>
                     <AnimatePresence>
@@ -375,64 +371,47 @@ export default function PositionPage() {
             </motion.section>
 
             {/* Strong Foot */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-3xl border border-[#8E793E]/20 bg-black/40 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-xs font-black uppercase tracking-[0.22em] text-[#B08332]">Strong Foot</h2>
-                <p className="mt-1 text-[11px] text-[#B08332]/60">Which foot do you trust the most?</p>
+                <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52]">Strong Foot</div>
+                <p className="mt-0.5 text-[11px] text-[#808080]">Which foot do you trust the most?</p>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:w-[300px]">
+              <div className="grid grid-cols-2 gap-3 sm:w-[300px]">
                 <button
                   onClick={() => { setStrongFoot("Left"); updatePlayerData({ strongFoot: "Left" }); }}
                   className={cn(
-                    "relative flex h-12 items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer overflow-hidden",
-                    strongFoot === "Left" ? "border border-[#D4F829]/50 bg-[#D4F829]/10 text-[#D4F829] shadow-[0_0_20px_rgba(212,248,41,0.15)] scale-[1.02]" : "border border-[#8E793E]/20 bg-black/40 text-[#B08332] hover:bg-[#8E793E]/10"
+                    "flex h-[52px] items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer",
+                    strongFoot === "Left" ? "border border-[#D4F829] bg-[#D4F829]/10 text-[#D4F829]" : "border border-[#2A2A2A] bg-[#151515] text-[#808080] hover:border-[#404040] hover:text-[#E8E8E8]"
                   )}
                   type="button"
                 >
-                  <AnimatePresence>
-                    {strongFoot === "Left" && (
-                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,255,0,0.1)_0%,transparent_70%)]" />
-                    )}
-                  </AnimatePresence>
-                  <Footprints size={14} className={strongFoot === "Left" ? "text-[#C6FF00]" : "opacity-50"} />
-                  {strongFoot === "Left" ? "✓ LEFT" : "LEFT"}
+                  <Footprints size={14} className={strongFoot === "Left" ? "text-[#D4F829]" : "opacity-50"} />
+                  LEFT
                 </button>
                 <button
                   onClick={() => { setStrongFoot("Right"); updatePlayerData({ strongFoot: "Right" }); }}
                   className={cn(
-                    "relative flex h-12 items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer overflow-hidden",
-                    strongFoot === "Right" ? "border border-[#D4F829]/50 bg-[#D4F829]/10 text-[#D4F829] shadow-[0_0_20px_rgba(212,248,41,0.15)] scale-[1.02]" : "border border-[#8E793E]/20 bg-black/40 text-[#B08332] hover:bg-[#8E793E]/10"
+                    "flex h-[52px] items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer",
+                    strongFoot === "Right" ? "border border-[#D4F829] bg-[#D4F829]/10 text-[#D4F829]" : "border border-[#2A2A2A] bg-[#151515] text-[#808080] hover:border-[#404040] hover:text-[#E8E8E8]"
                   )}
                   type="button"
                 >
-                  <AnimatePresence>
-                    {strongFoot === "Right" && (
-                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,255,0,0.1)_0%,transparent_70%)]" />
-                    )}
-                  </AnimatePresence>
-                  <Footprints size={14} className={strongFoot === "Right" ? "text-[#C6FF00]" : "opacity-50"} style={{ transform: "scaleX(-1)" }} />
-                  {strongFoot === "Right" ? "✓ RIGHT" : "RIGHT"}
+                  <Footprints size={14} className={strongFoot === "Right" ? "text-[#D4F829]" : "opacity-50"} style={{ transform: "scaleX(-1)" }} />
+                  RIGHT
                 </button>
               </div>
             </motion.section>
 
-            {/* CTA Button */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.75 }} className="mt-8 relative group pb-4">
+            {/* CTA Button 2.0 */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.75 }} className="mt-10 relative group pb-4">
               <div className="absolute -inset-1 bg-[#D4F829]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
               <motion.button 
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={isSubmitting || isSuccess}
-                className="relative w-full h-14 rounded-2xl bg-[#D4F829] text-black font-display tracking-[0.2em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#c4ec23] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]" 
+                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-[#1A1A1A] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
                 type="submit"
               >
-                {!isSubmitting && !isSuccess && (
-                  <motion.div 
-                    className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
-                    animate={{ translateX: ["-100%", "200%"] }}
-                    transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 8, ease: "easeInOut" }}
-                  />
-                )}
                 
                 {isSuccess ? (
                   <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex items-center gap-2">
