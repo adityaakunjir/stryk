@@ -30,11 +30,10 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const [initialPosition, setInitialPosition] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
   const [isDetecting, setIsDetecting] = useState<boolean>(true);
 
-  // Refs to persist face-detected values across the AvatarEditor mount cycle
-  const detectedPositionRef = useRef<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
-  const detectedScaleRef = useRef<number>(1);
-  const isInitialMountRef = useRef<boolean>(true);
-
+  // Face detection: runs BEFORE the editor mounts (isDetecting=true hides editor)
+  // When detection finishes, position & scale state already hold the correct values.
+  // The editor mounts AFTER and simply renders at those values.
+  // We do NOT pass onPositionChange — the editor can never overwrite our state.
   useEffect(() => {
     let isMounted = true;
     const detectFace = async () => {
@@ -65,40 +64,46 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           const { x, y, width, height } = detection.box;
           
           const faceCenterX = x + width / 2;
-          const faceCenterY = y + height * 0.4;
+          // Target slightly above face center so forehead + hair are visible
+          const faceCenterY = y + height * 0.35;
           
           const xPercent = faceCenterX / imgWidth;
           const yPercent = faceCenterY / imgHeight;
           
-          // Calculate ideal zoom
+          // --- ZOOM CALCULATION (using consistent display-pixel units) ---
+          // At scale=1, the image's smallest dimension fills CROP_SIZE display pixels.
+          // So the face occupies (faceWidth / minDim) * CROP_SIZE display pixels.
           const minDim = Math.min(imgWidth, imgHeight);
-          const editorDim = CROP_SIZE * 3;
-          const faceOnScreenAtScale1 = (width / minDim) * editorDim;
-          const targetFaceWidth = CROP_SIZE * 0.65;
-          const idealZoom = targetFaceWidth / faceOnScreenAtScale1;
+          const faceDisplayAtScale1 = (width / minDim) * CROP_SIZE;
+          
+          // We want the face to fill ~45% of the visible circle diameter
+          const targetFaceDisplay = CROP_SIZE * 0.45;
+          const idealZoom = targetFaceDisplay / faceDisplayAtScale1;
           const clampedZoom = Math.max(1, Math.min(3, idealZoom));
 
-          // Store in refs so they survive AvatarEditor's mount cycle
-          detectedPositionRef.current = { x: xPercent, y: yPercent };
-          detectedScaleRef.current = clampedZoom;
+          console.log("[FaceCrop] Detected face:", {
+            box: { x, y, width, height },
+            imgSize: { imgWidth, imgHeight },
+            position: { xPercent, yPercent },
+            zoom: { faceDisplayAtScale1, targetFaceDisplay, idealZoom, clampedZoom },
+          });
+
           setScale(clampedZoom);
           setPosition({ x: xPercent, y: yPercent });
 
         } else if (isMounted) {
-          detectedPositionRef.current = { x: 0.5, y: 0.35 };
-          detectedScaleRef.current = 1.2;
+          console.log("[FaceCrop] No face detected, using fallback position");
           setPosition({ x: 0.5, y: 0.35 });
-          setScale(1.2); // slight zoom up for no-face fallback
+          setScale(1.2);
         }
       } catch (err: any) {
-        console.error("Face detection failed", err);
+        console.error("[FaceCrop] Face detection failed:", err);
         if (isMounted) {
           setPosition({ x: 0.5, y: 0.35 });
           setScale(1);
         }
       } finally {
         if (isMounted) setIsDetecting(false);
-        // ✅ Editor only renders AFTER this — so position is already correct
       }
     };
     
@@ -233,8 +238,6 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
             onWheel={handleWheel}
           >
             {isDetecting ? (
-              // ✅ Editor hidden while detecting — when it shows,
-              // position state already has face-detected values
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm rounded-full">
                 <Loader2 className="size-8 text-[#D4F829] animate-spin mb-3 drop-shadow-[0_0_10px_rgba(212,248,41,0.5)]" />
                 <p className="text-[#D4F829] font-display font-bold uppercase tracking-widest text-[10px] animate-pulse">
@@ -242,37 +245,24 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
                 </p>
               </div>
             ) : (
-              <AvatarEditor
-                ref={editorRef}
-                image={src}
-                width={CROP_SIZE * 3}
-                height={CROP_SIZE * 3}
-                border={0}
-                borderRadius={0}
-                color={[0, 0, 0, 0.8]} 
-                scale={scale}
-                rotate={rotate}
-                position={position}
-                onImageReady={() => {
-                  // AvatarEditor fires onPositionChange with its own defaults
-                  // BEFORE this callback. We re-apply our detected values here
-                  // after the editor has settled, overriding whatever it set.
-                  if (isInitialMountRef.current) {
-                    isInitialMountRef.current = false;
-                    setTimeout(() => {
-                      setPosition({ ...detectedPositionRef.current });
-                      setScale(detectedScaleRef.current);
-                    }, 50);
-                  }
-                }}
-                onPositionChange={(pos) => {
-                  // Ignore the editor's initial mount position change
-                  if (!isInitialMountRef.current) {
-                    setPosition(pos);
-                  }
-                }}
-                style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
-              />
+              /* pointer-events:none ensures the editor never receives mouse/touch
+                 events and can never fire internal position changes.
+                 All interaction is handled by our own drag handlers on the parent div. */
+              <div style={{ pointerEvents: 'none' }}>
+                <AvatarEditor
+                  ref={editorRef}
+                  image={src}
+                  width={CROP_SIZE * 3}
+                  height={CROP_SIZE * 3}
+                  border={0}
+                  borderRadius={0}
+                  color={[0, 0, 0, 0.8]} 
+                  scale={scale}
+                  rotate={rotate}
+                  position={position}
+                  style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
+                />
+              </div>
             )}
 
             <div className="absolute inset-0 pointer-events-none rounded-full ring-1 ring-white/10 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)] z-20" />
