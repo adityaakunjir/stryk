@@ -115,14 +115,16 @@ export default function HomeLobbyPage() {
             </div>
           </div>
 
-            {/* Streak Badge */}
-            <div className="flex flex-col items-center justify-center bg-[#110E0A] text-[#F3D17A] rounded-xl px-4 py-2 shadow-xl border border-[#2A2315] min-w-[70px]">
-              <div className="flex items-center gap-1 font-display text-2xl leading-none">
-                <span>🔥</span>
-                <span>7</span>
+            {/* Streak Badge (Only visible if they've played matches) */}
+            {playerData.matchesPlayed && playerData.matchesPlayed > 0 ? (
+              <div className="flex flex-col items-center justify-center bg-[#110E0A] text-[#F3D17A] rounded-xl px-4 py-2 shadow-xl border border-[#2A2315] min-w-[70px]">
+                <div className="flex items-center gap-1 font-display text-2xl leading-none">
+                  <span>🔥</span>
+                  <span>1</span>
+                </div>
+                <div className="text-[7px] font-bold tracking-[0.15em] mt-1 text-[#F3D17A]/70 uppercase">DAY STREAK</div>
               </div>
-              <div className="text-[7px] font-bold tracking-[0.15em] mt-1 text-[#F3D17A]/70 uppercase">DAY STREAK</div>
-            </div>
+            ) : null}
           </div>
       </div>
 
