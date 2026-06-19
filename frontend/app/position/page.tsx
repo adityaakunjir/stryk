@@ -222,19 +222,19 @@ export default function PositionPage() {
             </div>
           </motion.div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-4 bg-[#151515] text-white p-6 sm:p-8 rounded-[40px] shadow-2xl border border-white/5 relative z-10">
+          <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-4 bg-[#151515] text-white p-6 sm:p-8 rounded-[40px] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
             
             {/* Tactical Pitch Selector */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-3xl border border-white/10 bg-black/20 p-4 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] backdrop-blur-2xl">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-3xl border border-[#8E793E]/20 bg-black/40 p-4 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] backdrop-blur-2xl">
               
               {/* Pitch layout */}
-              <div className="relative aspect-[1.3] w-full overflow-visible rounded-2xl border border-white/10 sm:aspect-[1.8]"
+              <div className="relative aspect-[1.3] w-full overflow-visible rounded-2xl border border-[#8E793E]/20 sm:aspect-[1.8]"
                 style={{
                   background:
-                    "linear-gradient(180deg, rgba(212,248,41,0.08), rgba(255,255,255,0.02)), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 24px, transparent 24px 48px)"}}>
-                <div className="absolute inset-3 border border-white/15 rounded" />
-                <div className="absolute left-3 right-3 top-1/2 h-px bg-white/15" />
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-white/15" />
+                    "linear-gradient(180deg, rgba(212,248,41,0.08), rgba(176,131,50,0.08)), repeating-linear-gradient(0deg, rgba(176,131,50,0.04) 0 24px, transparent 24px 48px)"}}>
+                <div className="absolute inset-3 border border-[#8E793E]/30 rounded" />
+                <div className="absolute left-3 right-3 top-1/2 h-px bg-[#8E793E]/30" />
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-[#8E793E]/30" />
 
                 {positions.map((p, i) => {
                   const displayCode = p.codeDisplay || p.code.split("_")[0];
@@ -254,7 +254,7 @@ export default function PositionPage() {
                         onMouseLeave={() => setHoveredNode(null)}
                         className={cn(
                           "flex items-center justify-center rounded-full font-display text-[9px] tracking-wider cursor-pointer sm:text-xs",
-                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#C6FF00] text-black" : "w-7 h-7 sm:w-9 sm:h-9 bg-white/5 border border-white/10 text-white/60 hover:text-white"
+                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-black" : "w-7 h-7 sm:w-9 sm:h-9 bg-black/40 border border-[#8E793E]/20 text-[#B08332] hover:text-[#D4F829] hover:bg-[#8E793E]/10"
                         )}
                         layout
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -270,7 +270,7 @@ export default function PositionPage() {
                       {/* Breathing glow for active node */}
                       {isActive && (
                         <motion.div 
-                          className="absolute inset-0 rounded-full bg-[#C6FF00] -z-10"
+                          className="absolute inset-0 rounded-full bg-[#D4F829] -z-10"
                           animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0, 0.2] }}
                           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                         />
@@ -286,11 +286,11 @@ export default function PositionPage() {
                             exit={{ opacity: 0, y: 0, scale: 0.9 }}
                             className="absolute left-1/2 -translate-x-1/2 w-max max-w-[140px] pointer-events-none z-20"
                           >
-                            <div className="bg-black/80 backdrop-blur-md border border-white/10 rounded-lg p-2 text-center shadow-xl">
-                              <div className="text-[9px] font-bold text-[#C6FF00] uppercase tracking-wider">{positionRoles[displayCode]?.role}</div>
-                              {isActive && <div className="text-[8px] text-white/60 mt-0.5 leading-tight">{positionRoles[displayCode]?.desc}</div>}
+                            <div className="bg-[#151515] backdrop-blur-md border border-[#8E793E]/30 rounded-lg p-2 text-center shadow-xl">
+                              <div className="text-[9px] font-bold text-[#D4F829] uppercase tracking-wider">{positionRoles[displayCode]?.role}</div>
+                              {isActive && <div className="text-[8px] text-white/70 mt-0.5 leading-tight">{positionRoles[displayCode]?.desc}</div>}
                             </div>
-                            <div className="w-2 h-2 bg-black/80 border-b border-r border-white/10 rotate-45 mx-auto -mt-1" />
+                            <div className="w-2 h-2 bg-[#151515] border-b border-r border-[#8E793E]/30 rotate-45 mx-auto -mt-1" />
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -304,30 +304,30 @@ export default function PositionPage() {
             <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               
               {/* PRIMARY ROLE CARD */}
-              <div className="rounded-3xl border border-[#C6FF00]/30 bg-[#C6FF00]/5 p-5 shadow-[inset_0_0_20px_rgba(198,255,0,0.05)] backdrop-blur-xl relative overflow-hidden">
+              <div className="rounded-3xl border border-[#D4F829]/30 bg-[#D4F829]/5 p-5 shadow-[inset_0_0_20px_rgba(212,248,41,0.05)] backdrop-blur-xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10">
-                  <Target size={64} />
+                  <Target size={64} className="text-[#D4F829]" />
                 </div>
-                <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-[#C6FF00]">
-                  <Target size={12} /> PRIMARY ROLE
+                <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-[#B08332]">
+                  <Target size={12} className="text-[#D4F829]" /> PRIMARY ROLE
                 </div>
                 <div className="mt-2 font-display text-4xl leading-none text-white">{selectedPosition}</div>
-                <div className="mt-1 text-xs font-bold text-[#C6FF00]/80 uppercase tracking-wider">{roleInfo.role}</div>
+                <div className="mt-1 text-xs font-bold text-[#D4F829]/80 uppercase tracking-wider">{roleInfo.role}</div>
                 <p className="mt-2 text-[11px] text-white/50 leading-relaxed max-w-[80%]">{roleInfo.desc}</p>
               </div>
 
               {/* SECONDARY ROLE CARD */}
-              <div className="rounded-3xl border border-white/10 bg-black/20 p-5 flex flex-col justify-between">
+              <div className="rounded-3xl border border-[#8E793E]/20 bg-black/40 p-5 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-white/50">
-                    <Zap size={12} /> SECONDARY (OPTIONAL)
+                  <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-[#B08332]">
+                    <Zap size={12} className="text-[#D4F829]" /> SECONDARY (OPTIONAL)
                   </div>
                   
                   {secondaryPosition ? (
                     <>
                       <div className="mt-2 font-display text-4xl leading-none text-white flex items-center justify-between">
                         {secondaryPosition}
-                        <button type="button" onClick={() => { setSecondaryPosition(""); updatePlayerData({ secondaryPosition: "" }); }} className="text-[10px] font-sans font-bold uppercase tracking-wider text-white/40 hover:text-red-400 bg-white/5 px-3 py-1.5 rounded-full cursor-pointer">Clear</button>
+                        <button type="button" onClick={() => { setSecondaryPosition(""); updatePlayerData({ secondaryPosition: "" }); }} className="text-[10px] font-sans font-bold uppercase tracking-wider text-[#B08332]/60 hover:text-red-400 bg-black/40 border border-[#8E793E]/20 px-3 py-1.5 rounded-full cursor-pointer transition-colors">Clear</button>
                       </div>
                       <div className="mt-1 text-xs font-bold text-white/60 uppercase tracking-wider">{positionRoles[secondaryPosition]?.role}</div>
                     </>
@@ -340,7 +340,7 @@ export default function PositionPage() {
                   {suggestedSecondaries.length > 0 && !secondaryPosition && (
                     <div className="flex flex-wrap gap-2 mb-3">
                       {suggestedSecondaries.map(pos => (
-                        <button key={pos} type="button" onClick={() => { setSecondaryPosition(pos); updatePlayerData({ secondaryPosition: pos }); }} className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 hover:border-[#C6FF00]/50 text-[10px] font-bold text-white uppercase tracking-wider transition cursor-pointer">
+                        <button key={pos} type="button" onClick={() => { setSecondaryPosition(pos); updatePlayerData({ secondaryPosition: pos }); }} className="px-3 py-1.5 rounded-lg border border-[#8E793E]/20 bg-black/40 hover:bg-[#8E793E]/10 hover:border-[#D4F829]/50 text-[10px] font-bold text-[#B08332] hover:text-[#D4F829] uppercase tracking-wider transition cursor-pointer">
                           + {pos}
                         </button>
                       ))}
@@ -348,7 +348,7 @@ export default function PositionPage() {
                   )}
                   
                   <div className="relative">
-                    <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="h-10 w-full flex items-center justify-between rounded-xl border border-white/10 bg-black/40 px-4 text-xs font-bold text-white/60 hover:text-white transition cursor-pointer">
+                    <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="h-10 w-full flex items-center justify-between rounded-xl border border-[#8E793E]/20 bg-black/40 px-4 text-xs font-bold text-[#B08332] hover:text-[#D4F829] transition cursor-pointer">
                       Select other position... <ChevronDown size={14} />
                     </button>
                     <AnimatePresence>
@@ -375,17 +375,17 @@ export default function PositionPage() {
             </motion.section>
 
             {/* Strong Foot */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-3xl border border-white/10 bg-black/20 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-3xl border border-[#8E793E]/20 bg-black/40 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-xs font-black uppercase tracking-[0.22em] text-white/50">Strong Foot</h2>
-                <p className="mt-1 text-[11px] text-white/40">Which foot do you trust the most?</p>
+                <h2 className="text-xs font-black uppercase tracking-[0.22em] text-[#B08332]">Strong Foot</h2>
+                <p className="mt-1 text-[11px] text-[#B08332]/60">Which foot do you trust the most?</p>
               </div>
               <div className="grid grid-cols-2 gap-2 sm:w-[300px]">
                 <button
                   onClick={() => { setStrongFoot("Left"); updatePlayerData({ strongFoot: "Left" }); }}
                   className={cn(
                     "relative flex h-12 items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer overflow-hidden",
-                    strongFoot === "Left" ? "border border-[#C6FF00]/50 bg-[#C6FF00]/10 text-[#C6FF00] shadow-[0_0_20px_rgba(198,255,0,0.15)] scale-[1.02]" : "border border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
+                    strongFoot === "Left" ? "border border-[#D4F829]/50 bg-[#D4F829]/10 text-[#D4F829] shadow-[0_0_20px_rgba(212,248,41,0.15)] scale-[1.02]" : "border border-[#8E793E]/20 bg-black/40 text-[#B08332] hover:bg-[#8E793E]/10"
                   )}
                   type="button"
                 >
@@ -401,7 +401,7 @@ export default function PositionPage() {
                   onClick={() => { setStrongFoot("Right"); updatePlayerData({ strongFoot: "Right" }); }}
                   className={cn(
                     "relative flex h-12 items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer overflow-hidden",
-                    strongFoot === "Right" ? "border border-[#C6FF00]/50 bg-[#C6FF00]/10 text-[#C6FF00] shadow-[0_0_20px_rgba(198,255,0,0.15)] scale-[1.02]" : "border border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
+                    strongFoot === "Right" ? "border border-[#D4F829]/50 bg-[#D4F829]/10 text-[#D4F829] shadow-[0_0_20px_rgba(212,248,41,0.15)] scale-[1.02]" : "border border-[#8E793E]/20 bg-black/40 text-[#B08332] hover:bg-[#8E793E]/10"
                   )}
                   type="button"
                 >
@@ -418,12 +418,12 @@ export default function PositionPage() {
 
             {/* CTA Button */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.75 }} className="mt-8 relative group pb-4">
-              <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
+              <div className="absolute -inset-1 bg-[#D4F829]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
               <motion.button 
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={isSubmitting || isSuccess}
-                className="relative w-full h-14 rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(198,255,0,0)] hover:shadow-[0_0_30px_-5px_rgba(198,255,0,0.6)]" 
+                className="relative w-full h-14 rounded-2xl bg-[#D4F829] text-black font-display tracking-[0.2em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#c4ec23] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]" 
                 type="submit"
               >
                 {!isSubmitting && !isSuccess && (
