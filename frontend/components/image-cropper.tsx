@@ -4,6 +4,7 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import { X, Check, ZoomIn, ZoomOut, Loader2 } from "lucide-react";
 import AvatarEditor from "react-avatar-editor";
 import * as faceapi from 'face-api.js';
+import { toast } from "sonner";
 
 const DRAG_SENSITIVITY = 0.5;
 const CROP_SIZE = 280;
@@ -84,9 +85,15 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
         } else if (isMounted) {
           // Fallback if face not found (e.g. sunglasses)
           setPosition({ x: 0.5, y: 0.35 });
+          setScale(1);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Face detection failed", err);
+        toast.error(`Face AI Error: ${err.message || "Failed to scan"}`);
+        if (isMounted) {
+          setPosition({ x: 0.5, y: 0.35 });
+          setScale(1);
+        }
       } finally {
         if (isMounted) setIsDetecting(false);
       }
@@ -240,30 +247,32 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           <div className="absolute bottom-1 right-1 w-8 h-8 border-b-[3px] border-r-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-br-xl z-20" />
 
           <div 
-            className="relative overflow-hidden rounded-full border-[3px] border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing select-none flex justify-center"
+            className="relative overflow-hidden rounded-full border-[3px] border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing select-none flex justify-center bg-[#0a0a0a]"
+            style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
           >
-            {isDetecting && (
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm pointer-events-none rounded-full">
+            {isDetecting ? (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm rounded-full">
                 <Loader2 className="size-8 text-[#D4F829] animate-spin mb-3 drop-shadow-[0_0_10px_rgba(212,248,41,0.5)]" />
                 <p className="text-[#D4F829] font-display font-bold uppercase tracking-widest text-[10px] animate-pulse">Scanning Face</p>
               </div>
+            ) : (
+              <AvatarEditor
+                ref={editorRef}
+                image={src}
+                width={CROP_SIZE * 3}
+                height={CROP_SIZE * 3}
+                border={0}
+                borderRadius={0}
+                color={[0, 0, 0, 0.8]} 
+                scale={scale}
+                rotate={rotate}
+                position={position}
+                onPositionChange={(pos) => setPosition(pos)}
+                style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
+              />
             )}
-            <AvatarEditor
-              ref={editorRef}
-              image={src}
-              width={CROP_SIZE * 3}
-              height={CROP_SIZE * 3}
-              border={0}
-              borderRadius={0}
-              color={[0, 0, 0, 0.8]} 
-              scale={scale}
-              rotate={rotate}
-              position={position}
-              onPositionChange={(pos) => setPosition(pos)}
-              style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
-            />
 
-            <div className="absolute inset-0 pointer-events-none rounded-full ring-1 ring-white/10 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)]" />
+            <div className="absolute inset-0 pointer-events-none rounded-full ring-1 ring-white/10 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)] z-20" />
           </div>
         </div>
 
