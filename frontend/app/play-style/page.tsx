@@ -183,7 +183,7 @@ export default function PlayStylePage() {
     e.preventDefault();
     if (launchStep > 0) return;
     
-    updatePlayerData({ bio: bio.trim() });
+    updatePlayerData({ playStyle: selectedStyle, bio: bio.trim() });
     
     // Launch Sequence
     setLaunchStep(1);

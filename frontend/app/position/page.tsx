@@ -123,6 +123,12 @@ export default function PositionPage() {
     console.log("Analytics: position_selected", selectedPosition);
     console.log("Analytics: step2_completed");
 
+    updatePlayerData({ 
+      position: selectedPosition, 
+      secondaryPosition: secondaryPosition, 
+      strongFoot: strongFoot 
+    });
+
     setTimeout(() => {
       setIsSuccess(true);
       setTimeout(() => {
