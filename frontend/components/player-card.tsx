@@ -112,101 +112,137 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
     <motion.button
       onClick={onClick}
       animate={controls}
-      className={`group relative ${dims} shrink-0 rounded-[28px] overflow-hidden text-left transition-transform duration-300 focus:outline-none cursor-pointer`}
+      className={`group relative shrink-0 overflow-hidden text-left transition-transform duration-300 focus:outline-none cursor-pointer hover:scale-[1.025] ${size === 'sm' ? 'w-44' : size === 'lg' ? 'w-72' : 'w-60'}`}
       style={{
-        background: `linear-gradient(160deg, #1A2540 0%, #0B1020 45%, #05070B 100%)`,
-        boxShadow: `0 0 0 1px ${config.color}40, 0 30px 60px -20px ${config.color}40, inset 0 1px 0 rgba(255,255,255,0.08)`,
-        transformPerspective: 1000
+        transformPerspective: 1000,
+        aspectRatio: '1417/1878'
       }}
     >
-      {/* Dynamic Aura */}
-      <div
-        className="absolute inset-0 opacity-80 mix-blend-screen pointer-events-none transition-colors duration-1000"
-        style={{
-          background: `radial-gradient(120% 60% at 50% -10%, ${config.color}40 0%, transparent 55%), radial-gradient(80% 50% at 110% 110%, ${config.color}20 0%, transparent 60%)`
-        }}
-      />
+      {/* Main Card Container */}
       
-      {/* Light Sweep Animation */}
-      {!disableAnimation && (
-        <motion.div
-          className="absolute -inset-x-10 -top-10 h-64 rotate-12 opacity-30 pointer-events-none mix-blend-overlay"
-          style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)" }}
-          animate={{ x: ["-200%", "200%"] }}
-          transition={{ duration: 3, repeat: Infinity, repeatDelay: 5, ease: "easeInOut" }}
+      {/* 1. Card Base (Crystal Texture) - Bottom Layer */}
+      <img 
+        src="/player_card.webp" 
+        alt="Card Base" 
+        className="absolute inset-0 z-10 h-full w-full object-contain pointer-events-none" 
+      />
+
+      {/* PLAYER IMAGE */}
+      <div className="absolute inset-0 z-20 flex justify-center overflow-hidden pointer-events-none">
+        
+        {/* Soft glow behind player */}
+        <div className="absolute top-[18%] w-[55%] h-[55%] rounded-full bg-[#E5B95C]/20 blur-3xl z-10" />
+
+        {/* Blurred duplicate for depth */}
+        <img
+          src={avatar || "/avatar.png"}
+          alt=""
+          className="absolute z-10 w-[60%] h-[58%] object-cover object-top top-[17%] blur-2xl opacity-20 scale-125"
         />
-      )}
 
-      {/* Top row */}
-      <div className="absolute inset-x-0 top-0 px-5 pt-4 flex items-start justify-between z-10">
-        <div className="flex flex-col items-center">
-          <div className="font-display leading-none" style={{ color: config.color, fontSize: size === "lg" ? "3rem" : size === "md" ? "2.5rem" : "2rem", textShadow: `0 0 20px ${config.color}80` }}>
-            {!disableAnimation ? <AnimatedCounter value={ovr} duration={2.5} /> : ovr}
-          </div>
-          <div className="font-display text-white/90 -mt-1 tracking-wider" style={{ fontSize: size === "sm" ? "0.875rem" : "1.125rem" }}>
-            {position}
-          </div>
-          
-          {/* Archetype Badge */}
-          <div className="mt-1 flex items-center gap-1 bg-black/40 backdrop-blur-md rounded-full px-1.5 py-0.5 border border-white/10" style={{ borderColor: `${config.color}30` }}>
-            <Icon size={8} style={{ color: config.color }} />
-            <span className="text-[7px] font-bold uppercase tracking-widest text-white/80">{style.split('-')[0]}</span>
-          </div>
-
-          <div className="mt-2 text-[10px] tracking-widest text-white/60 uppercase">{nation}</div>
-          <div className="mt-1 text-[10px] tracking-wider text-white/60 uppercase">{foot}</div>
-        </div>
-
-        <div className="text-right">
-          <div className="text-[10px] tracking-[0.25em] text-white/40 uppercase">STRYK</div>
-          <div className="font-display text-white/80" style={{ fontSize: "0.875rem" }}>
-            ID · {playerId.toString().padStart(3, "0")}
-          </div>
-        </div>
-      </div>
-
-      {/* Avatar */}
-      <div className="absolute inset-x-0 top-6 bottom-[42%] flex items-center justify-center z-0">
-        <div
-          className="relative w-full h-full"
+        {/* Main player (Masked to full frame size) */}
+        <div 
+          className="absolute inset-0 z-20 flex justify-center pointer-events-none -translate-y-[3.8%]"
           style={{
-            maskImage: "radial-gradient(60% 70% at 50% 50%, #000 60%, transparent 100%)",
-            WebkitMaskImage: "radial-gradient(60% 70% at 50% 50%, #000 60%, transparent 100%)"
+            WebkitMaskImage: "url('/avatar_mask.webp')",
+            WebkitMaskSize: "100% 100%",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskImage: "url('/avatar_mask.webp')",
+            maskSize: "100% 100%",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
           }}
         >
-          {avatar ? (
-            <ImageWithFallback src={avatar} alt={name} className="w-full h-full object-cover object-top" />
-          ) : (
-            <div className="relative h-full w-full overflow-hidden bg-gradient-to-br from-zinc-800 via-zinc-950 to-black">
-              <div className="absolute left-1/2 top-[18%] h-[28%] w-[28%] -translate-x-1/2 rounded-full bg-gradient-to-br from-zinc-300 via-zinc-700 to-black shadow-[0_0_24px_rgba(255,255,255,0.12)]" />
-              <div className="absolute left-1/2 top-[41%] h-[46%] w-[58%] -translate-x-1/2 rounded-t-[42%] bg-gradient-to-br from-zinc-100 via-zinc-800 to-black shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]" />
-              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#05070B] to-transparent" />
-            </div>
-          )}
+          <img
+            src={avatar || "/avatar.png"}
+            alt="Player"
+            className="absolute z-20 w-[58%] h-[62%] object-cover object-top top-[16%] scale-110"
+          />
         </div>
       </div>
 
-      {/* Bottom block */}
-      <div className="absolute inset-x-0 bottom-0 p-5 z-10 bg-gradient-to-t from-[#05070B] via-[#05070B]/80 to-transparent pt-12">
-        <div className="font-display text-white tracking-wide truncate" style={{ fontSize: size === "lg" ? "1.75rem" : "1.375rem" }}>
-          {name ? name.toUpperCase() : "PLAYER NAME"}
-        </div>
-        <div className="text-[11px] font-bold tracking-wider uppercase mb-3" style={{ color: config.color }}>
-          @{username || "username"}
+      {/* 3. Dark Gradient (Kills ugly backgrounds and blends legs) */}
+      <div 
+        className="absolute inset-0 z-[12] bg-gradient-to-b from-transparent via-transparent via-55% to-black/95 pointer-events-none -translate-y-[4px]" 
+        style={{
+          maskImage: "url('/player_card.webp')",
+          WebkitMaskImage: "url('/player_card.webp')",
+          maskSize: "contain",
+          WebkitMaskSize: "contain",
+          maskRepeat: "no-repeat",
+          WebkitMaskRepeat: "no-repeat",
+          maskPosition: "center",
+          WebkitMaskPosition: "center"
+        }}
+      />
+
+      {/* 5. Frame (Border Shell) */}
+      <img 
+        src="/player_card_frame.webp" 
+        alt="Card Frame" 
+        className="absolute inset-0 z-30 h-full w-full object-contain pointer-events-none translate-y-[0.8px] scale-[1.0]"
+      />
+      
+      {/* 6. Text + Stats (Top Layer) */}
+      <div className="absolute inset-0 z-[40] pointer-events-none">
+        
+        {/* ========================================= */}
+        {/* LEFT SIDE (Rating, Position, Flag) */}
+        {/* ========================================= */}
+        <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1">
+          <div className="font-display text-[clamp(24px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]">
+            {!disableAnimation ? <AnimatedCounter value={ovr} duration={2.5} /> : ovr}
+          </div>
+          <div className="font-display text-[clamp(12px,5vw,26px)] text-black leading-none font-bold drop-shadow-sm">{position || "POS"}</div>
+          <img src={`https://flagcdn.com/w40/${nation.toLowerCase() === 'ind' ? 'in' : nation.toLowerCase()}.png`} alt={nation} className="mt-1 h-[10px] sm:h-[16px] w-auto object-cover shadow-sm border border-black/10" />
         </div>
 
-        {size !== "sm" && (
-          <div className="grid grid-cols-3 gap-x-3 gap-y-1.5 pt-3 border-t border-white/10">
-            {statsToDisplay.map(({ label, value }) => (
-              <div key={label} className="flex items-baseline gap-1.5">
-                <span className="font-display text-white" style={{ fontSize: "1.125rem" }}>
-                  {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
-                </span>
-                <span className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase">
-                  {label}
-                </span>
-              </div>
-            ))}
+        {/* ========================================= */}
+        {/* CENTER NAME PLAQUE */}
+        {/* ========================================= */}
+        <div className="absolute top-[61.4%] bottom-[38%] left-[15%] right-[15%] flex items-center justify-center">
+          <div className="font-display text-[clamp(12px,4.5vw,22px)] text-[#2A1B0A] leading-none tracking-widest uppercase font-bold drop-shadow-sm truncate">
+            {name || "PLAYER"}
+          </div>
+        </div>
+
+        {/* ========================================= */}
+        {/* PLAYSTYLE TAG */}
+        {/* ========================================= */}
+        <div className="absolute top-[65.8%] left-0 right-0 flex justify-center">
+          <div className="font-display text-[clamp(7px,2vw,12px)] text-[#C89B3C] tracking-[0.2em] uppercase font-bold truncate px-6">
+            {style || "STYLE"}
+          </div>
+        </div>
+
+        {/* ========================================= */}
+        {/* STATS GRID */}
+        {/* ========================================= */}
+        {size !== "sm" && statsToDisplay.length >= 6 && (
+          <div className="absolute top-[75%] left-[12%] right-[12%] flex flex-col gap-[clamp(2px,1vw,8px)]">
+            {/* Top Row */}
+            <div className="flex justify-between px-1">
+              {statsToDisplay.slice(0,3).map(({ label, value }) => (
+                <div key={label} className="flex gap-1 items-baseline w-[32%] justify-center">
+                  <span className="font-display font-bold text-[clamp(10px,4vw,22px)] text-[#E8D196] leading-none">
+                    {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
+                  </span>
+                  <span className="font-display text-[clamp(7px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
+                </div>
+              ))}
+            </div>
+            {/* Bottom Row */}
+            <div className="flex justify-between px-1 mt-1">
+              {statsToDisplay.slice(3,6).map(({ label, value }) => (
+                <div key={label} className="flex gap-1 items-baseline w-[32%] justify-center">
+                  <span className="font-display font-bold text-[clamp(10px,4vw,22px)] text-[#E8D196] leading-none">
+                    {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
+                  </span>
+                  <span className="font-display text-[clamp(7px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

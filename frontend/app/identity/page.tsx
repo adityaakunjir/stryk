@@ -430,18 +430,11 @@ export default function IdentityPage() {
               {/* Player Card 3D Preview */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }}
-                className="relative flex justify-center mt-6 md:mt-0 perspective-1000"
+                className="relative flex justify-center mt-6 md:mt-0"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               >
-                {/* Dynamic Ambient Glow Engine */}
-                <motion.div
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[340px] rounded-full blur-[60px] pointer-events-none"
-                  animate={{ backgroundColor: "rgba(212,248,41,1)", opacity: glowOpacity, scale: isSuccess ? 1.2 : 1 }}
-                  transition={{ duration: 0.8 }}
-                />
-                
-                <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="scale-90 md:scale-100 origin-center z-10">
+                <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="scale-90 md:scale-100 origin-center z-10 mx-auto">
                   <PlayerCard player={previewPlayer} size="md" onClick={triggerFileUpload} />
                 </motion.div>
               </motion.div>
