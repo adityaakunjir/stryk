@@ -324,12 +324,7 @@ export default function HomeLobbyPage() {
         <NavTab icon={<Home size={20} />} label="HOME" active={true} onClick={() => router.push("/home")} />
         <NavTab icon={<Globe size={20} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
         
-        {/* Floating Center Button */}
-        <div className="relative -top-4">
-          <button className="w-14 h-14 rounded-full bg-[#C3DF1B] border-4 border-[#0A0A0A] flex items-center justify-center shadow-[0_0_15px_rgba(195,223,27,0.3)] hover:scale-105 transition active:scale-95">
-            <span className="text-black text-2xl leading-none font-light">+</span>
-          </button>
-        </div>
+
 
         <NavTab icon={<Users size={20} />} label="SQUAD" active={false} onClick={() => setShowSquadModal(true)} />
         <NavTab icon={<User size={20} />} label="PROFILE" active={false} onClick={() => router.push("/settings")} />
