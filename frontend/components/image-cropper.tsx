@@ -30,7 +30,10 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const [initialPosition, setInitialPosition] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
   const [isDetecting, setIsDetecting] = useState<boolean>(true);
 
-  // ✅ REMOVED: editorReady state — was causing the bug
+  // Refs to persist face-detected values across the AvatarEditor mount cycle
+  const detectedPositionRef = useRef<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
+  const detectedScaleRef = useRef<number>(1);
+  const isInitialMountRef = useRef<boolean>(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -75,13 +78,15 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           const idealZoom = targetFaceWidth / faceOnScreenAtScale1;
           const clampedZoom = Math.max(1, Math.min(3, idealZoom));
 
-          // ✅ Set BOTH scale and position before isDetecting → false
-          // This means editor hasn't rendered yet — when it does,
-          // it will use these values as initial state
+          // Store in refs so they survive AvatarEditor's mount cycle
+          detectedPositionRef.current = { x: xPercent, y: yPercent };
+          detectedScaleRef.current = clampedZoom;
           setScale(clampedZoom);
           setPosition({ x: xPercent, y: yPercent });
 
         } else if (isMounted) {
+          detectedPositionRef.current = { x: 0.5, y: 0.35 };
+          detectedScaleRef.current = 1.2;
           setPosition({ x: 0.5, y: 0.35 });
           setScale(1.2); // slight zoom up for no-face fallback
         }
@@ -247,8 +252,25 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
                 color={[0, 0, 0, 0.8]} 
                 scale={scale}
                 rotate={rotate}
-                position={position}           // ✅ FIXED — no editorReady guard
-                onPositionChange={setPosition} // ✅ FIXED — direct setter
+                position={position}
+                onImageReady={() => {
+                  // AvatarEditor fires onPositionChange with its own defaults
+                  // BEFORE this callback. We re-apply our detected values here
+                  // after the editor has settled, overriding whatever it set.
+                  if (isInitialMountRef.current) {
+                    isInitialMountRef.current = false;
+                    setTimeout(() => {
+                      setPosition({ ...detectedPositionRef.current });
+                      setScale(detectedScaleRef.current);
+                    }, 50);
+                  }
+                }}
+                onPositionChange={(pos) => {
+                  // Ignore the editor's initial mount position change
+                  if (!isInitialMountRef.current) {
+                    setPosition(pos);
+                  }
+                }}
                 style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
               />
             )}
