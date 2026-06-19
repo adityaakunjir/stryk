@@ -224,7 +224,7 @@ export default function HomeLobbyPage() {
               {/* ========================================= */}
               <div className="absolute top-[61.4%] bottom-[38%] left-[15%] right-[15%] flex items-center justify-center">
                 <div className="font-display text-[clamp(16px,4.5vw,22px)] text-[#2A1B0A] leading-none tracking-widest uppercase font-bold drop-shadow-sm">
-                  {firstName}
+                  {(playerData.fullName || "PLAYER").toUpperCase()}
                 </div>
               </div>
 
