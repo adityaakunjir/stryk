@@ -11,6 +11,7 @@ export interface PlayerData {
   fullName: string;
   username: string;
   avatar: string; // base64 or url
+  avatarPosition?: string; // e.g. "42% 8%"
   position: string;
   secondaryPosition: string;
   strongFoot: "Left" | "Right";
@@ -42,6 +43,7 @@ type BackendPlayer = {
   full_name?: string;
   username?: string;
   avatar_url?: string;
+  photo_crop_position?: string;
   position?: string;
   secondary_position?: string;
   strong_foot?: string;
@@ -109,12 +111,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   // Push local changes to the backend
   const pushToBackend = async (data: PlayerData, token: string) => {
     try {
+      const payload: any = { ...data };
+      if (payload.avatarPosition) {
+        payload.photo_crop_position = payload.avatarPosition;
+      }
       const res = await fetch("/api/profile/me", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`},
-        body: JSON.stringify(data)});
+        body: JSON.stringify(payload)});
       if (res.ok) {
         setIsBackendSynced(true);
       }
@@ -131,26 +137,29 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         const response = await fetch("/api/profile/me");
         if (response.ok) {
           const result = await response.json();
-          const backendUser = result.data || result;
+          const remote = result.data || result;
           
-          if (backendUser && backendUser.id) {
+          if (remote && remote.id) {
             setPlayerData((prev) => {
               const updated = {
                 ...prev,
-                fullName: backendUser.fullName || backendUser.full_name || "",
-                username: backendUser.username || "",
-                avatar: backendUser.avatarUrl || backendUser.avatar_url || "",
-                position: backendUser.position || "CAM",
-                playStyle: backendUser.playStyle || backendUser.play_style || "Playmaker",
-                matchesPlayed: backendUser.matchesPlayed ?? backendUser.matches_played ?? 0,
-                wins: backendUser.wins ?? 0,
-                losses: backendUser.losses ?? 0,
-                draws: backendUser.draws ?? 0,
-                goals: backendUser.goals ?? 0,
-                assists: backendUser.assists ?? 0,
-                tackles: backendUser.tackles ?? 0,
-                saves: backendUser.saves ?? 0,
-                intercepts: backendUser.intercepts ?? 0
+                fullName: remote.full_name || remote.fullName || "",
+                username: remote.username || "",
+                avatar: remote.avatar_url || remote.avatarUrl || "",
+                avatarPosition: remote.photo_crop_position || "center 15%",
+                position: remote.position || "CAM",
+                playStyle: remote.play_style || remote.playStyle || "Playmaker",
+                bio: remote.bio || "",
+                rating: remote.rating || 50,
+                matchesPlayed: remote.matches_played ?? remote.matchesPlayed ?? 0,
+                wins: remote.wins ?? 0,
+                losses: remote.losses ?? 0,
+                draws: remote.draws ?? 0,
+                goals: remote.goals ?? 0,
+                assists: remote.assists ?? 0,
+                tackles: remote.tackles ?? 0,
+                saves: remote.saves ?? 0,
+                intercepts: remote.intercepts ?? 0
               };
               updated.rating = calculateOvr(updated);
               localStorage.setItem("stryk_player_data", JSON.stringify(updated));

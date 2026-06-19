@@ -27,6 +27,7 @@ export type PlayerMockType = {
   matches: number;
   stats: PlayerStats;
   avatarUrl: string;
+  avatarPosition?: string;
   bio?: string;
 };
 
@@ -75,6 +76,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
   const nation = isMock ? player.nation : "IND";
   const playerId = isMock ? player.matches : (("id" in player && player.id) ? player.id : 1);
   const avatar = isMock ? player.avatarUrl : player.avatar;
+  const avatarPosition = "avatarPosition" in player ? (player.avatarPosition || "center 15%") : "center 15%";
 
   const dims = {
     sm: "w-44 h-64",
@@ -138,7 +140,8 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
         <img
           src={avatar || "/avatar.png"}
           alt=""
-          className="absolute z-10 w-[60%] h-[58%] object-cover object-top top-[17%] blur-2xl opacity-20 scale-125"
+          className="absolute z-10 w-[60%] h-[58%] object-cover top-[17%] blur-2xl opacity-20 scale-125 transition-all duration-300 ease-out"
+          style={{ objectPosition: avatarPosition }}
         />
 
         {/* Main player (Masked to full frame size) */}
@@ -158,7 +161,8 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
           <img
             src={avatar || "/avatar.png"}
             alt="Player"
-            className="absolute z-20 w-[58%] h-[62%] object-cover object-top top-[16%] scale-110"
+            className="absolute z-20 w-[58%] h-[62%] object-cover top-[16%] scale-110 transition-all duration-300 ease-out"
+            style={{ objectPosition: avatarPosition }}
           />
         </div>
       </div>

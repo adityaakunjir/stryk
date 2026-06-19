@@ -22,7 +22,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-mo
 import { Button } from "@/components/ui/button";
 import { usePlayer } from "@/components/player-context";
 import { PlayerCard } from "@/components/player-card";
-import { ImageCropper } from "@/components/image-cropper";
+import { PlayerPhotoUpload } from "@/components/PlayerPhotoUpload";
 import { toast } from "sonner";
 import * as Sentry from "@sentry/nextjs";
 
@@ -61,13 +61,11 @@ export default function IdentityPage() {
   const [username, setUsername] = useState(playerData?.username || "");
   const [avatar, setAvatar] = useState(playerData?.avatar || "");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken" | "invalid">("idle");
-  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [avatarPosition, setAvatarPosition] = useState(playerData?.avatarPosition || "center 15%");
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Debounced username
   const debouncedUsername = useDebounce(username, 500);
@@ -86,6 +84,7 @@ export default function IdentityPage() {
         if (playerData.fullName) setFullName(playerData.fullName);
         if (playerData.username) setUsername(playerData.username);
         if (playerData.avatar) setAvatar(playerData.avatar);
+        if (playerData.avatarPosition) setAvatarPosition(playerData.avatarPosition);
       });
     }
   }, [playerData]);
@@ -120,31 +119,16 @@ export default function IdentityPage() {
     checkUser();
   }, [debouncedUsername]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setCropSrc(reader.result as string);
-      reader.readAsDataURL(file);
-    }
+  const handlePhotoSave = (base64Url: string, cropPos: string) => {
+    setAvatar(base64Url);
+    setAvatarPosition(cropPos);
+    updatePlayerData({ avatar: base64Url, avatarPosition: cropPos });
   };
 
-  const handleCropComplete = (croppedBase64: string) => {
-    setAvatar(croppedBase64);
-    updatePlayerData({ avatar: croppedBase64 });
-    setCropSrc(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const handleCropCancel = () => {
-    setCropSrc(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const triggerFileUpload = () => fileInputRef.current?.click();
   const handleRemovePhoto = () => {
     setAvatar("");
-    updatePlayerData({ avatar: "" });
+    setAvatarPosition("center 15%");
+    updatePlayerData({ avatar: "", avatarPosition: "center 15%" });
   };
 
   const handleGeneratePhoto = () => {
@@ -194,6 +178,7 @@ export default function IdentityPage() {
         fullName: fullName.trim(),
         username: username.trim(),
         avatar: avatar,
+        avatarPosition: avatarPosition,
       });
 
       setIsSuccess(true);
@@ -236,16 +221,15 @@ export default function IdentityPage() {
   if (isSuccess) glowOpacity = 0.8;
 
   const previewPlayer = {
+    ...playerData,
     fullName: fullName || "YOUR NAME",
     username: username || "username",
-    avatar: avatar || "",
-    position: "CAM",
-    secondaryPosition: "",
-    strongFoot: "Left" as const,
-    playStyle: "Playmaker" as const,
-    bio: "",
-    rating: 55,
-  };
+    avatar: avatar,
+    avatarPosition: avatarPosition,
+    position: playerData?.position || "CAM",
+    playStyle: playerData?.playStyle || "Playmaker",
+    rating: playerData?.rating || 50,
+  } as any;
 
   return (
     <main className="stryk-mobile-shell bg-[#E5DCC5] overflow-hidden text-[#1A1A1A]">
@@ -293,7 +277,6 @@ export default function IdentityPage() {
           </motion.div>
 
           <form onSubmit={handleNext} className="mt-8 w-full rounded-[2rem] border border-[#8E793E]/30 bg-[#151515] p-5 shadow-[0_28px_50px_rgba(0,0,0,0.5)] sm:p-8 relative">
-            <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
 
             <div className="grid gap-8 md:grid-cols-[1fr_17rem] md:items-start">
               
@@ -311,58 +294,23 @@ export default function IdentityPage() {
                   <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52]">Avatar</label>
                   <p className="text-[11px] text-[#808080] mb-4 mt-0.5">Upload or generate a front-facing photo.</p>
                   
-                  {avatar ? (
-                    <div className="relative group rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
-                      <div className="flex items-center gap-4 min-w-0">
-                        <img src={avatar} alt="Avatar" className="w-14 h-14 shrink-0 rounded-full object-cover border border-[#A28B52]" />
-                        <div className="min-w-0">
-                          <div className="text-sm font-bold text-[#E8E8E8] uppercase tracking-wider truncate">Photo Ready</div>
-                          <div className="text-[11px] text-[#808080] mt-0.5 truncate">High-res uploaded</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4 shrink-0">
-                        <button type="button" onClick={triggerFileUpload} className="text-[10px] font-bold text-[#D4F829] uppercase tracking-wider hover:opacity-80 transition cursor-pointer">Replace</button>
-                        <button type="button" onClick={handleRemovePhoto} className="text-[10px] font-bold text-[#808080] uppercase tracking-wider hover:text-red-400 transition cursor-pointer">Remove</button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
-                      <motion.button
-                        whileHover={{ scale: 0.98, backgroundColor: "rgba(212,248,41,0.05)" }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={triggerFileUpload}
-                        className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] bg-[#1A1A1A] p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-[#E8E8E8] cursor-pointer"
-                        type="button"
+                  <div className="bg-[#1A1A1A] p-6 rounded-2xl border border-[#2A2A2A] flex flex-col items-center">
+                    <PlayerPhotoUpload 
+                      currentPhotoUrl={avatar} 
+                      currentCropPosition={avatarPosition}
+                      onSave={handlePhotoSave}
+                    />
+                    
+                    {avatar && (
+                      <button 
+                        type="button" 
+                        onClick={handleRemovePhoto} 
+                        className="mt-4 text-[10px] font-bold text-[#808080] uppercase tracking-wider hover:text-red-400 transition cursor-pointer"
                       >
-                        <ImageUp size={24} className="text-[#D4F829]" />
-                        <span className="text-[11px] font-bold uppercase tracking-wider">Upload Photo</span>
-                        <span className="text-[9px] text-[#808080] uppercase">Max 5MB • PNG JPG</span>
-                      </motion.button>
-                      
-                      <span className="text-center text-[10px] font-bold text-[#404040]">OR</span>
-                      
-                      <motion.button
-                        whileHover={{ scale: 0.98, backgroundColor: "rgba(255,255,255,0.02)" }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleGeneratePhoto}
-                        disabled={isGenerating}
-                        className="relative overflow-hidden flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 text-[#808080] transition hover:border-[#404040] hover:text-[#E8E8E8] cursor-pointer disabled:opacity-70"
-                        type="button"
-                      >
-                        {isGenerating ? (
-                          <Loader2 size={24} className="text-[#D4F829] animate-spin" />
-                        ) : (
-                          <>
-                            <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-600 to-yellow-400 text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
-                              <Sparkles size={8} /> AI
-                            </div>
-                            <Camera size={24} className="text-[#D4F829]" />
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-center">Generate Avatar</span>
-                          </>
-                        )}
-                      </motion.button>
-                    </div>
-                  )}
+                        Remove Photo
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="mt-8 space-y-4">
@@ -435,7 +383,7 @@ export default function IdentityPage() {
                 onMouseLeave={handleMouseLeave}
               >
                 <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="scale-90 md:scale-100 origin-center z-10 mx-auto">
-                  <PlayerCard player={previewPlayer} size="md" onClick={triggerFileUpload} />
+                  <PlayerCard player={previewPlayer} size="md" />
                 </motion.div>
               </motion.div>
             </div>
@@ -481,10 +429,6 @@ export default function IdentityPage() {
           </form>
         </div>
       </section>
-
-      {cropSrc && (
-        <ImageCropper src={cropSrc} onCropComplete={handleCropComplete} onCancel={handleCropCancel} />
-      )}
     </main>
   );
 }
