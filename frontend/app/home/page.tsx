@@ -158,42 +158,35 @@ export default function HomeLobbyPage() {
                 className="absolute z-10 w-[60%] h-[58%] object-cover object-top top-[17%] blur-2xl opacity-20 scale-125"
               />
 
-              {/* Main player (Masked to frame shape) */}
+              {/* Main player (Double masked: frame shape + bottom fade) */}
               <div 
                 className="absolute inset-0 z-20 flex justify-center pointer-events-none"
                 style={{
-                  WebkitMaskImage: "url('/avatar_mask.webp')",
-                  WebkitMaskSize: "contain",
-                  WebkitMaskRepeat: "no-repeat",
-                  WebkitMaskPosition: "center",
-                  maskImage: "url('/avatar_mask.webp')",
-                  maskSize: "contain",
-                  maskRepeat: "no-repeat",
-                  maskPosition: "center",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 58%)",
+                  maskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 58%)",
                 }}
               >
-                <img
-                  src={playerData.avatar || "/avatar.png"}
-                  alt="Player"
-                  className="absolute z-20 w-full h-full object-cover object-top"
-                />
+                <div 
+                  className="absolute inset-0 flex justify-center pointer-events-none"
+                  style={{
+                    WebkitMaskImage: "url('/avatar_mask.webp')",
+                    WebkitMaskSize: "contain",
+                    WebkitMaskRepeat: "no-repeat",
+                    WebkitMaskPosition: "center",
+                    maskImage: "url('/avatar_mask.webp')",
+                    maskSize: "contain",
+                    maskRepeat: "no-repeat",
+                    maskPosition: "center",
+                  }}
+                >
+                  <img
+                    src={playerData.avatar || "/avatar.png"}
+                    alt="Player"
+                    className="absolute z-20 w-full h-full object-cover object-top"
+                  />
+                </div>
               </div>
             </div>
-
-            {/* 3. Dark Gradient (Fades image BEFORE name tag and playstyle) */}
-            <div 
-              className="absolute inset-0 z-[25] bg-gradient-to-b from-transparent via-transparent via-[35%] to-[#0a0a0a] to-[58%] pointer-events-none" 
-              style={{
-                maskImage: "url('/player_card.webp')",
-                WebkitMaskImage: "url('/player_card.webp')",
-                maskSize: "contain",
-                WebkitMaskSize: "contain",
-                maskRepeat: "no-repeat",
-                WebkitMaskRepeat: "no-repeat",
-                maskPosition: "center",
-                WebkitMaskPosition: "center"
-              }}
-            />
 
             {/* 4. Gold Overlay (Optional - Add your own gold_particles.png if needed) */}
             {/* <img src="/gold_overlay.png" className="absolute inset-0 z-[28] h-full w-full object-contain pointer-events-none mix-blend-screen" /> */}
