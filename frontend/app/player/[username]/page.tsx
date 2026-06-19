@@ -165,71 +165,71 @@ export default async function PublicPlayerPage({ params }: Props) {
           <div className="w-10 h-10" /> {/* Placeholder for balance */}
         </div>
 
-        {/* Card Display Area (Matches Home Page aesthetic by cropping the baked-in bottom text) */}
-        <div className="flex-1 flex flex-col items-center justify-end pt-6 relative z-20">
-          <div className="relative w-[15rem] h-[16.5rem] overflow-hidden rounded-b-[2rem] flex justify-center items-start">
+        {/* Card Display Area */}
+        <div className="flex-1 flex flex-col items-center justify-center pt-2 relative z-20">
+          <div className="relative w-full flex justify-center mb-4">
             {/* Glowing pedestal shadow under the card */}
             <div
               aria-hidden
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-12 rounded-[50%] blur-2xl pointer-events-none z-0"
+              className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[80%] h-12 rounded-[50%] blur-3xl pointer-events-none z-0"
               style={{ background: "rgba(195,223,27,0.4)" }}
             />
-            <div className="relative z-10">
-              <PlayerCard player={playerData as any} size="md" />
+            <div className="relative z-10 scale-[0.95] sm:scale-100 origin-center transition-transform duration-300">
+              <PlayerCard player={playerData as any} size="lg" />
             </div>
           </div>
         </div>
 
-        <div className="mt-8 text-center px-4 relative z-30 flex flex-col items-center">
-            {/* Premium Stats Box (Dark to pop on beige) */}
-            <div className="w-full bg-[#151515] rounded-[2rem] p-6 border border-[#8E793E]/30 shadow-[0_28px_50px_rgba(0,0,0,0.5)] flex flex-col text-left relative overflow-hidden text-white">
+        <div className="mt-8 text-center px-4 relative z-30 flex flex-col items-center max-w-sm mx-auto">
+            {/* Premium Stats Box (Refined and slightly smaller) */}
+            <div className="w-full bg-[#0A0A0A] rounded-[1.5rem] p-5 border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col text-left relative overflow-hidden text-white">
                {/* Subtle top shine */}
                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                
-               <div className="text-center pb-4 border-b border-white/5 font-semibold text-xs tracking-[0.2em] uppercase text-white/60">
+               <div className="text-center pb-3 border-b border-white/5 font-semibold text-[10px] tracking-[0.2em] uppercase text-white/60">
                  <span className="text-white drop-shadow-md font-extrabold">{playerData.position}</span> 
-                 <span className="mx-2 text-[#E8D196] opacity-50">•</span> 
+                 <span className="mx-2 text-[#E8D196] opacity-30">•</span> 
                  <span className="text-white/90">{playerData.playStyle}</span> 
-                 <span className="mx-2 text-[#E8D196] opacity-50">•</span> 
-                 <span className="text-[#C3DF1B] font-bold drop-shadow-[0_0_8px_rgba(195,223,27,0.4)]">{playerData.rating} OVR</span>
+                 <span className="mx-2 text-[#E8D196] opacity-30">•</span> 
+                 <span className="text-[#C3DF1B] font-bold drop-shadow-[0_0_8px_rgba(195,223,27,0.3)]">{playerData.rating} OVR</span>
                </div>
                
                {/* Match History Widget */}
-               <div className="mt-4">
-                 <div className="flex justify-between text-[9px] uppercase tracking-[0.2em] text-white/40 font-bold mb-2">
+               <div className="mt-3">
+                 <div className="flex justify-between text-[8px] uppercase tracking-[0.2em] text-white/40 font-bold mb-1.5">
                    <span>Match History</span>
                    <span className="text-[#E8D196]/80">{totalMatches} Matches</span>
                  </div>
                  
-                 <div className="flex items-center gap-4 mt-3">
+                 <div className="flex items-center gap-3 mt-2">
                    <div className="flex-1">
-                     <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider mb-2">
+                     <div className="flex justify-between text-[9px] font-bold uppercase tracking-wider mb-1.5">
                        <span className="text-[#C3DF1B] drop-shadow-sm">{wins} W</span>
                        <span className="text-white/60">{draws} D</span>
                        <span className="text-red-400 drop-shadow-sm">{losses} L</span>
                      </div>
-                     <div className="w-full h-2 rounded-full bg-black/80 border border-white/5 overflow-hidden flex shadow-inner">
-                       <div style={{ width: `${winPercent}%` }} className="h-full bg-[#C3DF1B] shadow-[0_0_10px_rgba(195,223,27,0.5)]" />
+                     <div className="w-full h-1.5 rounded-full bg-black border border-white/5 overflow-hidden flex shadow-inner">
+                       <div style={{ width: `${winPercent}%` }} className="h-full bg-[#C3DF1B] shadow-[0_0_10px_rgba(195,223,27,0.4)]" />
                        <div style={{ width: `${drawPercent}%` }} className="h-full bg-white/20" />
-                       <div style={{ width: `${lossPercent}%` }} className="h-full bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+                       <div style={{ width: `${lossPercent}%` }} className="h-full bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.4)]" />
                      </div>
                    </div>
-                   <div className="shrink-0 text-center bg-black/60 border border-white/5 rounded-xl px-3 py-2 min-w-[4rem] shadow-lg">
-                     <div className="text-[7px] uppercase tracking-widest text-[#E8D196]/50 font-bold">Win Rate</div>
-                     <div className="font-display text-sm text-white font-extrabold mt-1">{winRate}%</div>
+                   <div className="shrink-0 text-center bg-[#1A1A1A] border border-white/5 rounded-xl px-2 py-1.5 min-w-[3.5rem] shadow-lg">
+                     <div className="text-[6px] uppercase tracking-widest text-[#E8D196]/50 font-bold">Win Rate</div>
+                     <div className="font-display text-xs text-white font-extrabold mt-0.5">{winRate}%</div>
                    </div>
                  </div>
                </div>
             </div>
         </div>
 
-        <div className="mt-10 block pb-10 px-4 relative z-30">
+        <div className="mt-6 block pb-10 px-4 relative z-30 max-w-xs mx-auto w-full">
           {viewerUserId && viewerUserId !== user.id ? (
             <FriendActionButton targetUserId={user.id} initialStatus={friendStatus} requestId={friendRequestId} />
           ) : !viewerUserId ? (
             <Link
               href="/identity"
-              className="w-full flex items-center justify-center rounded-2xl py-4 bg-[#C3DF1B] text-black font-display tracking-[0.2em] font-bold cursor-pointer hover:bg-[#b0c918] transition duration-200 text-xs shadow-[0_15px_30px_-10px_rgba(195,223,27,0.5),inset_0_1px_0_rgba(255,255,255,0.5)] active:scale-95"
+              className="w-full flex items-center justify-center rounded-xl py-3 bg-[#C3DF1B] text-black font-display tracking-[0.2em] font-bold cursor-pointer hover:bg-[#b0c918] transition duration-200 text-[10px] shadow-[0_10px_20px_-5px_rgba(195,223,27,0.4),inset_0_1px_0_rgba(255,255,255,0.5)] active:scale-95"
             >
               CREATE YOUR OWN CARD
             </Link>
