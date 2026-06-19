@@ -109,10 +109,10 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
   }, [controls, disableAnimation]);
 
   return (
-    <motion.button
+    <motion.div
       onClick={onClick}
       animate={controls}
-      className={`group relative shrink-0 overflow-hidden text-left transition-transform duration-300 focus:outline-none cursor-pointer hover:scale-[1.025] ${size === 'sm' ? 'w-44' : size === 'lg' ? 'w-72' : 'w-60'}`}
+      className={`group relative shrink-0 bg-transparent text-left transition-transform duration-300 focus:outline-none cursor-pointer hover:scale-[1.025] ${size === 'sm' ? 'w-44' : size === 'lg' ? 'w-72' : 'w-60'}`}
       style={{
         transformPerspective: 1000,
         aspectRatio: '1417/1878'
@@ -128,7 +128,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
       />
 
       {/* PLAYER IMAGE */}
-      <div className="absolute inset-0 z-20 flex justify-center overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 z-20 flex justify-center pointer-events-none">
         
         {/* Soft glow behind player */}
         <div className="absolute top-[18%] w-[55%] h-[55%] rounded-full bg-[#E5B95C]/20 blur-3xl z-10" />
@@ -233,6 +233,6 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
           </div>
         )}
       </div>
-    </motion.button>
+    </motion.div>
   );
 }
