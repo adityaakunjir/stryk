@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Share2, Trophy, TrendingUp, ShieldCheck, Flame } from "lucide-react";
 import { PlayerCard, type PlayerMockType } from "./player-card";
 import { PlayerData } from "./player-context";
+import { toast } from "sonner";
 
 type Props = {
   player: PlayerData | PlayerMockType;
@@ -37,7 +38,33 @@ export function CardDetail({ player, onClose }: Props) {
         <div className="text-[10px] tracking-[0.35em] uppercase text-white/50">
           Player Card
         </div>
-        <button className="w-11 h-11 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-white cursor-pointer">
+        <button 
+          onClick={async () => {
+            try {
+              const isMock = "stats" in player && "ovr" in player;
+              const username = !isMock && "username" in player ? player.username : undefined;
+              
+              if (!username) {
+                toast.error("Cannot share a preview card.");
+                return;
+              }
+
+              const url = `${window.location.origin}/player/${username}`;
+              const title = `${(player as PlayerData).fullName || username}'s STRYK Card`;
+              const text = `Check out my football identity on STRYK!`;
+
+              if (navigator.share) {
+                await navigator.share({ title, text, url });
+              } else {
+                await navigator.clipboard.writeText(url);
+                toast.success("Link copied to clipboard!");
+              }
+            } catch (err) {
+              console.error("Share failed:", err);
+            }
+          }}
+          className="w-11 h-11 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-white cursor-pointer"
+        >
           <Share2 size={18} />
         </button>
       </div>
