@@ -26,6 +26,7 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const detectedPositionRef = useRef<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
   const detectedScaleRef = useRef<number>(1);
   const lastProgrammaticSetRef = useRef<number>(0);
+  const hasAppliedInitialPositionRef = useRef<boolean>(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -156,7 +157,7 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
 
           <div 
             className="relative overflow-hidden rounded-full border-[3px] border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing select-none flex justify-center bg-[#0a0a0a]"
-            style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
+            style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px`, touchAction: 'none' }}
             onWheel={handleWheel}
           >
             {isDetecting ? (
@@ -183,15 +184,17 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
                   // Only accept position changes that happen 500ms+ after our last
                   // programmatic set — those are from user dragging.
                   if (Date.now() - lastProgrammaticSetRef.current < 500) {
-                    console.log("[FaceCrop] Blocked editor position override:", pos);
                     return;
                   }
                   setPosition(pos);
                 }}
                 onImageReady={() => {
+                  if (hasAppliedInitialPositionRef.current) return;
+                  
                   // Editor has fully loaded the image. Re-apply our detected
                   // position to override whatever the editor set during init.
-                  console.log("[FaceCrop] Editor ready — re-applying position:", detectedPositionRef.current);
+                  console.log("[FaceCrop] Editor ready — applying initial position:", detectedPositionRef.current);
+                  hasAppliedInitialPositionRef.current = true;
                   lastProgrammaticSetRef.current = Date.now();
                   setPosition({ ...detectedPositionRef.current });
                   setScale(detectedScaleRef.current);
