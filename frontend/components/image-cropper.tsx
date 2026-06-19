@@ -29,23 +29,23 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [initialPosition, setInitialPosition] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
   const [isDetecting, setIsDetecting] = useState<boolean>(true);
-  const [editorReady, setEditorReady] = useState<boolean>(false);
 
-  // Auto-detect face and set position when src loads
+  // ✅ REMOVED: editorReady state — was causing the bug
+
   useEffect(() => {
     let isMounted = true;
     const detectFace = async () => {
       try {
         setIsDetecting(true);
-        // Load the tiny face detector model from public/models
         await faceapi.loadTinyFaceDetectorModel('/models');
         
         const img = new window.Image();
         img.crossOrigin = "anonymous";
         img.src = src;
         
-        await new Promise((resolve) => {
+        await new Promise((resolve, reject) => {
           img.onload = resolve;
+          img.onerror = reject;
         });
 
         const detection = await faceapi.detectSingleFace(
@@ -62,66 +62,54 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           const { x, y, width, height } = detection.box;
           
           const faceCenterX = x + width / 2;
-          // Face center Y — go slightly above face center so full face + little bit of hair is visible
           const faceCenterY = y + height * 0.4;
           
           const xPercent = faceCenterX / imgWidth;
           const yPercent = faceCenterY / imgHeight;
           
-          // Calculate ideal zoom based on face size
+          // Calculate ideal zoom
           const minDim = Math.min(imgWidth, imgHeight);
           const editorDim = CROP_SIZE * 3;
-          // How big the face is at scale 1
           const faceOnScreenAtScale1 = (width / minDim) * editorDim;
-          
-          // We want face to fill about 65% of the visible circle
           const targetFaceWidth = CROP_SIZE * 0.65;
           const idealZoom = targetFaceWidth / faceOnScreenAtScale1;
-          
-          // Clamp zoom between 1 and 3
           const clampedZoom = Math.max(1, Math.min(3, idealZoom));
 
+          // ✅ Set BOTH scale and position before isDetecting → false
+          // This means editor hasn't rendered yet — when it does,
+          // it will use these values as initial state
           setScale(clampedZoom);
           setPosition({ x: xPercent, y: yPercent });
+
         } else if (isMounted) {
-          // Fallback if face not found (e.g. sunglasses)
           setPosition({ x: 0.5, y: 0.35 });
-          setScale(1);
+          setScale(1.2); // slight zoom up for no-face fallback
         }
       } catch (err: any) {
         console.error("Face detection failed", err);
-        toast.error(`Face AI Error: ${err.message || "Failed to scan"}`);
         if (isMounted) {
           setPosition({ x: 0.5, y: 0.35 });
           setScale(1);
         }
       } finally {
         if (isMounted) setIsDetecting(false);
+        // ✅ Editor only renders AFTER this — so position is already correct
       }
     };
     
-    if (src) {
-      detectFace();
-    }
-    
-    return () => {
-      isMounted = false;
-    };
+    if (src) detectFace();
+    return () => { isMounted = false; };
   }, [src]);
 
   const handleConfirm = useCallback(async () => {
     if (!editorRef.current) return;
     try {
       const canvas = editorRef.current.getImageScaledToCanvas();
-      
-      // Ensure high quality smoothing before export
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
       }
-
-      // STRYK uses standard base64 strings right now, using 0.95 for ultra sharp WebP
       const dataUrl = canvas.toDataURL(IMAGE_FORMAT, 0.95);
       onCropComplete(dataUrl);
     } catch (error) {
@@ -141,38 +129,34 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const handleDragMove = useCallback(
     (clientX: number, clientY: number) => {
       if (!isDragging) return;
-
       const deltaX = (-(clientX - dragStart.x) / CROP_SIZE) * DRAG_SENSITIVITY;
       const deltaY = (-(clientY - dragStart.y) / CROP_SIZE) * DRAG_SENSITIVITY;
-
       const newX = Math.max(0, Math.min(1, initialPosition.x + deltaX));
       const newY = Math.max(0, Math.min(1, initialPosition.y + deltaY));
-
       setPosition({ x: newX, y: newY });
     },
     [isDragging, dragStart, initialPosition],
   );
 
-  const handleDragEnd = useCallback(() => {
-    setIsDragging(false);
-  }, []);
+  const handleDragEnd = useCallback(() => setIsDragging(false), []);
 
   const getDistance = useCallback((touches: React.TouchList) => {
     const touch1 = touches[0];
     const touch2 = touches[1];
-    return Math.sqrt(Math.pow(touch2.clientX - touch1.clientX, 2) + Math.pow(touch2.clientY - touch1.clientY, 2));
+    return Math.sqrt(
+      Math.pow(touch2.clientX - touch1.clientX, 2) + 
+      Math.pow(touch2.clientY - touch1.clientY, 2)
+    );
   }, []);
 
   const handleTouchStart = useCallback(
     (e: React.TouchEvent) => {
       if (e.touches.length === 2) {
-        const distance = getDistance(e.touches);
-        setInitialDistance(distance);
+        setInitialDistance(getDistance(e.touches));
         setInitialScale(scale);
         setIsDragging(false);
       } else if (e.touches.length === 1) {
-        const touch = e.touches[0];
-        handleDragStart(touch.clientX, touch.clientY);
+        handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
       }
     },
     [scale, getDistance, handleDragStart],
@@ -181,13 +165,13 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const handleTouchMove = useCallback(
     (e: React.TouchEvent) => {
       if (e.touches.length === 2 && initialDistance > 0) {
-        const distance = getDistance(e.touches);
-        const scaleRatio = distance / initialDistance;
-        const newScale = Math.min(Math.max(initialScale * scaleRatio, 0.5), 3);
+        const newScale = Math.min(
+          Math.max(initialScale * (getDistance(e.touches) / initialDistance), 0.5), 
+          3
+        );
         setScale(newScale);
       } else if (e.touches.length === 1 && isDragging) {
-        const touch = e.touches[0];
-        handleDragMove(touch.clientX, touch.clientY);
+        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
       }
     },
     [initialDistance, initialScale, getDistance, isDragging, handleDragMove],
@@ -201,32 +185,17 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
       const delta = e.deltaY > 0 ? -0.1 : 0.1;
-      const newScale = Math.min(Math.max(scale + delta, 0.5), 3);
-      setScale(newScale);
+      setScale(prev => Math.min(Math.max(prev + delta, 0.5), 3));
     },
-    [scale],
+    [],
   );
-
-  // Mouse handlers for desktop dragging
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleDragStart(e.clientX, e.clientY);
-  };
-  const handleMouseMove = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleDragMove(e.clientX, e.clientY);
-  };
-  const handleMouseUp = () => {
-    handleDragEnd();
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl px-4 sm:px-5">
       <div className="relative w-full max-w-sm rounded-[2rem] border border-white/10 bg-[#0F0D0A]/80 backdrop-blur-2xl p-6 shadow-[0_0_80px_rgba(212,248,41,0.05)] flex flex-col items-center">
-        {/* Subtle glow behind modal */}
+        
         <div className="absolute inset-0 bg-gradient-to-b from-[#D4F829]/5 to-transparent rounded-[2rem] pointer-events-none" />
 
-        {/* Close Button */}
         <button 
           onClick={onCancel}
           type="button"
@@ -239,9 +208,8 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           CROP PROFILE PIC
         </h3>
 
-        {/* Viewport Frame with Floating Brackets */}
         <div className="relative p-3 flex items-center justify-center z-10 w-full mb-2">
-          {/* Futuristic Targeting Brackets OUTSIDE the hidden overflow */}
+          {/* Corner brackets */}
           <div className="absolute top-1 left-1 w-8 h-8 border-t-[3px] border-l-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-tl-xl z-20" />
           <div className="absolute top-1 right-1 w-8 h-8 border-t-[3px] border-r-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-tr-xl z-20" />
           <div className="absolute bottom-1 left-1 w-8 h-8 border-b-[3px] border-l-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-bl-xl z-20" />
@@ -250,11 +218,23 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           <div 
             className="relative overflow-hidden rounded-full border-[3px] border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing select-none flex justify-center bg-[#0a0a0a]"
             style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
+            onMouseDown={(e) => { e.preventDefault(); handleDragStart(e.clientX, e.clientY); }}
+            onMouseMove={(e) => { e.preventDefault(); handleDragMove(e.clientX, e.clientY); }}
+            onMouseUp={handleDragEnd}
+            onMouseLeave={handleDragEnd}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onWheel={handleWheel}
           >
             {isDetecting ? (
+              // ✅ Editor hidden while detecting — when it shows,
+              // position state already has face-detected values
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm rounded-full">
                 <Loader2 className="size-8 text-[#D4F829] animate-spin mb-3 drop-shadow-[0_0_10px_rgba(212,248,41,0.5)]" />
-                <p className="text-[#D4F829] font-display font-bold uppercase tracking-widest text-[10px] animate-pulse">Scanning Face</p>
+                <p className="text-[#D4F829] font-display font-bold uppercase tracking-widest text-[10px] animate-pulse">
+                  Scanning Face
+                </p>
               </div>
             ) : (
               <AvatarEditor
@@ -267,11 +247,8 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
                 color={[0, 0, 0, 0.8]} 
                 scale={scale}
                 rotate={rotate}
-                position={editorReady ? position : { x: 0.5, y: 0.5 }}
-                onImageReady={() => setEditorReady(true)}
-                onPositionChange={(pos) => {
-                  if (editorReady) setPosition(pos);
-                }}
+                position={position}           // ✅ FIXED — no editorReady guard
+                onPositionChange={setPosition} // ✅ FIXED — direct setter
                 style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
               />
             )}
@@ -300,7 +277,6 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           }
         `}} />
 
-        {/* Zoom controls */}
         <div className="w-full mt-10 flex items-center justify-between gap-4 px-2 z-10">
           <ZoomOut size={20} className="text-[#808080]" />
           <input
@@ -314,11 +290,11 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           />
           <ZoomIn size={20} className="text-[#D4F829] drop-shadow-[0_0_8px_rgba(212,248,41,0.4)]" />
         </div>
+
         <div className="text-[10px] font-display font-bold uppercase tracking-[0.2em] text-[#808080] mt-5 text-center w-full z-10">
           DRAG TO PAN · SLIDE TO ZOOM
         </div>
 
-        {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-4 w-full mt-8 mb-2 px-1 z-10">
           <button
             onClick={onCancel}
