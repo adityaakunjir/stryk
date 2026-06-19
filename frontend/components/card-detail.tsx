@@ -14,15 +14,20 @@ export function CardDetail({ player, onClose }: Props) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex flex-col"
-      style={{
-        background:
-          "radial-gradient(60% 50% at 50% 30%, rgba(212,248,41,0.08) 0%, transparent 60%), #05070B"}}
+      initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+      animate={{ opacity: 1, backdropFilter: "blur(40px)" }}
+      exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+      className="fixed inset-0 z-50 flex flex-col bg-black/60"
     >
-      <div className="flex items-center justify-between px-6 pt-6">
+      {/* Full Screen Texture Overlay */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20 pointer-events-none mix-blend-screen"
+        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+      />
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-[#05070B] pointer-events-none" />
+
+      {/* Header */}
+      <div className="relative z-10 flex items-center justify-between px-6 pt-6">
         <button
           onClick={onClose}
           className="w-11 h-11 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-white cursor-pointer"
@@ -37,7 +42,7 @@ export function CardDetail({ player, onClose }: Props) {
         </button>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-6">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-6">
         <div className="relative" style={{ perspective: "1500px" }}>
           <motion.div
             className="relative w-72 h-[26rem] cursor-pointer"
@@ -72,7 +77,7 @@ export function CardDetail({ player, onClose }: Props) {
         </div>
       </div>
 
-      <div className="px-6 pb-8 text-center">
+      <div className="relative z-10 px-6 pb-8 text-center">
         <button
           onClick={() => setFlipped((f) => !f)}
           className="text-[11px] tracking-[0.3em] uppercase text-white/50 hover:text-[#D4F829] transition-colors cursor-pointer"
@@ -102,18 +107,25 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
   
   return (
     <div
-      className="w-72 h-[26rem] rounded-[28px] p-6 flex flex-col"
+      className="w-72 h-[26rem] rounded-[28px] p-6 flex flex-col relative overflow-hidden"
       style={{
-        background: "#151515",
-        boxShadow:
-          "0 0 0 1px rgba(212,248,41,0.15), 0 30px 60px -20px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05)"}}
+        boxShadow: "0 0 0 1px rgba(255,255,255,0.05), 0 40px 80px -20px rgba(0,0,0,1), inset 0 1px 0 rgba(255,255,255,0.2)"
+      }}
     >
-      <div className="text-[10px] tracking-[0.35em] uppercase text-[#A28B52]">
-        Career Dossier
-      </div>
-      <div className="font-display text-white mt-1 text-2xl truncate">
-        {name ? name.toUpperCase() : "PLAYER NAME"}
-      </div>
+      {/* Rich Glass Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1E1E1E] to-[#0A0A0A] z-0" />
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay z-0" />
+      <div className="absolute -top-32 -right-32 w-64 h-64 bg-[#B08332]/20 rounded-full blur-[60px] z-0" />
+      <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-[#D4F829]/10 rounded-full blur-[60px] z-0" />
+      
+      {/* Content */}
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="text-[10px] tracking-[0.35em] uppercase text-[#B08332] drop-shadow-sm font-bold">
+          Career Dossier
+        </div>
+        <div className="font-display text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 mt-1 text-3xl truncate drop-shadow-sm">
+          {name ? name.toUpperCase() : "PLAYER NAME"}
+        </div>
       
       {player.bio && (
         <div className="mt-2 text-[11px] leading-relaxed text-[#808080] italic">
@@ -169,6 +181,7 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
             })
           )}
         </div>
+        </div>
       </div>
     </div>
   );
@@ -176,11 +189,12 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl p-3 bg-white/[0.04] border border-white/10">
-      <div className="text-[10px] tracking-[0.2em] uppercase text-white/50">
+    <div className="relative rounded-xl p-3 bg-white/[0.03] border border-white/5 overflow-hidden group hover:bg-white/[0.06] transition-colors">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="relative z-10 text-[9px] tracking-[0.25em] font-bold uppercase text-white/40">
         {label}
       </div>
-      <div className="font-display text-white mt-0.5 text-2xl leading-none">
+      <div className="relative z-10 font-display text-white mt-0.5 text-2xl leading-none drop-shadow-md">
         {value}
       </div>
     </div>
