@@ -29,6 +29,7 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [initialPosition, setInitialPosition] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
   const [isDetecting, setIsDetecting] = useState<boolean>(true);
+  const [editorReady, setEditorReady] = useState<boolean>(false);
 
   // Auto-detect face and set position when src loads
   useEffect(() => {
@@ -266,8 +267,11 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
                 color={[0, 0, 0, 0.8]} 
                 scale={scale}
                 rotate={rotate}
-                position={position}
-                onPositionChange={(pos) => setPosition(pos)}
+                position={editorReady ? position : { x: 0.5, y: 0.5 }}
+                onImageReady={() => setEditorReady(true)}
+                onPositionChange={(pos) => {
+                  if (editorReady) setPosition(pos);
+                }}
                 style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
               />
             )}
