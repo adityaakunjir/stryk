@@ -225,13 +225,13 @@ export default function PositionPage() {
           <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-4 bg-[#151515] text-white p-6 sm:p-8 rounded-[40px] shadow-2xl border border-white/5 relative z-10">
             
             {/* Tactical Pitch Selector */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-3xl border border-white/10 bg-[#0B1020]/40 p-4 shadow-[0_28px_80px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-2xl">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-3xl border border-white/10 bg-black/20 p-4 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] backdrop-blur-2xl">
               
               {/* Pitch layout */}
               <div className="relative aspect-[1.3] w-full overflow-visible rounded-2xl border border-white/10 sm:aspect-[1.8]"
                 style={{
                   background:
-                    "linear-gradient(180deg, rgba(198,255,0,0.06), rgba(91,140,255,0.06)), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 24px, transparent 24px 48px)"}}>
+                    "linear-gradient(180deg, rgba(212,248,41,0.08), rgba(255,255,255,0.02)), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 24px, transparent 24px 48px)"}}>
                 <div className="absolute inset-3 border border-white/15 rounded" />
                 <div className="absolute left-3 right-3 top-1/2 h-px bg-white/15" />
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-white/15" />
@@ -317,7 +317,7 @@ export default function PositionPage() {
               </div>
 
               {/* SECONDARY ROLE CARD */}
-              <div className="rounded-3xl border border-white/10 bg-[#0B1020]/40 p-5 shadow-xl backdrop-blur-xl flex flex-col justify-between">
+              <div className="rounded-3xl border border-white/10 bg-black/20 p-5 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-white/50">
                     <Zap size={12} /> SECONDARY (OPTIONAL)
@@ -353,7 +353,7 @@ export default function PositionPage() {
                     </button>
                     <AnimatePresence>
                       {isDropdownOpen && (
-                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute bottom-full mb-2 w-full max-h-48 overflow-y-auto rounded-xl border border-white/10 bg-[#0B1020] p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
+                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute bottom-full mb-2 w-full max-h-48 overflow-y-auto rounded-xl border border-white/10 bg-[#1A1A1A] p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
                           {positions.filter(p => p.code.split("_")[0] !== selectedPosition).reduce((acc, current) => {
                             const code = current.code.split("_")[0];
                             if (!acc.find(item => item.code.split("_")[0] === code)) acc.push(current);
@@ -375,7 +375,7 @@ export default function PositionPage() {
             </motion.section>
 
             {/* Strong Foot */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-3xl border border-white/10 bg-[#0B1020]/40 p-4 sm:p-5 shadow-xl backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-3xl border border-white/10 bg-black/20 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h2 className="text-xs font-black uppercase tracking-[0.22em] text-white/50">Strong Foot</h2>
                 <p className="mt-1 text-[11px] text-white/40">Which foot do you trust the most?</p>
@@ -462,7 +462,7 @@ export default function PositionPage() {
           >
             <motion.div 
               initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-              className="bg-[#0B1020] border border-white/10 rounded-3xl p-6 w-full max-w-sm shadow-2xl"
+              className="bg-[#151515] border border-white/10 rounded-3xl p-6 w-full max-w-sm shadow-2xl"
             >
               <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
                 <AlertTriangle className="text-yellow-500" />
