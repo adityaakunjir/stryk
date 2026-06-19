@@ -166,26 +166,19 @@ export default async function PublicPlayerPage({ params }: Props) {
         </div>
 
         {/* Card Display Area */}
-        <div className="flex-1 flex items-center justify-center py-2 relative z-20">
-          <div className="relative w-[70%] max-w-[280px] aspect-[1417/1878] flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center py-6 relative z-20 mt-4">
+          <div className="relative">
             {/* Glowing pedestal shadow under the card */}
             <div
               aria-hidden
               className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[80%] h-12 rounded-[50%] blur-2xl pointer-events-none"
               style={{ background: "rgba(195,223,27,0.35)" }}
             />
-            <PlayerCard player={playerData as any} size="lg" />
+            <PlayerCard player={playerData as any} size="md" />
           </div>
         </div>
 
-        <div className="mt-8 text-center px-2 relative z-30 flex flex-col items-center">
-            <h1 className="text-[32px] font-black font-display uppercase tracking-wider text-[#2A261D] drop-shadow-sm mb-2 italic leading-none">
-              {playerData.fullName}
-            </h1>
-            <div className="bg-[#1A1A1A]/5 border border-[#1A1A1A]/10 px-4 py-1.5 rounded-full inline-flex mb-6 shadow-sm">
-              <span className="text-[11px] text-[#A28B52] font-bold tracking-widest uppercase">@{playerData.username}</span>
-            </div>
-            
+        <div className="mt-8 text-center px-4 relative z-30 flex flex-col items-center">
             {/* Premium Stats Box (Dark to pop on beige) */}
             <div className="w-full bg-[#151515] rounded-[2rem] p-6 border border-[#8E793E]/30 shadow-[0_28px_50px_rgba(0,0,0,0.5)] flex flex-col text-left relative overflow-hidden text-white">
                {/* Subtle top shine */}
@@ -228,7 +221,7 @@ export default async function PublicPlayerPage({ params }: Props) {
             </div>
         </div>
 
-        <div className="mt-6 block pb-10 relative z-30">
+        <div className="mt-10 block pb-10 px-4 relative z-30">
           {viewerUserId && viewerUserId !== user.id ? (
             <FriendActionButton targetUserId={user.id} initialStatus={friendStatus} requestId={friendRequestId} />
           ) : !viewerUserId ? (
