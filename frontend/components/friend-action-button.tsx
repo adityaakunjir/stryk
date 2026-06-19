@@ -59,7 +59,7 @@ export function FriendActionButton({ targetUserId, initialStatus, requestId }: F
 
   if (status === "accepted") {
     return (
-      <button disabled className="w-full h-12 rounded-2xl border border-[#C6FF00]/30 bg-[#C6FF00]/10 text-[#C6FF00] font-display tracking-[0.15em] text-xs uppercase flex items-center justify-center gap-2">
+      <button disabled className="w-full h-12 rounded-2xl border border-[#C3DF1B]/30 bg-[#C3DF1B]/10 text-[#C3DF1B] font-display tracking-[0.15em] text-xs uppercase flex items-center justify-center gap-2">
         <UserCheck size={16} />
         FRIENDS
       </button>
@@ -81,7 +81,7 @@ export function FriendActionButton({ targetUserId, initialStatus, requestId }: F
         <button
           onClick={() => handleRespond("accept")}
           disabled={isLoading}
-          className="flex-1 h-12 rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.15em] text-xs font-bold uppercase flex items-center justify-center gap-2 hover:bg-[#b0e600] transition disabled:opacity-50"
+          className="flex-1 h-12 rounded-2xl bg-[#C3DF1B] text-black font-display tracking-[0.15em] text-xs font-bold uppercase flex items-center justify-center gap-2 hover:bg-[#b0c918] transition disabled:opacity-50 shadow-[0_10px_20px_-10px_rgba(195,223,27,0.4),inset_0_1px_0_rgba(255,255,255,0.4)] active:scale-95"
         >
           {isLoading ? <Loader2 className="size-4 animate-spin" /> : <UserCheck size={16} />}
           ACCEPT
@@ -102,7 +102,7 @@ export function FriendActionButton({ targetUserId, initialStatus, requestId }: F
     <button
       onClick={handleSendRequest}
       disabled={isLoading}
-      className="w-full h-12 rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.15em] text-xs uppercase font-bold flex items-center justify-center gap-2 cursor-pointer hover:bg-[#b0e600] transition duration-200 shadow-[0_10px_30px_-10px_rgba(198,255,0,0.4)] disabled:opacity-50"
+      className="w-full h-12 rounded-2xl bg-[#C3DF1B] text-black font-display tracking-[0.15em] text-xs uppercase font-bold flex items-center justify-center gap-2 cursor-pointer hover:bg-[#b0c918] transition duration-200 shadow-[0_15px_30px_-10px_rgba(195,223,27,0.5),inset_0_1px_0_rgba(255,255,255,0.5)] disabled:opacity-50 active:scale-95"
     >
       {isLoading ? <Loader2 className="size-4 animate-spin" /> : <UserPlus size={16} />}
       ADD FRIEND
