@@ -244,7 +244,7 @@ export default function IdentityPage() {
     strongFoot: "Left" as const,
     playStyle: "Playmaker" as const,
     bio: "",
-    rating: 82,
+    rating: 55,
   };
 
   return (
