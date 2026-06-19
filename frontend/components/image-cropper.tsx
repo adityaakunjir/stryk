@@ -4,9 +4,7 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import { X, Check, ZoomIn, ZoomOut, Loader2 } from "lucide-react";
 import AvatarEditor from "react-avatar-editor";
 import * as faceapi from 'face-api.js';
-import { toast } from "sonner";
 
-const DRAG_SENSITIVITY = 0.5;
 const CROP_SIZE = 280;
 const IMAGE_FORMAT = "image/webp";
 
@@ -20,20 +18,15 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const editorRef = useRef<any>(null);
   
   const [scale, setScale] = useState<number>(1);
-  const [rotate, setRotate] = useState<number>(0);
+  const [rotate] = useState<number>(0);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
-  
-  const [initialDistance, setInitialDistance] = useState<number>(0);
-  const [initialScale, setInitialScale] = useState<number>(1);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [initialPosition, setInitialPosition] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
   const [isDetecting, setIsDetecting] = useState<boolean>(true);
 
-  // Face detection: runs BEFORE the editor mounts (isDetecting=true hides editor)
-  // When detection finishes, position & scale state already hold the correct values.
-  // The editor mounts AFTER and simply renders at those values.
-  // We do NOT pass onPositionChange — the editor can never overwrite our state.
+  // Refs to persist detected values and guard against editor overwrites
+  const detectedPositionRef = useRef<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
+  const detectedScaleRef = useRef<number>(1);
+  const lastProgrammaticSetRef = useRef<number>(0);
+
   useEffect(() => {
     let isMounted = true;
     const detectFace = async () => {
@@ -64,41 +57,43 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           const { x, y, width, height } = detection.box;
           
           const faceCenterX = x + width / 2;
-          // Target slightly above face center so forehead + hair are visible
           const faceCenterY = y + height * 0.35;
           
           const xPercent = faceCenterX / imgWidth;
           const yPercent = faceCenterY / imgHeight;
           
-          // --- ZOOM CALCULATION (using consistent display-pixel units) ---
-          // At scale=1, the image's smallest dimension fills CROP_SIZE display pixels.
-          // So the face occupies (faceWidth / minDim) * CROP_SIZE display pixels.
+          // Zoom: both values in display-pixel units
           const minDim = Math.min(imgWidth, imgHeight);
           const faceDisplayAtScale1 = (width / minDim) * CROP_SIZE;
-          
-          // We want the face to fill ~45% of the visible circle diameter
           const targetFaceDisplay = CROP_SIZE * 0.45;
           const idealZoom = targetFaceDisplay / faceDisplayAtScale1;
           const clampedZoom = Math.max(1, Math.min(3, idealZoom));
 
           console.log("[FaceCrop] Detected face:", {
-            box: { x, y, width, height },
-            imgSize: { imgWidth, imgHeight },
-            position: { xPercent, yPercent },
-            zoom: { faceDisplayAtScale1, targetFaceDisplay, idealZoom, clampedZoom },
+            box: { x: Math.round(x), y: Math.round(y), w: Math.round(width), h: Math.round(height) },
+            imgSize: { w: imgWidth, h: imgHeight },
+            position: { x: xPercent.toFixed(3), y: yPercent.toFixed(3) },
+            zoom: { idealZoom: idealZoom.toFixed(2), clamped: clampedZoom.toFixed(2) },
           });
 
+          detectedPositionRef.current = { x: xPercent, y: yPercent };
+          detectedScaleRef.current = clampedZoom;
+          lastProgrammaticSetRef.current = Date.now();
           setScale(clampedZoom);
           setPosition({ x: xPercent, y: yPercent });
 
         } else if (isMounted) {
-          console.log("[FaceCrop] No face detected, using fallback position");
+          console.log("[FaceCrop] No face detected — using fallback");
+          detectedPositionRef.current = { x: 0.5, y: 0.35 };
+          detectedScaleRef.current = 1.2;
+          lastProgrammaticSetRef.current = Date.now();
           setPosition({ x: 0.5, y: 0.35 });
           setScale(1.2);
         }
       } catch (err: any) {
-        console.error("[FaceCrop] Face detection failed:", err);
+        console.error("[FaceCrop] Detection error:", err);
         if (isMounted) {
+          lastProgrammaticSetRef.current = Date.now();
           setPosition({ x: 0.5, y: 0.35 });
           setScale(1);
         }
@@ -127,78 +122,12 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
     }
   }, [onCropComplete]);
 
-  const handleDragStart = useCallback(
-    (clientX: number, clientY: number) => {
-      setIsDragging(true);
-      setDragStart({ x: clientX, y: clientY });
-      setInitialPosition({ ...position });
-    },
-    [position],
-  );
-
-  const handleDragMove = useCallback(
-    (clientX: number, clientY: number) => {
-      if (!isDragging) return;
-      const deltaX = (-(clientX - dragStart.x) / CROP_SIZE) * DRAG_SENSITIVITY;
-      const deltaY = (-(clientY - dragStart.y) / CROP_SIZE) * DRAG_SENSITIVITY;
-      const newX = Math.max(0, Math.min(1, initialPosition.x + deltaX));
-      const newY = Math.max(0, Math.min(1, initialPosition.y + deltaY));
-      setPosition({ x: newX, y: newY });
-    },
-    [isDragging, dragStart, initialPosition],
-  );
-
-  const handleDragEnd = useCallback(() => setIsDragging(false), []);
-
-  const getDistance = useCallback((touches: React.TouchList) => {
-    const touch1 = touches[0];
-    const touch2 = touches[1];
-    return Math.sqrt(
-      Math.pow(touch2.clientX - touch1.clientX, 2) + 
-      Math.pow(touch2.clientY - touch1.clientY, 2)
-    );
+  // Scroll wheel zoom on the editor area
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    setScale(prev => Math.min(Math.max(prev + delta, 0.5), 3));
   }, []);
-
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent) => {
-      if (e.touches.length === 2) {
-        setInitialDistance(getDistance(e.touches));
-        setInitialScale(scale);
-        setIsDragging(false);
-      } else if (e.touches.length === 1) {
-        handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    },
-    [scale, getDistance, handleDragStart],
-  );
-
-  const handleTouchMove = useCallback(
-    (e: React.TouchEvent) => {
-      if (e.touches.length === 2 && initialDistance > 0) {
-        const newScale = Math.min(
-          Math.max(initialScale * (getDistance(e.touches) / initialDistance), 0.5), 
-          3
-        );
-        setScale(newScale);
-      } else if (e.touches.length === 1 && isDragging) {
-        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    },
-    [initialDistance, initialScale, getDistance, isDragging, handleDragMove],
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    setInitialDistance(0);
-    handleDragEnd();
-  }, [handleDragEnd]);
-
-  const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
-      const delta = e.deltaY > 0 ? -0.1 : 0.1;
-      setScale(prev => Math.min(Math.max(prev + delta, 0.5), 3));
-    },
-    [],
-  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl px-4 sm:px-5">
@@ -228,13 +157,6 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           <div 
             className="relative overflow-hidden rounded-full border-[3px] border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing select-none flex justify-center bg-[#0a0a0a]"
             style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
-            onMouseDown={(e) => { e.preventDefault(); handleDragStart(e.clientX, e.clientY); }}
-            onMouseMove={(e) => { e.preventDefault(); handleDragMove(e.clientX, e.clientY); }}
-            onMouseUp={handleDragEnd}
-            onMouseLeave={handleDragEnd}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
             onWheel={handleWheel}
           >
             {isDetecting ? (
@@ -245,24 +167,37 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
                 </p>
               </div>
             ) : (
-              /* pointer-events:none ensures the editor never receives mouse/touch
-                 events and can never fire internal position changes.
-                 All interaction is handled by our own drag handlers on the parent div. */
-              <div style={{ pointerEvents: 'none' }}>
-                <AvatarEditor
-                  ref={editorRef}
-                  image={src}
-                  width={CROP_SIZE * 3}
-                  height={CROP_SIZE * 3}
-                  border={0}
-                  borderRadius={0}
-                  color={[0, 0, 0, 0.8]} 
-                  scale={scale}
-                  rotate={rotate}
-                  position={position}
-                  style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
-                />
-              </div>
+              <AvatarEditor
+                ref={editorRef}
+                image={src}
+                width={CROP_SIZE * 3}
+                height={CROP_SIZE * 3}
+                border={0}
+                borderRadius={0}
+                color={[0, 0, 0, 0.8]} 
+                scale={scale}
+                rotate={rotate}
+                position={position}
+                onPositionChange={(pos) => {
+                  // Ignore position changes from editor's internal initialization.
+                  // Only accept position changes that happen 500ms+ after our last
+                  // programmatic set — those are from user dragging.
+                  if (Date.now() - lastProgrammaticSetRef.current < 500) {
+                    console.log("[FaceCrop] Blocked editor position override:", pos);
+                    return;
+                  }
+                  setPosition(pos);
+                }}
+                onImageReady={() => {
+                  // Editor has fully loaded the image. Re-apply our detected
+                  // position to override whatever the editor set during init.
+                  console.log("[FaceCrop] Editor ready — re-applying position:", detectedPositionRef.current);
+                  lastProgrammaticSetRef.current = Date.now();
+                  setPosition({ ...detectedPositionRef.current });
+                  setScale(detectedScaleRef.current);
+                }}
+                style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
+              />
             )}
 
             <div className="absolute inset-0 pointer-events-none rounded-full ring-1 ring-white/10 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)] z-20" />
