@@ -33,32 +33,32 @@ const styles = [
     copy: "Explosive pace and agility.",
     emotion: "Defenders hate chasing you.",
     icon: Gauge,
-    color: "#00E5FF", // Cyan
-    tone: "from-cyan-400/30",
+    color: "#D4F829", // Neon Green
+    tone: "from-[#D4F829]/30",
   },
   {
     title: "Playmaker" as PlayStyleType,
     copy: "Creates chances. Controls the game.",
     emotion: "You see passes others don't.",
     icon: Sparkles,
-    color: "#C6FF00", // Lime
-    tone: "from-lime-300/30",
+    color: "#A28B52", // Gold
+    tone: "from-[#A28B52]/30",
   },
   {
     title: "Poacher" as PlayStyleType,
     copy: "Always in the right place. Finishes cold.",
     emotion: "One chance is enough.",
     icon: Crosshair,
-    color: "#A78BFA", // Violet
-    tone: "from-violet-400/30",
+    color: "#E8E8E8", // Silver/White
+    tone: "from-[#E8E8E8]/30",
   },
   {
     title: "Box-to-Box" as PlayStyleType,
     copy: "Covers ground. Impacts everywhere.",
     emotion: "Engine of the team. All game.",
     icon: Zap,
-    color: "#FCD34D", // Amber
-    tone: "from-amber-300/30",
+    color: "#8E793E", // Darker Gold
+    tone: "from-[#8E793E]/30",
   },
 ];
 
@@ -79,23 +79,17 @@ const placeholders = [
 
 function JourneyStepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-white/40">
-      <div className="flex items-center gap-1.5 text-white/80">
-        IDENTITY 
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C6FF00" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <motion.polyline initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5, delay: 0.2 }} points="20 6 9 17 4 12" />
-        </svg>
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#1A1A1A]/60 font-medium">
+      <div className="flex items-center gap-1.5 text-[#1A1A1A]/60">
+        IDENTITY <Check size={12} className="text-[#1A1A1A]" />
       </div>
-      <div className="w-4 sm:w-6 h-[1px] bg-white/20" />
-      <div className="flex items-center gap-1.5 text-white/80">
-        ROLE 
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C6FF00" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <motion.polyline initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5, delay: 0.5 }} points="20 6 9 17 4 12" />
-        </svg>
+      <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
+      <div className="flex items-center gap-1.5 text-[#1A1A1A]/60">
+        POSITION <Check size={12} className="text-[#1A1A1A]" />
       </div>
-      <div className="w-4 sm:w-6 h-[1px] bg-white/20" />
-      <div className="text-[#C6FF00] flex items-center gap-1.5">
-        <div className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] shadow-[0_0_8px_rgba(198,255,0,0.8)]" />
+      <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
+      <div className="text-[#1A1A1A] font-bold flex items-center gap-1.5">
+        <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         STYLE
       </div>
     </div>
@@ -114,7 +108,7 @@ function FootballerArt({ active = false, color = "#C6FF00" }: { active?: boolean
         style={{ boxShadow: active ? `0 0 0 5px ${color}25` : "none" }}
       />
       <div 
-        className="absolute left-1/2 top-14 h-24 w-20 -translate-x-1/2 -rotate-6 rounded-t-[2.5rem] bg-gradient-to-br from-zinc-950 via-[#151f20] transition-shadow duration-500" 
+        className="absolute left-1/2 top-14 h-24 w-20 -translate-x-1/2 -rotate-6 rounded-t-[2.5rem] bg-gradient-to-br from-[#1A1A1A] via-[#151515] transition-shadow duration-500" 
         style={{ boxShadow: `inset 0 0 0 1px ${color}20`, backgroundColor: `${color}10` }}
       />
       <div className="absolute left-[18%] top-24 h-4 w-28 -rotate-[28deg] rounded-full transition-colors duration-500" style={{ backgroundColor: active ? `${color}70` : `${color}40` }} />
@@ -220,9 +214,9 @@ export default function PlayStylePage() {
         
         <AnimatePresence>
           {revealStep === 0 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-white text-center">
-              <Loader2 className="size-12 animate-spin text-[#C6FF00] mx-auto mb-4" />
-              <h2 className="font-display text-2xl uppercase tracking-widest text-[#C6FF00]">Compiling Player Identity...</h2>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#E8E8E8] text-center">
+              <Loader2 className="size-12 animate-spin text-[#D4F829] mx-auto mb-4" />
+              <h2 className="font-display text-2xl uppercase tracking-widest text-[#D4F829]">Compiling Player Identity...</h2>
             </motion.div>
           )}
         </AnimatePresence>
@@ -347,18 +341,6 @@ export default function PlayStylePage() {
                     >
                       <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_50%_22%,var(--tw-gradient-from),transparent_50%)]", style.tone)} />
                       
-                      <AnimatePresence>
-                        {isActive && (
-                          <motion.div 
-                            initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}
-                            className="absolute left-5 top-5 grid size-9 place-items-center rounded-full text-black z-20"
-                            style={{ backgroundColor: style.color, boxShadow: `0 0 20px ${style.color}60` }}
-                          >
-                            <Check className="size-5 stroke-[3]" />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-
                       <FootballerArt active={isActive} color={style.color} />
                       
                       <div className="absolute bottom-0 left-0 right-0 p-6 text-center z-10 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/80 to-transparent pt-12">
@@ -372,11 +354,11 @@ export default function PlayStylePage() {
                         >
                           <Icon className="size-8" />
                         </motion.div>
-                        <h2 className="text-2xl font-display uppercase italic" style={{ color: isActive ? style.color : "#E8E8E8" }}>
+                        <h2 className="text-2xl font-display uppercase italic" style={{ color: isActive ? "#D4F829" : "#E8E8E8" }}>
                           {style.title}
                         </h2>
                         <div className="h-16 mt-2 flex flex-col justify-start">
-                          <p className="mx-auto text-[11px] font-bold text-[#E8E8E8] mb-1 leading-tight">{style.copy}</p>
+                          <p className="mx-auto text-[11px] font-bold text-[#A28B52] mb-1 leading-tight">{style.copy}</p>
                           <AnimatePresence mode="wait">
                             {isActive && (
                               <motion.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mx-auto text-[10px] text-[#808080] leading-relaxed max-w-[14rem]">
