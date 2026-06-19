@@ -165,16 +165,18 @@ export default async function PublicPlayerPage({ params }: Props) {
           <div className="w-10 h-10" /> {/* Placeholder for balance */}
         </div>
 
-        {/* Card Display Area */}
-        <div className="flex-1 flex items-center justify-center py-6 relative z-20 mt-4">
-          <div className="relative">
+        {/* Card Display Area (Matches Home Page aesthetic by cropping the baked-in bottom text) */}
+        <div className="flex-1 flex flex-col items-center justify-end pt-6 relative z-20">
+          <div className="relative w-[15rem] h-[16.5rem] overflow-hidden rounded-b-[2rem] flex justify-center items-start">
             {/* Glowing pedestal shadow under the card */}
             <div
               aria-hidden
-              className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[80%] h-12 rounded-[50%] blur-2xl pointer-events-none"
-              style={{ background: "rgba(195,223,27,0.35)" }}
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-12 rounded-[50%] blur-2xl pointer-events-none z-0"
+              style={{ background: "rgba(195,223,27,0.4)" }}
             />
-            <PlayerCard player={playerData as any} size="md" />
+            <div className="relative z-10">
+              <PlayerCard player={playerData as any} size="md" />
+            </div>
           </div>
         </div>
 
