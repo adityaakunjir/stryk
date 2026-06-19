@@ -166,8 +166,8 @@ export default async function PublicPlayerPage({ params }: Props) {
         </div>
 
         {/* Card Display Area */}
-        <div className="flex flex-col items-center justify-start pt-8 relative z-20">
-          <div className="relative w-full flex justify-center mb-6">
+        <div className="flex flex-col items-center justify-start pt-4 relative z-20">
+          <div className="relative w-full flex justify-center mb-2">
             {/* Glowing pedestal shadow under the card */}
             <div
               aria-hidden
@@ -180,7 +180,7 @@ export default async function PublicPlayerPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mt-16 text-center px-4 relative z-30 flex flex-col items-center max-w-sm mx-auto">
+        <div className="mt-8 text-center px-4 relative z-30 flex flex-col items-center max-w-sm mx-auto">
             {/* Premium Stats Box (Refined and slightly smaller) */}
             <div className="w-full bg-[#0A0A0A] rounded-[1.5rem] p-5 border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col text-left relative overflow-hidden text-white">
                {/* Subtle top shine */}
@@ -223,7 +223,7 @@ export default async function PublicPlayerPage({ params }: Props) {
             </div>
         </div>
 
-        <div className="mt-16 block pb-16 px-4 relative z-30 max-w-xs mx-auto w-full">
+        <div className="mt-8 block pb-12 px-4 relative z-30 max-w-xs mx-auto w-full">
           {viewerUserId && viewerUserId !== user.id ? (
             <FriendActionButton targetUserId={user.id} initialStatus={friendStatus} requestId={friendRequestId} />
           ) : !viewerUserId ? (
