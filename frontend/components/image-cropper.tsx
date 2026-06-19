@@ -213,8 +213,8 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           <X className="size-5" />
         </button>
 
-        <h3 className="font-display uppercase tracking-wider text-xl italic text-white text-center mt-2 mb-4">
-          Crop Profile Pic
+        <h3 className="font-display font-black uppercase tracking-wider text-2xl italic text-white text-center mt-2 mb-6">
+          CROP PROFILE PIC
         </h3>
 
         {/* Viewport Frame */}
@@ -244,15 +244,35 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
 
           {/* Mask representing the final circular crop shape overlay with corner brackets */}
           <div className="absolute inset-0 pointer-events-none rounded-2xl" />
-          <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#D4F829] pointer-events-none opacity-50" />
-          <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#D4F829] pointer-events-none opacity-50" />
-          <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#D4F829] pointer-events-none opacity-50" />
-          <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#D4F829] pointer-events-none opacity-50" />
+          <div className="absolute top-4 left-4 w-6 h-6 border-t-[3px] border-l-[3px] border-[#D4F829]/60 pointer-events-none rounded-tl-sm" />
+          <div className="absolute top-4 right-4 w-6 h-6 border-t-[3px] border-r-[3px] border-[#D4F829]/60 pointer-events-none rounded-tr-sm" />
+          <div className="absolute bottom-4 left-4 w-6 h-6 border-b-[3px] border-l-[3px] border-[#D4F829]/60 pointer-events-none rounded-bl-sm" />
+          <div className="absolute bottom-4 right-4 w-6 h-6 border-b-[3px] border-r-[3px] border-[#D4F829]/60 pointer-events-none rounded-br-sm" />
         </div>
 
+        <style dangerouslySetInnerHTML={{__html: `
+          input[type=range].custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #D4F829;
+            cursor: pointer;
+          }
+          input[type=range].custom-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #D4F829;
+            cursor: pointer;
+            border: none;
+          }
+        `}} />
+
         {/* Zoom controls */}
-        <div className="w-full mt-6 flex items-center justify-between gap-3 px-2">
-          <ZoomOut size={16} className="text-[#808080]" />
+        <div className="w-full mt-8 flex items-center justify-between gap-4 px-4">
+          <ZoomOut size={18} className="text-[#808080]" />
           <input
             type="range"
             min="0.5"
@@ -260,29 +280,29 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
             step="0.01"
             value={scale}
             onChange={(e) => setScale(parseFloat(e.target.value))}
-            className="flex-1 accent-[#D4F829] h-1.5 rounded-full bg-white/5 cursor-pointer appearance-none outline-none"
+            className="flex-1 custom-slider h-1.5 rounded-full bg-[#1A1A1A] cursor-pointer appearance-none outline-none"
           />
-          <ZoomIn size={16} className="text-[#D4F829]" />
+          <ZoomIn size={18} className="text-[#D4F829]" />
         </div>
-        <div className="text-[10px] uppercase tracking-wider text-[#808080] font-bold mt-2.5">
-          Drag to Pan · Slide to Zoom
+        <div className="text-[11px] font-black uppercase tracking-[0.1em] text-[#808080]/80 mt-4 text-center w-full">
+          DRAG TO PAN · SLIDE TO ZOOM
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-3 w-full mt-6">
+        <div className="grid grid-cols-2 gap-4 w-full mt-8 mb-2 px-2">
           <button
             onClick={onCancel}
             type="button"
-            className="h-12 rounded-[20px] border border-[#2A2315] bg-[#1A150F] text-xs font-display tracking-[0.2em] text-[#E8E8E8] uppercase hover:bg-[#2A2315] cursor-pointer transition shadow-sm"
+            className="h-[52px] rounded-3xl border border-[#2A2315]/50 bg-[#15120C] text-[13px] font-display font-black tracking-[0.05em] text-[#E8E8E8] uppercase hover:bg-[#1A160F] cursor-pointer transition shadow-sm"
           >
-            Cancel
+            CANCEL
           </button>
           <button
             onClick={handleConfirm}
             type="button"
-            className="h-12 rounded-[20px] bg-[#D4F829] text-[#181818] text-xs font-display tracking-[0.2em] font-bold uppercase hover:bg-[#bce020] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-1.5 cursor-pointer transition shadow-[0_0_20px_rgba(212,248,41,0.2)]"
+            className="h-[52px] rounded-3xl bg-[#D4F829] text-[#110E0A] text-[13px] font-display font-black tracking-[0.05em] uppercase hover:bg-[#bce020] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer transition shadow-[0_0_30px_rgba(212,248,41,0.15)]"
           >
-            <Check size={14} strokeWidth={2.5} /> Save Crop
+            <Check size={16} strokeWidth={3} /> SAVE CROP
           </button>
         </div>
       </div>
