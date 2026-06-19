@@ -167,7 +167,7 @@ export default function HomeLobbyPage() {
                 }}
               >
                 <div 
-                  className="absolute inset-0 flex justify-center pointer-events-none"
+                  className="absolute inset-0 flex justify-center pointer-events-none translate-y-[0.8px]"
                   style={{
                     WebkitMaskImage: "url('/player_card.webp')",
                     WebkitMaskSize: "contain",
