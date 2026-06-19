@@ -148,7 +148,6 @@ export default async function PublicPlayerPage({ params }: Props) {
   }
 
   return (
-  return (
     <main className="stryk-mobile-shell text-white bg-[#0A0A0A] min-h-screen relative overflow-hidden">
       {/* Premium Ambient Background */}
       <div className="absolute inset-0 z-0">
