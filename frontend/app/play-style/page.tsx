@@ -232,7 +232,7 @@ export default function PlayStylePage() {
             initial={{ scale: 0.8, opacity: 0, rotateY: 90 }} 
             animate={{ scale: 1, opacity: 1, rotateY: 0 }} 
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="relative z-10 w-full max-w-sm aspect-[0.7] rounded-[2rem] border-2 bg-[#0B1020]/80 p-8 shadow-[0_0_80px_rgba(0,0,0,0.8)] backdrop-blur-xl flex flex-col items-center justify-center overflow-hidden"
+            className="relative z-10 w-full max-w-sm aspect-[0.7] rounded-[2rem] border-2 bg-[#151515]/90 p-8 shadow-[0_0_80px_rgba(0,0,0,0.8)] backdrop-blur-xl flex flex-col items-center justify-center overflow-hidden"
             style={{ borderColor: `${activeStyleConfig.color}50`, boxShadow: `0 0 100px ${activeStyleConfig.color}30` }}
           >
             <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_0_28%,rgba(255,255,255,0.05)_28%_29%,transparent_29%_100%)] pointer-events-none" />
@@ -279,23 +279,11 @@ export default function PlayStylePage() {
 
   // --- NORMAL PAGE RENDER ---
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B] overflow-hidden">
-      {/* Dynamic Background Layer 1 */}
-      <motion.div 
-        className="fixed inset-0 z-0 transition-colors duration-1000"
-        style={{ 
-          background: `radial-gradient(circle at 68% 18%, ${activeStyleConfig.color}15, transparent 35%), radial-gradient(circle at 22% 68%, rgba(91,140,255,0.06), transparent 35%), linear-gradient(180deg, #05070B 0%, #0B1020 48%, #05070B 100%)`
-        }}
-      />
-      
-      {/* Background Layer 2: Noise Texture */}
-      <div className="fixed inset-0 z-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('data:image/svg+xml,%3Csvg_viewBox=%220_0_200_200%22_xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter_id=%22noiseFilter%22%3E%3CfeTurbulence_type=%22fractalNoise%22_baseFrequency=%220.65%22_numOctaves=%223%22_stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect_width=%22100%25%22_height=%22100%25%22_filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')]" />
-      
-      {/* Background Layer 3: Dynamic Moving Glow */}
-      <motion.div
-        className="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[140px] z-0 pointer-events-none"
-        animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.25, 0.15], backgroundColor: `${activeStyleConfig.color}25` }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+    <main className="stryk-mobile-shell bg-[#E5DCC5] overflow-hidden text-[#1A1A1A]">
+      {/* Full Screen Background Image */}
+      <div 
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
       />
 
       <section data-scroll-panel className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col px-5 pb-8 pt-6 sm:px-8 lg:px-10 overflow-y-auto min-h-0"
@@ -305,28 +293,31 @@ export default function PlayStylePage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" className="h-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/60">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to position" className="w-10 h-10 rounded-full bg-transparent border border-[#1A1A1A]/20 hover:bg-[#1A1A1A]/5 cursor-pointer text-[#1A1A1A]">
             <Link href="/position">
-              <ArrowLeft size={14} className="mr-1.5" /> Position
+              <ArrowLeft size={20} />
             </Link>
           </Button>
           <div className="hidden sm:block"><JourneyStepper /></div>
-          <Button variant="ghost" onClick={() => setShowInfoModal(true)} className="h-8 w-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer p-0 text-white/60 hover:text-white">
-            <Info size={14} />
+          <Button variant="ghost" onClick={() => setShowInfoModal(true)} className="w-10 h-10 rounded-full bg-transparent border border-[#1A1A1A]/20 hover:bg-[#1A1A1A]/5 cursor-pointer p-0 text-[#1A1A1A]">
+            <Info size={20} />
           </Button>
         </motion.header>
 
         <div className="mx-auto mt-6 flex w-full max-w-[56rem] flex-1 flex-col items-center min-h-0">
           <div className="sm:hidden mb-6"><JourneyStepper /></div>
 
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="w-full text-center">
-            <p className="text-[10px] tracking-[0.35em] uppercase text-[#C6FF00] font-bold">Pick your style</p>
-            <h2 className="font-display text-4xl sm:text-6xl uppercase italic leading-none tracking-wide text-white mt-1">
-              DEFINE YOUR PLAY STYLE
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="text-center mt-6">
+            <h2 className="font-display text-[40px] sm:text-6xl uppercase italic leading-[0.9] tracking-wider text-[#2A261D] drop-shadow-sm font-black">
+              DEFINE YOUR<br/>
+              <span className="text-[#A28B52]">PLAY STYLE</span>
             </h2>
+            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#1A1A1A]/60 uppercase tracking-[0.2em]">
+              Pick your signature style
+            </p>
           </motion.div>
 
-          <form onSubmit={handleSubmit} className="mt-8 w-full flex-1 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-8 w-full max-w-4xl mx-auto space-y-6 bg-[#151515] text-[#E8E8E8] p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
             <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="relative">
               
               {/* Carousel container */}
@@ -342,20 +333,19 @@ export default function PlayStylePage() {
                         updatePlayerData({ playStyle: style.title });
                         if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
                       }}
-                      className="snap-center relative h-[26rem] min-w-[16rem] sm:min-w-[18rem] rounded-[2rem] border bg-[#0B1020]/60 p-5 cursor-pointer select-none overflow-hidden"
+                      className="snap-center relative h-[26rem] min-w-[16rem] sm:min-w-[18rem] rounded-2xl border bg-[#1A1A1A] p-5 cursor-pointer select-none overflow-hidden"
                       animate={{
                         scale: isActive ? 1.03 : 0.92,
                         y: isActive ? -8 : 0,
                         rotateX: isActive ? 2 : 0,
                         opacity: isActive ? 1 : 0.65,
-                        borderColor: isActive ? style.color : "rgba(255,255,255,0.1)",
-                        boxShadow: isActive ? `0 20px 40px rgba(0,0,0,0.5), 0 0 30px ${style.color}40` : "0 10px 30px rgba(0,0,0,0.3)",
+                        borderColor: isActive ? style.color : "#2A2A2A",
+                        boxShadow: isActive ? `0 20px 40px rgba(0,0,0,0.5), 0 0 30px ${style.color}20` : "0 10px 30px rgba(0,0,0,0.3)",
                       }}
                       transition={{ type: "spring", stiffness: 300, damping: 25 }}
                       style={{ transformPerspective: 1000 }}
                     >
                       <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_50%_22%,var(--tw-gradient-from),transparent_50%)]", style.tone)} />
-                      <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_0_28%,rgba(255,255,255,0.03)_28%_29%,transparent_29%_100%)] pointer-events-none" />
                       
                       <AnimatePresence>
                         {isActive && (
@@ -371,25 +361,25 @@ export default function PlayStylePage() {
 
                       <FootballerArt active={isActive} color={style.color} />
                       
-                      <div className="absolute bottom-0 left-0 right-0 p-6 text-center z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12">
+                      <div className="absolute bottom-0 left-0 right-0 p-6 text-center z-10 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/80 to-transparent pt-12">
                         <motion.div
-                          className="mx-auto mb-4 grid size-16 place-items-center rounded-[1.2rem] border backdrop-blur-md"
+                          className="mx-auto mb-4 grid size-16 place-items-center rounded-2xl border"
                           animate={{
-                            borderColor: isActive ? style.color : "rgba(255,255,255,0.15)",
-                            backgroundColor: isActive ? `${style.color}15` : "rgba(255,255,255,0.05)",
-                            color: isActive ? style.color : "rgba(255,255,255,0.5)",
+                            borderColor: isActive ? style.color : "#2A2A2A",
+                            backgroundColor: isActive ? `${style.color}10` : "#151515",
+                            color: isActive ? style.color : "#808080",
                           }}
                         >
                           <Icon className="size-8" />
                         </motion.div>
-                        <h2 className="text-2xl font-display uppercase italic" style={{ color: isActive ? style.color : "white" }}>
+                        <h2 className="text-2xl font-display uppercase italic" style={{ color: isActive ? style.color : "#E8E8E8" }}>
                           {style.title}
                         </h2>
                         <div className="h-16 mt-2 flex flex-col justify-start">
-                          <p className="mx-auto text-[11px] font-bold text-white mb-1 leading-tight">{style.copy}</p>
+                          <p className="mx-auto text-[11px] font-bold text-[#E8E8E8] mb-1 leading-tight">{style.copy}</p>
                           <AnimatePresence mode="wait">
                             {isActive && (
-                              <motion.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mx-auto text-[10px] text-white/50 leading-relaxed max-w-[14rem]">
+                              <motion.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mx-auto text-[10px] text-[#808080] leading-relaxed max-w-[14rem]">
                                 {style.emotion}
                               </motion.p>
                             )}
@@ -409,10 +399,10 @@ export default function PlayStylePage() {
                     type="button"
                     onClick={() => { setSelectedStyle(style.title); updatePlayerData({ playStyle: style.title }); scrollToCard(styles.findIndex(s => s.title === style.title)); }}
                     className={cn(
-                      "size-8 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer",
-                      selectedStyle === style.title ? "bg-white/10 scale-110" : "hover:bg-white/5 opacity-40"
+                      "size-8 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer border",
+                      selectedStyle === style.title ? "bg-[#1A1A1A] border-[#2A2A2A] scale-110" : "bg-[#151515] border-[#2A2A2A] opacity-50 hover:opacity-100 hover:bg-[#1A1A1A]"
                     )}
-                    style={{ color: selectedStyle === style.title ? style.color : "white", boxShadow: selectedStyle === style.title ? `0 0 15px ${style.color}30` : "none" }}
+                    style={{ color: selectedStyle === style.title ? style.color : "#808080", boxShadow: selectedStyle === style.title ? `0 0 15px ${style.color}20` : "none" }}
                   >
                     <style.icon size={16} />
                   </button>
@@ -421,18 +411,18 @@ export default function PlayStylePage() {
             </motion.section>
 
             {/* Smart Bio Section */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="rounded-3xl border border-white/8 bg-[#0B1020]/40 p-5 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl group">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 group">
               <div className="flex items-end justify-between gap-4">
                 <div>
-                  <h2 className="text-sm font-black uppercase tracking-[0.2em] text-white/50">Player Bio</h2>
-                  <p className="mt-1 text-[11px] text-white/40">Write something for the back of your card.</p>
+                  <h2 className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] mb-1">Player Bio</h2>
+                  <p className="mt-1 text-[11px] text-[#808080]">Write something for the back of your card.</p>
                 </div>
                 <div className="flex flex-col items-end gap-1 w-24">
-                  <span className={cn("text-xs font-bold transition-colors", bio.length >= 120 ? "text-red-400" : bio.length > 100 ? "text-yellow-400" : "text-white/40")}>
+                  <span className={cn("text-[10px] font-bold transition-colors", bio.length >= 120 ? "text-red-400" : bio.length > 100 ? "text-yellow-400" : "text-[#808080]")}>
                     {bio.length} / 120
                   </span>
                   {/* Visual Progress Bar */}
-                  <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                  <div className="w-full h-1 bg-[#151515] border border-[#2A2A2A] rounded-full overflow-hidden">
                     <motion.div 
                       className="h-full rounded-full" 
                       style={{ backgroundColor: bio.length >= 120 ? "#f87171" : activeStyleConfig.color }}
@@ -445,14 +435,13 @@ export default function PlayStylePage() {
               
               <div className="relative mt-4">
                 <textarea
-                  className="min-h-[100px] w-full resize-none rounded-xl border border-white/10 bg-black/30 px-4 py-4 pr-10 text-sm font-semibold text-white shadow-inner outline-none transition-all placeholder:text-transparent focus:border-[#C6FF00]/50 focus:bg-white/[0.03]"
-                  style={{ boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5)" }}
+                  className="min-h-[100px] w-full resize-none rounded-xl border border-[#2A2A2A] bg-[#151515] px-4 py-4 pr-10 text-sm font-medium text-[#E8E8E8] shadow-inner outline-none transition-all placeholder:text-transparent focus:border-[#D4F829]/50"
                   maxLength={120}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                 />
                 {!bio && (
-                  <div className="absolute inset-x-4 top-4 pointer-events-none text-sm font-semibold text-white/30 truncate">
+                  <div className="absolute inset-x-4 top-4 pointer-events-none text-sm font-medium text-[#808080] truncate">
                     <AnimatePresence mode="wait">
                       <motion.span key={placeholderIndex} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="block">
                         {placeholders[placeholderIndex]}
@@ -460,18 +449,18 @@ export default function PlayStylePage() {
                     </AnimatePresence>
                   </div>
                 )}
-                <Edit3 className="pointer-events-none absolute bottom-4 right-4 size-4 text-white/20" />
+                <Edit3 className="pointer-events-none absolute bottom-4 right-4 size-4 text-[#808080]" />
               </div>
 
               {/* AI Suggestions */}
               <div className="mt-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Cpu size={12} className="text-[#00E5FF]" />
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#00E5FF]">AI Suggestions</span>
+                  <Cpu size={12} className="text-[#A28B52]" />
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#A28B52]">AI Suggestions</span>
                 </div>
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1.5 mt-2">
                   {suggestions.map((sug, i) => (
-                    <button key={i} type="button" onClick={() => setBio(sug)} className="text-left text-[11px] text-white/60 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg px-3 py-2 transition truncate cursor-pointer">
+                    <button key={i} type="button" onClick={() => setBio(sug)} className="text-left text-[11px] text-[#808080] hover:text-[#E8E8E8] bg-[#151515] hover:bg-[#2A2A2A]/50 border border-[#2A2A2A] rounded-lg px-3 py-2 transition truncate cursor-pointer">
                       "{sug}"
                     </button>
                   ))}
@@ -481,22 +470,22 @@ export default function PlayStylePage() {
 
             {/* Live Preview Strip */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.55 }} className="flex justify-center mb-2 pointer-events-none">
-              <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-[#0B1020]/60 p-2 pr-6 shadow-xl backdrop-blur-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-2 opacity-10">
-                  <activeStyleConfig.icon size={48} />
+              <div className="flex items-center gap-4 rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-2 pr-6 shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-2 opacity-5">
+                  <activeStyleConfig.icon size={48} className="text-[#E8E8E8]" />
                 </div>
                 {playerData?.avatar ? (
-                  <img src={playerData.avatar} alt="Avatar" className="w-10 h-10 rounded-xl object-cover border border-white/20" />
+                  <img src={playerData.avatar} alt="Avatar" className="w-10 h-10 rounded-xl object-cover border border-[#2A2A2A]" />
                 ) : (
-                  <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                    <div className="w-5 h-5 rounded-full bg-white/20" />
+                  <div className="w-10 h-10 rounded-xl bg-[#151515] flex items-center justify-center border border-[#2A2A2A]">
+                    <div className="w-5 h-5 rounded-full bg-[#2A2A2A]" />
                   </div>
                 )}
                 <div className="flex flex-col">
-                  <span className="text-xs font-black uppercase tracking-wider text-white">{playerData?.fullName || "Player Name"}</span>
-                  <div className="flex items-center gap-2 mt-0.5 text-[9px] font-bold tracking-[0.1em] text-white/60">
-                    <span className="text-white">{playerData?.position || "CAM"}</span> • 
-                    <span className="text-white">{playerData?.strongFoot || "Right"} Foot</span> • 
+                  <span className="text-[11px] font-black uppercase tracking-wider text-[#E8E8E8]">{playerData?.fullName || "Player Name"}</span>
+                  <div className="flex items-center gap-2 mt-0.5 text-[9px] font-bold tracking-[0.1em] text-[#808080]">
+                    <span className="text-[#E8E8E8]">{playerData?.position || "CAM"}</span> • 
+                    <span className="text-[#E8E8E8]">{playerData?.strongFoot || "Right"} Foot</span> • 
                     <span style={{ color: activeStyleConfig.color }}>{selectedStyle}</span>
                   </div>
                 </div>
@@ -511,8 +500,8 @@ export default function PlayStylePage() {
                 whileTap={{ scale: launchStep === 0 ? 0.97 : 1 }}
                 disabled={launchStep > 0}
                 className={cn(
-                  "relative w-full h-14 rounded-2xl font-display tracking-[0.2em] uppercase font-bold flex items-center justify-center gap-3 transition-all duration-300 overflow-hidden cursor-pointer",
-                  launchStep > 0 ? "bg-[#0B1020] border border-[#C6FF00]/50 text-[#C6FF00]" : "bg-[#C6FF00] text-black hover:bg-[#b0e600] shadow-[0_0_30px_-5px_rgba(198,255,0,0.5)]"
+                  "relative w-full h-[60px] rounded-full font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-3 transition-all duration-300 overflow-hidden cursor-pointer text-[15px]",
+                  launchStep > 0 ? "bg-[#151515] border border-[#2A2A2A] text-[#808080]" : "bg-[#D4F829] text-[#1A1A1A] hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
                 )}
                 type="submit"
               >
@@ -533,14 +522,14 @@ export default function PlayStylePage() {
 
             {/* Dynamic Checklist */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }} className="flex flex-col items-center gap-1.5 pb-8">
-              <div className="text-[9px] font-bold uppercase tracking-widest text-white/30 flex items-center gap-2">
-                <Check size={10} className="text-[#C6FF00]" /> Identity Created
+              <div className="text-[9px] font-bold uppercase tracking-widest text-[#808080] flex items-center gap-2">
+                <Check size={10} className="text-[#D4F829]" /> Identity Created
               </div>
-              <div className="text-[9px] font-bold uppercase tracking-widest text-white/30 flex items-center gap-2">
-                <Check size={10} className="text-[#C6FF00]" /> Position Selected
+              <div className="text-[9px] font-bold uppercase tracking-widest text-[#808080] flex items-center gap-2">
+                <Check size={10} className="text-[#D4F829]" /> Position Selected
               </div>
-              <div className="text-[9px] font-bold uppercase tracking-widest text-white/70 flex items-center gap-2 bg-[#C6FF00]/10 px-3 py-1 rounded-full border border-[#C6FF00]/20">
-                <Check size={10} className="text-[#C6FF00]" /> Ready To Generate
+              <div className="text-[9px] font-bold uppercase tracking-widest text-[#A28B52] flex items-center gap-2 bg-[#A28B52]/10 px-3 py-1 rounded-full border border-[#A28B52]/20">
+                <Check size={10} className="text-[#A28B52]" /> Ready To Generate
               </div>
             </motion.div>
           </form>
@@ -554,27 +543,27 @@ export default function PlayStylePage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowInfoModal(false)} className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm" />
             <motion.div 
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl border-t border-white/10 bg-[#0B1020] p-6 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] pb-12"
+              className="fixed inset-x-0 bottom-0 z-50 rounded-t-[2rem] border-t border-[#8E793E]/30 bg-[#151515] p-6 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] pb-12"
             >
               <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h3 className="font-display text-2xl uppercase italic text-white">Play Styles</h3>
-                  <p className="text-xs text-white/50">Understand your role on the pitch.</p>
+                  <h3 className="font-display text-2xl uppercase italic text-[#E8E8E8]">Play Styles</h3>
+                  <p className="text-xs text-[#808080]">Understand your role on the pitch.</p>
                 </div>
-                <button onClick={() => setShowInfoModal(false)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 cursor-pointer">
-                  <X size={16} className="text-white/60" />
+                <button onClick={() => setShowInfoModal(false)} className="w-8 h-8 rounded-full bg-[#1A1A1A] border border-[#2A2A2A] flex items-center justify-center hover:bg-[#2A2A2A] cursor-pointer">
+                  <X size={16} className="text-[#808080]" />
                 </button>
               </div>
               
               <div className="space-y-4">
                 {styles.map(s => (
-                  <div key={s.title} className="flex gap-4 items-start p-3 rounded-2xl bg-white/5 border border-white/5">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${s.color}15`, color: s.color }}>
+                  <div key={s.title} className="flex gap-4 items-start p-4 rounded-2xl bg-[#1A1A1A] border border-[#2A2A2A]">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border border-[#2A2A2A]/50 bg-[#151515]" style={{ color: s.color }}>
                       <s.icon size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-white uppercase tracking-wider text-sm">{s.title}</h4>
-                      <p className="text-xs text-white/60 mt-1">{s.copy} {s.emotion}</p>
+                      <h4 className="font-bold text-[#E8E8E8] uppercase tracking-wider text-sm">{s.title}</h4>
+                      <p className="text-xs text-[#808080] mt-1">{s.copy} {s.emotion}</p>
                     </div>
                   </div>
                 ))}
