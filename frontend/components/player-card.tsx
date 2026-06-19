@@ -78,7 +78,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
 
   const dims = {
     sm: "w-44 h-64",
-    md: "w-60 h-[22rem]",
+    md: "w-full max-w-[280px]",
     lg: "w-72 h-[26rem]"
   }[size];
 
@@ -113,7 +113,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
     <motion.div
       onClick={onClick}
       animate={controls}
-      className={`group relative shrink-0 bg-transparent text-left transition-transform duration-300 focus:outline-none cursor-pointer hover:scale-[1.025] ${size === 'sm' ? 'w-44' : size === 'lg' ? 'w-72' : 'w-60'}`}
+      className={`group relative shrink-0 bg-transparent text-left transition-transform duration-300 focus:outline-none cursor-pointer hover:scale-[1.025] ${size === 'sm' ? 'w-44' : size === 'lg' ? 'w-72' : 'w-full max-w-[280px]'}`}
       style={{
         transformPerspective: 1000,
         aspectRatio: '1417/1878'
@@ -191,18 +191,18 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
         {/* LEFT SIDE (Rating, Position, Flag) */}
         {/* ========================================= */}
         <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1 z-50">
-          <div className="font-display text-[clamp(24px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+          <div className="font-display text-[clamp(44px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
             {!disableAnimation ? <AnimatedCounter value={ovr} duration={2.5} /> : ovr}
           </div>
-          <div className="font-display text-[clamp(12px,5vw,26px)] text-black leading-none font-bold drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]">{position || "POS"}</div>
-          <img src={`https://flagcdn.com/w40/${nation.toLowerCase() === 'ind' ? 'in' : nation.toLowerCase()}.png`} alt={nation} className="mt-1 h-[10px] sm:h-[16px] w-auto object-cover shadow-[0_2px_8px_rgba(0,0,0,0.8)] border border-black/10" />
+          <div className="font-display text-[clamp(20px,5vw,26px)] text-black leading-none font-bold drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]">{position || "POS"}</div>
+          <img src={`https://flagcdn.com/w40/${nation.toLowerCase() === 'ind' ? 'in' : nation.toLowerCase()}.png`} alt={nation} className="mt-2 h-[16px] w-[26px] object-cover shadow-[0_2px_8px_rgba(0,0,0,0.8)] border border-black/10" />
         </div>
 
         {/* ========================================= */}
         {/* CENTER NAME PLAQUE */}
         {/* ========================================= */}
         <div className="absolute top-[61.4%] bottom-[38%] left-[15%] right-[15%] flex items-center justify-center">
-          <div className="font-display text-[clamp(12px,4.5vw,22px)] text-[#2A1B0A] leading-none tracking-widest uppercase font-bold drop-shadow-sm truncate">
+          <div className="font-display text-[clamp(16px,4.5vw,22px)] text-[#2A1B0A] leading-none tracking-widest uppercase font-bold drop-shadow-sm truncate">
             {name || "PLAYER"}
           </div>
         </div>
@@ -211,7 +211,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
         {/* PLAYSTYLE TAG */}
         {/* ========================================= */}
         <div className="absolute top-[65.8%] left-0 right-0 flex justify-center">
-          <div className="font-display text-[clamp(7px,2vw,12px)] text-[#C89B3C] tracking-[0.2em] uppercase font-bold truncate px-6">
+          <div className="font-display text-[clamp(9px,2vw,12px)] text-[#C89B3C] tracking-[0.2em] uppercase font-bold">
             {style || "STYLE"}
           </div>
         </div>
@@ -225,10 +225,10 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
             <div className="flex justify-between px-1">
               {statsToDisplay.slice(0,3).map(({ label, value }) => (
                 <div key={label} className="flex gap-1 items-baseline w-[32%] justify-center">
-                  <span className="font-display font-bold text-[clamp(10px,4vw,22px)] text-[#E8D196] leading-none">
+                  <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">
                     {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
                   </span>
-                  <span className="font-display text-[clamp(7px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
+                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
                 </div>
               ))}
             </div>
@@ -236,10 +236,10 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
             <div className="flex justify-between px-1 mt-1">
               {statsToDisplay.slice(3,6).map(({ label, value }) => (
                 <div key={label} className="flex gap-1 items-baseline w-[32%] justify-center">
-                  <span className="font-display font-bold text-[clamp(10px,4vw,22px)] text-[#E8D196] leading-none">
+                  <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">
                     {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
                   </span>
-                  <span className="font-display text-[clamp(7px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
+                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
                 </div>
               ))}
             </div>
