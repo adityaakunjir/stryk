@@ -242,9 +242,9 @@ export default function IdentityPage() {
     position: "CAM",
     secondaryPosition: "",
     strongFoot: "Left" as const,
-    playStyle: "Playmaker" as const,
+    playStyle: "PLAYSTYLE" as any,
     bio: "",
-    rating: 55,
+    rating: 60,
   };
 
   return (

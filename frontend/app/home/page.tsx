@@ -152,11 +152,13 @@ export default function HomeLobbyPage() {
               <div className="absolute top-[18%] w-[55%] h-[55%] rounded-full bg-[#E5B95C]/20 blur-3xl z-10" />
 
               {/* Blurred duplicate for depth */}
-              <img
-                src={playerData.avatar || "/avatar.png"}
-                alt=""
-                className="absolute z-10 w-[60%] h-[58%] object-cover object-top top-[17%] blur-2xl opacity-20 scale-125"
-              />
+              {playerData.avatar && (
+                <img
+                  src={playerData.avatar}
+                  alt=""
+                  className="absolute z-10 w-[60%] h-[58%] object-cover object-top top-[17%] blur-2xl opacity-20 scale-125"
+                />
+              )}
 
               {/* Main player (Double masked: frame shape + bottom fade) */}
               <div 
@@ -179,11 +181,13 @@ export default function HomeLobbyPage() {
                     maskPosition: "center",
                   }}
                 >
-                  <img
-                    src={playerData.avatar || "/avatar.png"}
-                    alt="Player"
-                    className="absolute z-20 w-full h-full object-cover object-top"
-                  />
+                  {playerData.avatar && (
+                    <img
+                      src={playerData.avatar}
+                      alt="Player"
+                      className="absolute z-20 w-full h-full object-cover object-top"
+                    />
+                  )}
                 </div>
               </div>
             </div>
