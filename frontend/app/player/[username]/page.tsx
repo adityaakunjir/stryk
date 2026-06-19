@@ -174,13 +174,13 @@ export default async function PublicPlayerPage({ params }: Props) {
               className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[80%] h-12 rounded-[50%] blur-3xl pointer-events-none z-0"
               style={{ background: "rgba(195,223,27,0.4)" }}
             />
-            <div className="relative z-10 scale-[0.95] sm:scale-100 origin-center transition-transform duration-300">
-              <PlayerCard player={playerData as any} size="lg" />
+            <div className="relative z-10 origin-center transition-transform duration-300">
+              <PlayerCard player={playerData as any} size="md" />
             </div>
           </div>
         </div>
 
-        <div className="mt-4 text-center px-4 relative z-30 flex flex-col items-center max-w-sm mx-auto w-full">
+        <div className="mt-8 text-center px-4 relative z-30 flex flex-col items-center max-w-sm mx-auto w-full">
             {/* Premium Stats Box (Refined and slightly smaller) */}
             <div className="w-full bg-[#0A0A0A] rounded-[1.5rem] p-5 border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col text-left relative overflow-hidden text-white">
                {/* Subtle top shine */}
