@@ -49,8 +49,8 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
         const detection = await faceapi.detectSingleFace(
           img,
           new faceapi.TinyFaceDetectorOptions({ 
-            inputSize: 320,
-            scoreThreshold: 0.4 
+            inputSize: 512,
+            scoreThreshold: 0.15 
           })
         );
 
@@ -66,11 +66,11 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           const xPercent = faceCenterX / imgWidth;
           const yPercent = faceCenterY / imgHeight;
           
-          // Clamp to valid editor ranges
-          const clampedX = Math.max(0.2, Math.min(0.8, xPercent));
-          const clampedY = Math.max(0.0, Math.min(0.8, yPercent));
-          
-          setPosition({ x: clampedX, y: clampedY });
+          // We do not clamp manually. Let the AvatarEditor handle bounds.
+          setPosition({ x: xPercent, y: yPercent });
+        } else if (isMounted) {
+          // Fallback if face not found (e.g. sunglasses)
+          setPosition({ x: 0.5, y: 0.35 });
         }
       } catch (err) {
         console.error("Face detection failed", err);
@@ -218,37 +218,40 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           CROP PROFILE PIC
         </h3>
 
-        {/* Viewport Frame */}
-        <div 
-          className="relative overflow-hidden rounded-full border-4 border-[#1A1A1A] shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing select-none flex justify-center z-10"
-        >
-          {isDetecting && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm pointer-events-none rounded-full">
-              <Loader2 className="size-8 text-[#D4F829] animate-spin mb-3 drop-shadow-[0_0_10px_rgba(212,248,41,0.5)]" />
-              <p className="text-[#D4F829] font-display font-bold uppercase tracking-widest text-[10px] animate-pulse">Scanning Face</p>
-            </div>
-          )}
-          <AvatarEditor
-            ref={editorRef}
-            image={src}
-            width={CROP_SIZE * 3}
-            height={CROP_SIZE * 3}
-            border={0}
-            borderRadius={0}
-            color={[0, 0, 0, 0.8]} 
-            scale={scale}
-            rotate={rotate}
-            position={position}
-            onPositionChange={(pos) => setPosition(pos)}
-            style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
-          />
+        {/* Viewport Frame with Floating Brackets */}
+        <div className="relative p-3 flex items-center justify-center z-10 w-full mb-2">
+          {/* Futuristic Targeting Brackets OUTSIDE the hidden overflow */}
+          <div className="absolute top-1 left-1 w-8 h-8 border-t-[3px] border-l-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-tl-xl z-20" />
+          <div className="absolute top-1 right-1 w-8 h-8 border-t-[3px] border-r-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-tr-xl z-20" />
+          <div className="absolute bottom-1 left-1 w-8 h-8 border-b-[3px] border-l-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-bl-xl z-20" />
+          <div className="absolute bottom-1 right-1 w-8 h-8 border-b-[3px] border-r-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-br-xl z-20" />
 
-          {/* Futuristic Targeting Brackets overlaying the image */}
-          <div className="absolute inset-0 pointer-events-none rounded-full ring-1 ring-white/10 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)]" />
-          <div className="absolute top-4 left-4 w-8 h-8 border-t-[3px] border-l-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-tl-xl" />
-          <div className="absolute top-4 right-4 w-8 h-8 border-t-[3px] border-r-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-tr-xl" />
-          <div className="absolute bottom-4 left-4 w-8 h-8 border-b-[3px] border-l-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-bl-xl" />
-          <div className="absolute bottom-4 right-4 w-8 h-8 border-b-[3px] border-r-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-br-xl" />
+          <div 
+            className="relative overflow-hidden rounded-full border-[3px] border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing select-none flex justify-center"
+          >
+            {isDetecting && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm pointer-events-none rounded-full">
+                <Loader2 className="size-8 text-[#D4F829] animate-spin mb-3 drop-shadow-[0_0_10px_rgba(212,248,41,0.5)]" />
+                <p className="text-[#D4F829] font-display font-bold uppercase tracking-widest text-[10px] animate-pulse">Scanning Face</p>
+              </div>
+            )}
+            <AvatarEditor
+              ref={editorRef}
+              image={src}
+              width={CROP_SIZE * 3}
+              height={CROP_SIZE * 3}
+              border={0}
+              borderRadius={0}
+              color={[0, 0, 0, 0.8]} 
+              scale={scale}
+              rotate={rotate}
+              position={position}
+              onPositionChange={(pos) => setPosition(pos)}
+              style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
+            />
+
+            <div className="absolute inset-0 pointer-events-none rounded-full ring-1 ring-white/10 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)]" />
+          </div>
         </div>
 
         <style dangerouslySetInnerHTML={{__html: `
