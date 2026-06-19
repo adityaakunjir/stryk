@@ -309,20 +309,10 @@ export default function HomeLobbyPage() {
               <div className="text-[10px] font-bold text-[#A37B31] ml-2">0/1</div>
             </div>
 
-            {/* FIND MATCH BIG BUTTON */}
-            <button 
-              onClick={() => router.push("/matches")}
-              className="w-full h-[44px] bg-[#C3DF1B] text-black rounded-xl font-bold text-[12px] tracking-[0.15em] flex items-center justify-center gap-2 hover:opacity-90 transition active:scale-95 mb-3 shadow-[0_0_20px_rgba(195,223,27,0.2)]"
-            >
-              <Play size={14} fill="currentColor" /> FIND MATCH
-            </button>
-
-            {/* Action Grid (4 buttons) */}
-            <div className="grid grid-cols-4 gap-2">
-              <ActionButton icon={<MapPin size={18} className="text-[#C3DF1B]" />} label="FIND MATCH" subtext="Join matches near you" onClick={() => router.push("/matches")} />
+            {/* Action Grid (2 buttons) */}
+            <div className="grid grid-cols-2 gap-3">
               <ActionButton icon={<Users size={18} className="text-[#C3DF1B]" />} label="MY SQUAD" subtext="Manage your squad" onClick={() => setShowSquadModal(true)} />
               <ActionButton icon={<BarChart3 size={18} className="text-[#C3DF1B]" />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
-              <ActionButton icon={<Shield size={18} className="text-[#C89B3C]" />} label="AI COACH" subtext="Improve your game" onClick={() => {}} />
             </div>
 
           </div>
@@ -340,7 +330,7 @@ export default function HomeLobbyPage() {
         </div>
 
         <NavTab icon={<Users size={20} />} label="SQUAD" active={false} onClick={() => setShowSquadModal(true)} />
-        <NavTab icon={<User size={20} />} label="PROFILE" active={false} onClick={() => router.push("/profile/me")} />
+        <NavTab icon={<User size={20} />} label="PROFILE" active={false} onClick={() => router.push("/settings")} />
       </div>
 
       {/* Card Detail Modal */}
