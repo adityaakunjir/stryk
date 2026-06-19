@@ -141,25 +141,33 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
           className="absolute z-10 w-[60%] h-[58%] object-cover object-top top-[17%] blur-2xl opacity-20 scale-125"
         />
 
-        {/* Main player (Masked to full frame size) */}
+        {/* Main player (Double masked: frame shape + bottom fade) */}
         <div 
-          className="absolute inset-0 z-20 flex justify-center pointer-events-none -translate-y-[3.8%]"
+          className="absolute inset-0 z-20 flex justify-center pointer-events-none"
           style={{
-            WebkitMaskImage: "url('/avatar_mask.webp')",
-            WebkitMaskSize: "100% 100%",
-            WebkitMaskRepeat: "no-repeat",
-            WebkitMaskPosition: "center",
-            maskImage: "url('/avatar_mask.webp')",
-            maskSize: "100% 100%",
-            maskRepeat: "no-repeat",
-            maskPosition: "center",
+            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 50%, transparent 66%)",
+            maskImage: "linear-gradient(to bottom, black 0%, black 50%, transparent 66%)",
           }}
         >
-          <img
-            src={avatar || "/avatar.png"}
-            alt="Player"
-            className="absolute z-20 w-[58%] h-[62%] object-cover object-top top-[16%] scale-110"
-          />
+          <div 
+            className="absolute inset-0 flex justify-center pointer-events-none translate-y-[0.8px]"
+            style={{
+              WebkitMaskImage: "url('/player_card.webp')",
+              WebkitMaskSize: "contain",
+              WebkitMaskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskImage: "url('/player_card.webp')",
+              maskSize: "contain",
+              maskRepeat: "no-repeat",
+              maskPosition: "center",
+            }}
+          >
+            <img
+              src={avatar || "/avatar.png"}
+              alt="Player"
+              className="absolute z-20 w-full h-full object-cover object-top"
+            />
+          </div>
         </div>
       </div>
 
@@ -178,12 +186,12 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
         {/* ========================================= */}
         {/* LEFT SIDE (Rating, Position, Flag) */}
         {/* ========================================= */}
-        <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1">
-          <div className="font-display text-[clamp(24px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]">
+        <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1 z-50">
+          <div className="font-display text-[clamp(24px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
             {!disableAnimation ? <AnimatedCounter value={ovr} duration={2.5} /> : ovr}
           </div>
-          <div className="font-display text-[clamp(12px,5vw,26px)] text-black leading-none font-bold drop-shadow-sm">{position || "POS"}</div>
-          <img src={`https://flagcdn.com/w40/${nation.toLowerCase() === 'ind' ? 'in' : nation.toLowerCase()}.png`} alt={nation} className="mt-1 h-[10px] sm:h-[16px] w-auto object-cover shadow-sm border border-black/10" />
+          <div className="font-display text-[clamp(12px,5vw,26px)] text-black leading-none font-bold drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]">{position || "POS"}</div>
+          <img src={`https://flagcdn.com/w40/${nation.toLowerCase() === 'ind' ? 'in' : nation.toLowerCase()}.png`} alt={nation} className="mt-1 h-[10px] sm:h-[16px] w-auto object-cover shadow-[0_2px_8px_rgba(0,0,0,0.8)] border border-black/10" />
         </div>
 
         {/* ========================================= */}
