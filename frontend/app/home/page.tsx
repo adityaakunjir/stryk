@@ -169,11 +169,11 @@ export default function HomeLobbyPage() {
                 <div 
                   className="absolute inset-0 flex justify-center pointer-events-none"
                   style={{
-                    WebkitMaskImage: "url('/avatar_mask.webp')",
+                    WebkitMaskImage: "url('/player_card.webp')",
                     WebkitMaskSize: "contain",
                     WebkitMaskRepeat: "no-repeat",
                     WebkitMaskPosition: "center",
-                    maskImage: "url('/avatar_mask.webp')",
+                    maskImage: "url('/player_card.webp')",
                     maskSize: "contain",
                     maskRepeat: "no-repeat",
                     maskPosition: "center",
