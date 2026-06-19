@@ -132,7 +132,7 @@ export default function HomeLobbyPage() {
         style={{ top: 'calc(1.23 * min(100vw, 448px))' }}
       >
         <div 
-          className="relative w-[61%] pointer-events-auto cursor-pointer hover:scale-[1.025] transition-all duration-500 -translate-y-full group drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)] hover:drop-shadow-[0_25px_40px_rgba(212,248,41,0.15)]"
+          className="relative w-[61%] pointer-events-auto cursor-pointer hover:scale-[1.025] transition-transform duration-500 -translate-y-full"
           style={{ aspectRatio: '1417/1878' }}
           onClick={() => setShowCardDossier(true)}
         >
@@ -145,19 +145,6 @@ export default function HomeLobbyPage() {
               className="absolute inset-0 z-10 h-full w-full object-contain pointer-events-none" 
             />
 
-            {/* Hover Shimmer Sweep */}
-            <div 
-              className="absolute inset-0 z-[35] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none mix-blend-overlay"
-              style={{
-                WebkitMaskImage: "url('/player_card_frame.webp')",
-                WebkitMaskSize: "contain",
-                WebkitMaskRepeat: "no-repeat",
-                WebkitMaskPosition: "center",
-              }}
-            >
-              <div className="absolute top-0 bottom-0 w-[150%] -translate-x-full group-hover:translate-x-full transition-transform duration-[1.5s] ease-in-out bg-gradient-to-r from-transparent via-[#E8D196]/40 to-transparent -skew-x-12" />
-            </div>
-
             {/* PLAYER IMAGE */}
             <div className="absolute inset-0 z-20 flex justify-center overflow-hidden pointer-events-none">
               
@@ -168,41 +155,36 @@ export default function HomeLobbyPage() {
               <img
                 src={playerData.avatar || "/avatar.png"}
                 alt=""
-                className="absolute z-10 w-[60%] h-[58%] object-cover object-top top-[17%] blur-2xl opacity-30 scale-125"
-                style={{
-                  WebkitMaskImage: "radial-gradient(ellipse at 50% 50%, black 30%, transparent 70%)"
-                }}
+                className="absolute z-10 w-[60%] h-[58%] object-cover object-top top-[17%] blur-2xl opacity-20 scale-125"
               />
 
               {/* Main player (Masked to full frame size) */}
+              {/* Tweak `-translate-y-[1%]` below to move the mask UP or DOWN without moving the player */}
               <div 
-                className="absolute inset-0 z-20 flex justify-center pointer-events-none -translate-y-[3.8%]"
+                className="absolute inset-0 z-20 flex justify-center pointer-events-none"
                 style={{
                   WebkitMaskImage: "url('/avatar_mask.webp')",
                   WebkitMaskSize: "100% 100%",
                   WebkitMaskRepeat: "no-repeat",
                   WebkitMaskPosition: "center",
+                  maskImage: "url('/avatar_mask.webp')",
+                  maskSize: "100% 100%",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
                 }}
               >
-                {/* 
-                  PRO TIP: This radial gradient fades the image out on all 4 sides (top, left, right, bottom)
-                  before it hits the hard edges of the div, creating a seamless vignette blend into the card base. 
-                */}
                 <img
                   src={playerData.avatar || "/avatar.png"}
                   alt="Player"
-                  className="absolute z-20 w-[58%] h-[62%] object-cover object-top top-[16%] scale-110"
-                  style={{
-                    WebkitMaskImage: "radial-gradient(ellipse at 50% 45%, black 45%, transparent 75%)",
-                    maskImage: "radial-gradient(ellipse at 50% 45%, black 45%, transparent 75%)",
-                  }}
+                  className="absolute z-20 w-full h-full object-cover object-top"
                 />
               </div>
             </div>
 
             {/* 3. Dark Gradient (Kills ugly backgrounds and blends legs) */}
+            {/* Tweak `-translate-y-[4px]` if the black border still peeks out the bottom */}
             <div 
-              className="absolute inset-0 z-[25] bg-gradient-to-b from-transparent via-transparent via-55% to-black/95 pointer-events-none -translate-y-[4px]" 
+              className="absolute inset-0 z-[25] bg-gradient-to-b from-transparent via-transparent via-45% to-black/95 to-65% pointer-events-none -translate-y-[4px]" 
               style={{
                 maskImage: "url('/player_card.webp')",
                 WebkitMaskImage: "url('/player_card.webp')",
@@ -231,10 +213,10 @@ export default function HomeLobbyPage() {
               {/* ========================================= */}
               {/* LEFT SIDE (Rating, Position, Flag) */}
               {/* ========================================= */}
-              <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1">
-                <div className="font-display text-[clamp(44px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]">{rating}</div>
-                <div className="font-display text-[clamp(20px,5vw,26px)] text-black leading-none font-bold drop-shadow-sm">{position}</div>
-                <img src="https://flagcdn.com/w40/in.png" alt="India" className="mt-2 h-[16px] w-[26px] object-cover shadow-sm border border-black/10" />
+              <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1 z-50">
+                <div className="font-display text-[clamp(44px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">{rating}</div>
+                <div className="font-display text-[clamp(20px,5vw,26px)] text-black leading-none font-bold drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]">{position}</div>
+                <img src="https://flagcdn.com/w40/in.png" alt="India" className="mt-2 h-[16px] w-[26px] object-cover shadow-[0_2px_8px_rgba(0,0,0,0.8)] border border-black/10" />
               </div>
 
               {/* ========================================= */}
