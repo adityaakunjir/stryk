@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 
 export default function HomeLobbyPage() {
   const router = useRouter();
-  const { playerData, isLoaded } = usePlayer();
+  const { playerData, isLoaded, getStats } = usePlayer();
   
   const [showCardDossier, setShowCardDossier] = useState(false);
   const [showSquadModal, setShowSquadModal] = useState(false);
@@ -56,6 +56,10 @@ export default function HomeLobbyPage() {
   }
 
   const firstName = (playerData.fullName || "PLAYER").split(" ")[0].toUpperCase();
+  const position = playerData.position || "CAM";
+  const playStyle = playerData.playStyle || "PLAYMAKER";
+  const rating = playerData.rating || 50;
+  const stats = getStats();
   const xpCurrent = 45; // Dummy XP value
   const xpTotal = 100;
   return (
@@ -210,8 +214,8 @@ export default function HomeLobbyPage() {
               {/* LEFT SIDE (Rating, Position, Flag) */}
               {/* ========================================= */}
               <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1">
-                <div className="font-display text-[clamp(44px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]">55</div>
-                <div className="font-display text-[clamp(20px,5vw,26px)] text-black leading-none font-bold drop-shadow-sm">CAM</div>
+                <div className="font-display text-[clamp(44px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]">{rating}</div>
+                <div className="font-display text-[clamp(20px,5vw,26px)] text-black leading-none font-bold drop-shadow-sm">{position}</div>
                 <img src="https://flagcdn.com/w40/in.png" alt="India" className="mt-2 h-[16px] w-[26px] object-cover shadow-sm border border-black/10" />
               </div>
 
@@ -229,7 +233,7 @@ export default function HomeLobbyPage() {
               {/* ========================================= */}
               <div className="absolute top-[65.8%] left-0 right-0 flex justify-center">
                 <div className="font-display text-[clamp(9px,2vw,12px)] text-[#C89B3C] tracking-[0.2em] uppercase font-bold">
-                  PLAYMAKER
+                  {playStyle}
                 </div>
               </div>
 
@@ -240,30 +244,30 @@ export default function HomeLobbyPage() {
                 {/* Top Row */}
                 <div className="flex justify-between px-1">
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">90</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "PAC")?.value || 50}</span>
                     <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">PAC</span>
                   </div>
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">78</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "SHO")?.value || 50}</span>
                     <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">SHO</span>
                   </div>
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">85</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "PAS")?.value || 50}</span>
                     <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">PAS</span>
                   </div>
                 </div>
                 {/* Bottom Row */}
                 <div className="flex justify-between px-1 mt-1">
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">88</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "DRI")?.value || 50}</span>
                     <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">DRI</span>
                   </div>
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">56</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "DEF")?.value || 50}</span>
                     <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">DEF</span>
                   </div>
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">68</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "PHY")?.value || 50}</span>
                     <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">PHY</span>
                   </div>
                 </div>
