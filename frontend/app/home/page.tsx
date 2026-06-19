@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Bell, Play, Users, Trophy, MapPin, 
   Loader2, X, Target, Shield, Star,
-  ChevronRight, Home, User, Globe, BarChart3
+  ChevronRight, Home, User, Globe, BarChart3, UserPlus
 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { CardDetail } from "@/components/card-detail";
@@ -313,7 +313,7 @@ export default function HomeLobbyPage() {
 
             {/* Action Grid (2 buttons) */}
             <div className="grid grid-cols-2 gap-3">
-              <ActionButton icon={<Users size={18} className="text-[#C3DF1B]" />} label="MY SQUAD" subtext="Manage your squad" onClick={() => setShowSquadModal(true)} />
+              <ActionButton icon={<UserPlus size={18} className="text-[#C3DF1B]" />} label="ADD FRIEND" subtext="Find & invite players" onClick={() => router.push("/search")} />
               <ActionButton icon={<BarChart3 size={18} className="text-[#C3DF1B]" />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
             </div>
 
@@ -373,6 +373,13 @@ export default function HomeLobbyPage() {
                     </div>
                   ))
                 )}
+              </div>
+              
+              {/* Persistent Add Friend Action in Modal */}
+              <div className="mt-6 pt-4 border-t border-white/10 w-full shrink-0">
+                <button onClick={() => router.push("/search")} className="w-full h-12 rounded-2xl bg-[#C3DF1B]/10 border border-[#C3DF1B]/30 text-[#C3DF1B] text-xs font-bold uppercase tracking-[0.15em] hover:bg-[#C3DF1B]/20 transition flex items-center justify-center gap-2 cursor-pointer">
+                  <UserPlus size={16} /> ADD MORE FRIENDS
+                </button>
               </div>
             </motion.div>
           </motion.div>
