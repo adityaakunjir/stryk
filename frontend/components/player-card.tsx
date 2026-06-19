@@ -162,20 +162,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
         </div>
       </div>
 
-      {/* 3. Dark Gradient (Kills ugly backgrounds and blends legs) */}
-      <div 
-        className="absolute inset-0 z-[12] bg-gradient-to-b from-transparent via-transparent via-55% to-black/95 pointer-events-none -translate-y-[4px]" 
-        style={{
-          maskImage: "url('/player_card.webp')",
-          WebkitMaskImage: "url('/player_card.webp')",
-          maskSize: "contain",
-          WebkitMaskSize: "contain",
-          maskRepeat: "no-repeat",
-          WebkitMaskRepeat: "no-repeat",
-          maskPosition: "center",
-          WebkitMaskPosition: "center"
-        }}
-      />
+
 
       {/* 5. Frame (Border Shell) */}
       <img 

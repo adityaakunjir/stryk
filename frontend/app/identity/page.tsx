@@ -31,7 +31,7 @@ function Stepper() {
   return (
     <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#1A1A1A]/60 font-medium">
       <div className="text-[#1A1A1A] font-bold flex items-center gap-1.5">
-        <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
+        <div className="w-1.5 h-1.5 rounded-full bg-[#E5B95C] shadow-[0_0_8px_rgba(229,185,92,0.8)]" />
         Identity
       </div>
       <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
@@ -321,20 +321,20 @@ export default function IdentityPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-4 shrink-0">
-                        <button type="button" onClick={triggerFileUpload} className="text-[10px] font-bold text-[#D4F829] uppercase tracking-wider hover:opacity-80 transition cursor-pointer">Replace</button>
+                        <button type="button" onClick={triggerFileUpload} className="text-[10px] font-bold text-[#E5B95C] uppercase tracking-wider hover:opacity-80 transition cursor-pointer">Replace</button>
                         <button type="button" onClick={handleRemovePhoto} className="text-[10px] font-bold text-[#808080] uppercase tracking-wider hover:text-red-400 transition cursor-pointer">Remove</button>
                       </div>
                     </div>
                   ) : (
                     <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
                       <motion.button
-                        whileHover={{ scale: 0.98, backgroundColor: "rgba(212,248,41,0.05)" }}
+                        whileHover={{ scale: 0.98, backgroundColor: "rgba(229,185,92,0.05)" }}
                         whileTap={{ scale: 0.95 }}
                         onClick={triggerFileUpload}
-                        className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] bg-[#1A1A1A] p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-[#E8E8E8] cursor-pointer"
+                        className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] bg-[#1A1A1A] p-4 text-[#808080] transition hover:border-[#E5B95C]/50 hover:text-[#E8E8E8] cursor-pointer"
                         type="button"
                       >
-                        <ImageUp size={24} className="text-[#D4F829]" />
+                        <ImageUp size={24} className="text-[#E5B95C]" />
                         <span className="text-[11px] font-bold uppercase tracking-wider">Upload Photo</span>
                         <span className="text-[9px] text-[#808080] uppercase">Max 5MB • PNG JPG</span>
                       </motion.button>
@@ -350,13 +350,13 @@ export default function IdentityPage() {
                         type="button"
                       >
                         {isGenerating ? (
-                          <Loader2 size={24} className="text-[#D4F829] animate-spin" />
+                          <Loader2 size={24} className="text-[#E5B95C] animate-spin" />
                         ) : (
                           <>
-                            <div className="absolute top-2 right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
+                            <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-600 to-yellow-400 text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
                               <Sparkles size={8} /> AI
                             </div>
-                            <Camera size={24} className="text-[#D4F829]" />
+                            <Camera size={24} className="text-[#E5B95C]" />
                             <span className="text-[11px] font-bold uppercase tracking-wider text-center">Generate Avatar</span>
                           </>
                         )}
@@ -393,11 +393,11 @@ export default function IdentityPage() {
                       Username
                     </label>
                     
-                    <div className="absolute right-4 top-5 flex items-center">
-                      {usernameStatus === "checking" && <Loader2 size={18} className="text-[#A28B52]/50 animate-spin" />}
-                      {usernameStatus === "available" && <Check size={18} strokeWidth={2.5} className="text-[#D4F829]" />}
-                      {usernameStatus === "taken" && <X size={18} strokeWidth={2.5} className="text-red-500" />}
-                      {usernameStatus === "idle" && <Check size={18} strokeWidth={2.5} className="text-[#D4F829]" />}
+                    <div className="absolute inset-y-0 right-4 flex items-center justify-center pointer-events-none">
+                      {usernameStatus === "checking" && <Loader2 size={16} className="animate-spin text-[#808080]" />}
+                      {usernameStatus === "available" && <Check size={18} strokeWidth={2.5} className="text-[#E5B95C]" />}
+                      {usernameStatus === "taken" && <X size={18} strokeWidth={2.5} className="text-[#FF3333]" />}
+                      {usernameStatus === "idle" && <Check size={18} strokeWidth={2.5} className="text-[#E5B95C]" />}
                     </div>
                   </div>
 
@@ -442,12 +442,12 @@ export default function IdentityPage() {
 
             {/* CTA Button 2.0 */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.75 }} className="mt-10 relative group">
-              <div className="absolute -inset-1 bg-[#D4F829]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
+              <div className="absolute -inset-1 bg-[#E5B95C]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
               <motion.button 
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={isSubmitting || isSuccess || usernameStatus !== "available" || !fullName}
-                className="relative w-full h-[60px] rounded-[20px] bg-[#D4F829] text-[#1A1A1A] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
+                className="relative w-full h-[60px] rounded-full bg-[#E5B95C] text-[#1A1A1A] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#f2ca6b] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(229,185,92,0)] hover:shadow-[0_0_30px_-5px_rgba(229,185,92,0.6)] text-[15px]" 
                 type="submit"
               >
                 {!isSubmitting && !isSuccess && (
@@ -475,7 +475,7 @@ export default function IdentityPage() {
             </motion.div>
 
             <div className="mt-5 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
-              <ScanFace className="size-3 text-[#C6FF00]" />
+              <ScanFace className="size-3 text-[#E5B95C]" />
               Secure Athlete Setup
             </div>
           </form>
