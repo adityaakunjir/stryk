@@ -282,27 +282,27 @@ export default function HomeLobbyPage() {
             {/* Level & XP */}
             <div className="flex justify-between items-end mb-1.5">
               <div className="flex gap-2 items-baseline">
-                <span className="text-[11px] font-bold tracking-[0.2em] text-[#C3DF1B] uppercase">LEVEL 1</span>
-                <span className="text-[11px] font-bold tracking-[0.1em] text-[#C3DF1B] uppercase">ROOKIE</span>
+                <span className="text-[11px] font-bold tracking-[0.2em] text-[#A28B52] uppercase">LEVEL 1</span>
+                <span className="text-[11px] font-bold tracking-[0.1em] text-[#A28B52] uppercase">ROOKIE</span>
               </div>
               <span className="text-[10px] font-bold text-white/50 tracking-wider">XP {xpCurrent}/{xpTotal}</span>
             </div>
             {/* Progress Bar */}
             <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-4">
               <motion.div 
-                className="h-full bg-[#C3DF1B] rounded-full"
+                className="h-full bg-gradient-to-r from-[#A28B52] to-[#E8D196] rounded-full"
                 initial={{ width: 0 }} animate={{ width: `${(xpCurrent/xpTotal)*100}%` }} transition={{ duration: 1.5, delay: 0.5, type: "spring" }}
               />
             </div>
 
             {/* Next Objective Card */}
-            <div className="bg-[#0A0A0A] rounded-[1.5rem] p-4 border border-white/5 flex items-center justify-between mb-4 shadow-inner">
+            <div className="bg-[#1A1A1A] rounded-[1.5rem] p-4 border border-[#2A2A2A] flex items-center justify-between mb-4 shadow-sm group hover:border-[#A28B52]/50 transition cursor-pointer">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#C3DF1B] shrink-0">
+                <div className="w-9 h-9 rounded-full border border-[#A28B52]/30 bg-black/40 flex items-center justify-center text-[#E8D196] shrink-0 group-hover:bg-[#A28B52]/10 transition">
                   <Target size={16} />
                 </div>
                 <div>
-                  <div className="text-[8px] tracking-[0.2em] uppercase text-[#C3DF1B] font-bold">NEXT OBJECTIVE</div>
+                  <div className="text-[8px] tracking-[0.2em] uppercase text-[#A28B52] font-bold">NEXT OBJECTIVE</div>
                   <div className="text-[12px] font-bold text-white uppercase mt-0.5 tracking-wider">PLAY YOUR FIRST MATCH</div>
                   <div className="text-[9px] text-white/40 font-medium mt-0.5">Jump into a match and start your journey.</div>
                 </div>
@@ -312,8 +312,8 @@ export default function HomeLobbyPage() {
 
             {/* Action Grid (2 buttons) */}
             <div className="grid grid-cols-2 gap-3">
-              <ActionButton icon={<UserPlus size={18} className="text-[#C3DF1B]" />} label="ADD FRIEND" subtext="Find & invite players" onClick={() => router.push("/search")} />
-              <ActionButton icon={<BarChart3 size={18} className="text-[#C3DF1B]" />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
+              <ActionButton icon={<UserPlus size={18} className="text-[#E8D196]" />} label="ADD FRIEND" subtext="Find & invite players" onClick={() => router.push("/search")} />
+              <ActionButton icon={<BarChart3 size={18} className="text-[#E8D196]" />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
             </div>
 
           </div>
@@ -435,10 +435,10 @@ export default function HomeLobbyPage() {
 
 function ActionButton({ icon, label, subtext, onClick }: { icon: React.ReactNode; label: string; subtext: string; onClick?: () => void }) {
   return (
-    <button onClick={onClick} className="flex flex-col items-center justify-center p-3 rounded-[1.2rem] bg-[#0A0A0A] border border-white/5 text-center cursor-pointer transition hover:bg-[#1A1A1A] hover:border-white/10 h-full shadow-sm">
-      <div className="text-[#C3DF1B] mb-2">{icon}</div>
-      <div className="text-[9px] font-bold tracking-widest text-white uppercase leading-tight mb-1">{label}</div>
-      <div className="text-[8px] text-white/40 tracking-wide leading-tight hidden sm:block">{subtext}</div>
+    <button onClick={onClick} className="flex flex-col items-center justify-center p-3 rounded-[1.2rem] bg-[#1A1A1A] border border-[#2A2A2A] text-center cursor-pointer transition hover:bg-[#202020] hover:border-[#A28B52]/50 h-full shadow-sm group">
+      <div className="text-[#A28B52] mb-2 transition-transform group-hover:scale-110">{icon}</div>
+      <div className="text-[9px] font-bold tracking-widest text-[#E8E8E8] uppercase leading-tight mb-1">{label}</div>
+      <div className="text-[8px] text-[#808080] tracking-wide leading-tight hidden sm:block">{subtext}</div>
     </button>
   );
 }
@@ -446,10 +446,10 @@ function ActionButton({ icon, label, subtext, onClick }: { icon: React.ReactNode
 function NavTab({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} className="flex flex-col items-center gap-1 cursor-pointer group">
-      <div className={cn("transition-colors group-hover:text-white", active ? "text-[#C3DF1B]" : "text-white/40")}>
+      <div className={cn("transition-colors group-hover:text-[#E8D196]", active ? "text-[#E8D196]" : "text-white/40")}>
         {icon}
       </div>
-      <span className={cn("text-[9px] font-bold tracking-[0.1em] uppercase transition-colors group-hover:text-white mt-1", active ? "text-[#C3DF1B]" : "text-white/40")}>
+      <span className={cn("text-[9px] font-bold tracking-[0.1em] uppercase transition-colors group-hover:text-[#E8D196] mt-1", active ? "text-[#A28B52]" : "text-white/40")}>
         {label}
       </span>
     </button>
