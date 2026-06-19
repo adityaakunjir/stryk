@@ -63,16 +63,16 @@ export default function HomeLobbyPage() {
   const xpCurrent = 45; // Dummy XP value
   const xpTotal = 100;
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden bg-[#05070B] flex justify-center custom-scrollbar">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden bg-[#E5DCC5] flex justify-center custom-scrollbar text-[#1A1A1A]">
       
       {/* Main App Container (Clamps at 448px for tablets/desktop) */}
-      <div className="relative min-h-[100dvh] w-full max-w-md bg-[#05070B] shadow-2xl border-x border-white/5 flex flex-col">
+      <div className="relative min-h-[100dvh] w-full max-w-md bg-transparent shadow-2xl border-x border-[#1A1A1A]/5 flex flex-col">
         
         {/* Background Layer (Constrained to max-w-md) */}
         <div
-          className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-[length:107%_auto] bg-[center_top] bg-no-repeat pointer-events-none"
+          className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
           style={{
-            backgroundImage: "url('/home_page_bg.webp')",
+            backgroundImage: "url('/create_card_bg.webp')",
           }}
         />
         
@@ -88,41 +88,40 @@ export default function HomeLobbyPage() {
 
             {/* Profile & Notifications */}
             <div className="flex items-center gap-3">
-              <button onClick={() => router.push("/notifications")} className="relative w-10 h-10 rounded-full bg-white/40 backdrop-blur-md border border-black/5 flex items-center justify-center shadow-sm hover:bg-white/60 transition">
-                <Bell size={18} className="text-black" />
+              <button onClick={() => router.push("/notifications")} className="relative w-10 h-10 rounded-full bg-[#1A1A1A]/5 backdrop-blur-md border border-[#1A1A1A]/10 flex items-center justify-center shadow-sm hover:bg-[#1A1A1A]/10 transition">
+                <Bell size={18} className="text-[#1A1A1A]" />
                 {incomingRequests.length > 0 && (
-                  <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#D4F829] rounded-full border-2 border-white" />
+                  <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#C3DF1B] rounded-full border-2 border-white" />
                 )}
               </button>
-              <button onClick={() => router.push("/settings")} className="flex items-center gap-2 p-1 pr-2 rounded-full bg-white/40 backdrop-blur-md border border-black/5 shadow-sm hover:bg-white/60 transition">
+              <button onClick={() => router.push("/settings")} className="flex items-center gap-2 p-1 pr-2 rounded-full bg-[#1A1A1A]/5 backdrop-blur-md border border-[#1A1A1A]/10 shadow-sm hover:bg-[#1A1A1A]/10 transition">
                 <img src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
-                <ChevronRight size={14} className="text-black/60 rotate-90" />
+                <ChevronRight size={14} className="text-[#1A1A1A]/60 rotate-90" />
               </button>
             </div>
           </div>
 
-          {/* Greeting Area */}
         <div className="flex justify-between items-start mt-2">
           <div className="flex flex-col">
-            <div className="text-[9px] font-bold tracking-[0.15em] text-[#A37B31] uppercase mb-1 drop-shadow-sm">
+            <div className="text-[9px] font-bold tracking-[0.15em] text-[#A37B31] uppercase mb-1">
               READY FOR TODAY&apos;S MATCH?
             </div>
-            <div className="font-display text-4xl text-[#181818] italic leading-[0.9] drop-shadow-sm tracking-tight flex items-center gap-2">
+            <div className="font-display text-4xl text-[#1A1A1A] italic leading-[0.9] tracking-tight flex items-center gap-2">
               HEY, {firstName} <span className="text-3xl not-italic ml-1">👋</span>
             </div>
-            <div className="text-[10px] text-[#181818]/70 font-medium mt-1.5">
+            <div className="text-[10px] text-[#1A1A1A]/70 font-medium mt-1.5">
               Level up, compete, and build your legacy.
             </div>
           </div>
 
             {/* Streak Badge (Only visible if they've played matches) */}
             {playerData.matchesPlayed && playerData.matchesPlayed > 0 ? (
-              <div className="flex flex-col items-center justify-center bg-[#110E0A] text-[#F3D17A] rounded-xl px-4 py-2 shadow-xl border border-[#2A2315] min-w-[70px]">
+              <div className="flex flex-col items-center justify-center bg-[#151515] text-[#E8D196] rounded-xl px-4 py-2 shadow-xl border border-[#8E793E]/30 min-w-[70px]">
                 <div className="flex items-center gap-1 font-display text-2xl leading-none">
                   <span>🔥</span>
                   <span>1</span>
                 </div>
-                <div className="text-[7px] font-bold tracking-[0.15em] mt-1 text-[#F3D17A]/70 uppercase">DAY STREAK</div>
+                <div className="text-[7px] font-bold tracking-[0.15em] mt-1 text-[#E8D196]/70 uppercase">DAY STREAK</div>
               </div>
             ) : null}
           </div>
@@ -277,7 +276,7 @@ export default function HomeLobbyPage() {
       <div style={{ height: 'calc(1.35 * min(100vw, 448px))' }} className="w-full shrink-0 pointer-events-none" />
 
       {/* Bottom Sheet Navigation */}
-      <div className="relative mt-auto w-full z-30 bg-[#0A0A0A] rounded-t-[32px] px-5 pt-4 pb-[85px] shadow-[0_-15px_40px_rgba(0,0,0,0.8)] border-t border-[#1F1F1F]">
+      <div className="relative mt-auto w-full z-30 bg-[#151515] rounded-t-[2rem] px-5 pt-5 pb-[85px] shadow-[0_-20px_50px_rgba(0,0,0,0.6)] border-t border-[#8E793E]/30 text-white">
         <div className="w-full">
             
             {/* Level & XP */}
@@ -297,7 +296,7 @@ export default function HomeLobbyPage() {
             </div>
 
             {/* Next Objective Card */}
-            <div className="bg-[#151515] rounded-2xl p-3 border border-white/5 flex items-center justify-between mb-3">
+            <div className="bg-[#0A0A0A] rounded-[1.5rem] p-4 border border-white/5 flex items-center justify-between mb-4 shadow-inner">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#C3DF1B] shrink-0">
                   <Target size={16} />
@@ -320,7 +319,7 @@ export default function HomeLobbyPage() {
           </div>
         </div>
       {/* Bottom Navigation Tab Bar */}
-      <div className="fixed bottom-0 w-full max-w-md h-[65px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
+      <div className="fixed bottom-0 w-full max-w-md h-[70px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
         <NavTab icon={<Home size={20} />} label="HOME" active={true} onClick={() => router.push("/home")} />
         <NavTab icon={<Globe size={20} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
         
@@ -436,10 +435,10 @@ export default function HomeLobbyPage() {
 
 function ActionButton({ icon, label, subtext, onClick }: { icon: React.ReactNode; label: string; subtext: string; onClick?: () => void }) {
   return (
-    <button onClick={onClick} className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#111111] border border-white/5 text-center cursor-pointer transition hover:bg-white/5 hover:border-white/10 h-full">
-      <div className="text-[#D4F829] mb-1.5">{icon}</div>
-      <div className="text-[8px] font-bold tracking-wider text-white uppercase leading-tight mb-0.5">{label}</div>
-      <div className="text-[7px] text-white/40 tracking-wide leading-tight hidden sm:block">{subtext}</div>
+    <button onClick={onClick} className="flex flex-col items-center justify-center p-3 rounded-[1.2rem] bg-[#0A0A0A] border border-white/5 text-center cursor-pointer transition hover:bg-[#1A1A1A] hover:border-white/10 h-full shadow-sm">
+      <div className="text-[#C3DF1B] mb-2">{icon}</div>
+      <div className="text-[9px] font-bold tracking-widest text-white uppercase leading-tight mb-1">{label}</div>
+      <div className="text-[8px] text-white/40 tracking-wide leading-tight hidden sm:block">{subtext}</div>
     </button>
   );
 }
@@ -447,10 +446,10 @@ function ActionButton({ icon, label, subtext, onClick }: { icon: React.ReactNode
 function NavTab({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} className="flex flex-col items-center gap-1 cursor-pointer group">
-      <div className={cn("transition-colors group-hover:text-white", active ? "text-[#D4F829]" : "text-white/40")}>
+      <div className={cn("transition-colors group-hover:text-white", active ? "text-[#C3DF1B]" : "text-white/40")}>
         {icon}
       </div>
-      <span className={cn("text-[8px] font-bold tracking-[0.1em] uppercase transition-colors group-hover:text-white", active ? "text-[#D4F829]" : "text-white/40")}>
+      <span className={cn("text-[9px] font-bold tracking-[0.1em] uppercase transition-colors group-hover:text-white mt-1", active ? "text-[#C3DF1B]" : "text-white/40")}>
         {label}
       </span>
     </button>
