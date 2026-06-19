@@ -60,13 +60,26 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           const { x, y, width, height } = detection.box;
           
           const faceCenterX = x + width / 2;
-          const faceCenterY = y + height / 2;
+          // Face center Y — go slightly above face center so full face + little bit of hair is visible
+          const faceCenterY = y + height * 0.4;
           
-          // Center directly on the face so zooming scales perfectly around it
           const xPercent = faceCenterX / imgWidth;
           const yPercent = faceCenterY / imgHeight;
           
-          // We do not clamp manually. Let the AvatarEditor handle bounds.
+          // Calculate ideal zoom based on face size
+          const minDim = Math.min(imgWidth, imgHeight);
+          const editorDim = CROP_SIZE * 3;
+          // How big the face is at scale 1
+          const faceOnScreenAtScale1 = (width / minDim) * editorDim;
+          
+          // We want face to fill about 65% of the visible circle
+          const targetFaceWidth = CROP_SIZE * 0.65;
+          const idealZoom = targetFaceWidth / faceOnScreenAtScale1;
+          
+          // Clamp zoom between 1 and 3
+          const clampedZoom = Math.max(1, Math.min(3, idealZoom));
+
+          setScale(clampedZoom);
           setPosition({ x: xPercent, y: yPercent });
         } else if (isMounted) {
           // Fallback if face not found (e.g. sunglasses)
