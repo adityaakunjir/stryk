@@ -148,26 +148,26 @@ export default async function PublicPlayerPage({ params }: Props) {
   }
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#0A0A0A] min-h-screen relative overflow-hidden">
-      {/* Premium Ambient Background */}
-      <div className="absolute inset-0 z-0">
-        <img src="/create_card_bg.webp" alt="Background" className="w-full h-full object-cover opacity-60" />
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-[20px]" />
-      </div>
+    <main className="stryk-mobile-shell bg-[#E5DCC5] text-[#1A1A1A] min-h-screen relative overflow-hidden">
+      {/* Full Screen Background Image */}
+      <div 
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+      />
 
       <div className="relative h-full flex flex-col px-6 pt-8 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <button className="w-10 h-10 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition backdrop-blur-md shadow-sm">
+          <button className="w-10 h-10 rounded-full bg-[#1A1A1A]/5 border border-[#1A1A1A]/10 text-[#1A1A1A] flex items-center justify-center cursor-pointer hover:bg-[#1A1A1A]/10 transition backdrop-blur-md shadow-sm">
              <Link href="/" className="flex items-center justify-center w-full h-full"><ArrowLeft size={18} /></Link>
           </button>
-          <div className="text-[10px] tracking-[0.35em] uppercase text-white/50 font-bold drop-shadow-md">STRYK PROFILE</div>
+          <div className="text-[10px] tracking-[0.35em] uppercase text-[#1A1A1A]/50 font-bold drop-shadow-md">STRYK PROFILE</div>
           <div className="w-10 h-10" /> {/* Placeholder for balance */}
         </div>
 
         {/* Card Display Area */}
         <div className="flex-1 flex items-center justify-center py-2 relative z-20">
-          <div className="relative w-[75%] max-w-[320px] flex items-center justify-center">
+          <div className="relative w-[70%] max-w-[280px] aspect-[1417/1878] flex items-center justify-center">
             {/* Glowing pedestal shadow under the card */}
             <div
               aria-hidden
@@ -179,19 +179,19 @@ export default async function PublicPlayerPage({ params }: Props) {
         </div>
 
         <div className="mt-8 text-center px-2 relative z-30 flex flex-col items-center">
-            <h1 className="text-3xl font-display uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#E8D196] via-[#F5E4B4] to-[#E8D196] drop-shadow-md mb-2">
+            <h1 className="text-[32px] font-black font-display uppercase tracking-wider text-[#2A261D] drop-shadow-sm mb-2 italic leading-none">
               {playerData.fullName}
             </h1>
-            <div className="bg-[#C3DF1B]/10 border border-[#C3DF1B]/30 px-4 py-1.5 rounded-full inline-flex mb-6 shadow-[0_0_15px_rgba(195,223,27,0.15)]">
-              <span className="text-[11px] text-[#C3DF1B] font-bold tracking-widest uppercase">@{playerData.username}</span>
+            <div className="bg-[#1A1A1A]/5 border border-[#1A1A1A]/10 px-4 py-1.5 rounded-full inline-flex mb-6 shadow-sm">
+              <span className="text-[11px] text-[#A28B52] font-bold tracking-widest uppercase">@{playerData.username}</span>
             </div>
             
-            {/* Premium Stats Glass Box */}
-            <div className="w-full bg-white/[0.03] backdrop-blur-xl rounded-3xl p-5 border border-white/10 shadow-2xl flex flex-col text-left relative overflow-hidden">
+            {/* Premium Stats Box (Dark to pop on beige) */}
+            <div className="w-full bg-[#151515] rounded-[2rem] p-6 border border-[#8E793E]/30 shadow-[0_28px_50px_rgba(0,0,0,0.5)] flex flex-col text-left relative overflow-hidden text-white">
                {/* Subtle top shine */}
-               <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+               <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                
-               <div className="text-center pb-4 border-b border-white/10 font-semibold text-xs tracking-[0.2em] uppercase text-white/60">
+               <div className="text-center pb-4 border-b border-white/5 font-semibold text-xs tracking-[0.2em] uppercase text-white/60">
                  <span className="text-white drop-shadow-md font-extrabold">{playerData.position}</span> 
                  <span className="mx-2 text-[#E8D196] opacity-50">•</span> 
                  <span className="text-white/90">{playerData.playStyle}</span> 
@@ -201,7 +201,7 @@ export default async function PublicPlayerPage({ params }: Props) {
                
                {/* Match History Widget */}
                <div className="mt-4">
-                 <div className="flex justify-between text-[9px] uppercase tracking-[0.2em] text-white/50 font-bold mb-2">
+                 <div className="flex justify-between text-[9px] uppercase tracking-[0.2em] text-white/40 font-bold mb-2">
                    <span>Match History</span>
                    <span className="text-[#E8D196]/80">{totalMatches} Matches</span>
                  </div>
@@ -213,14 +213,14 @@ export default async function PublicPlayerPage({ params }: Props) {
                        <span className="text-white/60">{draws} D</span>
                        <span className="text-red-400 drop-shadow-sm">{losses} L</span>
                      </div>
-                     <div className="w-full h-2 rounded-full bg-black/40 border border-white/5 overflow-hidden flex shadow-inner">
+                     <div className="w-full h-2 rounded-full bg-black/80 border border-white/5 overflow-hidden flex shadow-inner">
                        <div style={{ width: `${winPercent}%` }} className="h-full bg-[#C3DF1B] shadow-[0_0_10px_rgba(195,223,27,0.5)]" />
                        <div style={{ width: `${drawPercent}%` }} className="h-full bg-white/20" />
                        <div style={{ width: `${lossPercent}%` }} className="h-full bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
                      </div>
                    </div>
-                   <div className="shrink-0 text-center bg-black/40 border border-white/10 rounded-xl px-3 py-2 min-w-[4rem] shadow-lg">
-                     <div className="text-[7px] uppercase tracking-widest text-[#E8D196]/60 font-bold">Win Rate</div>
+                   <div className="shrink-0 text-center bg-black/60 border border-white/5 rounded-xl px-3 py-2 min-w-[4rem] shadow-lg">
+                     <div className="text-[7px] uppercase tracking-widest text-[#E8D196]/50 font-bold">Win Rate</div>
                      <div className="font-display text-sm text-white font-extrabold mt-1">{winRate}%</div>
                    </div>
                  </div>
