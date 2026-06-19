@@ -157,7 +157,7 @@ export default async function PublicPlayerPage({ params }: Props) {
 
       <div className="relative h-full flex flex-col px-6 pt-8 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
-        <div className="flex items-center justify-between mb-2 z-30">
+        <div className="flex items-center justify-between mb-2 z-30 shrink-0">
           <button className="w-10 h-10 rounded-full bg-[#1A1A1A]/5 border border-[#1A1A1A]/10 text-[#1A1A1A] flex items-center justify-center cursor-pointer hover:bg-[#1A1A1A]/10 transition backdrop-blur-md shadow-sm">
              <Link href="/" className="flex items-center justify-center w-full h-full"><ArrowLeft size={18} /></Link>
           </button>
@@ -166,7 +166,7 @@ export default async function PublicPlayerPage({ params }: Props) {
         </div>
 
         {/* Card Display Area */}
-        <div className="flex flex-col items-center justify-start -mt-6 relative z-20">
+        <div className="flex flex-col items-center justify-start -mt-6 relative z-20 shrink-0">
           <div className="relative w-full flex justify-center mb-0">
             {/* Glowing pedestal shadow under the card */}
             <div
@@ -174,13 +174,13 @@ export default async function PublicPlayerPage({ params }: Props) {
               className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[80%] h-12 rounded-[50%] blur-3xl pointer-events-none z-0"
               style={{ background: "rgba(195,223,27,0.4)" }}
             />
-            <div className="relative z-10 origin-center transition-transform duration-300">
+            <div className="relative z-10 origin-center transition-transform duration-300 w-full max-w-[280px] aspect-[1417/1878] shrink-0">
               <PlayerCard player={playerData as any} size="md" />
             </div>
           </div>
         </div>
 
-        <div className="mt-12 text-center px-4 relative z-30 flex flex-col items-center max-w-sm mx-auto w-full">
+        <div className="mt-6 text-center px-4 relative z-30 flex flex-col items-center max-w-sm mx-auto w-full shrink-0">
             {/* Premium Stats Box (Refined and slightly smaller) */}
             <div className="w-full bg-[#0A0A0A] rounded-[1.5rem] p-5 border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col text-left relative overflow-hidden text-white">
                {/* Subtle top shine */}
@@ -223,7 +223,7 @@ export default async function PublicPlayerPage({ params }: Props) {
             </div>
         </div>
 
-        <div className="mt-6 block pb-6 px-4 relative z-30 max-w-xs mx-auto w-full">
+        <div className="mt-6 block pb-6 px-4 relative z-30 max-w-xs mx-auto w-full shrink-0">
           {viewerUserId && viewerUserId !== user.id ? (
             <FriendActionButton targetUserId={user.id} initialStatus={friendStatus} requestId={friendRequestId} />
           ) : !viewerUserId ? (
