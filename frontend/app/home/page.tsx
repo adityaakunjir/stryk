@@ -162,8 +162,8 @@ export default function HomeLobbyPage() {
               <div 
                 className="absolute inset-0 z-20 flex justify-center pointer-events-none"
                 style={{
-                  WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 58%)",
-                  maskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 58%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 63%, transparent 66%)",
+                  maskImage: "linear-gradient(to bottom, black 0%, black 63%, transparent 66%)",
                 }}
               >
                 <div 
