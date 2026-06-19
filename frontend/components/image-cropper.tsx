@@ -62,11 +62,9 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           const faceCenterX = x + width / 2;
           const faceCenterY = y + height / 2;
           
-          // Target roughly face center minus a portion of height to frame chest
-          const targetY = faceCenterY - (height * 0.8);
-          
+          // Center directly on the face so zooming scales perfectly around it
           const xPercent = faceCenterX / imgWidth;
-          const yPercent = targetY / imgHeight;
+          const yPercent = faceCenterY / imgHeight;
           
           // Clamp to valid editor ranges
           const clampedX = Math.max(0.2, Math.min(0.8, xPercent));
@@ -202,29 +200,32 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm px-5">
-      <div className="relative w-full max-w-sm rounded-[2rem] border border-[#2A2315] bg-[#110E0A] p-6 shadow-2xl flex flex-col items-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl px-4 sm:px-5">
+      <div className="relative w-full max-w-sm rounded-[2rem] border border-white/10 bg-[#0F0D0A]/80 backdrop-blur-2xl p-6 shadow-[0_0_80px_rgba(212,248,41,0.05)] flex flex-col items-center">
+        {/* Subtle glow behind modal */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#D4F829]/5 to-transparent rounded-[2rem] pointer-events-none" />
+
         {/* Close Button */}
         <button 
           onClick={onCancel}
           type="button"
-          className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-white/10 text-[#808080] hover:text-[#D4F829] hover:border-[#D4F829]/50 hover:bg-[#D4F829]/10 cursor-pointer z-10 transition-colors"
+          className="absolute right-5 top-5 grid size-8 place-items-center rounded-full border border-white/10 bg-black/40 text-[#808080] hover:text-[#D4F829] hover:border-[#D4F829]/50 hover:bg-[#D4F829]/10 cursor-pointer z-20 transition-all backdrop-blur-md"
         >
-          <X className="size-5" />
+          <X className="size-4" />
         </button>
 
-        <h3 className="font-display font-black uppercase tracking-wider text-2xl italic text-white text-center mt-2 mb-6">
+        <h3 className="font-display font-black uppercase tracking-widest text-2xl italic bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent text-center mt-1 mb-7 drop-shadow-md z-10">
           CROP PROFILE PIC
         </h3>
 
         {/* Viewport Frame */}
         <div 
-          className="relative overflow-hidden rounded-2xl border border-white/5 bg-black cursor-grab active:cursor-grabbing select-none flex justify-center"
+          className="relative overflow-hidden rounded-full border-4 border-[#1A1A1A] shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing select-none flex justify-center z-10"
         >
           {isDetecting && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-none">
-              <Loader2 className="size-8 text-[#D4F829] animate-spin mb-3" />
-              <p className="text-white/80 font-display uppercase tracking-widest text-xs animate-pulse">Detecting Face...</p>
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm pointer-events-none rounded-full">
+              <Loader2 className="size-8 text-[#D4F829] animate-spin mb-3 drop-shadow-[0_0_10px_rgba(212,248,41,0.5)]" />
+              <p className="text-[#D4F829] font-display font-bold uppercase tracking-widest text-[10px] animate-pulse">Scanning Face</p>
             </div>
           )}
           <AvatarEditor
@@ -232,22 +233,22 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
             image={src}
             width={CROP_SIZE * 3}
             height={CROP_SIZE * 3}
-            border={20 * 3}
-            borderRadius={140 * 3}
-            color={[17, 14, 10, 0.85]} // #110E0A with opacity
+            border={0}
+            borderRadius={0}
+            color={[0, 0, 0, 0.8]} 
             scale={scale}
             rotate={rotate}
             position={position}
             onPositionChange={(pos) => setPosition(pos)}
-            style={{ width: `${CROP_SIZE + 40}px`, height: `${CROP_SIZE + 40}px` }}
+            style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
           />
 
-          {/* Mask representing the final circular crop shape overlay with corner brackets */}
-          <div className="absolute inset-0 pointer-events-none rounded-2xl" />
-          <div className="absolute top-4 left-4 w-6 h-6 border-t-[3px] border-l-[3px] border-[#D4F829]/60 pointer-events-none rounded-tl-sm" />
-          <div className="absolute top-4 right-4 w-6 h-6 border-t-[3px] border-r-[3px] border-[#D4F829]/60 pointer-events-none rounded-tr-sm" />
-          <div className="absolute bottom-4 left-4 w-6 h-6 border-b-[3px] border-l-[3px] border-[#D4F829]/60 pointer-events-none rounded-bl-sm" />
-          <div className="absolute bottom-4 right-4 w-6 h-6 border-b-[3px] border-r-[3px] border-[#D4F829]/60 pointer-events-none rounded-br-sm" />
+          {/* Futuristic Targeting Brackets overlaying the image */}
+          <div className="absolute inset-0 pointer-events-none rounded-full ring-1 ring-white/10 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)]" />
+          <div className="absolute top-4 left-4 w-8 h-8 border-t-[3px] border-l-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-tl-xl" />
+          <div className="absolute top-4 right-4 w-8 h-8 border-t-[3px] border-r-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-tr-xl" />
+          <div className="absolute bottom-4 left-4 w-8 h-8 border-b-[3px] border-l-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-bl-xl" />
+          <div className="absolute bottom-4 right-4 w-8 h-8 border-b-[3px] border-r-[3px] border-[#D4F829] pointer-events-none drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] rounded-br-xl" />
         </div>
 
         <style dangerouslySetInnerHTML={{__html: `
@@ -271,8 +272,8 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
         `}} />
 
         {/* Zoom controls */}
-        <div className="w-full mt-8 flex items-center justify-between gap-4 px-4">
-          <ZoomOut size={18} className="text-[#808080]" />
+        <div className="w-full mt-10 flex items-center justify-between gap-4 px-2 z-10">
+          <ZoomOut size={20} className="text-[#808080]" />
           <input
             type="range"
             min="0.5"
@@ -280,27 +281,27 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
             step="0.01"
             value={scale}
             onChange={(e) => setScale(parseFloat(e.target.value))}
-            className="flex-1 custom-slider h-1.5 rounded-full bg-[#1A1A1A] cursor-pointer appearance-none outline-none"
+            className="flex-1 custom-slider h-[6px] rounded-full bg-[#1A1A1A] cursor-pointer appearance-none outline-none shadow-inner"
           />
-          <ZoomIn size={18} className="text-[#D4F829]" />
+          <ZoomIn size={20} className="text-[#D4F829] drop-shadow-[0_0_8px_rgba(212,248,41,0.4)]" />
         </div>
-        <div className="text-[11px] font-black uppercase tracking-[0.1em] text-[#808080]/80 mt-4 text-center w-full">
+        <div className="text-[10px] font-display font-bold uppercase tracking-[0.2em] text-[#808080] mt-5 text-center w-full z-10">
           DRAG TO PAN · SLIDE TO ZOOM
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-4 w-full mt-8 mb-2 px-2">
+        <div className="grid grid-cols-2 gap-4 w-full mt-8 mb-2 px-1 z-10">
           <button
             onClick={onCancel}
             type="button"
-            className="h-[52px] rounded-3xl border border-[#2A2315]/50 bg-[#15120C] text-[13px] font-display font-black tracking-[0.05em] text-[#E8E8E8] uppercase hover:bg-[#1A160F] cursor-pointer transition shadow-sm"
+            className="h-[52px] rounded-full border border-white/5 bg-black/40 backdrop-blur-md text-[13px] font-display font-black tracking-[0.05em] text-[#E8E8E8] uppercase hover:bg-black/60 hover:border-white/10 cursor-pointer transition-all shadow-sm"
           >
             CANCEL
           </button>
           <button
             onClick={handleConfirm}
             type="button"
-            className="h-[52px] rounded-3xl bg-[#D4F829] text-[#110E0A] text-[13px] font-display font-black tracking-[0.05em] uppercase hover:bg-[#bce020] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer transition shadow-[0_0_30px_rgba(212,248,41,0.15)]"
+            className="h-[52px] rounded-full bg-gradient-to-b from-[#D4F829] to-[#bce020] text-[#110E0A] text-[13px] font-display font-black tracking-[0.05em] uppercase hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer transition-all shadow-[0_4px_20px_rgba(212,248,41,0.25)] border border-[#D4F829]"
           >
             <Check size={16} strokeWidth={3} /> SAVE CROP
           </button>
