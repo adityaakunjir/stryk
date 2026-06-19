@@ -252,7 +252,7 @@ export default function IdentityPage() {
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/create_card_background.webp')" }}
+        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
       />
       
       <section data-scroll-panel className="relative mx-auto flex h-full w-full max-w-5xl flex-col px-5 pb-7 pt-6 sm:px-8 lg:px-10 z-10 overflow-y-auto min-h-0"

@@ -153,7 +153,7 @@ export default function PositionPage() {
   return (
     <main className="stryk-mobile-shell text-[#1A1A1A] relative overflow-hidden min-h-[100dvh] flex flex-col">
       {/* Premium Marble Background */}
-      <img src="/create_card_background.webp" className="absolute inset-0 z-0 h-full w-full object-cover opacity-90" alt="" />
+      <img src="/create_card_bg.webp" className="absolute inset-0 z-0 h-full w-full object-cover opacity-90" alt="" />
 
       {/* Custom Animated Success Toast */}
       <AnimatePresence>
