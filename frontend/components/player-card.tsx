@@ -27,6 +27,7 @@ export type PlayerMockType = {
   matches: number;
   stats: PlayerStats;
   avatarUrl: string;
+  bio?: string;
 };
 
 type Props = {

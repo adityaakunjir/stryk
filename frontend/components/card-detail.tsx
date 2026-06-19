@@ -20,7 +20,7 @@ export function CardDetail({ player, onClose }: Props) {
       className="fixed inset-0 z-50 flex flex-col"
       style={{
         background:
-          "radial-gradient(60% 50% at 50% 30%, rgba(198,255,0,0.12) 0%, transparent 60%), #05070B"}}
+          "radial-gradient(60% 50% at 50% 30%, rgba(212,248,41,0.08) 0%, transparent 60%), #05070B"}}
     >
       <div className="flex items-center justify-between px-6 pt-6">
         <button
@@ -75,7 +75,7 @@ export function CardDetail({ player, onClose }: Props) {
       <div className="px-6 pb-8 text-center">
         <button
           onClick={() => setFlipped((f) => !f)}
-          className="text-[11px] tracking-[0.3em] uppercase text-white/50 hover:text-[var(--stryk-lime)] transition-colors cursor-pointer"
+          className="text-[11px] tracking-[0.3em] uppercase text-white/50 hover:text-[#D4F829] transition-colors cursor-pointer"
         >
           {flipped ? "View Front" : "Tap card to flip"}
         </button>
@@ -104,17 +104,23 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
     <div
       className="w-72 h-[26rem] rounded-[28px] p-6 flex flex-col"
       style={{
-        background:
-          "linear-gradient(160deg, #1A2540 0%, #0B1020 45%, #05070B 100%)",
+        background: "#151515",
         boxShadow:
-          "0 0 0 1px rgba(198,255,0,0.25), 0 30px 60px -20px rgba(198,255,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)"}}
+          "0 0 0 1px rgba(212,248,41,0.15), 0 30px 60px -20px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05)"}}
     >
-      <div className="text-[10px] tracking-[0.35em] uppercase text-[var(--stryk-lime)]">
+      <div className="text-[10px] tracking-[0.35em] uppercase text-[#A28B52]">
         Career Dossier
       </div>
       <div className="font-display text-white mt-1 text-2xl truncate">
         {name ? name.toUpperCase() : "PLAYER NAME"}
       </div>
+      
+      {player.bio && (
+        <div className="mt-2 text-[11px] leading-relaxed text-[#808080] italic">
+          "{player.bio}"
+        </div>
+      )}
+
       <div className="mt-4 grid grid-cols-2 gap-3">
         <Mini label="Matches" value={matches.toString()} />
         <Mini label="Trust" value="98%" />
@@ -129,9 +135,9 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
         {unlockedBadges.map((b) => (
           <div
             key={b.label}
-            className="flex items-center gap-2 rounded-xl px-2.5 py-2 bg-white/[0.04] border border-white/10"
+            className="flex items-center gap-2 rounded-xl px-2.5 py-2 bg-white/[0.04] border border-white/5"
           >
-            <b.icon size={14} className="text-[var(--stryk-lime)] shrink-0" />
+            <b.icon size={14} className="text-[#D4F829] shrink-0" />
             <span className="text-[11px] text-white/80 truncate">{b.label}</span>
           </div>
         ))}
@@ -156,8 +162,8 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
                   className="flex-1 h-10 rounded-md transition-all duration-300"
                   style={{
                     background: isActive
-                      ? `linear-gradient(to top, var(--stryk-lime) ${v * 100}%, rgba(255,255,255,0.06) ${v * 100}%)`
-                      : "rgba(255,255,255,0.04)"}}
+                      ? `linear-gradient(to top, rgba(212,248,41,0.8) ${v * 100}%, rgba(255,255,255,0.04) ${v * 100}%)`
+                      : "rgba(255,255,255,0.02)"}}
                 />
               );
             })
