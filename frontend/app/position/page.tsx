@@ -69,17 +69,17 @@ const smartSecondary: Record<string, string[]> = {
 
 function Stepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-white/40">
-      <div className="flex items-center gap-1.5 text-white/70">
-        IDENTITY <Check size={12} className="text-[#C6FF00]" />
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#1A1A1A]/60 font-medium">
+      <div className="flex items-center gap-1.5 text-[#1A1A1A]/60">
+        IDENTITY <Check size={12} className="text-[#1A1A1A]" />
       </div>
-      <div className="w-4 sm:w-6 h-[1px] bg-white/20" />
-      <div className="text-[#C6FF00] flex items-center gap-1.5">
-        <div className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] shadow-[0_0_8px_rgba(198,255,0,0.8)]" />
+      <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
+      <div className="text-[#1A1A1A] font-bold flex items-center gap-1.5">
+        <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         POSITION
       </div>
-      <div className="w-4 sm:w-6 h-[1px] bg-white/20" />
-      <div>STATS <div className="inline-block w-1.5 h-1.5 rounded-full border border-white/40 ml-1.5" /></div>
+      <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
+      <div>STATS <div className="inline-block w-1.5 h-1.5 rounded-full border border-black/20 ml-1.5" /></div>
     </div>
   );
 }
@@ -151,22 +151,9 @@ export default function PositionPage() {
   const suggestedSecondaries = smartSecondary[selectedPosition] || [];
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B] overflow-hidden">
-      {/* Background Layer 1: Base Gradient */}
-      <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(198,255,0,0.08)_0%,transparent_60%),radial-gradient(ellipse_60%_40%_at_50%_110%,rgba(91,140,255,0.05)_0%,transparent_55%),#05070B]" />
-      
-      {/* Background Layer 2: Noise Texture */}
-      <div className="fixed inset-0 z-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('data:image/svg+xml,%3Csvg_viewBox=%220_0_200_200%22_xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter_id=%22noiseFilter%22%3E%3CfeTurbulence_type=%22fractalNoise%22_baseFrequency=%220.65%22_numOctaves=%223%22_stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect_width=%22100%25%22_height=%22100%25%22_filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')]" />
-      
-      {/* Background Layer 3: Moving Glow */}
-      <motion.div
-        className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[120px] bg-[#C6FF00]/10 z-0 pointer-events-none"
-        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      {/* Background Layer 4: Football Pitch Grid */}
-      <div className="fixed inset-x-0 bottom-0 h-[48%] bg-[linear-gradient(180deg,transparent,rgba(11,16,32,0.72)),repeating-linear-gradient(96deg,rgba(198,255,0,0.08)_0_1px,transparent_1px_52px)] opacity-60 pointer-events-none z-0" />
+    <main className="stryk-mobile-shell text-[#1A1A1A] relative overflow-hidden min-h-[100dvh] flex flex-col">
+      {/* Premium Marble Background */}
+      <img src="/create_card_background.webp" className="absolute inset-0 z-0 h-full w-full object-cover opacity-90" alt="" />
 
       {/* Custom Animated Success Toast */}
       <AnimatePresence>
@@ -195,13 +182,13 @@ export default function PositionPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" className="h-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/60">
+          <Button asChild variant="ghost" className="h-8 rounded-full bg-black/5 border border-black/10 hover:bg-black/10 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-[#1A1A1A]/60 hover:text-[#1A1A1A]">
             <Link href="/identity">
               <ArrowLeft size={14} className="mr-1.5" /> Identity
             </Link>
           </Button>
           <div className="hidden sm:block"><Stepper /></div>
-          <Button variant="ghost" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-white/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/40 hover:text-white">
+          <Button variant="ghost" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-black/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-[#1A1A1A]/40 hover:text-[#1A1A1A]">
             Skip
           </Button>
         </motion.header>
@@ -210,32 +197,32 @@ export default function PositionPage() {
           <div className="sm:hidden mb-6"><Stepper /></div>
 
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="w-full text-center">
-            <p className="text-[10px] tracking-[0.35em] uppercase text-[#C6FF00] font-bold">Pick your role</p>
-            <h2 className="font-display text-4xl sm:text-6xl uppercase italic leading-none tracking-wide text-white mt-1">
+            <p className="text-[10px] tracking-[0.35em] uppercase text-[#B08332] font-bold">Pick your role</p>
+            <h2 className="font-display text-4xl sm:text-6xl uppercase italic leading-none tracking-tight text-[#1A1A1A] mt-1">
               WHERE DO YOU PLAY?
             </h2>
           </motion.div>
 
           {/* Live Mini Card Continuity */}
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.2 }} className="mt-6 flex items-center justify-center pointer-events-none">
-            <div className="flex items-center gap-4 rounded-full border border-white/10 bg-white/5 p-2 pr-6 shadow-xl backdrop-blur-md">
+            <div className="flex items-center gap-4 rounded-full border border-black/10 bg-black/5 p-2 pr-6 shadow-sm backdrop-blur-md">
               {playerData?.avatar ? (
-                <img src={playerData.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover border border-white/20" />
+                <img src={playerData.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover border border-black/10" />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                  <div className="w-5 h-5 rounded-full bg-white/20" />
+                <div className="w-10 h-10 rounded-full bg-black/10 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-black/20" />
                 </div>
               )}
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-white">{playerData?.fullName || "Player Name"}</span>
-                <div className="flex items-center gap-2 mt-0.5 text-[9px] font-bold tracking-[0.1em] text-[#C6FF00]">
-                  {selectedPosition} <span className="text-white/30">•</span> {strongFoot} Foot
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#1A1A1A]">{playerData?.fullName || "Player Name"}</span>
+                <div className="flex items-center gap-2 mt-0.5 text-[9px] font-bold tracking-[0.1em] text-[#B08332]">
+                  {selectedPosition} <span className="text-[#1A1A1A]/30">•</span> {strongFoot} Foot
                 </div>
               </div>
             </div>
           </motion.div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full space-y-4">
+          <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-4 bg-[#151515] text-white p-6 sm:p-8 rounded-[40px] shadow-2xl border border-white/5 relative z-10">
             
             {/* Tactical Pitch Selector */}
             <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-3xl border border-white/10 bg-[#0B1020]/40 p-4 shadow-[0_28px_80px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-2xl">
