@@ -271,7 +271,7 @@ export default function IdentityPage() {
           <div className="w-10 h-10" />
         </motion.header>
 
-        <div className="mx-auto mt-6 flex w-full max-w-[54rem] flex-1 shrink-0 flex-col items-center min-h-[min-content] pb-8">
+        <div className="mx-auto mt-6 flex w-full max-w-[54rem] flex-col items-center pb-8">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.15 }}
             className="flex items-center justify-center mb-6"
@@ -292,7 +292,7 @@ export default function IdentityPage() {
             </p>
           </motion.div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full flex-1 shrink-0 rounded-[2rem] border border-[#8E793E]/30 bg-[#151515] p-5 shadow-[0_28px_50px_rgba(0,0,0,0.5)] sm:flex-none sm:p-8 relative">
+          <form onSubmit={handleNext} className="mt-8 w-full rounded-[2rem] border border-[#8E793E]/30 bg-[#151515] p-5 shadow-[0_28px_50px_rgba(0,0,0,0.5)] sm:p-8 relative">
             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
 
             <div className="grid gap-8 md:grid-cols-[1fr_17rem] md:items-start">
@@ -312,17 +312,17 @@ export default function IdentityPage() {
                   <p className="text-[11px] text-[#808080] mb-4 mt-0.5">Upload or generate a front-facing photo.</p>
                   
                   {avatar ? (
-                    <div className="relative group rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <img src={avatar} alt="Avatar" className="w-14 h-14 rounded-full object-cover border border-[#A28B52]" />
-                        <div>
-                          <div className="text-sm font-bold text-[#E8E8E8] uppercase tracking-wider">Photo Ready</div>
-                          <div className="text-[11px] text-[#808080] mt-0.5">High-res uploaded</div>
+                    <div className="relative group rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 min-w-0">
+                        <img src={avatar} alt="Avatar" className="w-14 h-14 shrink-0 rounded-full object-cover border border-[#A28B52]" />
+                        <div className="min-w-0">
+                          <div className="text-sm font-bold text-[#E8E8E8] uppercase tracking-wider truncate">Photo Ready</div>
+                          <div className="text-[11px] text-[#808080] mt-0.5 truncate">High-res uploaded</div>
                         </div>
                       </div>
-                      <div className="flex gap-4">
-                        <button type="button" onClick={triggerFileUpload} className="text-[11px] uppercase font-bold text-[#D4F829] hover:opacity-80 transition cursor-pointer">Replace</button>
-                        <button type="button" onClick={handleRemovePhoto} className="text-[11px] uppercase font-bold text-[#808080] hover:text-red-400 transition cursor-pointer">Remove</button>
+                      <div className="flex items-center gap-4 shrink-0">
+                        <button type="button" onClick={triggerFileUpload} className="text-[10px] font-bold text-[#D4F829] uppercase tracking-wider hover:opacity-80 transition cursor-pointer">Replace</button>
+                        <button type="button" onClick={handleRemovePhoto} className="text-[10px] font-bold text-[#808080] uppercase tracking-wider hover:text-red-400 transition cursor-pointer">Remove</button>
                       </div>
                     </div>
                   ) : (
