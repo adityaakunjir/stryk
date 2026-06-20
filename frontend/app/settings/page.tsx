@@ -50,7 +50,7 @@ export default function SettingsPage() {
       <div className="relative min-h-[100dvh] w-full max-w-md flex flex-col shadow-2xl border-x border-[#1A1A1A]/5">
         
         <div
-          className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-cover bg-top bg-no-repeat pointer-events-none"
+          className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
           style={{ backgroundImage: "url('/home_page_bg.webp')" }}
         />
 
