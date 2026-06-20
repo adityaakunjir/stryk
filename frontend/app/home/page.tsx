@@ -66,7 +66,7 @@ export default function HomeLobbyPage() {
   const xpCurrent = 45; // Dummy XP value
   const xpTotal = 100;
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden bg-[#E5DCC5] flex justify-center custom-scrollbar text-[#1A1A1A]">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#E5DCC5] flex justify-center custom-scrollbar text-[#1A1A1A]">
       
       {/* Main App Container (Clamps at 448px for tablets/desktop) */}
       <div className="relative min-h-[100dvh] w-full max-w-md bg-transparent shadow-2xl border-x border-[#1A1A1A]/5 flex flex-col">
