@@ -141,17 +141,17 @@ export default function MatchesPage() {
     setCreateError("");
 
     try {
-      const params = new URLSearchParams({
-        title: createTitle,
-        location: createLocation,
-        date_time: createDateTime,
-        max_players: createMaxPlayers
-      });
-      const res = await fetch(`/api/matches?${params.toString()}`, {
+      const res = await fetch(`/api/matches`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
-        }
+        },
+        body: JSON.stringify({
+          title: createTitle,
+          location: createLocation,
+          date_time: createDateTime,
+          max_players: parseInt(createMaxPlayers, 10) || 22
+        })
       });
       const data = await res.json();
       if (res.ok) {

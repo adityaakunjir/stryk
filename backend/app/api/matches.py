@@ -18,20 +18,25 @@ from app.api.teams import get_current_user_placeholder
 router = APIRouter(prefix="/matches", tags=["matches"])
 
 
+from pydantic import BaseModel
+
+class MatchCreate(BaseModel):
+    title: str
+    location: str
+    date_time: datetime
+    max_players: int = 22
+
 @router.post("/", response_model=Match, status_code=status.HTTP_201_CREATED)
 async def create_match(
-    title: str,
-    location: str,
-    date_time: datetime,
-    max_players: int = 22,
+    match_in: MatchCreate,
     current_user: User = Depends(get_current_user_placeholder),
     session: AsyncSession = Depends(get_session),
 ):
     match = Match(
-        title=title,
-        location=location,
-        dateTime=date_time,
-        maxPlayers=max_players,
+        title=match_in.title,
+        location=match_in.location,
+        dateTime=match_in.date_time,
+        maxPlayers=match_in.max_players,
         creatorId=current_user.id
     )
     session.add(match)
@@ -43,8 +48,8 @@ async def create_match(
 @router.get("/", response_model=List[Match])
 async def get_all_matches(session: AsyncSession = Depends(get_session)):
     statement = select(Match)
-    matches = await session.exec(statement)
-    return matches.all()
+    matches = await session.execute(statement)
+    return matches.scalars().all()
 
 
 @router.post("/{match_id}/join", response_model=MatchParticipant)
@@ -58,8 +63,8 @@ async def join_match(
         MatchParticipant.matchId == match_id,
         MatchParticipant.userId == current_user.id
     )
-    existing = await session.exec(stmt)
-    if existing.first():
+    existing = await session.execute(stmt)
+    if existing.scalars().first():
         raise HTTPException(status_code=400, detail="Already joined this match")
         
     participant = MatchParticipant(matchId=match_id, userId=current_user.id)

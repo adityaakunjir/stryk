@@ -18,8 +18,8 @@ router = APIRouter(prefix="/teams", tags=["teams"])
 
 # Placeholder until auth is implemented
 async def get_current_user_placeholder(session: AsyncSession = Depends(get_session)) -> User:
-    user = await session.exec(select(User).limit(1))
-    user = user.first()
+    result = await session.execute(select(User).limit(1))
+    user = result.scalars().first()
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
     return user
