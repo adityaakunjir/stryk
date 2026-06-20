@@ -46,110 +46,129 @@ export default function SettingsPage() {
   ];
 
   return (
-          </button>
-          {/* Logo instead of STRYK text */}
-          <div className="flex items-center justify-center">
-            <img src="/logo.webp" alt="STRYK" className="h-[45px] w-auto object-contain" />
-          </div>
-          <div className="w-10 h-10" />
-        </header>
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden bg-[#E5DCC5] flex justify-center text-[#1A1A1A]">
+      <div className="relative min-h-[100dvh] w-full max-w-md flex flex-col shadow-2xl border-x border-[#1A1A1A]/5">
+        
+        <div
+          className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+          style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+        />
 
-        {/* Title */}
-        <div className="text-center mt-4 mb-5 shrink-0">
-          <h1 className="font-display text-[32px] font-bold tracking-[0.08em] text-[#1A1A1A] uppercase scale-y-[1.1] scale-x-[0.95] transform">
-            SETTINGS
-          </h1>
-          <div className="w-8 h-[2px] bg-[#A28B52] mx-auto mt-2" />
-        </div>
-
-        {/* User Card */}
-        <div className="w-full bg-gradient-to-br from-[#1A1A1A] to-[#0A0A0A] rounded-[1.8rem] p-4 border border-white/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_20px_40px_rgba(0,0,0,0.6)] flex items-center gap-3.5 mb-5 relative overflow-hidden text-white shrink-0">
-          {/* Avatar Container with rating badge */}
-          <div className="relative size-12 shrink-0 z-10 ml-1">
-            <div className="w-full h-full rounded-full border border-[#A28B52] overflow-hidden bg-[#111111] flex items-center justify-center shadow-inner">
-              {playerData.avatar ? (
-                <img src={playerData.avatar} alt={playerData.fullName} className="w-full h-full object-cover" />
-              ) : (
-                <User size={18} className="text-[#A28B52]/70" />
-              )}
-            </div>
-            {/* Hexagon Rating Badge */}
-            <div 
-              className="absolute -bottom-1 -right-1 bg-gradient-to-br from-[#F4E3B5] via-[#C89B3C] to-[#826021] text-[#1A1A1A] font-display font-extrabold text-[10px] w-[22px] h-[22px] flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.8)] z-20"
-              style={{
-                clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
-              }}
-            >
-              {playerData.rating || 60}
-            </div>
-          </div>
-
-          {/* User Details */}
-          <div className="flex-1 min-w-0 z-10 text-left ml-1.5">
-            <div className="font-display text-[17px] uppercase font-bold text-white leading-none tracking-widest truncate">
-              {playerData.fullName || "Player"}
-            </div>
-            <div className="text-[10px] font-semibold text-[#C3DF1B] tracking-wider mt-1.5 truncate">
-              @{playerData.username || "username"}
-            </div>
-            <div className="text-[9px] uppercase tracking-[0.15em] font-medium text-white/50 mt-1 flex items-center gap-1.5">
-              {playerData.position || "CAM"} <span className="text-white/30 text-[12px] leading-none">•</span> {playerData.rating || 60} OVR
-            </div>
-          </div>
-        </div>
-
-        {/* Section Divider */}
-        <div className="flex items-center gap-4 mt-1 mb-4 px-1 text-[10px] tracking-[0.5em] font-medium uppercase text-[#1A1A1A]/60 shrink-0">
-          <span>A C C O U N T</span>
-          <div className="flex-1 h-[1px] bg-[#A28B52]/40" />
-        </div>
-
-        {/* Settings List Box */}
-        <div className="w-full bg-gradient-to-b from-[#141414] to-[#0A0A0A] rounded-[1.6rem] border border-white/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_20px_40px_rgba(0,0,0,0.5)] overflow-hidden divide-y divide-white/[0.03] shrink-0">
-          {sections[0].items.map((item) => (
+        <div className="relative z-10 mx-auto flex h-full w-full flex-col px-6 pt-8 pb-8">
+          <header className="flex shrink-0 items-center justify-between mb-8">
             <button
-              key={item.label}
-              onClick={item.onClick}
-              disabled={!item.onClick}
-              className="w-full flex items-center gap-3.5 p-3.5 hover:bg-white/[0.03] active:bg-white/[0.05] transition duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed text-left group"
+              onClick={() => router.push("/home")}
+              className="grid size-[46px] cursor-pointer place-items-center rounded-full border border-[#1A1A1A]/5 bg-[#1A1A1A]/[0.03] text-[#1A1A1A] transition hover:bg-[#1A1A1A]/10 active:scale-95 shadow-sm backdrop-blur-md"
+              aria-label="Back to home"
               type="button"
             >
-              {/* Icon Wrapper */}
-              <div className="w-10 h-10 rounded-[0.8rem] bg-[#1A1A1A] border border-white/5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 group-hover:border-white/10 transition-colors">
-                <item.icon size={16} strokeWidth={1.5} className="text-[#C3DF1B]" />
-              </div>
-              
-              {/* Text Meta */}
-              <div className="flex-1 min-w-0 py-0.5">
-                <div className="font-display text-[13px] font-bold text-white tracking-widest uppercase">
-                  {item.label}
-                </div>
-                <div className="text-[10px] text-white/40 mt-1 font-normal tracking-wide">
-                  {item.label === "Edit Profile" ? "Manage your personal information" : "Manage alerts and updates"}
-                </div>
-              </div>
-              
-              {/* Chevron Right */}
-              <ChevronRight size={16} strokeWidth={1.5} className="text-[#A28B52]/60 shrink-0 group-hover:text-[#A28B52] transition-colors" />
+              <ArrowLeft size={20} strokeWidth={1.5} />
             </button>
-          ))}
+            <img src="/logo.webp" alt="STRYK" className="h-[14px] w-auto object-contain opacity-70 mix-blend-multiply grayscale ml-1" />
+            <div className="size-[46px]" />
+          </header>
+
+          <div className="flex flex-col items-center mb-10 mt-2">
+            <h1 className="font-display text-[40px] font-black uppercase leading-none tracking-tight text-[#1A1A1A] scale-y-[1.15] scale-x-[0.95]">
+              SETTINGS
+            </h1>
+            <div className="mt-5 h-[2px] w-10 bg-[#A28B52]" />
+          </div>
+
+          <div data-scroll-panel className="min-h-0 flex-1 overflow-y-auto pb-6">
+            
+            {/* User Card */}
+            <section className="mb-10 overflow-hidden rounded-[2.2rem] bg-[#111111] p-4 text-white shadow-[0_24px_40px_rgba(0,0,0,0.3)] shrink-0 flex items-center gap-4 border border-[#A28B52]/10">
+              <div className="relative size-[72px] shrink-0 ml-1">
+                <div className="grid h-full w-full place-items-center overflow-hidden rounded-full border border-[#A28B52] bg-[#1A1A1A]">
+                  {playerData.avatar ? (
+                    <img
+                      src={playerData.avatar}
+                      alt={displayName}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <User size={24} className="text-[#A28B52]/70" />
+                  )}
+                </div>
+                <div
+                  className="absolute -bottom-1 -right-2 grid size-[28px] place-items-center bg-gradient-to-br from-[#F4E3B5] via-[#C89B3C] to-[#826021] font-display text-[12px] font-extrabold text-[#1A1A1A] shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
+                  style={{
+                    clipPath:
+                      "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+                  }}
+                >
+                  {rating}
+                </div>
+              </div>
+
+              <div className="min-w-0 flex-1 text-left ml-2">
+                <div className="truncate font-display text-[22px] font-bold uppercase leading-none tracking-widest text-white">
+                  {displayName}
+                </div>
+                <div className="mt-[6px] truncate text-[12px] font-bold tracking-[0.1em] text-[#C3DF1B]">
+                  @{username}
+                </div>
+                <div className="mt-[6px] text-[11px] font-medium uppercase tracking-[0.15em] text-white/50 flex items-center gap-2">
+                  {position} <span className="text-white/30 text-[10px] leading-none">•</span> {rating} OVR
+                </div>
+              </div>
+            </section>
+
+            <section className="mb-8">
+              <div className="mb-5 flex items-center gap-4 px-2">
+                <span className="text-[11px] font-medium uppercase tracking-[0.4em] text-[#1A1A1A]/50">
+                  A C C O U N T
+                </span>
+                <div className="h-[1px] flex-1 bg-[#1A1A1A]/10" />
+              </div>
+
+              <div className="overflow-hidden rounded-[2rem] bg-[#111111] shadow-[0_20px_40px_rgba(0,0,0,0.25)] border border-[#A28B52]/10 divide-y divide-white/5">
+                {accountItems.map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={item.onClick}
+                    className="group flex w-full cursor-pointer items-center gap-4 p-5 text-left transition hover:bg-white/[0.02]"
+                    type="button"
+                  >
+                    <div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#1A1A1A] border border-white/5">
+                      <item.icon size={18} strokeWidth={1.5} className="text-[#C3DF1B]" />
+                    </div>
+                    <div className="min-w-0 flex-1 py-1 ml-1">
+                      <div className="truncate font-display text-[15px] font-bold uppercase tracking-widest text-white">
+                        {item.label}
+                      </div>
+                      <div className="mt-1.5 truncate text-[11px] text-white/40 font-normal tracking-wide">
+                        {item.description}
+                      </div>
+                    </div>
+                    <ChevronRight
+                      size={18}
+                      strokeWidth={1.5}
+                      className="shrink-0 text-white/20 transition group-hover:text-white/40"
+                    />
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <button
+              onClick={handleSignOut}
+              disabled={isSigningOut}
+              className="flex h-[56px] w-full cursor-pointer items-center justify-center gap-3 rounded-full bg-[#0A0A0A] shadow-[0_15px_30px_rgba(0,0,0,0.3)] transition hover:bg-[#111111] disabled:cursor-not-allowed disabled:opacity-50 mt-10"
+              type="button"
+            >
+              {isSigningOut ? (
+                <Loader2 size={18} className="animate-spin text-[#C3DF1B]" />
+              ) : (
+                <LogOut size={18} strokeWidth={1.5} className="text-[#C89B3C]" />
+              )}
+              <span className="font-display text-[14px] font-bold uppercase tracking-[0.15em] text-[#C3DF1B] pt-0.5">
+                SIGN OUT
+              </span>
+            </button>
+          </div>
         </div>
-
-        {/* Sign Out Button */}
-        <button
-          onClick={handleSignOut}
-          disabled={isSigningOut}
-          className="w-full h-[48px] mt-6 rounded-[1.2rem] bg-[#0A0A0A] border border-[#A28B52]/40 text-[#C3DF1B] flex items-center justify-center gap-2.5 cursor-pointer hover:bg-[#1A1A1A] active:scale-[0.98] transition duration-200 shadow-[0_8px_16px_-8px_rgba(162,139,82,0.3)] disabled:opacity-50 shrink-0"
-          type="button"
-        >
-          {isSigningOut ? (
-            <Loader2 size={16} className="animate-spin text-[#C3DF1B]" />
-          ) : (
-            <LogOut size={16} strokeWidth={1.5} className="text-[#C3DF1B]" />
-          )}
-          <span className="font-display font-bold tracking-[0.2em] text-[12px] text-[#C3DF1B] uppercase">SIGN OUT</span>
-        </button>
-
       </div>
     </main>
   );
