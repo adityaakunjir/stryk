@@ -109,7 +109,7 @@ export default function HomeLobbyPage() {
               READY FOR TODAY&apos;S MATCH?
             </div>
             <div className="font-display text-4xl text-[#1A1A1A] italic leading-[0.9] tracking-tight flex items-center gap-2">
-              HEY, {firstName} <span className="text-3xl not-italic ml-1">👋</span>
+              HEY, {firstName}
             </div>
             <div className="text-[10px] text-[#1A1A1A]/70 font-medium mt-1.5">
               Level up, compete, and build your legacy.
