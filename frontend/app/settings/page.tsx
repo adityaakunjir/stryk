@@ -46,7 +46,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] text-[#1A1A1A] min-h-screen relative overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#E5DCC5] text-[#151515] min-h-screen relative overflow-hidden">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -58,7 +58,7 @@ export default function SettingsPage() {
         <header className="flex items-center justify-between mb-3 shrink-0">
           <button
             onClick={() => router.push("/home")}
-            className="w-10 h-10 rounded-full bg-[#1A1A1A]/5 border border-[#1A1A1A]/10 text-[#1A1A1A] flex items-center justify-center cursor-pointer hover:bg-[#1A1A1A]/10 transition backdrop-blur-md shadow-sm"
+            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm"
             aria-label="Back to home"
             type="button"
           >
@@ -73,17 +73,17 @@ export default function SettingsPage() {
 
         {/* Title */}
         <div className="text-center mt-4 mb-5 shrink-0">
-          <h1 className="font-display text-[32px] font-bold tracking-[0.08em] text-[#1A1A1A] uppercase scale-y-[1.1] scale-x-[0.95] transform">
+          <h1 className="font-display text-[32px] font-bold tracking-[0.08em] text-[#151515] uppercase scale-y-[1.1] scale-x-[0.95] transform">
             SETTINGS
           </h1>
           <div className="w-8 h-[2px] bg-[#A28B52] mx-auto mt-2" />
         </div>
 
         {/* User Card */}
-        <div className="w-full bg-gradient-to-br from-[#1A1A1A] to-[#0A0A0A] rounded-[1.8rem] p-4 border border-white/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_20px_40px_rgba(0,0,0,0.6)] flex items-center gap-3.5 mb-5 relative overflow-hidden text-white shrink-0">
+        <div className="w-full bg-gradient-to-br from-[#151515] to-[#151515] rounded-[1.8rem] p-4 border border-white/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_20px_40px_rgba(0,0,0,0.6)] flex items-center gap-3.5 mb-5 relative overflow-hidden text-white shrink-0">
           {/* Avatar Container with rating badge */}
           <div className="relative size-12 shrink-0 z-10 ml-1">
-            <div className="w-full h-full rounded-full border border-[#A28B52] overflow-hidden bg-[#111111] flex items-center justify-center shadow-inner">
+            <div className="w-full h-full rounded-full border border-[#A28B52] overflow-hidden bg-[#151515] flex items-center justify-center shadow-inner">
               {playerData.avatar ? (
                 <img src={playerData.avatar} alt={playerData.fullName} className="w-full h-full object-cover" />
               ) : (
@@ -92,7 +92,7 @@ export default function SettingsPage() {
             </div>
             {/* Hexagon Rating Badge */}
             <div 
-              className="absolute -bottom-1 -right-1 bg-gradient-to-br from-[#F4E3B5] via-[#C89B3C] to-[#826021] text-[#1A1A1A] font-display font-extrabold text-[10px] w-[22px] h-[22px] flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.8)] z-20"
+              className="absolute -bottom-1 -right-1 bg-gradient-to-br from-[#F4E3B5] via-[#C89B3C] to-[#826021] text-[#151515] font-display font-extrabold text-[10px] w-[22px] h-[22px] flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.8)] z-20"
               style={{
                 clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
               }}
@@ -116,13 +116,13 @@ export default function SettingsPage() {
         </div>
 
         {/* Section Divider */}
-        <div className="flex items-center gap-4 mt-1 mb-4 px-1 text-[10px] tracking-[0.5em] font-medium uppercase text-[#1A1A1A]/60 shrink-0">
+        <div className="flex items-center gap-4 mt-1 mb-4 px-1 text-[10px] tracking-[0.5em] font-medium uppercase text-[#151515]/60 shrink-0">
           <span>A C C O U N T</span>
           <div className="flex-1 h-[1px] bg-[#A28B52]/40" />
         </div>
 
         {/* Settings List Box */}
-        <div className="w-full bg-gradient-to-b from-[#141414] to-[#0A0A0A] rounded-[1.6rem] border border-white/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_20px_40px_rgba(0,0,0,0.5)] overflow-hidden divide-y divide-white/[0.03] shrink-0">
+        <div className="w-full bg-gradient-to-b from-[#141414] to-[#151515] rounded-[1.6rem] border border-white/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_20px_40px_rgba(0,0,0,0.5)] overflow-hidden divide-y divide-white/[0.03] shrink-0">
           {sections[0].items.map((item) => (
             <button
               key={item.label}
@@ -132,7 +132,7 @@ export default function SettingsPage() {
               type="button"
             >
               {/* Icon Wrapper */}
-              <div className="w-10 h-10 rounded-[0.8rem] bg-[#1A1A1A] border border-white/5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 group-hover:border-white/10 transition-colors">
+              <div className="w-10 h-10 rounded-[0.8rem] bg-[#151515] border border-white/5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 group-hover:border-white/10 transition-colors">
                 <item.icon size={16} strokeWidth={1.5} className="text-[#C3DF1B]" />
               </div>
               
@@ -156,7 +156,7 @@ export default function SettingsPage() {
         <button
           onClick={handleSignOut}
           disabled={isSigningOut}
-          className="w-full h-[48px] mt-6 rounded-[1.2rem] bg-[#0A0A0A] border border-[#A28B52]/40 text-[#C3DF1B] flex items-center justify-center gap-2.5 cursor-pointer hover:bg-[#1A1A1A] active:scale-[0.98] transition duration-200 shadow-[0_8px_16px_-8px_rgba(162,139,82,0.3)] disabled:opacity-50 shrink-0"
+          className="w-full h-[48px] mt-6 rounded-[1.2rem] bg-[#151515] border border-[#A28B52]/40 text-[#C3DF1B] flex items-center justify-center gap-2.5 cursor-pointer hover:bg-[#151515] active:scale-[0.98] transition duration-200 shadow-[0_8px_16px_-8px_rgba(162,139,82,0.3)] disabled:opacity-50 shrink-0"
           type="button"
         >
           {isSigningOut ? (

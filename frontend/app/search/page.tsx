@@ -201,7 +201,7 @@ export default function SearchPage() {
                   className="block p-3 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#C6FF00]/30 transition duration-300"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="relative size-14 rounded-full overflow-hidden border border-white/10 bg-[#0B1020] shrink-0 flex items-center justify-center">
+                    <div className="relative size-14 rounded-full overflow-hidden border border-white/10 bg-[#151515] shrink-0 flex items-center justify-center">
                       {player.avatarUrl ? (
                         <img src={player.avatarUrl} alt={player.username} className="w-full h-full object-cover" />
                       ) : (

@@ -363,7 +363,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         </header>
 
         {/* Turf Poster Banner */}
-        <div className="w-full h-36 rounded-[2rem] bg-gradient-to-br from-[#0B1020] to-[#0A0D14] border border-white/10 relative overflow-hidden flex flex-col justify-end p-5 mb-6 shadow-2xl">
+        <div className="w-full h-36 rounded-[2rem] bg-gradient-to-br from-[#151515] to-[#0A0D14] border border-white/10 relative overflow-hidden flex flex-col justify-end p-5 mb-6 shadow-2xl">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(198,255,0,0.15),transparent_60%)] pointer-events-none" />
           <div className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-[#C6FF00]/10 border border-[#C6FF00]/20 text-[#C6FF00] text-[9px] uppercase tracking-widest font-bold">
             {match.status}
@@ -450,7 +450,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
             </button>
           )}
           {/* Team A */}
-          <div className="rounded-3xl border border-white/5 bg-[#0B1020]/10 p-4 relative">
+          <div className="rounded-3xl border border-white/5 bg-[#151515]/10 p-4 relative">
             <div className="flex items-center justify-between mb-3.5">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#C6FF00]" />
@@ -482,7 +482,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           </div>
 
           {/* Team B */}
-          <div className="rounded-3xl border border-white/5 bg-[#0B1020]/10 p-4 relative">
+          <div className="rounded-3xl border border-white/5 bg-[#151515]/10 p-4 relative">
             <div className="flex items-center justify-between mb-3.5">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#5b8cff]" />
@@ -612,7 +612,7 @@ function PlayerRow({ participant, showJoinedIcon }: { participant: MatchParticip
   const user = participant.user;
   return (
     <div className="p-2.5 rounded-xl border border-white/5 bg-white/[0.01] flex items-center gap-3">
-      <div className="relative size-8 rounded-full overflow-hidden border border-white/10 bg-[#0B1020] shrink-0 flex items-center justify-center">
+      <div className="relative size-8 rounded-full overflow-hidden border border-white/10 bg-[#151515] shrink-0 flex items-center justify-center">
         {user.avatarUrl ? (
            
           <img src={user.avatarUrl} alt={user.fullName || user.username} className="w-full h-full object-cover" />

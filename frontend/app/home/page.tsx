@@ -66,10 +66,10 @@ export default function HomeLobbyPage() {
   const xpCurrent = 45; // Dummy XP value
   const xpTotal = 100;
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#E5DCC5] flex justify-center custom-scrollbar text-[#1A1A1A]">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#E5DCC5] flex justify-center custom-scrollbar text-[#151515]">
       
       {/* Main App Container (Clamps at 448px for tablets/desktop) */}
-      <div className="relative min-h-[100dvh] w-full max-w-md bg-transparent shadow-2xl border-x border-[#1A1A1A]/5 flex flex-col">
+      <div className="relative min-h-[100dvh] w-full max-w-md bg-transparent shadow-2xl border-x border-[#151515]/5 flex flex-col">
         
         {/* Background Layer (Constrained to max-w-md) */}
         <div
@@ -93,15 +93,15 @@ export default function HomeLobbyPage() {
 
             {/* Profile & Notifications */}
             <div className="flex items-center gap-3">
-              <button onClick={() => router.push("/notifications")} className="relative w-10 h-10 rounded-full bg-[#1A1A1A]/5 backdrop-blur-md border border-[#1A1A1A]/10 flex items-center justify-center shadow-sm hover:bg-[#1A1A1A]/10 transition">
-                <Bell size={18} className="text-[#1A1A1A]" />
+              <button onClick={() => router.push("/notifications")} className="relative w-10 h-10 rounded-full bg-[#151515]/5 backdrop-blur-md border border-[#151515]/10 flex items-center justify-center shadow-sm hover:bg-[#151515]/10 transition">
+                <Bell size={18} className="text-[#151515]" />
                 {incomingRequests.length > 0 && (
                   <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#C3DF1B] rounded-full border-2 border-white" />
                 )}
               </button>
-              <button onClick={() => router.push("/settings")} className="flex items-center gap-2 p-1 pr-2 rounded-full bg-[#1A1A1A]/5 backdrop-blur-md border border-[#1A1A1A]/10 shadow-sm hover:bg-[#1A1A1A]/10 transition">
+              <button onClick={() => router.push("/settings")} className="flex items-center gap-2 p-1 pr-2 rounded-full bg-[#151515]/5 backdrop-blur-md border border-[#151515]/10 shadow-sm hover:bg-[#151515]/10 transition">
                 <img src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
-                <ChevronRight size={14} className="text-[#1A1A1A]/60 rotate-90" />
+                <ChevronRight size={14} className="text-[#151515]/60 rotate-90" />
               </button>
             </div>
           </div>
@@ -111,10 +111,10 @@ export default function HomeLobbyPage() {
             <div className="text-[9px] font-bold tracking-[0.15em] text-[#A37B31] uppercase mb-1">
               READY FOR TODAY&apos;S MATCH?
             </div>
-            <div className="font-display text-4xl text-[#1A1A1A] italic leading-[0.9] tracking-tight flex items-center gap-2">
+            <div className="font-display text-4xl text-[#151515] italic leading-[0.9] tracking-tight flex items-center gap-2">
               HEY, {firstName}
             </div>
-            <div className="text-[10px] text-[#1A1A1A]/70 font-medium mt-1.5">
+            <div className="text-[10px] text-[#151515]/70 font-medium mt-1.5">
               Level up, compete, and build your legacy.
             </div>
           </div>
@@ -304,7 +304,7 @@ export default function HomeLobbyPage() {
             </div>
 
             {/* Next Objective Card */}
-            <div className="bg-[#1A1A1A] rounded-[1.5rem] p-4 border border-[#2A2A2A] flex items-center justify-between mb-4 shadow-sm group hover:border-[#A28B52]/50 transition cursor-pointer">
+            <div className="bg-[#151515] rounded-[1.5rem] p-4 border border-[#2A2A2A] flex items-center justify-between mb-4 shadow-sm group hover:border-[#A28B52]/50 transition cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#C3DF1B] shrink-0 group-hover:bg-[#C3DF1B]/10 group-hover:border-[#C3DF1B]/30 transition">
                   <Target size={16} />
@@ -343,46 +343,46 @@ export default function HomeLobbyPage() {
       {/* Squad Modal (Empty State Upgraded) */}
       <AnimatePresence>
         {showSquadModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md px-5">
-            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="relative w-full max-w-sm rounded-[2rem] border border-white/10 bg-[#0B1020] p-6 shadow-2xl flex flex-col max-h-[85vh]">
-              <button onClick={() => setShowSquadModal(false)} className="absolute right-4 top-4 grid size-8 place-items-center rounded-full bg-white/5 hover:bg-white/10 transition cursor-pointer">
-                <X size={14} className="text-white/60" />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-[#151515]/80 backdrop-blur-md px-5">
+            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="relative w-full max-w-sm rounded-[2rem] border border-[#A28B52]/20 bg-[#151515] p-6 shadow-[0_24px_60px_rgba(162,139,82,0.15)] flex flex-col max-h-[85vh]">
+              <button onClick={() => setShowSquadModal(false)} className="absolute right-4 top-4 grid size-8 place-items-center rounded-full bg-[#151515] border border-[#A28B52]/10 text-[#888888] hover:text-[#A28B52] hover:bg-[#2A2824] transition duration-200 cursor-pointer">
+                <X size={14} strokeWidth={1.5} />
               </button>
               
-              <Users className="mx-auto size-10 text-[#C6FF00] mb-3" />
-              <h2 className="text-xl font-display uppercase tracking-widest text-center text-white italic">Your Squad</h2>
+              <Users className="mx-auto size-10 text-[#D4F829] drop-shadow-[0_0_8px_rgba(212,248,41,0.5)] mb-3" />
+              <h2 className="text-xl font-display uppercase tracking-widest text-center text-[#EFE8D6] drop-shadow-sm italic">Your Squad</h2>
               
               <div className="mt-6 flex-1 overflow-y-auto pr-1 space-y-3">
                 {friends.length === 0 ? (
                   <div className="flex flex-col items-center">
-                    <div className="text-center py-6 px-4 bg-white/[0.02] border border-dashed border-white/10 rounded-2xl mb-6">
-                      <p className="text-xs text-white/50 font-medium mb-3">No active teammates found.</p>
-                      <button onClick={() => router.push("/search")} className="px-4 py-2 rounded-xl bg-white/10 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/20 transition">Invite Friends</button>
+                    <div className="text-center py-6 px-4 bg-[#151515] border border-dashed border-[#A28B52]/20 rounded-[1.25rem] mb-6 shadow-inner w-full">
+                      <p className="text-xs text-[#E5DCC5]/70 font-medium mb-4">No active teammates found.</p>
+                      <button onClick={() => router.push("/search")} className="px-5 py-2.5 rounded-full bg-[#D4F829] text-[#151515] text-[11px] font-black uppercase tracking-widest hover:bg-[#cbf026] transition shadow-[0_0_16px_rgba(212,248,41,0.25)]">Invite Friends</button>
                     </div>
                     
                     <div className="w-full text-center">
-                      <p className="text-[10px] uppercase font-bold text-white/30 tracking-widest mt-4">Invite players to start a squad</p>
+                      <p className="text-[10px] uppercase font-bold text-[#A28B52]/60 tracking-widest mt-2">Invite players to start a squad</p>
                     </div>
                   </div>
                 ) : (
                   friends.map((f, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div key={i} className="flex items-center justify-between p-3 rounded-[1.25rem] bg-[#151515] border border-[#A28B52]/10 shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] hover:border-[#A28B52]/30 transition">
                       <div className="flex items-center gap-3">
-                        <img src={f.avatar} alt={f.name} className="w-10 h-10 rounded-full border border-white/10" />
+                        <img src={f.avatar} alt={f.name} className="w-10 h-10 rounded-full border border-[#A28B52]/20 shadow-sm" />
                         <div>
-                          <div className="text-sm font-bold">{f.name}</div>
-                          <div className="text-[10px] uppercase font-bold text-white/40 tracking-wider">{f.pos} • OVR {f.ovr}</div>
+                          <div className="text-sm font-bold text-[#E5DCC5]">{f.name}</div>
+                          <div className="text-[10px] uppercase font-bold text-[#A28B52]/80 tracking-wider mt-0.5">{f.pos} • OVR {f.ovr}</div>
                         </div>
                       </div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#C6FF00] bg-[#C6FF00]/10 px-2 py-1 rounded-full">Ready</span>
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#D4F829] bg-[#D4F829]/10 border border-[#D4F829]/20 px-2 py-1 rounded-full shadow-[0_0_8px_rgba(212,248,41,0.15)]">Ready</span>
                     </div>
                   ))
                 )}
               </div>
               
               {/* Persistent Add Friend Action in Modal */}
-              <div className="mt-6 pt-4 border-t border-white/10 w-full shrink-0">
-                <button onClick={() => router.push("/search")} className="w-full h-12 rounded-2xl bg-[#C3DF1B]/10 border border-[#C3DF1B]/30 text-[#C3DF1B] text-xs font-bold uppercase tracking-[0.15em] hover:bg-[#C3DF1B]/20 transition flex items-center justify-center gap-2 cursor-pointer">
+              <div className="mt-6 pt-5 border-t border-[#A28B52]/10 w-full shrink-0">
+                <button onClick={() => router.push("/search")} className="w-full h-[50px] rounded-full bg-transparent border border-[#D4F829]/30 text-[#D4F829] text-[12px] font-black uppercase tracking-[0.15em] hover:bg-[#D4F829]/10 transition flex items-center justify-center gap-2 cursor-pointer shadow-[inset_0_2px_10px_rgba(212,248,41,0.05)]">
                   <UserPlus size={16} /> ADD MORE FRIENDS
                 </button>
               </div>
@@ -396,7 +396,7 @@ export default function HomeLobbyPage() {
         {showOvrModal && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowOvrModal(false)} className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm" />
-            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed inset-x-0 bottom-0 z-50 rounded-t-[2rem] border-t border-white/10 bg-[#0B1020] p-6 shadow-[0_-20px_50px_rgba(0,0,0,0.8)] pb-12 max-h-[80vh] overflow-y-auto">
+            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed inset-x-0 bottom-0 z-50 rounded-t-[2rem] border-t border-white/10 bg-[#151515] p-6 shadow-[0_-20px_50px_rgba(0,0,0,0.8)] pb-12 max-h-[80vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <h3 className="font-display text-3xl uppercase italic text-white leading-none">Overall <span className="text-[#C6FF00]">{playerData.rating}</span></h3>
@@ -441,7 +441,7 @@ export default function HomeLobbyPage() {
 
 function ActionButton({ icon, label, subtext, onClick }: { icon: React.ReactNode; label: string; subtext: string; onClick?: () => void }) {
   return (
-    <button onClick={onClick} className="flex flex-col items-center justify-center p-3 rounded-[1.2rem] bg-[#1A1A1A] border border-[#2A2A2A] text-center cursor-pointer transition hover:bg-[#202020] hover:border-[#A28B52]/50 h-full shadow-sm group">
+    <button onClick={onClick} className="flex flex-col items-center justify-center p-3 rounded-[1.2rem] bg-[#151515] border border-[#2A2A2A] text-center cursor-pointer transition hover:bg-[#202020] hover:border-[#A28B52]/50 h-full shadow-sm group">
       <div className="text-[#C3DF1B] mb-2 transition-transform group-hover:scale-110 drop-shadow-sm">{icon}</div>
       <div className="text-[9px] font-bold tracking-widest text-[#E8E8E8] uppercase leading-tight mb-1">{label}</div>
       <div className="text-[8px] text-[#808080] tracking-wide leading-tight hidden sm:block">{subtext}</div>

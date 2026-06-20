@@ -69,12 +69,12 @@ const smartSecondary: Record<string, string[]> = {
 
 function Stepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#1A1A1A]/60 font-medium">
-      <div className="flex items-center gap-1.5 text-[#1A1A1A]/60">
-        IDENTITY <Check size={12} className="text-[#1A1A1A]" />
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#151515]/60 font-medium">
+      <div className="flex items-center gap-1.5 text-[#151515]/60">
+        IDENTITY <Check size={12} className="text-[#151515]" />
       </div>
       <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
-      <div className="text-[#1A1A1A] font-bold flex items-center gap-1.5">
+      <div className="text-[#151515] font-bold flex items-center gap-1.5">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         POSITION
       </div>
@@ -157,7 +157,7 @@ export default function PositionPage() {
   const suggestedSecondaries = smartSecondary[selectedPosition] || [];
 
   return (
-    <main className="stryk-mobile-shell text-[#1A1A1A] relative overflow-hidden min-h-[100dvh] flex flex-col">
+    <main className="stryk-mobile-shell text-[#151515] relative overflow-hidden min-h-[100dvh] flex flex-col">
       {/* Premium Marble Background */}
       <img src="/create_card_bg.webp" className="absolute inset-0 z-0 h-full w-full object-cover opacity-90" alt="" />
 
@@ -188,13 +188,13 @@ export default function PositionPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" className="h-8 rounded-full bg-black/5 border border-black/10 hover:bg-black/10 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-[#1A1A1A]/60 hover:text-[#1A1A1A]">
+          <Button asChild variant="ghost" className="h-8 rounded-full bg-black/5 border border-black/10 hover:bg-black/10 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-[#151515]/60 hover:text-[#151515]">
             <Link href="/identity">
               <ArrowLeft size={14} className="mr-1.5" /> Identity
             </Link>
           </Button>
           <div className="hidden sm:block"><Stepper /></div>
-          <Button variant="ghost" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-black/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-[#1A1A1A]/40 hover:text-[#1A1A1A]">
+          <Button variant="ghost" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-black/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-[#151515]/40 hover:text-[#151515]">
             Skip
           </Button>
         </motion.header>
@@ -210,7 +210,7 @@ export default function PositionPage() {
               WHERE DO<br/>
               <span className="text-[#A28B52]">YOU PLAY?</span>
             </h2>
-            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#1A1A1A]/60 uppercase tracking-[0.2em]">
+            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#151515]/60 uppercase tracking-[0.2em]">
               Pick your primary position
             </p>
           </motion.div>
@@ -226,9 +226,9 @@ export default function PositionPage() {
                 </div>
               )}
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#1A1A1A]">{playerData?.fullName || "Player Name"}</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#151515]">{playerData?.fullName || "Player Name"}</span>
                 <div className="flex items-center gap-2 mt-0.5 text-[9px] font-bold tracking-[0.1em] text-[#B08332]">
-                  {selectedPosition} <span className="text-[#1A1A1A]/30">•</span> {strongFoot} Foot
+                  {selectedPosition} <span className="text-[#151515]/30">•</span> {strongFoot} Foot
                 </div>
               </div>
             </div>
@@ -237,7 +237,7 @@ export default function PositionPage() {
           <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-6 bg-[#151515] text-white p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
             
             {/* Tactical Pitch Selector */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-2xl border border-[#2A2A2A] bg-[#151515] p-5">
               
               {/* Pitch layout */}
               <div className="relative aspect-[1.3] w-full overflow-visible rounded-xl border border-[#2A2A2A] bg-[#151515] sm:aspect-[1.8]">
@@ -263,7 +263,7 @@ export default function PositionPage() {
                         onMouseLeave={() => setHoveredNode(null)}
                         className={cn(
                           "flex items-center justify-center rounded-full font-display text-[9px] tracking-wider cursor-pointer sm:text-xs transition-colors",
-                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-[#1A1A1A]" : "w-7 h-7 sm:w-9 sm:h-9 bg-[#1A1A1A] border border-[#2A2A2A] text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8]"
+                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-[#151515]" : "w-7 h-7 sm:w-9 sm:h-9 bg-[#151515] border border-[#2A2A2A] text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8]"
                         )}
                         layout
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -288,11 +288,11 @@ export default function PositionPage() {
                             exit={{ opacity: 0, y: 0, scale: 0.9 }}
                             className="absolute left-1/2 -translate-x-1/2 w-max max-w-[140px] pointer-events-none z-20"
                           >
-                            <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-2 text-center shadow-xl">
+                            <div className="bg-[#151515] border border-[#2A2A2A] rounded-lg p-2 text-center shadow-xl">
                               <div className="text-[9px] font-bold text-[#D4F829] uppercase tracking-wider">{positionRoles[displayCode]?.role}</div>
                               {isActive && <div className="text-[8px] text-[#808080] mt-0.5 leading-tight">{positionRoles[displayCode]?.desc}</div>}
                             </div>
-                            <div className="w-2 h-2 bg-[#1A1A1A] border-b border-r border-[#2A2A2A] rotate-45 mx-auto -mt-1" />
+                            <div className="w-2 h-2 bg-[#151515] border-b border-r border-[#2A2A2A] rotate-45 mx-auto -mt-1" />
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -306,7 +306,7 @@ export default function PositionPage() {
             <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               
               {/* PRIMARY ROLE CARD */}
-              <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 relative overflow-hidden">
+              <div className="rounded-2xl border border-[#2A2A2A] bg-[#151515] p-5 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-5">
                   <Target size={64} className="text-[#E8E8E8]" />
                 </div>
@@ -319,7 +319,7 @@ export default function PositionPage() {
               </div>
 
               {/* SECONDARY ROLE CARD */}
-              <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 flex flex-col justify-between">
+              <div className="rounded-2xl border border-[#2A2A2A] bg-[#151515] p-5 flex flex-col justify-between">
                 <div>
                   <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] mb-1">
                     SECONDARY (OPTIONAL)
@@ -355,7 +355,7 @@ export default function PositionPage() {
                     </button>
                     <AnimatePresence>
                       {isDropdownOpen && (
-                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute bottom-full mb-2 w-full max-h-48 overflow-y-auto rounded-xl border border-white/10 bg-[#1A1A1A] p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
+                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute bottom-full mb-2 w-full max-h-48 overflow-y-auto rounded-xl border border-white/10 bg-[#151515] p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
                           {positions.filter(p => p.code.split("_")[0] !== selectedPosition).reduce((acc, current) => {
                             const code = current.code.split("_")[0];
                             if (!acc.find(item => item.code.split("_")[0] === code)) acc.push(current);
@@ -377,7 +377,7 @@ export default function PositionPage() {
             </motion.section>
 
             {/* Strong Foot */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-2xl border border-[#2A2A2A] bg-[#151515] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52]">Strong Foot</div>
                 <p className="mt-0.5 text-[11px] text-[#808080]">Which foot do you trust the most?</p>
@@ -415,7 +415,7 @@ export default function PositionPage() {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={isSubmitting || isSuccess}
-                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-[#1A1A1A] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
+                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-[#151515] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
                 type="submit"
               >
                 

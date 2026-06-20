@@ -79,16 +79,16 @@ const placeholders = [
 
 function JourneyStepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#1A1A1A]/60 font-medium">
-      <div className="flex items-center gap-1.5 text-[#1A1A1A]/60">
-        IDENTITY <Check size={12} className="text-[#1A1A1A]" />
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#151515]/60 font-medium">
+      <div className="flex items-center gap-1.5 text-[#151515]/60">
+        IDENTITY <Check size={12} className="text-[#151515]" />
       </div>
       <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
-      <div className="flex items-center gap-1.5 text-[#1A1A1A]/60">
-        POSITION <Check size={12} className="text-[#1A1A1A]" />
+      <div className="flex items-center gap-1.5 text-[#151515]/60">
+        POSITION <Check size={12} className="text-[#151515]" />
       </div>
       <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
-      <div className="text-[#1A1A1A] font-bold flex items-center gap-1.5">
+      <div className="text-[#151515] font-bold flex items-center gap-1.5">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         STYLE
       </div>
@@ -108,7 +108,7 @@ function FootballerArt({ active = false, color = "#C6FF00" }: { active?: boolean
         style={{ boxShadow: active ? `0 0 0 5px ${color}25` : "none" }}
       />
       <div 
-        className="absolute left-1/2 top-14 h-24 w-20 -translate-x-1/2 -rotate-6 rounded-t-[2.5rem] bg-gradient-to-br from-[#1A1A1A] via-[#151515] transition-shadow duration-500" 
+        className="absolute left-1/2 top-14 h-24 w-20 -translate-x-1/2 -rotate-6 rounded-t-[2.5rem] bg-gradient-to-br from-[#151515] via-[#151515] transition-shadow duration-500" 
         style={{ boxShadow: `inset 0 0 0 1px ${color}20`, backgroundColor: `${color}10` }}
       />
       <div className="absolute left-[18%] top-24 h-4 w-28 -rotate-[28deg] rounded-full transition-colors duration-500" style={{ backgroundColor: active ? `${color}70` : `${color}40` }} />
@@ -273,7 +273,7 @@ export default function PlayStylePage() {
 
   // --- NORMAL PAGE RENDER ---
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] overflow-hidden text-[#1A1A1A]">
+    <main className="stryk-mobile-shell bg-[#E5DCC5] overflow-hidden text-[#151515]">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -287,13 +287,13 @@ export default function PlayStylePage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="icon" aria-label="Back to position" className="w-10 h-10 rounded-full bg-transparent border border-[#1A1A1A]/20 hover:bg-[#1A1A1A]/5 cursor-pointer text-[#1A1A1A]">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to position" className="w-10 h-10 rounded-full bg-transparent border border-[#151515]/20 hover:bg-[#151515]/5 cursor-pointer text-[#151515]">
             <Link href="/position">
               <ArrowLeft size={20} />
             </Link>
           </Button>
           <div className="hidden sm:block"><JourneyStepper /></div>
-          <Button variant="ghost" onClick={() => setShowInfoModal(true)} className="w-10 h-10 rounded-full bg-transparent border border-[#1A1A1A]/20 hover:bg-[#1A1A1A]/5 cursor-pointer p-0 text-[#1A1A1A]">
+          <Button variant="ghost" onClick={() => setShowInfoModal(true)} className="w-10 h-10 rounded-full bg-transparent border border-[#151515]/20 hover:bg-[#151515]/5 cursor-pointer p-0 text-[#151515]">
             <Info size={20} />
           </Button>
         </motion.header>
@@ -306,7 +306,7 @@ export default function PlayStylePage() {
               DEFINE YOUR<br/>
               <span className="text-[#A28B52]">PLAY STYLE</span>
             </h2>
-            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#1A1A1A]/60 uppercase tracking-[0.2em]">
+            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#151515]/60 uppercase tracking-[0.2em]">
               Pick your signature style
             </p>
           </motion.div>
@@ -327,7 +327,7 @@ export default function PlayStylePage() {
                         updatePlayerData({ playStyle: style.title });
                         if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
                       }}
-                      className="snap-center relative h-[26rem] min-w-[16rem] sm:min-w-[18rem] rounded-2xl border bg-[#1A1A1A] p-5 cursor-pointer select-none overflow-hidden"
+                      className="snap-center relative h-[26rem] min-w-[16rem] sm:min-w-[18rem] rounded-2xl border bg-[#151515] p-5 cursor-pointer select-none overflow-hidden"
                       animate={{
                         scale: isActive ? 1.03 : 0.92,
                         y: isActive ? -8 : 0,
@@ -343,7 +343,7 @@ export default function PlayStylePage() {
                       
                       <FootballerArt active={isActive} color={style.color} />
                       
-                      <div className="absolute bottom-0 left-0 right-0 p-6 text-center z-10 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/80 to-transparent pt-12">
+                      <div className="absolute bottom-0 left-0 right-0 p-6 text-center z-10 bg-gradient-to-t from-[#151515] via-[#151515]/80 to-transparent pt-12">
                         <motion.div
                           className="mx-auto mb-4 grid size-16 place-items-center rounded-2xl border"
                           animate={{
@@ -382,7 +382,7 @@ export default function PlayStylePage() {
                     onClick={() => { setSelectedStyle(style.title); updatePlayerData({ playStyle: style.title }); scrollToCard(styles.findIndex(s => s.title === style.title)); }}
                     className={cn(
                       "size-8 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer border",
-                      selectedStyle === style.title ? "bg-[#1A1A1A] border-[#2A2A2A] scale-110" : "bg-[#151515] border-[#2A2A2A] opacity-50 hover:opacity-100 hover:bg-[#1A1A1A]"
+                      selectedStyle === style.title ? "bg-[#151515] border-[#2A2A2A] scale-110" : "bg-[#151515] border-[#2A2A2A] opacity-50 hover:opacity-100 hover:bg-[#151515]"
                     )}
                     style={{ color: selectedStyle === style.title ? style.color : "#808080", boxShadow: selectedStyle === style.title ? `0 0 15px ${style.color}20` : "none" }}
                   >
@@ -393,7 +393,7 @@ export default function PlayStylePage() {
             </motion.section>
 
             {/* Smart Bio Section */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 group">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="rounded-2xl border border-[#2A2A2A] bg-[#151515] p-5 group">
               <div className="flex items-end justify-between gap-4">
                 <div>
                   <h2 className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] mb-1">Player Bio</h2>
@@ -452,7 +452,7 @@ export default function PlayStylePage() {
 
             {/* Live Preview Strip */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.55 }} className="flex justify-center mb-2 pointer-events-none">
-              <div className="flex items-center gap-4 rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-2 pr-6 shadow-xl relative overflow-hidden">
+              <div className="flex items-center gap-4 rounded-2xl border border-[#2A2A2A] bg-[#151515] p-2 pr-6 shadow-xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-2 opacity-5">
                   <activeStyleConfig.icon size={48} className="text-[#E8E8E8]" />
                 </div>
@@ -483,7 +483,7 @@ export default function PlayStylePage() {
                 disabled={launchStep > 0}
                 className={cn(
                   "relative w-full h-[60px] rounded-full font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-3 transition-all duration-300 overflow-hidden cursor-pointer text-[15px]",
-                  launchStep > 0 ? "bg-[#151515] border border-[#2A2A2A] text-[#808080]" : "bg-[#D4F829] text-[#1A1A1A] hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
+                  launchStep > 0 ? "bg-[#151515] border border-[#2A2A2A] text-[#808080]" : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
                 )}
                 type="submit"
               >
@@ -532,14 +532,14 @@ export default function PlayStylePage() {
                   <h3 className="font-display text-2xl uppercase italic text-[#E8E8E8]">Play Styles</h3>
                   <p className="text-xs text-[#808080]">Understand your role on the pitch.</p>
                 </div>
-                <button onClick={() => setShowInfoModal(false)} className="w-8 h-8 rounded-full bg-[#1A1A1A] border border-[#2A2A2A] flex items-center justify-center hover:bg-[#2A2A2A] cursor-pointer">
+                <button onClick={() => setShowInfoModal(false)} className="w-8 h-8 rounded-full bg-[#151515] border border-[#2A2A2A] flex items-center justify-center hover:bg-[#2A2A2A] cursor-pointer">
                   <X size={16} className="text-[#808080]" />
                 </button>
               </div>
               
               <div className="space-y-4">
                 {styles.map(s => (
-                  <div key={s.title} className="flex gap-4 items-start p-4 rounded-2xl bg-[#1A1A1A] border border-[#2A2A2A]">
+                  <div key={s.title} className="flex gap-4 items-start p-4 rounded-2xl bg-[#151515] border border-[#2A2A2A]">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border border-[#2A2A2A]/50 bg-[#151515]" style={{ color: s.color }}>
                       <s.icon size={24} />
                     </div>

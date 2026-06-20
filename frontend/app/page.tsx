@@ -17,7 +17,7 @@ export default function Home() {
 
   return (
     <main 
-      className="relative h-dvh w-dvw overflow-hidden bg-[#0A0A0A] text-white flex flex-col justify-between"
+      className="relative h-dvh w-dvw overflow-hidden bg-[#151515] text-white flex flex-col justify-between"
       style={{
         paddingTop: "env(safe-area-inset-top)",
         paddingBottom: "env(safe-area-inset-bottom)",
@@ -79,7 +79,7 @@ export default function Home() {
           {isLoaded && isSignedIn ? (
             <button 
               onClick={() => { setIsTransitioning(true); router.push("/sync"); }}
-              className="w-full h-[48px] rounded-lg bg-gradient-to-r from-[#D7F035] to-[#E5FA50] text-[11.5px] font-bold tracking-[0.2em] text-[#0A0A0A] flex items-center justify-center relative hover:opacity-90 transition-all active:scale-95"
+              className="w-full h-[48px] rounded-lg bg-gradient-to-r from-[#D7F035] to-[#E5FA50] text-[11.5px] font-bold tracking-[0.2em] text-[#151515] flex items-center justify-center relative hover:opacity-90 transition-all active:scale-95"
             >
               GO TO DASHBOARD
               <svg className="absolute right-5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +92,7 @@ export default function Home() {
               <SignUpButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
                 <button 
                   onClick={handleJoinTap}
-                  className="w-full h-[48px] rounded-lg bg-gradient-to-r from-[#D7F035] to-[#E5FA50] text-[11.5px] font-bold tracking-[0.2em] text-[#0A0A0A] flex items-center justify-center relative hover:opacity-90 transition-all active:scale-95 shadow-[0_0_15px_rgba(215,240,53,0.1)]"
+                  className="w-full h-[48px] rounded-lg bg-gradient-to-r from-[#D7F035] to-[#E5FA50] text-[11.5px] font-bold tracking-[0.2em] text-[#151515] flex items-center justify-center relative hover:opacity-90 transition-all active:scale-95 shadow-[0_0_15px_rgba(215,240,53,0.1)]"
                 >
                   JOIN STRYK
                   <svg className="absolute right-5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@ export default function Home() {
 
               {/* LOG IN Button */}
               <SignInButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
-                <button className="w-full h-[48px] rounded-lg bg-[#050505] border border-[#2A2315] text-[11.5px] font-bold tracking-[0.2em] text-[#8F7441] flex items-center justify-center relative hover:bg-[#0A0A0A] transition-all active:scale-95">
+                <button className="w-full h-[48px] rounded-lg bg-[#050505] border border-[#2A2315] text-[11.5px] font-bold tracking-[0.2em] text-[#8F7441] flex items-center justify-center relative hover:bg-[#151515] transition-all active:scale-95">
                   LOG IN
                   <svg className="absolute right-5 w-4 h-4 text-[#8F7441]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />

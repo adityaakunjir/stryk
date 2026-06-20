@@ -365,7 +365,7 @@ export default function TeamBuilderPage() {
             <div>
               <h2 className="text-[10px] tracking-[0.25em] uppercase text-white/40 font-bold mb-3 pl-1">Captain</h2>
               <div className="p-3 rounded-2xl border border-[#C6FF00]/30 bg-[#C6FF00]/5 flex items-center gap-4">
-                 <div className="relative size-12 rounded-full overflow-hidden border border-[#C6FF00]/50 bg-[#0B1020] shrink-0 flex items-center justify-center">
+                 <div className="relative size-12 rounded-full overflow-hidden border border-[#C6FF00]/50 bg-[#151515] shrink-0 flex items-center justify-center">
                     {captain.user.avatarUrl ? (
                        
                       <img src={captain.user.avatarUrl} alt={captain.user.fullName || captain.user.username} className="w-full h-full object-cover" />
@@ -396,7 +396,7 @@ export default function TeamBuilderPage() {
               ) : (
                 players.map((m: any) => (
                   <div key={m.id} className="p-3 rounded-2xl border border-white/10 bg-white/[0.03] flex items-center gap-4">
-                     <div className="relative size-10 rounded-full overflow-hidden border border-white/10 bg-[#0B1020] shrink-0 flex items-center justify-center">
+                     <div className="relative size-10 rounded-full overflow-hidden border border-white/10 bg-[#151515] shrink-0 flex items-center justify-center">
                         {m.user.avatarUrl ? (
                            
                           <img src={m.user.avatarUrl} alt={m.user.fullName || m.user.username} className="w-full h-full object-cover" />

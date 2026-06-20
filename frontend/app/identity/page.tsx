@@ -29,8 +29,8 @@ import * as Sentry from "@sentry/nextjs";
 
 function Stepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#1A1A1A]/60 font-medium">
-      <div className="text-[#1A1A1A] font-bold flex items-center gap-1.5">
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#151515]/60 font-medium">
+      <div className="text-[#151515] font-bold flex items-center gap-1.5">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         Identity
       </div>
@@ -248,7 +248,7 @@ export default function IdentityPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] overflow-hidden text-[#1A1A1A]">
+    <main className="stryk-mobile-shell bg-[#E5DCC5] overflow-hidden text-[#151515]">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -262,7 +262,7 @@ export default function IdentityPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-10 h-10 rounded-full bg-transparent border border-[#1A1A1A]/20 hover:bg-[#1A1A1A]/5 cursor-pointer text-[#1A1A1A]">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-10 h-10 rounded-full bg-transparent border border-[#151515]/20 hover:bg-[#151515]/5 cursor-pointer text-[#151515]">
             <Link href="/">
               <ArrowLeft size={20} />
             </Link>
@@ -287,7 +287,7 @@ export default function IdentityPage() {
               BUILD YOUR<br/>
               <span className="text-[#A28B52]">ATHLETE IDENTITY</span>
             </h2>
-            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#1A1A1A]/60">
+            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#151515]/60">
               Start with the basics for your player card.
             </p>
           </motion.div>
@@ -312,7 +312,7 @@ export default function IdentityPage() {
                   <p className="text-[11px] text-[#808080] mb-4 mt-0.5">Upload or generate a front-facing photo.</p>
                   
                   {avatar ? (
-                    <div className="relative group rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
+                    <div className="relative group rounded-2xl border border-[#2A2A2A] bg-[#151515] p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
                       <div className="flex items-center gap-4 min-w-0">
                         <img src={avatar} alt="Avatar" className="w-14 h-14 shrink-0 rounded-full object-cover border border-[#A28B52]" />
                         <div className="min-w-0">
@@ -331,7 +331,7 @@ export default function IdentityPage() {
                         whileHover={{ scale: 0.98, backgroundColor: "rgba(212,248,41,0.05)" }}
                         whileTap={{ scale: 0.95 }}
                         onClick={triggerFileUpload}
-                        className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] bg-[#1A1A1A] p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-[#E8E8E8] cursor-pointer"
+                        className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] bg-[#151515] p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-[#E8E8E8] cursor-pointer"
                         type="button"
                       >
                         <ImageUp size={24} className="text-[#D4F829]" />
@@ -346,7 +346,7 @@ export default function IdentityPage() {
                         whileTap={{ scale: 0.95 }}
                         onClick={handleGeneratePhoto}
                         disabled={isGenerating}
-                        className="relative overflow-hidden flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 text-[#808080] transition hover:border-[#404040] hover:text-[#E8E8E8] cursor-pointer disabled:opacity-70"
+                        className="relative overflow-hidden flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-[#2A2A2A] bg-[#151515] p-4 text-[#808080] transition hover:border-[#404040] hover:text-[#E8E8E8] cursor-pointer disabled:opacity-70"
                         type="button"
                       >
                         {isGenerating ? (
@@ -372,7 +372,7 @@ export default function IdentityPage() {
                       id="fullName"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
-                      className="block w-full h-[60px] px-4 pt-4 pb-1 text-[15px] text-[#E8E8E8] bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl appearance-none focus:outline-none focus:ring-0 focus:border-[#A28B52] transition-all duration-200 peer"
+                      className="block w-full h-[60px] px-4 pt-4 pb-1 text-[15px] text-[#E8E8E8] bg-[#151515] border border-[#2A2A2A] rounded-2xl appearance-none focus:outline-none focus:ring-0 focus:border-[#A28B52] transition-all duration-200 peer"
                       placeholder=" "
                     />
                     <label htmlFor="fullName" className="absolute text-[9px] font-bold uppercase tracking-[0.15em] text-[#A28B52] duration-200 transform -translate-y-3 scale-75 top-[18px] z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#A28B52]">
@@ -386,7 +386,7 @@ export default function IdentityPage() {
                       id="username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, "").slice(0, 20))}
-                      className="block w-full h-[60px] px-4 pt-4 pb-1 text-[15px] text-[#E8E8E8] bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl appearance-none focus:outline-none focus:ring-0 focus:border-[#A28B52] transition-all duration-200 peer"
+                      className="block w-full h-[60px] px-4 pt-4 pb-1 text-[15px] text-[#E8E8E8] bg-[#151515] border border-[#2A2A2A] rounded-2xl appearance-none focus:outline-none focus:ring-0 focus:border-[#A28B52] transition-all duration-200 peer"
                       placeholder=" "
                     />
                     <label htmlFor="username" className="absolute text-[9px] font-bold uppercase tracking-[0.15em] text-[#A28B52] duration-200 transform -translate-y-3 scale-75 top-[18px] z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#A28B52]">
@@ -447,7 +447,7 @@ export default function IdentityPage() {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={isSubmitting || isSuccess || usernameStatus !== "available" || !fullName}
-                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-[#1A1A1A] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
+                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-[#151515] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
                 type="submit"
               >
                 {!isSubmitting && !isSuccess && (

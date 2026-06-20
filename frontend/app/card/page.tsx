@@ -84,7 +84,7 @@ export default function CardPage() {
         {/* Share Toast */}
         <AnimatePresence>
           {copied && (
-            <div className="absolute top-18 left-1/2 -translate-x-1/2 bg-[#0B1020]/90 border border-white/10 px-4 py-2 rounded-full text-xs font-semibold tracking-wider text-[#C6FF00] shadow-lg backdrop-blur-md">
+            <div className="absolute top-18 left-1/2 -translate-x-1/2 bg-[#151515]/90 border border-white/10 px-4 py-2 rounded-full text-xs font-semibold tracking-wider text-[#C6FF00] shadow-lg backdrop-blur-md">
               LINK COPIED!
             </div>
           )}

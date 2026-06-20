@@ -111,7 +111,7 @@ export default function InvitesPage() {
             {invites.map((invite) => (
               <div 
                 key={invite.id} 
-                className="p-4 rounded-3xl border border-white/8 bg-[#0B1020]/30 backdrop-blur-xl flex flex-col gap-4 shadow-lg shadow-black/30 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                className="p-4 rounded-3xl border border-white/8 bg-[#151515]/30 backdrop-blur-xl flex flex-col gap-4 shadow-lg shadow-black/30 animate-in fade-in slide-in-from-bottom-2 duration-300"
               >
                 <div className="flex items-center gap-3.5">
                   <div className="relative size-12 rounded-2xl overflow-hidden border border-[#C6FF00]/20 bg-[#0A0E17] flex items-center justify-center shrink-0">

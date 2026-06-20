@@ -132,7 +132,7 @@ export default function NotificationsPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] min-h-[100dvh] text-[#1A1A1A]">
+    <main className="stryk-mobile-shell bg-[#E5DCC5] min-h-[100dvh] text-[#151515]">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -148,7 +148,7 @@ export default function NotificationsPage() {
             aria-label="Back to home"
             type="button"
           >
-            <ArrowLeft size={18} className="text-[#1A1A1A]" />
+            <ArrowLeft size={18} className="text-[#151515]" />
           </button>
           
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-1">
@@ -158,7 +158,7 @@ export default function NotificationsPage() {
           <div className="w-10 h-10" />
         </header>
 
-        <h1 className="font-display text-[2.5rem] font-bold italic uppercase tracking-tight mb-1 text-[#1A1A1A] drop-shadow-sm mt-4">
+        <h1 className="font-display text-[2.5rem] font-bold italic uppercase tracking-tight mb-1 text-[#151515] drop-shadow-sm mt-4">
           NOTIFICATIONS
         </h1>
         <p className="text-[10px] font-bold text-[#8A7038] uppercase tracking-widest mb-6">
@@ -184,7 +184,7 @@ export default function NotificationsPage() {
             <Loader2 className="size-8 text-[#A88028] animate-spin" />
           </div>
         ) : notifications.length === 0 ? (
-          <div className="relative flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-[#0A0A0A] shadow-2xl border border-white/5 overflow-hidden mb-safe">
+          <div className="relative flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-[#151515] shadow-2xl border border-white/5 overflow-hidden mb-safe">
             
             {/* Elegant Golden Badge for Icon */}
             <div className="w-24 h-24 rounded-full border border-[#D8A53B]/20 bg-gradient-to-br from-[#D8A53B]/5 to-transparent flex items-center justify-center shadow-[inset_0_0_20px_rgba(216,165,59,0.05)] mb-6 relative">
@@ -205,7 +205,7 @@ export default function NotificationsPage() {
             {notifications.map((n) => (
               <div
                 key={n.id}
-                className="p-5 rounded-[2rem] border border-[#D8A53B]/20 bg-[#0A0A0A] flex flex-col gap-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
+                className="p-5 rounded-[2rem] border border-[#D8A53B]/20 bg-[#151515] flex flex-col gap-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
               >
                 <div className="flex items-center gap-4">
                   <div className="relative size-14 rounded-[1.25rem] overflow-hidden border border-[#D8A53B]/30 bg-[#050505] flex items-center justify-center shrink-0 shadow-[inset_0_0_15px_rgba(216,165,59,0.05)]">
@@ -230,7 +230,7 @@ export default function NotificationsPage() {
                   <button
                     onClick={() => handleRespond(n.id, n.type, "decline")}
                     disabled={actionLoadingId !== null}
-                    className="h-11 rounded-[1.25rem] border border-white/10 bg-[#161410] text-[13px] font-bold tracking-widest text-white/70 uppercase hover:bg-white/5 hover:text-white cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="h-11 rounded-[1.25rem] border border-white/10 bg-[#151515] text-[13px] font-bold tracking-widest text-white/70 uppercase hover:bg-white/5 hover:text-white cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2"
                     type="button"
                   >
                     {actionLoadingId === n.id ? (
@@ -244,11 +244,11 @@ export default function NotificationsPage() {
                   <button
                     onClick={() => handleRespond(n.id, n.type, "accept")}
                     disabled={actionLoadingId !== null}
-                    className="h-11 rounded-[1.25rem] bg-gradient-to-r from-[#D8A53B] to-[#FDE69F] text-[#1A1A1A] text-[13px] tracking-widest font-black uppercase hover:opacity-90 cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(216,165,59,0.2)]"
+                    className="h-11 rounded-[1.25rem] bg-gradient-to-r from-[#D8A53B] to-[#FDE69F] text-[#151515] text-[13px] tracking-widest font-black uppercase hover:opacity-90 cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(216,165,59,0.2)]"
                     type="button"
                   >
                     {actionLoadingId === n.id ? (
-                      <Loader2 className="size-4 animate-spin text-[#1A1A1A]" />
+                      <Loader2 className="size-4 animate-spin text-[#151515]" />
                     ) : (
                       <>
                         <Check size={15} strokeWidth={3} /> ACCEPT

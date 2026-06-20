@@ -148,7 +148,7 @@ export default function LeaderboardsPage() {
         </div>
 
         {/* Podium Area */}
-        <div className="mt-6 rounded-3xl border border-white/5 bg-[#0B1020]/25 p-5 relative overflow-hidden">
+        <div className="mt-6 rounded-3xl border border-white/5 bg-[#151515]/25 p-5 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-[#C6FF00]/[0.02] to-transparent pointer-events-none" />
           <div className="flex items-end justify-center gap-3 h-52 pb-2 relative z-10">
             {/* RANK 2 (Left) */}
@@ -219,7 +219,7 @@ export default function LeaderboardsPage() {
                   <span className="w-5 text-center font-display text-xs text-white/40 font-bold">#{rank}</span>
 
                   {/* Avatar / Logo */}
-                  <div className="relative size-9 rounded-full overflow-hidden border border-white/10 bg-[#0B1020] shrink-0 flex items-center justify-center">
+                  <div className="relative size-9 rounded-full overflow-hidden border border-white/10 bg-[#151515] shrink-0 flex items-center justify-center">
                     {isTeam ? (
                       (item as LeaderboardTeam).logoUrl ? (
                         <img src={(item as LeaderboardTeam).logoUrl} alt={(item as LeaderboardTeam).name} className="w-full h-full object-cover" />
