@@ -430,11 +430,11 @@ export default function IdentityPage() {
               {/* Player Card 3D Preview */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }}
-                className="relative flex justify-center mt-6 md:mt-0"
+                className="relative flex justify-center mt-8 md:mt-0 w-full shrink-0"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               >
-                <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="scale-90 md:scale-100 origin-center z-10 mx-auto">
+                <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="scale-95 md:scale-100 origin-center z-10 mx-auto w-[250px] shrink-0">
                   <PlayerCard player={previewPlayer} size="md" onClick={triggerFileUpload} />
                 </motion.div>
               </motion.div>

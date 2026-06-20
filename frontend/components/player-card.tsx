@@ -113,7 +113,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
     <motion.div
       onClick={onClick}
       animate={controls}
-      className={`group relative shrink-0 bg-transparent text-left transition-transform duration-300 focus:outline-none cursor-pointer hover:scale-[1.025] ${size === 'sm' ? 'w-44' : size === 'lg' ? 'w-72' : 'w-full max-w-[280px]'}`}
+      className={`group relative shrink-0 bg-transparent text-left transition-transform duration-300 focus:outline-none cursor-pointer hover:scale-[1.025] ${size === 'sm' ? 'w-44' : size === 'lg' ? 'w-72' : 'w-[260px]'}`}
       style={{
         transformPerspective: 1000,
         aspectRatio: '1417/1878'
