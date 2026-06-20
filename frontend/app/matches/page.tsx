@@ -322,9 +322,12 @@ export default function MatchesPage() {
         ) : (
           <div className="space-y-4 mt-2">
             {matches.map((match) => {
-              const isJoined = currentUserId && match.participants.some(p => p.userId === currentUserId);
-              const isFull = match.players >= match.maxPlayers;
-              const fillPct = Math.min(100, (match.players / match.maxPlayers) * 100);
+              const isJoined = currentUserId && (match.creatorId === currentUserId || match.participants?.some(p => p.userId === currentUserId));
+              const currentPlayers = match.players || match.participants?.length || 1;
+              const maxPlayers = match.maxPlayers || 22;
+              const isFull = currentPlayers >= maxPlayers;
+              const fillPct = Math.min(100, (currentPlayers / maxPlayers) * 100);
+              const spotsLeft = maxPlayers - currentPlayers;
 
               return (
                 <div 
@@ -350,11 +353,11 @@ export default function MatchesPage() {
                     {/* Turf Info */}
                     <div className="pr-16 mb-5">
                       <h3 className="text-lg font-bold text-[#E5DCC5] leading-snug truncate group-hover:text-[#A28B52] transition">
-                        {match.title}
+                        {match.title || "Untitled Match"}
                       </h3>
                       <div className="flex items-center gap-2 text-[12px] text-[#A0A0A0] mt-1.5 font-medium">
                         <MapPin size={13} className="text-[#A28B52]" />
-                        <span className="truncate">{match.location}</span>
+                        <span className="truncate">{match.location || "TBD"}</span>
                       </div>
                     </div>
 
@@ -364,7 +367,7 @@ export default function MatchesPage() {
                         <span className="text-[9px] uppercase tracking-widest text-[#A28B52] mb-1.5 font-bold">Schedule</span>
                         <div className="flex items-center gap-2 text-[12px] text-[#E5DCC5] font-semibold leading-none">
                           <Calendar size={13} className="text-[#A28B52]/80" />
-                          <span className="truncate">{formatMatchDate(match.dateTime)}</span>
+                          <span className="truncate">{match.dateTime ? formatMatchDate(match.dateTime) : "TBD"}</span>
                         </div>
                       </div>
 
@@ -372,7 +375,7 @@ export default function MatchesPage() {
                         <span className="text-[9px] uppercase tracking-widest text-[#A28B52] mb-1.5 font-bold">Squad size</span>
                         <div className="flex items-center gap-2 text-[12px] text-[#E5DCC5] font-semibold leading-none">
                           <Users size={13} className="text-[#A28B52]/80" />
-                          <span>{match.players} / {match.maxPlayers} Players</span>
+                          <span>{currentPlayers} / {maxPlayers} Players</span>
                         </div>
                       </div>
                     </div>
@@ -391,7 +394,7 @@ export default function MatchesPage() {
                     <div className="flex justify-between items-center mt-2">
                       <span className="text-[9px] uppercase tracking-[0.15em] text-[#A28B52] font-bold">Lobby Progress</span>
                       <span className="text-[10px] text-[#A0A0A0] font-semibold tracking-wide">
-                        {isFull ? "No spots left" : `${match.spotsLeft} spots remaining`}
+                        {isFull ? "No spots left" : `${spotsLeft} spots remaining`}
                       </span>
                     </div>
                   </div>
