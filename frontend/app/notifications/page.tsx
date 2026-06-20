@@ -201,57 +201,57 @@ export default function NotificationsPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {notifications.map((n) => (
               <div
                 key={n.id}
-                className="p-4 rounded-3xl border border-white/8 bg-[#0B1020]/30 backdrop-blur-xl flex flex-col gap-4 shadow-lg shadow-black/30"
+                className="p-5 rounded-[2rem] border border-[#D8A53B]/20 bg-[#0A0A0A] flex flex-col gap-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
               >
-                <div className="flex items-center gap-3.5">
-                  <div className="relative size-12 rounded-2xl overflow-hidden border border-[#C6FF00]/20 bg-[#0A0E17] flex items-center justify-center shrink-0">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-[#C6FF00]/10 to-transparent" />
+                <div className="flex items-center gap-4">
+                  <div className="relative size-14 rounded-[1.25rem] overflow-hidden border border-[#D8A53B]/30 bg-[#050505] flex items-center justify-center shrink-0 shadow-[inset_0_0_15px_rgba(216,165,59,0.05)]">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#D8A53B]/10 to-transparent" />
                     {n.type === "invite" ? (
-                      <Users size={20} className="text-[#C6FF00]/75 relative z-10" />
+                      <Users size={22} className="text-[#D8A53B] relative z-10 drop-shadow-sm" strokeWidth={1.5} />
                     ) : (
-                      <Mail size={20} className="text-[#C6FF00]/75 relative z-10" />
+                      <Mail size={22} className="text-[#D8A53B] relative z-10 drop-shadow-sm" strokeWidth={1.5} />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-white leading-snug">
-                      <span className="text-[#C6FF00] font-bold">{n.type === "invite" ? n.teamName : n.userName}</span> {n.type === "invite" ? "invited you" : "sent a friend request"}
+                    <div className="text-[15px] font-medium text-[#E5DCC5] leading-snug">
+                      <span className="text-[#D8A53B] font-bold">{n.type === "invite" ? n.teamName : n.userName}</span> {n.type === "invite" ? "invited you" : "sent a friend request"}
                     </div>
-                    <div className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5">
+                    <div className="text-[11px] text-[#A0A0A0] uppercase tracking-wider mt-1 font-medium">
                       {n.type === "invite" ? "Squad Invitation" : "Friend Request"} • {formatTime(n.createdAt)}
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-2 gap-3 mt-1">
                   <button
                     onClick={() => handleRespond(n.id, n.type, "decline")}
                     disabled={actionLoadingId !== null}
-                    className="h-10 rounded-2xl border border-white/10 bg-white/5 text-xs font-display tracking-widest text-white/80 uppercase hover:bg-white/10 hover:text-white cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-1.5"
+                    className="h-11 rounded-[1.25rem] border border-white/10 bg-[#161410] text-[13px] font-bold tracking-widest text-white/70 uppercase hover:bg-white/5 hover:text-white cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2"
                     type="button"
                   >
                     {actionLoadingId === n.id ? (
-                      <Loader2 className="size-3.5 animate-spin" />
+                      <Loader2 className="size-4 animate-spin" />
                     ) : (
                       <>
-                        <X size={13} /> Decline
+                        <X size={15} strokeWidth={2.5} /> DECLINE
                       </>
                     )}
                   </button>
                   <button
                     onClick={() => handleRespond(n.id, n.type, "accept")}
                     disabled={actionLoadingId !== null}
-                    className="h-10 rounded-2xl bg-[#C6FF00] text-black text-xs font-display tracking-widest font-bold uppercase hover:bg-[#b0e600] cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-[0_10px_20px_-5px_rgba(198,255,0,0.3)]"
+                    className="h-11 rounded-[1.25rem] bg-gradient-to-r from-[#D8A53B] to-[#FDE69F] text-[#1A1A1A] text-[13px] tracking-widest font-black uppercase hover:opacity-90 cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(216,165,59,0.2)]"
                     type="button"
                   >
                     {actionLoadingId === n.id ? (
-                      <Loader2 className="size-3.5 animate-spin text-black" />
+                      <Loader2 className="size-4 animate-spin text-[#1A1A1A]" />
                     ) : (
                       <>
-                        <Check size={13} strokeWidth={3} /> Accept
+                        <Check size={15} strokeWidth={3} /> ACCEPT
                       </>
                     )}
                   </button>
