@@ -29,10 +29,10 @@ export default function MatchesPage() {
 
   // Create match modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [createTitle, setCreateTitle] = useState("Sunday Turf Match");
-  const [createLocation, setCreateLocation] = useState("Phoenix Turf");
+  const [createTitle, setCreateTitle] = useState("");
+  const [createLocation, setCreateLocation] = useState("");
   const [createDateTime, setCreateDateTime] = useState("");
-  const [createMaxPlayers, setCreateMaxPlayers] = useState("10");
+  const [createMaxPlayers, setCreateMaxPlayers] = useState("");
   const [createLoading, setCreateLoading] = useState(false);
   const [createError, setCreateError] = useState("");
 
