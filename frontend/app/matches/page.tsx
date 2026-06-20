@@ -141,28 +141,30 @@ export default function MatchesPage() {
     setCreateError("");
 
     try {
-      const res = await fetch("/api/matches/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: createTitle,
-          location: createLocation,
-          dateTime: createDateTime,
-          maxPlayers: createMaxPlayers,
-        }),
+      const params = new URLSearchParams({
+        title: createTitle,
+        location: createLocation,
+        date_time: createDateTime,
+        max_players: createMaxPlayers
       });
-
+      const res = await fetch(`/api/matches?${params.toString()}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
       const data = await res.json();
-      if (data.success) {
+      if (res.ok) {
         setShowCreateModal(false);
-        setCreateTitle("Sunday Turf Match");
-        setCreateLocation("Phoenix Turf");
+        setCreateTitle("");
+        setCreateLocation("");
         setCreateDateTime("");
-        setCreateMaxPlayers("10");
-        toast.success("Match Lobby created successfully!");
-        await fetchMatches();
+        setCreateMaxPlayers("22");
+        
+        // Optimistically update matches list
+        setMatches([data, ...matches]);
       } else {
-        setCreateError(data.message || "Failed to create match");
+        setCreateError(typeof data.detail === "string" ? data.detail : "Failed to create match");
       }
     } catch {
       setCreateError("An error occurred. Please try again.");
@@ -189,75 +191,85 @@ export default function MatchesPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
-      {/* Glow backgrounds */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(198,255,0,0.08),transparent_50%)] pointer-events-none" />
+    <main className="stryk-mobile-shell bg-[#E5DCC5] min-h-[100dvh] text-[#1A1A1A]">
+      {/* Premium Marble Background */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+      />
 
-      <div className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 w-full overflow-y-auto">
+      <div className="relative h-full flex flex-col px-6 pt-6 pb-8 max-w-md mx-auto z-10 w-full overflow-y-auto">
         {/* Header */}
-        <header className="flex items-center justify-between mb-8">
+        <header className="flex items-center justify-between mb-5 relative">
           <button 
             onClick={() => router.push("/home")} 
-            className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition"
+            className="w-12 h-12 rounded-full shadow-sm bg-[#EBE3D1] flex items-center justify-center cursor-pointer hover:bg-[#E5DCC5] transition relative z-10 border-none"
             type="button"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={20} className="text-[#A28B52]" strokeWidth={2} />
           </button>
-          <div className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-bold">Discover Lobbies</div>
+          
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <img src="/logo.webp" alt="STRYK Logo" className="h-[44px] w-auto drop-shadow-sm" />
+          </div>
+
           <button 
             onClick={() => setShowCreateModal(true)}
-            className="w-9 h-9 rounded-full bg-[#C6FF00] text-black flex items-center justify-center cursor-pointer hover:bg-[#b0e600] transition"
+            className="w-12 h-12 rounded-full bg-[#1A1814] shadow-md border border-[#A28B52]/40 flex items-center justify-center cursor-pointer hover:bg-black transition relative z-10"
             title="Create Match"
           >
-            <Plus size={16} strokeWidth={2.5} />
+            <Plus size={22} strokeWidth={2} className="text-[#D4F829]" />
           </button>
         </header>
 
-
-
         {/* Title */}
-        <div className="mb-6 pl-1">
-          <h1 className="font-display text-3xl uppercase tracking-wider italic">
-            Lobbies &amp; Matches
+        <div className="mb-5 pl-1">
+          <div className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#A28B52] mb-1">
+            DISCOVER LOBBIES
+          </div>
+          <h1 className="font-display text-[2.75rem] uppercase tracking-[-0.05em] italic font-black leading-none drop-shadow-sm whitespace-nowrap">
+            <span className="text-[#1A1A1A]">LOBBIES &amp; </span>
+            <span className="bg-gradient-to-b from-[#E8C878] to-[#8A6A28] text-transparent bg-clip-text pr-2">MATCHES</span>
           </h1>
-          <p className="text-[11px] text-white/50 uppercase tracking-widest mt-1">
-            Airbnb &bull; Discord style matchmaking
-          </p>
         </div>
 
         {/* Search Bar */}
-        <div className="relative w-full h-12 rounded-2xl border border-white/10 bg-white/[0.04] flex items-center px-4 mb-5 focus-within:border-[#C6FF00]/40 transition duration-300">
-          <Search size={16} className="text-white/40 shrink-0" />
+        <div className="relative w-full h-[50px] rounded-full bg-[#1A1814] shadow-[0_8px_24px_rgba(0,0,0,0.15)] flex items-center px-5 mb-5 border border-[#A28B52]/10 focus-within:ring-1 focus-within:ring-[#D4F829]/50 focus-within:border-[#D4F829]/50 transition duration-300">
+          <Search size={18} className="text-[#A28B52]/70 shrink-0" />
           <input
             type="text"
             placeholder="Search by turf or city (e.g. Phoenix)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-full bg-transparent border-none outline-none pl-3 text-sm text-white placeholder:text-white/30"
+            className="w-full h-full bg-transparent border-none outline-none pl-3 text-[14px] text-[#EFE8D6] placeholder:text-[#666666] font-medium"
           />
           {searchQuery && (
             <button 
               onClick={() => setSearchQuery("")}
-              className="text-white/40 hover:text-white"
+              className="text-[#666666] hover:text-[#EFE8D6] transition"
             >
-              <X size={14} />
+              <X size={16} />
             </button>
           )}
         </div>
 
         {/* Filter Pills */}
-        <div className="flex gap-2 overflow-x-auto pb-6 scrollbar-none shrink-0 pl-0.5">
+        <div className="flex gap-2.5 overflow-x-auto pb-4 scrollbar-none shrink-0 pl-1">
           {(["all", "open", "upcoming", "nearby"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setFilter(t)}
-              className={`h-9 px-4 rounded-xl text-[10px] uppercase tracking-widest font-bold border transition duration-200 shrink-0 cursor-pointer ${
+              className={`h-[38px] px-6 rounded-full text-[11px] uppercase tracking-widest font-bold transition duration-300 shrink-0 cursor-pointer relative overflow-hidden ${
                 filter === t
-                  ? "bg-[#C6FF00] border-[#C6FF00] text-black"
-                  : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:text-white"
+                  ? "bg-gradient-to-b from-[#E5C16C] to-[#C09A45] text-[#111111] font-black shadow-[0_4px_12px_rgba(162,139,82,0.3)]"
+                  : "bg-[#1A1814] text-[#EFE8D6] hover:bg-[#2A2824] shadow-[0_4px_10px_rgba(0,0,0,0.15)] border border-[#A28B52]/5"
               }`}
             >
               {t === "all" ? "All Lobbies" : t === "open" ? "Open" : t === "upcoming" ? "Upcoming" : "Nearby"}
+              {/* Refined Neon Green Bottom Glow */}
+              {filter === t && (
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[3px] bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)] rounded-t-full" />
+              )}
             </button>
           ))}
         </div>
@@ -265,26 +277,45 @@ export default function MatchesPage() {
         {/* Matches Feed */}
         {loading ? (
           <div className="flex-1 flex items-center justify-center py-20">
-            <Loader2 className="size-8 text-[#C6FF00] animate-spin" />
+            <Loader2 className="size-8 text-[#A28B52] animate-spin" />
           </div>
         ) : matches.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center py-16 border border-white/5 rounded-3xl bg-white/[0.01] px-6">
-            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-white/30">
-              <Calendar size={22} />
+          <div className="relative flex flex-col items-center justify-center py-12 pb-14 border border-[#A28B52]/20 rounded-[1.5rem] bg-gradient-to-b from-[#181613] to-[#110F0D] shadow-[0_12px_32px_rgba(0,0,0,0.3)] px-6 overflow-hidden">
+            
+            {/* Elegant Golden Radar Circles */}
+            <div className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+               <div className="w-[180px] h-[180px] rounded-full border border-[#A28B52]/5" />
             </div>
-            <div className="text-sm font-bold uppercase tracking-wider text-white/70 text-center">No Matches Found</div>
-            <p className="text-xs text-white/40 text-center mt-1">
+            <div className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+               <div className="w-[100px] h-[100px] rounded-full border border-[#A28B52]/10" />
+            </div>
+
+            <div className="relative z-10 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+              <Calendar size={32} strokeWidth={1.5} className="text-[#A28B52] drop-shadow-sm" />
+            </div>
+
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="text-[22px] font-display uppercase tracking-tight text-center drop-shadow-sm">
+                <span className="text-[#E5DCC5] font-black">NO MATCHES </span>
+                <span className="text-[#A28B52] font-black italic">FOUND</span>
+              </div>
+              {/* Elegant Flare */}
+              <div className="w-[80px] h-[2px] mt-1.5 bg-gradient-to-r from-transparent via-[#A28B52] to-transparent shadow-[0_0_8px_rgba(162,139,82,0.5)]" />
+            </div>
+            
+            <p className="relative z-10 text-[13px] text-[#A0A0A0] text-center mt-5 max-w-[220px] leading-relaxed mb-5">
               Be the first to organize a lobby at your local turf!
             </p>
+            
             <button
               onClick={() => setShowCreateModal(true)}
-              className="mt-5 h-10 px-5 rounded-xl bg-white/5 border border-white/10 text-[10px] uppercase font-bold tracking-widest hover:bg-white/10 transition"
+              className="relative z-10 h-[46px] px-10 rounded-full bg-[#D4F829] text-[#111111] text-[12px] uppercase font-black tracking-[0.15em] hover:bg-[#cbf026] transition shadow-[0_0_16px_rgba(212,248,41,0.25)]"
             >
               Organize Match
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 mt-2">
             {matches.map((match) => {
               const isJoined = currentUserId && match.participants.some(p => p.userId === currentUserId);
               const isFull = match.players >= match.maxPlayers;
@@ -293,14 +324,14 @@ export default function MatchesPage() {
               return (
                 <div 
                   key={match.id}
-                  className="p-4 rounded-3xl border border-white/8 bg-[#0B1020]/20 backdrop-blur-xl flex flex-col shadow-lg shadow-black/20 hover:border-white/15 transition duration-300 relative overflow-hidden"
+                  className="p-5 rounded-[2rem] border border-[#A28B52]/20 bg-[#0A0A0A] flex flex-col shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-[#A28B52]/50 transition duration-300 relative overflow-hidden group/card"
                 >
                   {/* Status Badge */}
-                  <div className="absolute top-4 right-4 flex items-center gap-1.5">
-                    <span className={`px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-widest font-bold ${
+                  <div className="absolute top-5 right-5 flex items-center gap-1.5">
+                    <span className={`px-3 py-1 rounded-[0.5rem] text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm ${
                       isFull 
-                        ? "bg-red-500/10 border border-red-500/20 text-red-400"
-                        : "bg-[#C6FF00]/10 border border-[#C6FF00]/20 text-[#C6FF00]"
+                        ? "bg-red-500/10 border border-red-500/20 text-red-500"
+                        : "bg-gradient-to-r from-[#A28B52]/20 to-[#A28B52]/5 border border-[#A28B52]/30 text-[#A28B52]"
                     }`}>
                       {isFull ? "FULL" : "OPEN"}
                     </span>
@@ -312,30 +343,30 @@ export default function MatchesPage() {
                     className="cursor-pointer group"
                   >
                     {/* Turf Info */}
-                    <div className="pr-16 mb-4">
-                      <h3 className="text-base font-bold text-white leading-snug truncate group-hover:text-[#C6FF00] transition">
+                    <div className="pr-16 mb-5">
+                      <h3 className="text-lg font-bold text-[#E5DCC5] leading-snug truncate group-hover:text-[#A28B52] transition">
                         {match.title}
                       </h3>
-                      <div className="flex items-center gap-1.5 text-xs text-white/50 mt-1">
-                        <MapPin size={12} className="text-[#C6FF00]" />
+                      <div className="flex items-center gap-2 text-[12px] text-[#A0A0A0] mt-1.5 font-medium">
+                        <MapPin size={13} className="text-[#A28B52]" />
                         <span className="truncate">{match.location}</span>
                       </div>
                     </div>
 
                     {/* Date, Time & Players Row */}
-                    <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 mb-4">
+                    <div className="grid grid-cols-2 gap-3 p-4 rounded-[1.25rem] bg-[#161410] border border-[#A28B52]/10 mb-5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)]">
                       <div className="flex flex-col">
-                        <span className="text-[9px] uppercase tracking-widest text-white/40 mb-1 font-bold">Schedule</span>
-                        <div className="flex items-center gap-1.5 text-[11px] text-white/85 font-medium leading-none">
-                          <Calendar size={11} className="text-[#C6FF00]/70" />
+                        <span className="text-[9px] uppercase tracking-widest text-[#A28B52] mb-1.5 font-bold">Schedule</span>
+                        <div className="flex items-center gap-2 text-[12px] text-[#E5DCC5] font-semibold leading-none">
+                          <Calendar size={13} className="text-[#A28B52]/80" />
                           <span className="truncate">{formatMatchDate(match.dateTime)}</span>
                         </div>
                       </div>
 
                       <div className="flex flex-col">
-                        <span className="text-[9px] uppercase tracking-widest text-white/40 mb-1 font-bold">Squad size</span>
-                        <div className="flex items-center gap-1.5 text-[11px] text-white/85 font-medium leading-none">
-                          <Users size={11} className="text-[#C6FF00]/70" />
+                        <span className="text-[9px] uppercase tracking-widest text-[#A28B52] mb-1.5 font-bold">Squad size</span>
+                        <div className="flex items-center gap-2 text-[12px] text-[#E5DCC5] font-semibold leading-none">
+                          <Users size={13} className="text-[#A28B52]/80" />
                           <span>{match.players} / {match.maxPlayers} Players</span>
                         </div>
                       </div>
@@ -343,18 +374,18 @@ export default function MatchesPage() {
                   </div>
 
                   {/* Spots indicator */}
-                  <div className="mb-4">
-                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="mb-5 px-1">
+                    <div className="h-2 w-full bg-[#1A1A1A] rounded-full overflow-hidden shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)] border border-[#A28B52]/10">
                       <div 
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          isFull ? "bg-red-500/60" : "bg-gradient-to-r from-[#C6FF00]/50 to-[#C6FF00]"
+                        className={`h-full rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(162,139,82,0.5)] ${
+                          isFull ? "bg-red-500/80 shadow-red-500/50" : "bg-gradient-to-r from-[#A28B52] to-[#FDE69F]"
                         }`}
                         style={{ width: `${fillPct}%` }}
                       />
                     </div>
-                    <div className="flex justify-between items-center mt-1.5">
-                      <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold">Lobby Progress</span>
-                      <span className="text-[10px] text-white/60 font-semibold">
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-[9px] uppercase tracking-[0.15em] text-[#A28B52] font-bold">Lobby Progress</span>
+                      <span className="text-[10px] text-[#A0A0A0] font-semibold tracking-wide">
                         {isFull ? "No spots left" : `${match.spotsLeft} spots remaining`}
                       </span>
                     </div>
@@ -366,12 +397,12 @@ export default function MatchesPage() {
                       <button
                         onClick={() => handleLeaveMatch(match.id)}
                         disabled={joiningId !== null}
-                        className="w-full h-11 rounded-2xl border border-red-500/20 bg-red-500/5 text-red-400 text-[10px] uppercase font-bold tracking-widest hover:bg-red-500/10 transition duration-200 cursor-pointer flex items-center justify-center gap-2 animate-in fade-in zoom-in duration-200"
+                        className="w-full h-12 rounded-[1.25rem] border border-red-500/30 bg-[#111111] text-red-500 text-[11px] uppercase font-bold tracking-[0.15em] hover:bg-red-500/10 transition duration-200 cursor-pointer flex items-center justify-center gap-2"
                         type="button"
                       >
                         {joiningId === match.id ? (
                           <>
-                            <Loader2 className="size-4 animate-spin text-red-400" />
+                            <Loader2 className="size-4 animate-spin text-red-500" />
                             LEAVING...
                           </>
                         ) : (
@@ -381,7 +412,7 @@ export default function MatchesPage() {
                     ) : isFull ? (
                       <button
                         disabled
-                        className="w-full h-11 rounded-2xl border border-red-500/20 bg-red-500/5 text-red-400/50 text-[10px] uppercase font-bold tracking-widest"
+                        className="w-full h-12 rounded-[1.25rem] border border-white/5 bg-[#111111] text-white/30 text-[11px] uppercase font-bold tracking-[0.15em] shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"
                         type="button"
                       >
                         LOBBY FULL
@@ -390,12 +421,12 @@ export default function MatchesPage() {
                       <button
                         onClick={() => handleJoinMatch(match.id)}
                         disabled={joiningId !== null}
-                        className="w-full h-11 rounded-2xl bg-[#C6FF00] hover:bg-[#b0e600] text-black text-[10px] uppercase font-bold tracking-widest transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_10px_20px_-5px_rgba(198,255,0,0.2)]"
+                        className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-[#111111] text-[13px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
                         type="button"
                       >
                         {joiningId === match.id ? (
                           <>
-                            <Loader2 className="size-4 animate-spin text-black" />
+                            <Loader2 className="size-4 animate-spin text-[#111111]" />
                             JOINING...
                           </>
                         ) : (
@@ -413,26 +444,27 @@ export default function MatchesPage() {
 
       {/* Organize Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-5">
-          <div className="relative w-full max-w-sm rounded-[2rem] border border-[#C6FF00]/30 bg-[#050a0d] p-6 shadow-[0_34px_100px_rgba(0,0,0,0.8)] flex flex-col max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A0A0A]/80 backdrop-blur-md px-5">
+          <div className="relative w-full max-w-sm rounded-[2rem] border border-[#A28B52]/20 bg-gradient-to-b from-[#1A1814] to-[#110F0D] p-7 shadow-[0_24px_60px_rgba(162,139,82,0.15)] flex flex-col max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => { setShowCreateModal(false); setCreateError(""); }}
-              className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-white/10 text-zinc-400 hover:text-white cursor-pointer"
+              className="absolute right-5 top-5 grid size-10 place-items-center rounded-full bg-[#111111] border border-[#A28B52]/10 text-[#888888] hover:text-[#A28B52] hover:bg-[#2A2824] transition duration-200 cursor-pointer"
               type="button"
             >
-              <X className="size-5" />
+              <X className="size-5" strokeWidth={1.5} />
             </button>
 
-            <h3 className="font-display uppercase tracking-wider text-xl italic text-white text-center mt-2 mb-2">
-              Organize Match
+            <h3 className="font-display uppercase tracking-[-0.05em] text-[26px] italic font-black text-center mt-3 mb-2 drop-shadow-sm">
+              <span className="text-[#EFE8D6]">ORGANIZE </span>
+              <span className="bg-gradient-to-b from-[#E8C878] to-[#8A6A28] text-transparent bg-clip-text pr-2">MATCH</span>
             </h3>
-            <p className="text-xs text-white/50 text-center mb-6">
+            <p className="text-[12px] text-[#A0A0A0] text-center mb-8 font-medium">
               Create a match lobby and invite local players.
             </p>
 
-            <form onSubmit={handleCreateMatch} className="space-y-4">
+            <form onSubmit={handleCreateMatch} className="space-y-5">
               <div>
-                <label className="text-[10px] tracking-[0.2em] uppercase text-white/40 font-bold block mb-1.5 pl-1">
+                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
                   Match Title
                 </label>
                 <input
@@ -440,13 +472,13 @@ export default function MatchesPage() {
                   placeholder="Sunday Turf Match"
                   value={createTitle}
                   onChange={(e) => setCreateTitle(e.target.value)}
-                  className="w-full h-11 px-4 rounded-xl border border-white/10 bg-white/[0.04] text-sm text-white placeholder:text-white/40 outline-none focus:border-[#C6FF00]/50 transition duration-300"
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#161410] text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-[10px] tracking-[0.2em] uppercase text-white/40 font-bold block mb-1.5 pl-1">
+                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
                   Turf / Location
                 </label>
                 <input
@@ -454,43 +486,41 @@ export default function MatchesPage() {
                   placeholder="Phoenix Turf"
                   value={createLocation}
                   onChange={(e) => setCreateLocation(e.target.value)}
-                  className="w-full h-11 px-4 rounded-xl border border-white/10 bg-white/[0.04] text-sm text-white placeholder:text-white/40 outline-none focus:border-[#C6FF00]/50 transition duration-300"
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#161410] text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-[10px] tracking-[0.2em] uppercase text-white/40 font-bold block mb-1.5 pl-1">
-                    Squad Size (Max)
-                  </label>
-                  <input
-                    type="number"
-                    min="2"
-                    placeholder="10"
-                    value={createMaxPlayers}
-                    onChange={(e) => setCreateMaxPlayers(e.target.value)}
-                    className="w-full h-11 px-4 rounded-xl border border-white/10 bg-white/[0.04] text-sm text-white placeholder:text-white/40 outline-none focus:border-[#C6FF00]/50 transition duration-300"
-                    required
-                  />
-                </div>
+              <div>
+                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                  Squad Size
+                </label>
+                <input
+                  type="number"
+                  min="2"
+                  placeholder="10"
+                  value={createMaxPlayers}
+                  onChange={(e) => setCreateMaxPlayers(e.target.value)}
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#161410] text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                  required
+                />
+              </div>
 
-                <div>
-                  <label className="text-[10px] tracking-[0.2em] uppercase text-white/40 font-bold block mb-1.5 pl-1">
-                    Date &amp; Time
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={createDateTime}
-                    onChange={(e) => setCreateDateTime(e.target.value)}
-                    className="w-full h-11 px-4 rounded-xl border border-white/10 bg-white/[0.04] text-xs text-white outline-none focus:border-[#C6FF00]/50 transition duration-300 block"
-                    required
-                  />
-                </div>
+              <div>
+                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                  Date &amp; Time
+                </label>
+                <input
+                  type="datetime-local"
+                  value={createDateTime}
+                  onChange={(e) => setCreateDateTime(e.target.value)}
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#161410] text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 block font-medium shadow-inner"
+                  required
+                />
               </div>
 
               {createError && (
-                <div className="rounded-xl border border-red-500/22 bg-red-500/7 p-3 text-center text-xs font-semibold text-red-400">
+                <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-center text-xs font-semibold text-red-400 mt-2">
                   {createError}
                 </div>
               )}
@@ -498,11 +528,11 @@ export default function MatchesPage() {
               <button
                 type="submit"
                 disabled={createLoading || !createTitle.trim() || !createLocation.trim() || !createDateTime}
-                className="w-full h-12 rounded-xl bg-[#C6FF00] text-black font-display tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 text-sm font-bold mt-2"
+                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#111111] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
               >
                 {createLoading ? (
                   <>
-                    <Loader2 className="size-4 animate-spin" />
+                    <Loader2 className="size-5 animate-spin" />
                     CREATING MATCH...
                   </>
                 ) : (
