@@ -74,11 +74,16 @@ export default function MatchesPage() {
 
       const res = await fetch(url);
       const data = await res.json();
-      if (data.success) {
-        setMatches(data.data || []);
+      if (Array.isArray(data)) {
+        setMatches(data);
+      } else if (data.success && Array.isArray(data.data)) {
+        setMatches(data.data);
+      } else {
+        setMatches([]);
       }
     } catch {
       // Ignored: empty state UI handles no matches
+      setMatches([]);
     } finally {
       setLoading(false);
     }

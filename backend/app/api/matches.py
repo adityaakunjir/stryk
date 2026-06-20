@@ -13,10 +13,9 @@ from sqlmodel import select
 from app.core.database import get_session
 from app.models.match import Match, MatchParticipant
 from app.models.player import User
-from app.api.teams import get_current_user_placeholder
+from app.api.auth import get_current_user
 
 router = APIRouter(prefix="/matches", tags=["matches"])
-
 
 from pydantic import BaseModel
 
@@ -29,19 +28,31 @@ class MatchCreate(BaseModel):
 @router.post("/", response_model=Match, status_code=status.HTTP_201_CREATED)
 async def create_match(
     match_in: MatchCreate,
-    current_user: User = Depends(get_current_user_placeholder),
+    user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
+    clerk_id = user.get("sub")
+    result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
     match = Match(
         title=match_in.title,
         location=match_in.location,
         dateTime=match_in.date_time,
         maxPlayers=match_in.max_players,
-        creatorId=current_user.id
+        creatorId=db_user.id
     )
     session.add(match)
     await session.commit()
     await session.refresh(match)
+
+    # Automatically add creator as a participant
+    participant = MatchParticipant(matchId=match.id, userId=db_user.id)
+    session.add(participant)
+    await session.commit()
+
     return match
 
 
