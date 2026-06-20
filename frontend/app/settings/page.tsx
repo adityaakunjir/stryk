@@ -50,11 +50,9 @@ export default function SettingsPage() {
       <div className="relative min-h-[100dvh] w-full max-w-md flex flex-col shadow-2xl border-x border-[#1A1A1A]/5">
         
         <div
-          className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-no-repeat pointer-events-none"
+          className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
           style={{ 
             backgroundImage: "url('/home_page_bg.webp')",
-            backgroundSize: "100% auto",
-            backgroundPosition: "top center",
           }}
         />
 
@@ -165,7 +163,7 @@ export default function SettingsPage() {
               {isSigningOut ? (
                 <Loader2 size={18} className="animate-spin text-[#C3DF1B]" />
               ) : (
-                <LogOut size={18} strokeWidth={1.5} className="text-[#C89B3C]" />
+                <LogOut size={18} strokeWidth={1.5} className="text-[#C3DF1B]" />
               )}
               <span className="font-display text-[14px] font-bold uppercase tracking-[0.15em] text-[#C3DF1B] pt-0.5">
                 SIGN OUT
