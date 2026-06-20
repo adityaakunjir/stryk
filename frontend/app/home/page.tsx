@@ -9,11 +9,13 @@ import {
   ChevronRight, Home, User, Globe, BarChart3, UserPlus
 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
+import { useUser } from "@clerk/nextjs";
 import { CardDetail } from "@/components/card-detail";
 import { cn } from "@/lib/utils";
 
 export default function HomeLobbyPage() {
   const router = useRouter();
+  const { user } = useUser();
   const { playerData, isLoaded, getStats } = usePlayer();
   
   const [showCardDossier, setShowCardDossier] = useState(false);
@@ -55,7 +57,8 @@ export default function HomeLobbyPage() {
     );
   }
 
-  const firstName = (playerData.fullName || "PLAYER").split(" ")[0].toUpperCase();
+  const rawName = user?.firstName || user?.fullName || playerData.fullName || "PLAYER";
+  const firstName = rawName.split(" ")[0].toUpperCase();
   const position = playerData.position || "CAM";
   const playStyle = playerData.playStyle || "PLAYMAKER";
   const rating = playerData.rating || 50;
@@ -225,7 +228,7 @@ export default function HomeLobbyPage() {
               {/* ========================================= */}
               <div className="absolute top-[61.4%] bottom-[38%] left-[15%] right-[15%] flex items-center justify-center">
                 <div className="font-display text-[clamp(16px,4.5vw,22px)] text-[#2A1B0A] leading-none tracking-widest uppercase font-bold drop-shadow-sm">
-                  {(playerData.fullName || "PLAYER").toUpperCase()}
+                  {rawName.toUpperCase()}
                 </div>
               </div>
 
