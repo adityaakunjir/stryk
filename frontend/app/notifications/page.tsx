@@ -132,38 +132,46 @@ export default function NotificationsPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(198,255,0,0.06),transparent_50%)]" />
+    <main className="stryk-mobile-shell bg-[#E5DCC5] min-h-[100dvh] text-[#1A1A1A]">
+      {/* Premium Marble Background */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+      />
 
-      <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
+      <div data-scroll-panel className="relative h-full flex flex-col px-6 pt-12 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
-        <header className="flex items-center justify-between mb-8">
+        <header className="flex items-center justify-between mb-6 relative">
           <button
             onClick={() => router.push("/home")}
-            className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition"
+            className="w-10 h-10 rounded-full border border-black/10 flex items-center justify-center cursor-pointer hover:bg-black/5 transition relative z-10 bg-transparent shadow-sm"
             aria-label="Back to home"
             type="button"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={18} className="text-[#1A1A1A]" />
           </button>
-          <div className="text-[10px] tracking-[0.3em] uppercase text-[#C6FF00] font-bold">Notifications</div>
-          <div className="w-9 h-9" />
+          
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-1">
+            <img src="/logo.webp" alt="STRYK" className="h-10 w-auto object-contain drop-shadow-sm" />
+          </div>
+          
+          <div className="w-10 h-10" />
         </header>
 
-        <h1 className="font-display text-3xl uppercase tracking-wider mb-2 pl-1 italic">
-          Notifications
+        <h1 className="font-display text-[2.5rem] font-bold italic uppercase tracking-tight mb-1 text-[#1A1A1A] drop-shadow-sm mt-4">
+          NOTIFICATIONS
         </h1>
-        <p className="text-[11px] text-white/40 uppercase tracking-widest mb-6 pl-1">
-          {notifications.length} pending
+        <p className="text-[10px] font-bold text-[#8A7038] uppercase tracking-widest mb-6">
+          {notifications.length} PENDING
         </p>
 
         {/* Feedback Toast */}
         {feedback && (
           <div
-            className={`mb-6 rounded-xl border p-4 text-center text-xs font-semibold ${
+            className={`mb-6 rounded-xl border p-4 text-center text-xs font-semibold shadow-sm ${
               feedback.type === "success"
-                ? "border-[#C6FF00]/22 bg-[#C6FF00]/6 text-[#C6FF00]"
-                : "border-red-500/22 bg-red-500/7 text-red-400"
+                ? "border-[#4ADE80]/30 bg-[#4ADE80]/10 text-[#2E7A46]"
+                : "border-red-500/30 bg-red-500/10 text-red-700"
             }`}
           >
             {feedback.msg}
@@ -173,18 +181,23 @@ export default function NotificationsPage() {
         {/* Content */}
         {loading ? (
           <div className="flex-1 flex items-center justify-center py-20">
-            <Loader2 className="size-8 text-[#C6FF00] animate-spin" />
+            <Loader2 className="size-8 text-[#A88028] animate-spin" />
           </div>
         ) : notifications.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center py-20 border border-white/5 rounded-3xl bg-white/[0.01] px-6">
-            <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-white/25">
-              <Bell size={24} />
+          <div className="relative flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-[#0A0A0A] shadow-2xl border border-white/5 overflow-hidden mb-safe">
+            
+            {/* Elegant Golden Badge for Icon */}
+            <div className="w-24 h-24 rounded-full border border-[#D8A53B]/20 bg-gradient-to-br from-[#D8A53B]/5 to-transparent flex items-center justify-center shadow-[inset_0_0_20px_rgba(216,165,59,0.05)] mb-6 relative">
+              <div className="absolute inset-0 rounded-full bg-[#D8A53B]/5 blur-xl" />
+              <Bell size={36} className="text-[#D8A53B] relative z-10 drop-shadow-[0_2px_8px_rgba(216,165,59,0.3)]" strokeWidth={1.5} />
             </div>
-            <div className="text-sm font-bold uppercase tracking-wider text-white/70 text-center">
-              All caught up!
-            </div>
-            <p className="text-xs text-white/40 text-center mt-1.5 max-w-[200px]">
-              You don&apos;t have any notifications right now. Check back later.
+            
+            <h3 className="font-display text-2xl tracking-[0.15em] text-[#E5DCC5] font-medium mb-3 text-center">
+              ALL CAUGHT UP
+            </h3>
+            
+            <p className="text-[13px] text-[#A0A0A0] text-center max-w-[240px] leading-relaxed">
+              You're all set. Check back later for new updates and invites.
             </p>
           </div>
         ) : (
