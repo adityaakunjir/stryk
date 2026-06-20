@@ -46,7 +46,7 @@ export default function SyncPage() {
       {/* Premium Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/loading_page_bg.webp')" }}
+        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
       />
       
       {/* STRYK 3D Logo - Absolutely Centered */}

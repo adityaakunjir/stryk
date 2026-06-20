@@ -327,14 +327,12 @@ export default function HomeLobbyPage() {
           </div>
         </div>
       {/* Bottom Navigation Tab Bar */}
-      <div className="fixed bottom-0 w-full max-w-md h-[70px] bg-[#0A0A0A] border-t border-white/5 z-40 px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pb-safe">
-        <NavTab icon={<Home size={20} />} label="HOME" active={true} onClick={() => router.push("/home")} />
-        <NavTab icon={<Globe size={20} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
-        
-
-
-        <NavTab icon={<Users size={20} />} label="SQUAD" active={false} onClick={() => setShowSquadModal(true)} />
-        <NavTab icon={<User size={20} />} label="PROFILE" active={false} onClick={() => router.push("/settings")} />
+      {/* Premium Glassmorphism Bottom Navigation */}
+      <div className="fixed bottom-0 w-full max-w-md h-[80px] bg-black/70 backdrop-blur-2xl border-t border-[#C3DF1B]/20 z-40 px-8 flex items-center justify-between shadow-[0_-15px_40px_rgba(0,0,0,0.8)] pb-safe">
+        <NavTab icon={<Home size={22} />} label="HOME" active={true} onClick={() => router.push("/home")} />
+        <NavTab icon={<Globe size={22} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
+        <NavTab icon={<Users size={22} />} label="SQUAD" active={false} onClick={() => setShowSquadModal(true)} />
+        <NavTab icon={<User size={22} />} label="PROFILE" active={false} onClick={() => router.push("/settings")} />
       </div>
 
       {/* Card Detail Modal */}
@@ -453,11 +451,15 @@ function ActionButton({ icon, label, subtext, onClick }: { icon: React.ReactNode
 
 function NavTab({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="flex flex-col items-center gap-1 cursor-pointer group">
-      <div className={cn("transition-colors group-hover:text-white", active ? "text-[#C3DF1B]" : "text-white/40")}>
+    <button onClick={onClick} className="relative flex flex-col items-center justify-center h-full w-[64px] cursor-pointer group pt-1">
+      {/* Glowing Active Top Indicator */}
+      {active && (
+        <div className="absolute top-0 w-8 h-[3px] bg-[#C3DF1B] rounded-b-full shadow-[0_0_12px_rgba(195,223,27,0.9)]" />
+      )}
+      <div className={cn("transition-all duration-300 group-hover:text-white group-hover:-translate-y-0.5", active ? "text-[#C3DF1B] drop-shadow-[0_0_8px_rgba(195,223,27,0.5)]" : "text-white/40")}>
         {icon}
       </div>
-      <span className={cn("text-[9px] font-bold tracking-[0.1em] uppercase transition-colors group-hover:text-white mt-1", active ? "text-[#C3DF1B]" : "text-white/40")}>
+      <span className={cn("text-[9px] font-bold tracking-[0.15em] uppercase transition-colors duration-300 group-hover:text-white mt-1.5", active ? "text-[#C3DF1B]" : "text-white/40")}>
         {label}
       </span>
     </button>
