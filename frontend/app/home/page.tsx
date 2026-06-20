@@ -70,9 +70,11 @@ export default function HomeLobbyPage() {
         
         {/* Background Layer (Constrained to max-w-md) */}
         <div
-          className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+          className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-no-repeat pointer-events-none"
           style={{
             backgroundImage: "url('/home_page_bg.webp')",
+            backgroundSize: "100% auto",
+            backgroundPosition: "top center",
           }}
         />
         
