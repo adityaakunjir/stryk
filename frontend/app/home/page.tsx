@@ -211,10 +211,13 @@ export default function HomeLobbyPage() {
               {/* ========================================= */}
               {/* LEFT SIDE (Rating, Position, Flag) */}
               {/* ========================================= */}
+              {/* Protective dark gradient behind the stats to guarantee readability on ANY user image */}
+              <div className="absolute top-[10%] left-[5%] w-[30%] h-[35%] bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0)_70%)] z-40 pointer-events-none" />
+
               <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1 z-50">
-                <div className="font-display text-[clamp(44px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">{rating}</div>
-                <div className="font-display text-[clamp(20px,5vw,26px)] text-black leading-none font-bold drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]">{position}</div>
-                <img src="https://flagcdn.com/w40/in.png" alt="India" className="mt-2 h-[16px] w-[26px] object-cover shadow-[0_2px_8px_rgba(0,0,0,0.8)] border border-black/10" />
+                <div className="font-display text-[clamp(38px,10.5vw,52px)] font-bold text-[#F4E3B5] leading-[0.85] tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{rating}</div>
+                <div className="font-display text-[clamp(17px,4.2vw,21px)] font-semibold text-[#D8C18E] leading-none tracking-[0.1em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mt-0.5">{position}</div>
+                <img src="https://flagcdn.com/w40/in.png" alt="India" className="mt-2 h-[16px] w-[26px] object-cover shadow-[0_4px_8px_rgba(0,0,0,0.6)] border border-white/20" />
               </div>
 
               {/* ========================================= */}
