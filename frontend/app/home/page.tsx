@@ -73,7 +73,7 @@ export default function HomeLobbyPage() {
           className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-no-repeat pointer-events-none"
           style={{
             backgroundImage: "url('/home_page_bg.webp')",
-            backgroundSize: "100% auto",
+            backgroundSize: "109% auto",
             backgroundPosition: "top center",
           }}
         />
@@ -132,7 +132,7 @@ export default function HomeLobbyPage() {
       {/* 3D Player Card Section - Mathematically fixed to the Pedestal relative to container width */}
       <div 
         className="absolute left-0 right-0 z-20 flex justify-center items-end pointer-events-none"
-        style={{ top: 'calc(1.28 * min(100vw, 448px))' }} /* Tweak this 1.28 number (e.g. to 1.26 or 1.30) to exactly land the card on the podium! */
+        style={{ top: 'calc(1.237 * min(100vw, 448px))' }} /* Tweak this 1.28 number (e.g. to 1.26 or 1.30) to exactly land the card on the podium! */
       >
         <div 
           className="relative w-[61%] pointer-events-auto cursor-pointer hover:scale-[1.025] transition-transform duration-500 -translate-y-full"
