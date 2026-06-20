@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft, User, LogOut, ChevronRight, Bell, Loader2 } from "lucide-react";
-import { usePlayer } from "@/components/player-context";
+import { ArrowLeft, Bell, ChevronRight, LogOut, User, Loader2 } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { usePlayer } from "@/components/player-context";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -13,6 +13,11 @@ export default function SettingsPage() {
   const { signOut } = useAuth();
 
   const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const rating = playerData.rating || 60;
+  const displayName = playerData.fullName || "Player";
+  const username = playerData.username || "username";
+  const position = playerData.position || "CAM";
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -25,44 +30,22 @@ export default function SettingsPage() {
     }
   };
 
-  const sections = [
+  const accountItems = [
     {
-      title: "Account",
-      items: [
-        {
-          icon: User,
-          label: "Edit Profile",
-          meta: playerData.fullName || "Set up your profile",
-          onClick: () => router.push("/identity")
-        },
-        {
-          icon: Bell,
-          label: "Notifications",
-          meta: "Manage alerts",
-          onClick: () => router.push("/notifications")
-        },
-      ]
+      icon: User,
+      label: "EDIT PROFILE",
+      description: "Manage your personal information",
+      onClick: () => router.push("/identity"),
+    },
+    {
+      icon: Bell,
+      label: "NOTIFICATIONS",
+      description: "Manage alerts and updates",
+      onClick: () => router.push("/notifications"),
     },
   ];
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] text-[#1A1A1A] min-h-screen relative overflow-hidden">
-      {/* Full Screen Background Image */}
-      <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
-      />
-
-      <div className="relative h-full flex flex-col px-6 pt-8 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
-        {/* Header */}
-        <header className="flex items-center justify-between mb-3 shrink-0">
-          <button
-            onClick={() => router.push("/home")}
-            className="w-10 h-10 rounded-full bg-[#1A1A1A]/5 border border-[#1A1A1A]/10 text-[#1A1A1A] flex items-center justify-center cursor-pointer hover:bg-[#1A1A1A]/10 transition backdrop-blur-md shadow-sm"
-            aria-label="Back to home"
-            type="button"
-          >
-            <ArrowLeft size={18} />
           </button>
           {/* Logo instead of STRYK text */}
           <div className="flex items-center justify-center">
