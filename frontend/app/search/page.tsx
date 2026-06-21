@@ -112,7 +112,7 @@ export default function SearchPage() {
         {/* Title */}
         <h1 className="font-display uppercase tracking-[-0.05em] text-[32px] italic font-black text-center mb-4 drop-shadow-sm flex items-center justify-center gap-1.5 relative z-10">
           <span className="text-[#151515]">PLAYER</span>
-          <span className="bg-gradient-to-b from-[#E8C878] to-[#8A6A28] text-transparent bg-clip-text">SEARCH</span>
+          <span className="bg-gradient-to-b from-[#E8C878] to-[#8A6A28] text-transparent bg-clip-text pr-2">SEARCH</span>
         </h1>
 
         <div className="space-y-3 mb-4">
