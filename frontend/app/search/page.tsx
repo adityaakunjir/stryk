@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Search, Loader2, SlidersHorizontal, User } from "lucide-react";
+import { ArrowLeft, Search, Loader2, ChevronDown, User, Activity, Shirt } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
+import Image from "next/image";
 
 type SearchResult = {
   id: string;
@@ -83,153 +84,208 @@ export default function SearchPage() {
   const activeFiltersCount = [query, position, playStyle].filter(Boolean).length;
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "radial-gradient(60% 50% at 50% 15%, rgba(198,255,0,0.1) 0%, transparent 60%), #05070B"}}
-      />
+    <main className="stryk-mobile-shell bg-[#0B0B0B] min-h-screen text-[#EFE8D6] font-sans selection:bg-[#A28B52]/30 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[url('/home_page_bg.webp')] bg-cover bg-center opacity-30 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B0B0B]/40 via-[#0B0B0B]/80 to-[#0B0B0B] backdrop-blur-[2px]" />
+      </div>
 
       <div className="relative h-full flex flex-col px-5 pt-6 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
+        
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <button onClick={() => router.push("/home")} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition">
-            <ArrowLeft size={16} />
+        <div className="flex items-center justify-between mb-8">
+          <button 
+            onClick={() => router.push("/home")} 
+            className="w-12 h-12 rounded-full bg-[#151515] border border-[#A28B52]/20 text-[#E5DCC5] flex items-center justify-center cursor-pointer hover:bg-[#A28B52]/10 hover:border-[#A28B52]/40 transition shadow-lg"
+          >
+            <ArrowLeft size={20} />
           </button>
-          <div className="text-[10px] tracking-[0.35em] uppercase text-[#C6FF00] font-bold">Player Search</div>
-          <div className="w-9 h-9" />
+          
+          <div className="flex-1 flex justify-center">
+            <Image src="/logo.webp" alt="STRYK" width={100} height={24} className="h-4 w-auto object-contain opacity-90" />
+          </div>
+          
+          <div className="w-12 h-12" /> {/* Spacer */}
         </div>
 
-        <div className="space-y-4">
+        {/* Title */}
+        <h1 className="font-display uppercase tracking-[-0.05em] text-[32px] italic font-black text-center mb-6 drop-shadow-sm flex items-center justify-center gap-2">
+          <span className="text-[#EFE8D6]">PLAYER</span>
+          <span className="bg-gradient-to-b from-[#E8C878] to-[#8A6A28] text-transparent bg-clip-text">SEARCH</span>
+        </h1>
+
+        <div className="space-y-4 mb-6">
           {/* Main Search Input */}
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search size={18} className="text-white/40" />
+          <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.4)] rounded-full">
+            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+              <Search size={20} className="text-[#A28B52]" />
             </div>
             <input
               type="text"
               placeholder="Search by name or @username..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full h-14 pl-11 pr-4 rounded-2xl border border-white/10 bg-white/[0.04] text-sm text-white placeholder:text-white/40 outline-none focus:border-[#C6FF00]/50 transition duration-300"
+              className="w-full h-14 pl-12 pr-5 rounded-full border border-[#A28B52]/30 bg-[#151515] text-sm text-[#E5DCC5] placeholder:text-[#A0A0A0] outline-none focus:border-[#A28B52] focus:ring-1 focus:ring-[#A28B52]/50 transition duration-300 shadow-inner"
             />
           </div>
 
           {/* Filters Row */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="relative">
+            <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-2xl">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Activity size={16} className="text-[#A28B52]" />
+              </div>
               <select
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
-                className="w-full h-12 pl-4 pr-8 rounded-xl border border-white/10 bg-[#0A0E17] text-xs text-white appearance-none outline-none focus:border-[#C6FF00]/50 transition"
+                className="w-full h-12 pl-10 pr-10 rounded-2xl border border-[#A28B52]/20 bg-[#151515] text-xs font-bold tracking-wider text-[#E5DCC5] uppercase appearance-none outline-none focus:border-[#A28B52] transition"
               >
-                <option value="">Any Position</option>
-                <option value="ST">Striker (ST)</option>
-                <option value="LW">Left Wing (LW)</option>
-                <option value="RW">Right Wing (RW)</option>
-                <option value="CAM">Attacking Mid (CAM)</option>
-                <option value="CM">Center Mid (CM)</option>
-                <option value="CDM">Defensive Mid (CDM)</option>
-                <option value="LM">Left Mid (LM)</option>
-                <option value="RM">Right Mid (RM)</option>
-                <option value="CB">Center Back (CB)</option>
-                <option value="LB">Left Back (LB)</option>
-                <option value="RB">Right Back (RB)</option>
-                <option value="GK">Goalkeeper (GK)</option>
+                <option value="">ANY POSITION</option>
+                <option value="ST">STRIKER (ST)</option>
+                <option value="LW">LEFT WING (LW)</option>
+                <option value="RW">RIGHT WING (RW)</option>
+                <option value="CAM">ATTACKING MID (CAM)</option>
+                <option value="CM">CENTER MID (CM)</option>
+                <option value="CDM">DEFENSIVE MID (CDM)</option>
+                <option value="LM">LEFT MID (LM)</option>
+                <option value="RM">RIGHT MID (RM)</option>
+                <option value="CB">CENTER BACK (CB)</option>
+                <option value="LB">LEFT BACK (LB)</option>
+                <option value="RB">RIGHT BACK (RB)</option>
+                <option value="GK">GOALKEEPER (GK)</option>
               </select>
-              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-white/30">
-                <SlidersHorizontal size={14} />
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-[#A28B52]/70">
+                <ChevronDown size={16} />
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-2xl">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Shirt size={16} className="text-[#A28B52]" />
+              </div>
               <select
                 value={playStyle}
                 onChange={(e) => setPlayStyle(e.target.value)}
-                className="w-full h-12 pl-4 pr-8 rounded-xl border border-white/10 bg-[#0A0E17] text-xs text-white appearance-none outline-none focus:border-[#C6FF00]/50 transition"
+                className="w-full h-12 pl-10 pr-10 rounded-2xl border border-[#A28B52]/20 bg-[#151515] text-xs font-bold tracking-wider text-[#E5DCC5] uppercase appearance-none outline-none focus:border-[#A28B52] transition"
               >
-                <option value="">Any Style</option>
-                <option value="Speedster">Speedster</option>
-                <option value="Playmaker">Playmaker</option>
-                <option value="Poacher">Poacher</option>
-                <option value="Box-to-Box">Box-to-Box</option>
-                <option value="Finisher">Finisher</option>
-                <option value="Destroyer">Destroyer</option>
-                <option value="Target Man">Target Man</option>
+                <option value="">ANY STYLE</option>
+                <option value="Speedster">SPEEDSTER</option>
+                <option value="Playmaker">PLAYMAKER</option>
+                <option value="Poacher">POACHER</option>
+                <option value="Box-to-Box">BOX-TO-BOX</option>
+                <option value="Finisher">FINISHER</option>
+                <option value="Destroyer">DESTROYER</option>
+                <option value="Target Man">TARGET MAN</option>
               </select>
-              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-white/30">
-                <SlidersHorizontal size={14} />
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-[#A28B52]/70">
+                <ChevronDown size={16} />
               </div>
             </div>
           </div>
           
-          <div className="flex justify-between items-center px-1">
-             <span className="text-[10px] uppercase tracking-wider text-white/40">
-               {activeFiltersCount} filter(s) active
+          {/* Active Filters Divider */}
+          <div className="flex items-center gap-4 pt-2 pb-1">
+             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8A6A28]">
+               {activeFiltersCount} FILTER(S) ACTIVE
              </span>
-             {activeFiltersCount < 2 && activeFiltersCount > 0 && (
-                <span className="text-[9px] uppercase tracking-wider text-[#C6FF00]/70">
-                  Tip: Combine 2 filters for better results
-                </span>
-             )}
+             <div className="flex-1 h-px bg-gradient-to-r from-[#A28B52]/50 via-[#A28B52]/20 to-transparent relative">
+               {activeFiltersCount > 0 && (
+                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-px bg-gradient-to-r from-transparent to-[#FDE69F] blur-[1px] shadow-[0_0_8px_#FDE69F]" />
+               )}
+             </div>
           </div>
         </div>
 
         {/* Results Area */}
-        <div className="mt-8 flex-1">
+        <div className="flex-1 flex flex-col">
           {isSearching ? (
-            <div className="flex flex-col items-center justify-center h-40">
-              <Loader2 className="size-8 text-[#C6FF00] animate-spin mb-4" />
-              <div className="text-xs text-white/50 uppercase tracking-widest">Searching Database</div>
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_24px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
+              <Loader2 className="size-12 text-[#A28B52] animate-spin mb-6" />
+              <div className="text-xs text-[#E5DCC5]/70 uppercase tracking-widest font-bold">Searching Database...</div>
             </div>
           ) : searchError ? (
-            <div className="flex flex-col items-center justify-center h-40 border border-dashed border-red-500/20 rounded-3xl bg-red-500/[0.03]">
-              <div className="text-sm text-red-400 mb-1 font-bold">Search failed</div>
-              <div className="text-[10px] text-white/30 uppercase tracking-wider">Check your connection and try again</div>
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-red-500/20 bg-red-500/[0.03] shadow-[0_24px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
+              <div className="text-lg text-red-400 mb-2 font-display italic font-black uppercase">Search failed</div>
+              <div className="text-xs text-[#E5DCC5]/50 text-center">Check your connection and try again</div>
             </div>
           ) : hasSearched && results.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-40 border border-dashed border-white/10 rounded-3xl bg-white/[0.01]">
-              <div className="text-sm text-white/50 mb-1 font-bold">No players found</div>
-              <div className="text-[10px] text-white/30 uppercase tracking-wider">Try adjusting your filters</div>
+            /* EMPTY STATE - EXACTLY MATCHING REFERENCE */
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_24px_60px_rgba(0,0,0,0.4)] relative overflow-hidden group">
+              {/* Concentric Circles & Icon */}
+              <div className="relative size-32 flex items-center justify-center mb-8">
+                {/* Outer faint circle */}
+                <div className="absolute inset-0 rounded-full border border-[#A28B52]/10 scale-110" />
+                {/* Middle circle */}
+                <div className="absolute inset-2 rounded-full border border-[#A28B52]/20" />
+                {/* Inner glowing circle */}
+                <div className="absolute inset-6 rounded-full border border-[#A28B52]/30 shadow-[0_0_30px_rgba(162,139,82,0.15)]" />
+                
+                {/* Sparkles / dots */}
+                <div className="absolute top-2 left-6 size-0.5 bg-[#FDE69F] rounded-full opacity-60 shadow-[0_0_4px_#FDE69F]" />
+                <div className="absolute bottom-4 right-8 size-[3px] bg-[#FDE69F] rounded-full opacity-40 shadow-[0_0_4px_#FDE69F]" />
+                <div className="absolute top-8 right-2 size-0.5 bg-[#A28B52] rounded-full opacity-80" />
+                
+                {/* Bottom light flare */}
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 h-px bg-gradient-to-r from-transparent via-[#FDE69F] to-transparent opacity-80 shadow-[0_0_8px_#FDE69F]" />
+
+                <Search size={40} className="text-[#A28B52] relative z-10" strokeWidth={1.5} />
+              </div>
+
+              <h2 className="font-display italic font-black text-2xl text-[#EFE8D6] uppercase tracking-wide mb-3 text-center">
+                NO PLAYERS FOUND
+              </h2>
+              <p className="text-xs text-[#A0A0A0] text-center max-w-[200px] leading-relaxed">
+                Try adjusting your search or filters to find players.
+              </p>
+            </div>
+          ) : !hasSearched ? (
+            /* Initial Empty State */
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_24px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
+               <Search size={32} className="text-[#A28B52]/30 mb-4" strokeWidth={1.5} />
+               <div className="text-sm text-[#A0A0A0] font-medium text-center">Search for players to build your squad</div>
             </div>
           ) : (
-            <div className="space-y-3 pb-8">
+            <div className="space-y-4 pb-8">
               {results.map((player) => (
                 <Link
                   key={player.id}
                   href={`/player/${player.username}`}
-                  className="block p-3 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#C6FF00]/30 transition duration-300"
+                  className="block p-4 rounded-[1.5rem] border border-[#A28B52]/15 bg-[#151515] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-[#A28B52]/40 hover:bg-[#1A1A1A] transition duration-300 relative overflow-hidden group"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="relative size-14 rounded-full overflow-hidden border border-white/10 bg-[#151515] shrink-0 flex items-center justify-center">
+                  {/* Subtle highlight gradient on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#A28B52]/0 via-[#A28B52]/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />
+                  
+                  <div className="flex items-center gap-4 relative z-10">
+                    <div className="relative size-14 rounded-full overflow-hidden border border-[#A28B52]/30 bg-[#0A0A0A] shrink-0 flex items-center justify-center shadow-inner">
                       {player.avatarUrl ? (
-                        <img src={player.avatarUrl} alt={player.username} className="w-full h-full object-cover" />
+                        <Image src={player.avatarUrl} alt={player.username} fill className="object-cover" />
                       ) : (
-                        <User size={20} className="text-white/30" />
+                        <User size={20} className="text-[#A28B52]/50" />
                       )}
-                      <div className="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent" />
+                      <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold text-white truncate">
+                      <div className="text-[15px] font-bold text-[#E5DCC5] truncate mb-0.5">
                         {player.fullName || "Player"}
                       </div>
-                      <div className="text-[11px] text-[#C6FF00] font-medium tracking-wide truncate">
+                      <div className="text-[11px] text-[#A28B52] font-semibold tracking-wide truncate mb-2">
                         @{player.username}
                       </div>
-                      <div className="mt-1.5 flex gap-2">
-                        <span className="px-2 py-0.5 rounded-md bg-white/5 text-[9px] uppercase tracking-wider text-white/60">
+                      <div className="flex gap-2">
+                        <span className="px-2.5 py-1 rounded-[0.4rem] bg-[#A28B52]/10 border border-[#A28B52]/20 text-[9px] uppercase tracking-widest text-[#A28B52] font-bold">
                           {player.position || "N/A"}
                         </span>
-                        <span className="px-2 py-0.5 rounded-md bg-white/5 text-[9px] uppercase tracking-wider text-white/60">
+                        <span className="px-2.5 py-1 rounded-[0.4rem] bg-[#A28B52]/10 border border-[#A28B52]/20 text-[9px] uppercase tracking-widest text-[#A28B52] font-bold">
                           {player.playStyle || "N/A"}
                         </span>
                       </div>
                     </div>
                     
-                    <div className="shrink-0 flex flex-col items-center justify-center px-2">
-                       <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-0.5">OVR</span>
-                       <span className="font-display text-xl text-white">{player.overall ?? 60}</span>
+                    <div className="shrink-0 flex flex-col items-center justify-center pl-3 border-l border-[#A28B52]/10">
+                       <span className="text-[9px] uppercase tracking-[0.2em] text-[#A0A0A0] mb-0.5 font-bold">OVR</span>
+                       <span className="font-display text-2xl text-[#E5DCC5] font-black italic">{player.overall ?? 60}</span>
                     </div>
                   </div>
                 </Link>
@@ -241,3 +297,4 @@ export default function SearchPage() {
     </main>
   );
 }
+
