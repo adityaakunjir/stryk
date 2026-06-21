@@ -94,7 +94,7 @@ export default function SearchPage() {
       <div className="relative h-full flex flex-col px-5 pt-3 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-1 relative z-20">
           <button 
             onClick={() => router.push("/home")} 
             className="w-[42px] h-[42px] rounded-full shadow-sm bg-[#EBE3D1] flex items-center justify-center cursor-pointer hover:bg-[#E5DCC5] transition relative z-10 border-none"
@@ -102,15 +102,15 @@ export default function SearchPage() {
             <ArrowLeft size={20} className="text-[#A28B52]" strokeWidth={2} />
           </button>
           
-          <div className="flex-1 flex justify-center mt-[-8px]">
-            <Image src="/logo.webp" alt="STRYK" width={140} height={32} className="h-7 w-auto object-contain drop-shadow-sm" />
+          <div className="flex-1 flex justify-center mt-[-4px]">
+            <Image src="/logo.webp" alt="STRYK" width={200} height={40} className="h-10 w-auto object-contain drop-shadow-sm" />
           </div>
           
           <div className="w-[42px] h-[42px]" /> {/* Spacer */}
         </div>
 
         {/* Title */}
-        <h1 className="font-display uppercase tracking-[-0.05em] text-[32px] italic font-black text-center mb-4 drop-shadow-sm flex items-center justify-center gap-1.5">
+        <h1 className="font-display uppercase tracking-[-0.05em] text-[32px] italic font-black text-center mb-4 drop-shadow-sm flex items-center justify-center gap-1.5 relative z-10">
           <span className="text-[#151515]">PLAYER</span>
           <span className="bg-gradient-to-b from-[#E8C878] to-[#8A6A28] text-transparent bg-clip-text">SEARCH</span>
         </h1>
