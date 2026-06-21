@@ -84,40 +84,40 @@ export default function SearchPage() {
   const activeFiltersCount = [query, position, playStyle].filter(Boolean).length;
 
   return (
-    <main className="stryk-mobile-shell bg-[#0B0B0B] min-h-screen text-[#EFE8D6] font-sans selection:bg-[#A28B52]/30 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[url('/home_page_bg.webp')] bg-cover bg-center opacity-30 mix-blend-overlay" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0B0B0B]/40 via-[#0B0B0B]/80 to-[#0B0B0B] backdrop-blur-[2px]" />
-      </div>
+    <main className="stryk-mobile-shell bg-[#E5DCC5] min-h-[100dvh] text-[#151515]">
+      {/* Premium Marble Background */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+      />
 
-      <div className="relative h-full flex flex-col px-5 pt-6 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
+      <div className="relative h-full flex flex-col px-5 pt-3 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-4">
           <button 
             onClick={() => router.push("/home")} 
-            className="w-12 h-12 rounded-full bg-[#151515] border border-[#A28B52]/20 text-[#E5DCC5] flex items-center justify-center cursor-pointer hover:bg-[#A28B52]/10 hover:border-[#A28B52]/40 transition shadow-lg"
+            className="w-[42px] h-[42px] rounded-full shadow-sm bg-[#EBE3D1] flex items-center justify-center cursor-pointer hover:bg-[#E5DCC5] transition relative z-10 border-none"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={20} className="text-[#A28B52]" strokeWidth={2} />
           </button>
           
-          <div className="flex-1 flex justify-center">
-            <Image src="/logo.webp" alt="STRYK" width={100} height={24} className="h-4 w-auto object-contain opacity-90" />
+          <div className="flex-1 flex justify-center mt-[-8px]">
+            <Image src="/logo.webp" alt="STRYK" width={140} height={32} className="h-7 w-auto object-contain drop-shadow-sm" />
           </div>
           
-          <div className="w-12 h-12" /> {/* Spacer */}
+          <div className="w-[42px] h-[42px]" /> {/* Spacer */}
         </div>
 
         {/* Title */}
-        <h1 className="font-display uppercase tracking-[-0.05em] text-[32px] italic font-black text-center mb-6 drop-shadow-sm flex items-center justify-center gap-2">
-          <span className="text-[#EFE8D6]">PLAYER</span>
+        <h1 className="font-display uppercase tracking-[-0.05em] text-[32px] italic font-black text-center mb-4 drop-shadow-sm flex items-center justify-center gap-1.5">
+          <span className="text-[#151515]">PLAYER</span>
           <span className="bg-gradient-to-b from-[#E8C878] to-[#8A6A28] text-transparent bg-clip-text">SEARCH</span>
         </h1>
 
-        <div className="space-y-4 mb-6">
+        <div className="space-y-3 mb-4">
           {/* Main Search Input */}
-          <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.4)] rounded-full">
+          <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.15)] rounded-full">
             <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
               <Search size={20} className="text-[#A28B52]" />
             </div>
@@ -126,20 +126,20 @@ export default function SearchPage() {
               placeholder="Search by name or @username..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full h-14 pl-12 pr-5 rounded-full border border-[#A28B52]/30 bg-[#151515] text-sm text-[#E5DCC5] placeholder:text-[#A0A0A0] outline-none focus:border-[#A28B52] focus:ring-1 focus:ring-[#A28B52]/50 transition duration-300 shadow-inner"
+              className="w-full h-[52px] pl-12 pr-5 rounded-full border border-[#A28B52]/10 bg-[#151515] text-sm text-[#E5DCC5] placeholder:text-[#A0A0A0] outline-none focus:border-[#A28B52] focus:ring-1 focus:ring-[#A28B52]/50 transition duration-300 shadow-inner"
             />
           </div>
 
           {/* Filters Row */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-2xl">
+            <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.15)] rounded-2xl">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Activity size={16} className="text-[#A28B52]" />
               </div>
               <select
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
-                className="w-full h-12 pl-10 pr-10 rounded-2xl border border-[#A28B52]/20 bg-[#151515] text-xs font-bold tracking-wider text-[#E5DCC5] uppercase appearance-none outline-none focus:border-[#A28B52] transition"
+                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#A28B52]/10 bg-[#151515] text-[11px] font-bold tracking-wider text-[#E5DCC5] uppercase appearance-none outline-none focus:border-[#A28B52] transition"
               >
                 <option value="">ANY POSITION</option>
                 <option value="ST">STRIKER (ST)</option>
@@ -160,14 +160,14 @@ export default function SearchPage() {
               </div>
             </div>
 
-            <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-2xl">
+            <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.15)] rounded-2xl">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Shirt size={16} className="text-[#A28B52]" />
               </div>
               <select
                 value={playStyle}
                 onChange={(e) => setPlayStyle(e.target.value)}
-                className="w-full h-12 pl-10 pr-10 rounded-2xl border border-[#A28B52]/20 bg-[#151515] text-xs font-bold tracking-wider text-[#E5DCC5] uppercase appearance-none outline-none focus:border-[#A28B52] transition"
+                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#A28B52]/10 bg-[#151515] text-[11px] font-bold tracking-wider text-[#E5DCC5] uppercase appearance-none outline-none focus:border-[#A28B52] transition"
               >
                 <option value="">ANY STYLE</option>
                 <option value="Speedster">SPEEDSTER</option>
@@ -185,7 +185,7 @@ export default function SearchPage() {
           </div>
           
           {/* Active Filters Divider */}
-          <div className="flex items-center gap-4 pt-2 pb-1">
+          <div className="flex items-center gap-4 pt-1 pb-1">
              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8A6A28]">
                {activeFiltersCount} FILTER(S) ACTIVE
              </span>
@@ -200,18 +200,18 @@ export default function SearchPage() {
         {/* Results Area */}
         <div className="flex-1 flex flex-col">
           {isSearching ? (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_24px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_12px_40px_rgba(0,0,0,0.15)] relative overflow-hidden">
               <Loader2 className="size-12 text-[#A28B52] animate-spin mb-6" />
               <div className="text-xs text-[#E5DCC5]/70 uppercase tracking-widest font-bold">Searching Database...</div>
             </div>
           ) : searchError ? (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-red-500/20 bg-red-500/[0.03] shadow-[0_24px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-red-500/20 bg-red-500/[0.03] shadow-[0_12px_40px_rgba(0,0,0,0.15)] relative overflow-hidden">
               <div className="text-lg text-red-400 mb-2 font-display italic font-black uppercase">Search failed</div>
               <div className="text-xs text-[#E5DCC5]/50 text-center">Check your connection and try again</div>
             </div>
           ) : hasSearched && results.length === 0 ? (
             /* EMPTY STATE - EXACTLY MATCHING REFERENCE */
-            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_24px_60px_rgba(0,0,0,0.4)] relative overflow-hidden group">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_12px_40px_rgba(0,0,0,0.15)] relative overflow-hidden group">
               {/* Concentric Circles & Icon */}
               <div className="relative size-32 flex items-center justify-center mb-8">
                 {/* Outer faint circle */}
@@ -241,7 +241,7 @@ export default function SearchPage() {
             </div>
           ) : !hasSearched ? (
             /* Initial Empty State */
-            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_24px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_12px_40px_rgba(0,0,0,0.15)] relative overflow-hidden">
                <Search size={32} className="text-[#A28B52]/30 mb-4" strokeWidth={1.5} />
                <div className="text-sm text-[#A0A0A0] font-medium text-center">Search for players to build your squad</div>
             </div>
@@ -251,7 +251,7 @@ export default function SearchPage() {
                 <Link
                   key={player.id}
                   href={`/player/${player.username}`}
-                  className="block p-4 rounded-[1.5rem] border border-[#A28B52]/15 bg-[#151515] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-[#A28B52]/40 hover:bg-[#1A1A1A] transition duration-300 relative overflow-hidden group"
+                  className="block p-4 rounded-[1.5rem] border border-[#A28B52]/15 bg-[#151515] shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:border-[#A28B52]/40 hover:bg-[#1A1A1A] transition duration-300 relative overflow-hidden group"
                 >
                   {/* Subtle highlight gradient on hover */}
                   <div className="absolute inset-0 bg-gradient-to-r from-[#A28B52]/0 via-[#A28B52]/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />
