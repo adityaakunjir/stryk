@@ -29,7 +29,7 @@ import * as Sentry from "@sentry/nextjs";
 
 function Stepper() {
   return (
-    <div className="flex items-center gap-3 text-[10px] sm:text-[11px] font-bold tracking-[0.2em] uppercase text-[#151515]/80">
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-[#151515]/80">
       <div className="text-[#151515] font-black flex items-center gap-1.5 drop-shadow-sm">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         Identity
