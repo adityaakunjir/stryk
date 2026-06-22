@@ -108,7 +108,7 @@ export default function HomeLobbyPage() {
 
         <div className="flex justify-between items-start mt-2">
           <div className="flex flex-col">
-            <div className="text-[9px] font-bold tracking-[0.15em] text-[#A37B31] uppercase mb-1">
+            <div className="text-[10px] font-bold tracking-[0.2em] text-[#A28B52] uppercase mb-1">
               READY FOR TODAY&apos;S MATCH?
             </div>
             <div className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none flex items-center gap-2 mt-1">
@@ -319,7 +319,7 @@ export default function HomeLobbyPage() {
                   <Target size={16} />
                 </div>
                 <div>
-                  <div className="text-[8px] tracking-[0.2em] uppercase text-[#A28B52] font-bold">NEXT OBJECTIVE</div>
+                  <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#A28B52]">NEXT OBJECTIVE</div>
                   <div className="text-[12px] font-bold text-white uppercase mt-0.5 tracking-wider">PLAY YOUR FIRST MATCH</div>
                   <div className="text-[9px] text-white/40 font-medium mt-0.5">Jump into a match and start your journey.</div>
                 </div>

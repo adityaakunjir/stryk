@@ -111,8 +111,8 @@ export default function SettingsPage() {
         </div>
 
         {/* Section Divider */}
-        <div className="flex items-center gap-4 mt-1 mb-4 px-1 text-[10px] tracking-[0.5em] font-medium uppercase text-[#151515]/60 shrink-0">
-          <span>A C C O U N T</span>
+        <div className="flex items-center gap-4 mt-1 mb-4 px-1 text-[10px] font-bold tracking-[0.2em] uppercase text-[#A28B52] shrink-0">
+          <span>ACCOUNT</span>
           <div className="flex-1 h-[1px] bg-[#A28B52]/40" />
         </div>
 
