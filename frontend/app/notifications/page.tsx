@@ -150,12 +150,6 @@ export default function NotificationsPage() {
           >
             <ArrowLeft size={18} className="text-[#151515]" />
           </button>
-          
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-1">
-            <img src="/logo.webp" alt="STRYK" className="h-10 w-auto object-contain drop-shadow-sm" />
-          </div>
-          
-          <div className="w-10 h-10" />
         </header>
 
         <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight mb-1 text-[#151515] drop-shadow-sm mt-4 leading-none">

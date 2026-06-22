@@ -64,11 +64,6 @@ export default function SettingsPage() {
           >
             <ArrowLeft size={18} />
           </button>
-          {/* Logo instead of STRYK text */}
-          <div className="flex items-center justify-center">
-            <img src="/logo.webp" alt="STRYK" className="h-[45px] w-auto object-contain" />
-          </div>
-          <div className="w-10 h-10" />
         </header>
 
         {/* Title */}

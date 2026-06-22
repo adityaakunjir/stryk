@@ -101,12 +101,6 @@ export default function SearchPage() {
           >
             <ArrowLeft size={20} className="text-[#A28B52]" strokeWidth={2} />
           </button>
-          
-          <div className="flex-1 flex justify-center mt-[-4px]">
-            <Image src="/logo.webp" alt="STRYK" width={200} height={40} className="h-10 w-auto object-contain drop-shadow-sm" />
-          </div>
-          
-          <div className="w-[42px] h-[42px]" /> {/* Spacer */}
         </div>
 
         {/* Title */}

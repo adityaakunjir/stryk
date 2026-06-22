@@ -214,9 +214,7 @@ export default function MatchesPage() {
             <ArrowLeft size={20} className="text-[#A28B52]" strokeWidth={2} />
           </button>
           
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <img src="/logo.webp" alt="STRYK Logo" className="h-[44px] w-auto drop-shadow-sm" />
-          </div>
+          <div className="flex-1" />
 
           <button 
             onClick={() => setShowCreateModal(true)}
