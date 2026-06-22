@@ -137,13 +137,14 @@ export default function HomeLobbyPage() {
         className="absolute left-0 right-0 z-20 flex justify-center items-end pointer-events-none"
         style={{ top: 'calc(1.237 * min(100vw, 448px))' }} /* Tweak this 1.28 number (e.g. to 1.26 or 1.30) to exactly land the card on the podium! */
       >
-        <div className="relative w-[61%] -translate-y-full pointer-events-none" style={{ aspectRatio: '1417/1878' }}>
+        <div className="relative w-[61%] -translate-y-full pointer-events-none" style={{ aspectRatio: '1417/1878', perspective: '1000px' }}>
           <motion.div 
             className="absolute inset-0 pointer-events-auto cursor-pointer"
             onClick={() => setShowCardDossier(true)}
-            animate={{ y: [0, -10, 0], rotateZ: [0, -0.5, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            whileHover={{ scale: 1.025, transition: { duration: 0.3 } }}
+            animate={{ rotateY: [-6, 6, -6], rotateX: [2, -2, 2] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            whileHover={{ scale: 1.04, transition: { duration: 0.4, ease: "easeOut" } }}
+            style={{ transformStyle: 'preserve-3d' }}
           >
             {/* Main Card Container */}
             
@@ -209,6 +210,25 @@ export default function HomeLobbyPage() {
               src="/player_card_frame.webp" 
               alt="Card Frame" 
               className="absolute inset-0 z-30 h-full w-full object-contain pointer-events-none translate-y-[0.8px] scale-[1.0]"
+            />
+
+            {/* Shimmer Overlay */}
+            <motion.div
+              className="absolute inset-0 z-[35] pointer-events-none mix-blend-overlay"
+              style={{
+                background: "linear-gradient(105deg, transparent 20%, rgba(255, 215, 0, 0.1) 30%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 215, 0, 0.1) 70%, transparent 80%)",
+                backgroundSize: "200% 200%",
+                WebkitMaskImage: "url('/player_card.webp')",
+                WebkitMaskSize: "contain",
+                WebkitMaskRepeat: "no-repeat",
+                WebkitMaskPosition: "center",
+                maskImage: "url('/player_card.webp')",
+                maskSize: "contain",
+                maskRepeat: "no-repeat",
+                maskPosition: "center",
+              }}
+              animate={{ backgroundPosition: ["200% 0%", "-100% 0%"] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "linear", delay: 1 }}
             />
             
             {/* 6. Text + Stats (Top Layer) */}
