@@ -387,8 +387,8 @@ export default function HomeLobbyPage() {
               
               {/* Persistent Add Friend Action in Modal */}
               <div className="mt-6 pt-5 border-t border-[#A28B52]/10 w-full shrink-0">
-                <button onClick={() => router.push("/search")} className="w-full h-[50px] rounded-full bg-transparent border border-[#D4F829]/30 text-[#D4F829] text-[12px] font-black uppercase tracking-[0.15em] hover:bg-[#D4F829]/10 transition flex items-center justify-center gap-2 cursor-pointer shadow-[inset_0_2px_10px_rgba(212,248,41,0.05)]">
-                  <UserPlus size={16} /> {friends.length === 0 ? "INVITE FRIENDS" : "ADD MORE FRIENDS"}
+                <button onClick={() => router.push("/search")} className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] font-black uppercase tracking-[0.15em] transition flex items-center justify-center gap-2 cursor-pointer shadow-[0_8px_20px_rgba(212,248,41,0.25)]">
+                  <UserPlus size={18} /> {friends.length === 0 ? "INVITE FRIENDS" : "ADD MORE FRIENDS"}
                 </button>
               </div>
             </motion.div>
