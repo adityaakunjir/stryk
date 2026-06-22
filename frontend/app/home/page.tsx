@@ -137,14 +137,15 @@ export default function HomeLobbyPage() {
         className="absolute left-0 right-0 z-20 flex justify-center items-end pointer-events-none"
         style={{ top: 'calc(1.237 * min(100vw, 448px))' }} /* Tweak this 1.28 number (e.g. to 1.26 or 1.30) to exactly land the card on the podium! */
       >
-        <motion.div 
-          animate={{ y: ["-100%", "-103%", "-100%"] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="relative w-[61%] pointer-events-auto cursor-pointer hover:scale-[1.025] transition-transform duration-500"
-          style={{ aspectRatio: '1417/1878' }}
-          onClick={() => setShowCardDossier(true)}
-        >
-          {/* Main Card Container */}
+        <div className="relative w-[61%] -translate-y-full pointer-events-none" style={{ aspectRatio: '1417/1878' }}>
+          <motion.div 
+            className="absolute inset-0 pointer-events-auto cursor-pointer"
+            onClick={() => setShowCardDossier(true)}
+            animate={{ y: [0, -10, 0], rotateZ: [0, -0.5, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            whileHover={{ scale: 1.025, transition: { duration: 0.3 } }}
+          >
+            {/* Main Card Container */}
             
             {/* 1. Card Base (Crystal Texture) - Bottom Layer */}
             <img 
@@ -280,6 +281,7 @@ export default function HomeLobbyPage() {
               </div>
             </div>
           </motion.div>
+        </div>
       </div>
 
       {/* Spacer to push the drawer strictly below the absolute-positioned card */}
