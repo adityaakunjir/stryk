@@ -329,7 +329,7 @@ export default function HomeLobbyPage() {
 
             {/* Action Grid (2 buttons) */}
             <div className="grid grid-cols-2 gap-3">
-              <ActionButton icon={<UserPlus size={18} className="text-[#C3DF1B]" />} label="ADD FRIEND" subtext="Find & invite players" onClick={() => router.push("/search")} />
+              <ActionButton icon={<UserPlus size={18} />} label="ADD FRIEND" subtext="Find & invite players" onClick={() => router.push("/search")} isPrimary={true} />
               <ActionButton icon={<BarChart3 size={18} className="text-[#C3DF1B]" />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
             </div>
 
@@ -387,8 +387,8 @@ export default function HomeLobbyPage() {
               
               {/* Persistent Add Friend Action in Modal */}
               <div className="mt-6 pt-5 border-t border-[#A28B52]/10 w-full shrink-0">
-                <button onClick={() => router.push("/search")} className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] font-black uppercase tracking-[0.15em] transition flex items-center justify-center gap-2 cursor-pointer shadow-[0_8px_20px_rgba(212,248,41,0.25)]">
-                  <UserPlus size={18} /> {friends.length === 0 ? "INVITE FRIENDS" : "ADD MORE FRIENDS"}
+                <button onClick={() => router.push("/search")} className="w-full h-[50px] rounded-full bg-transparent border border-[#D4F829]/30 text-[#D4F829] text-[12px] font-black uppercase tracking-[0.15em] hover:bg-[#D4F829]/10 transition flex items-center justify-center gap-2 cursor-pointer shadow-[inset_0_2px_10px_rgba(212,248,41,0.05)]">
+                  <UserPlus size={16} /> {friends.length === 0 ? "INVITE FRIENDS" : "ADD MORE FRIENDS"}
                 </button>
               </div>
             </motion.div>
@@ -444,12 +444,12 @@ export default function HomeLobbyPage() {
 
 // Subcomponents
 
-function ActionButton({ icon, label, subtext, onClick }: { icon: React.ReactNode; label: string; subtext: string; onClick?: () => void }) {
+function ActionButton({ icon, label, subtext, onClick, isPrimary }: { icon: React.ReactNode; label: string; subtext: string; onClick?: () => void; isPrimary?: boolean }) {
   return (
-    <button onClick={onClick} className="flex flex-col items-center justify-center p-3 rounded-[1.2rem] bg-[#151515] border border-[#2A2A2A] text-center cursor-pointer transition hover:bg-[#202020] hover:border-[#A28B52]/50 h-full shadow-sm group">
-      <div className="text-[#C3DF1B] mb-2 transition-transform group-hover:scale-110 drop-shadow-sm">{icon}</div>
-      <div className="text-[9px] font-bold tracking-widest text-[#E8E8E8] uppercase leading-tight mb-1">{label}</div>
-      <div className="text-[8px] text-[#808080] tracking-wide leading-tight hidden sm:block">{subtext}</div>
+    <button onClick={onClick} className={`flex flex-col items-center justify-center p-3 rounded-[1.2rem] text-center cursor-pointer transition h-full shadow-sm group ${isPrimary ? 'bg-[#D4F829] border border-[#D4F829] hover:bg-[#cbf026] shadow-[0_8px_16px_rgba(212,248,41,0.25)]' : 'bg-[#151515] border border-[#2A2A2A] hover:bg-[#202020] hover:border-[#A28B52]/50'}`}>
+      <div className={`mb-2 transition-transform group-hover:scale-110 drop-shadow-sm ${isPrimary ? 'text-[#151515]' : 'text-[#C3DF1B]'}`}>{icon}</div>
+      <div className={`text-[9px] font-bold tracking-widest uppercase leading-tight mb-1 ${isPrimary ? 'text-[#151515]' : 'text-[#E8E8E8]'}`}>{label}</div>
+      <div className={`text-[8px] tracking-wide leading-tight hidden sm:block ${isPrimary ? 'text-[#151515]/70' : 'text-[#808080]'}`}>{subtext}</div>
     </button>
   );
 }
