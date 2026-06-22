@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Search, Calendar, MapPin, Users, Loader2, X } from "lucide-react";
+import { ArrowLeft, Plus, Search, Calendar, MapPin, Users, Loader2, X, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
 interface Match {
@@ -501,17 +501,27 @@ export default function MatchesPage() {
 
               <div>
                 <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
-                  Squad Size
+                  Match Format (Total Players)
                 </label>
-                <input
-                  type="number"
-                  min="2"
-                  placeholder="10"
-                  value={createMaxPlayers}
-                  onChange={(e) => setCreateMaxPlayers(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
-                  required
-                />
+                <div className="relative">
+                  <select
+                    value={createMaxPlayers}
+                    onChange={(e) => setCreateMaxPlayers(e.target.value)}
+                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner appearance-none cursor-pointer"
+                    required
+                  >
+                    <option value="" disabled>Select Format</option>
+                    <option value="10">5v5 (10 Players)</option>
+                    <option value="12">6v6 (12 Players)</option>
+                    <option value="14">7v7 (14 Players)</option>
+                    <option value="16">8v8 (16 Players)</option>
+                    <option value="18">9v9 (18 Players)</option>
+                    <option value="22">11v11 (22 Players)</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-[#A28B52]/70">
+                    <ChevronDown size={18} />
+                  </div>
+                </div>
               </div>
 
               <div>

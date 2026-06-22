@@ -364,13 +364,9 @@ export default function HomeLobbyPage() {
               <div className="mt-6 flex-1 overflow-y-auto pr-1 space-y-3">
                 {friends.length === 0 ? (
                   <div className="flex flex-col items-center">
-                    <div className="text-center py-6 px-4 bg-[#151515] border border-dashed border-[#A28B52]/20 rounded-[1.25rem] mb-6 shadow-inner w-full">
-                      <p className="text-xs text-[#E5DCC5]/70 font-medium mb-4">No active teammates found.</p>
-                      <button onClick={() => router.push("/search")} className="px-5 py-2.5 rounded-full bg-[#D4F829] text-[#151515] text-[11px] font-black uppercase tracking-widest hover:bg-[#cbf026] transition shadow-[0_0_16px_rgba(212,248,41,0.25)]">Invite Friends</button>
-                    </div>
-                    
-                    <div className="w-full text-center">
-                      <p className="text-[10px] uppercase font-bold text-[#A28B52]/60 tracking-widest mt-2">Invite players to start a squad</p>
+                    <div className="text-center py-6 px-4 bg-[#151515] border border-dashed border-[#A28B52]/20 rounded-[1.25rem] shadow-inner w-full flex flex-col items-center justify-center min-h-[140px]">
+                      <p className="text-xs text-[#E5DCC5]/70 font-medium">No active teammates found.</p>
+                      <p className="text-[10px] uppercase font-bold text-[#A28B52]/60 tracking-widest mt-2">Build your squad to play together</p>
                     </div>
                   </div>
                 ) : (
@@ -392,7 +388,7 @@ export default function HomeLobbyPage() {
               {/* Persistent Add Friend Action in Modal */}
               <div className="mt-6 pt-5 border-t border-[#A28B52]/10 w-full shrink-0">
                 <button onClick={() => router.push("/search")} className="w-full h-[50px] rounded-full bg-transparent border border-[#D4F829]/30 text-[#D4F829] text-[12px] font-black uppercase tracking-[0.15em] hover:bg-[#D4F829]/10 transition flex items-center justify-center gap-2 cursor-pointer shadow-[inset_0_2px_10px_rgba(212,248,41,0.05)]">
-                  <UserPlus size={16} /> ADD MORE FRIENDS
+                  <UserPlus size={16} /> {friends.length === 0 ? "INVITE FRIENDS" : "ADD MORE FRIENDS"}
                 </button>
               </div>
             </motion.div>
