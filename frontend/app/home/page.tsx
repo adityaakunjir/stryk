@@ -111,7 +111,7 @@ export default function HomeLobbyPage() {
             <div className="text-[9px] font-bold tracking-[0.15em] text-[#A37B31] uppercase mb-1">
               READY FOR TODAY&apos;S MATCH?
             </div>
-            <div className="font-display text-4xl text-[#151515] italic leading-[0.9] tracking-tight flex items-center gap-2">
+            <div className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none flex items-center gap-2 mt-1">
               HEY, {firstName}
             </div>
             <div className="text-[10px] text-[#151515]/70 font-medium mt-1.5">

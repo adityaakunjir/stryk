@@ -232,9 +232,8 @@ export default function MatchesPage() {
           <div className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#A28B52] mb-1">
             DISCOVER LOBBIES
           </div>
-          <h1 className="font-display text-[2.75rem] uppercase tracking-[-0.05em] italic font-black leading-none drop-shadow-sm whitespace-nowrap">
-            <span className="text-[#151515]">LOBBIES &amp; </span>
-            <span className="bg-gradient-to-b from-[#E8C878] to-[#8A6A28] text-transparent bg-clip-text pr-2">MATCHES</span>
+          <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none whitespace-nowrap">
+            LOBBIES &amp; MATCHES
           </h1>
         </div>
 

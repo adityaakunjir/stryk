@@ -158,7 +158,7 @@ export default function NotificationsPage() {
           <div className="w-10 h-10" />
         </header>
 
-        <h1 className="font-display text-[2.5rem] font-bold italic uppercase tracking-tight mb-1 text-[#151515] drop-shadow-sm mt-4">
+        <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight mb-1 text-[#151515] drop-shadow-sm mt-4 leading-none">
           NOTIFICATIONS
         </h1>
         <p className="text-[10px] font-bold text-[#8A7038] uppercase tracking-widest mb-6">
@@ -181,22 +181,22 @@ export default function NotificationsPage() {
         {/* Content */}
         {loading ? (
           <div className="flex-1 flex items-center justify-center py-20">
-            <Loader2 className="size-8 text-[#A88028] animate-spin" />
+            <Loader2 className="size-8 text-[#151515] animate-spin" />
           </div>
         ) : notifications.length === 0 ? (
-          <div className="relative flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-[#151515] shadow-2xl border border-white/5 overflow-hidden mb-safe">
+          <div className="relative flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent border border-[#151515]/10 overflow-hidden mb-safe">
             
             {/* Elegant Golden Badge for Icon */}
-            <div className="w-24 h-24 rounded-full border border-[#D8A53B]/20 bg-gradient-to-br from-[#D8A53B]/5 to-transparent flex items-center justify-center shadow-[inset_0_0_20px_rgba(216,165,59,0.05)] mb-6 relative">
-              <div className="absolute inset-0 rounded-full bg-[#D8A53B]/5 blur-xl" />
+            <div className="w-24 h-24 rounded-full border border-[#D8A53B]/40 bg-gradient-to-br from-[#D8A53B]/10 to-transparent flex items-center justify-center shadow-[inset_0_0_20px_rgba(216,165,59,0.1)] mb-6 relative">
+              <div className="absolute inset-0 rounded-full bg-[#D8A53B]/10 blur-xl" />
               <Bell size={36} className="text-[#D8A53B] relative z-10 drop-shadow-[0_2px_8px_rgba(216,165,59,0.3)]" strokeWidth={1.5} />
             </div>
             
-            <h3 className="font-display text-2xl tracking-[0.15em] text-[#E5DCC5] font-medium mb-3 text-center">
+            <h3 className="font-display text-2xl tracking-[0.15em] text-[#151515] font-black mb-3 text-center">
               ALL CAUGHT UP
             </h3>
             
-            <p className="text-[13px] text-[#A0A0A0] text-center max-w-[240px] leading-relaxed">
+            <p className="text-[13px] text-[#151515]/70 text-center max-w-[240px] leading-relaxed font-medium">
               You're all set. Check back later for new updates and invites.
             </p>
           </div>

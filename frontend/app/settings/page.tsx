@@ -73,10 +73,10 @@ export default function SettingsPage() {
 
         {/* Title */}
         <div className="text-center mt-4 mb-5 shrink-0">
-          <h1 className="font-display text-[32px] font-bold tracking-[0.08em] text-[#151515] uppercase scale-y-[1.1] scale-x-[0.95] transform">
+          <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none">
             SETTINGS
           </h1>
-          <div className="w-8 h-[2px] bg-[#A28B52] mx-auto mt-2" />
+          <div className="w-8 h-[2px] bg-[#A28B52] mx-auto mt-3" />
         </div>
 
         {/* User Card */}

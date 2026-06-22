@@ -110,9 +110,8 @@ export default function SearchPage() {
         </div>
 
         {/* Title */}
-        <h1 className="font-display uppercase tracking-[-0.05em] text-[32px] italic font-black text-center mb-4 drop-shadow-sm flex items-center justify-center gap-1.5 relative z-10">
-          <span className="text-[#151515]">PLAYER</span>
-          <span className="bg-gradient-to-b from-[#E8C878] to-[#8A6A28] text-transparent bg-clip-text pr-2">SEARCH</span>
+        <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none text-center mb-4 mt-2 relative z-10">
+          PLAYER SEARCH
         </h1>
 
         <div className="space-y-3 mb-4">
@@ -200,50 +199,47 @@ export default function SearchPage() {
         {/* Results Area */}
         <div className="flex-1 flex flex-col">
           {isSearching ? (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_12px_40px_rgba(0,0,0,0.15)] relative overflow-hidden">
-              <Loader2 className="size-12 text-[#A28B52] animate-spin mb-6" />
-              <div className="text-xs text-[#E5DCC5]/70 uppercase tracking-widest font-bold">Searching Database...</div>
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent relative overflow-hidden">
+              <Loader2 className="size-12 text-[#151515] animate-spin mb-6" />
+              <div className="text-xs text-[#151515]/70 uppercase tracking-widest font-bold">Searching Database...</div>
             </div>
           ) : searchError ? (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-red-500/20 bg-red-500/[0.03] shadow-[0_12px_40px_rgba(0,0,0,0.15)] relative overflow-hidden">
-              <div className="text-lg text-red-400 mb-2 font-display italic font-black uppercase">Search failed</div>
-              <div className="text-xs text-[#E5DCC5]/50 text-center">Check your connection and try again</div>
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent relative overflow-hidden">
+              <div className="text-lg text-red-600 mb-2 font-display italic font-black uppercase">Search failed</div>
+              <div className="text-xs text-[#151515]/70 text-center font-medium">Check your connection and try again</div>
             </div>
           ) : hasSearched && results.length === 0 ? (
             /* EMPTY STATE - EXACTLY MATCHING REFERENCE */
-            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_12px_40px_rgba(0,0,0,0.15)] relative overflow-hidden group">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent border border-[#151515]/10 relative overflow-hidden group">
               {/* Concentric Circles & Icon */}
               <div className="relative size-32 flex items-center justify-center mb-8">
                 {/* Outer faint circle */}
-                <div className="absolute inset-0 rounded-full border border-[#A28B52]/10 scale-110" />
+                <div className="absolute inset-0 rounded-full border border-[#A28B52]/20 scale-110" />
                 {/* Middle circle */}
-                <div className="absolute inset-2 rounded-full border border-[#A28B52]/20" />
+                <div className="absolute inset-2 rounded-full border border-[#A28B52]/30" />
                 {/* Inner glowing circle */}
-                <div className="absolute inset-6 rounded-full border border-[#A28B52]/30 shadow-[0_0_30px_rgba(162,139,82,0.15)]" />
+                <div className="absolute inset-6 rounded-full border border-[#A28B52]/40 shadow-[0_0_30px_rgba(162,139,82,0.15)]" />
                 
                 {/* Sparkles / dots */}
-                <div className="absolute top-2 left-6 size-0.5 bg-[#FDE69F] rounded-full opacity-60 shadow-[0_0_4px_#FDE69F]" />
-                <div className="absolute bottom-4 right-8 size-[3px] bg-[#FDE69F] rounded-full opacity-40 shadow-[0_0_4px_#FDE69F]" />
+                <div className="absolute top-2 left-6 size-0.5 bg-[#8A6A28] rounded-full opacity-60" />
+                <div className="absolute bottom-4 right-8 size-[3px] bg-[#8A6A28] rounded-full opacity-40" />
                 <div className="absolute top-8 right-2 size-0.5 bg-[#A28B52] rounded-full opacity-80" />
-                
-                {/* Bottom light flare */}
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 h-px bg-gradient-to-r from-transparent via-[#FDE69F] to-transparent opacity-80 shadow-[0_0_8px_#FDE69F]" />
 
                 <Search size={40} className="text-[#A28B52] relative z-10" strokeWidth={1.5} />
               </div>
 
-              <h2 className="font-display italic font-black text-2xl text-[#EFE8D6] uppercase tracking-wide mb-3 text-center">
+              <h2 className="font-display italic font-black text-2xl text-[#151515] uppercase tracking-wide mb-3 text-center">
                 NO PLAYERS FOUND
               </h2>
-              <p className="text-xs text-[#A0A0A0] text-center max-w-[200px] leading-relaxed">
+              <p className="text-xs text-[#151515]/70 text-center max-w-[200px] leading-relaxed font-medium">
                 Try adjusting your search or filters to find players.
               </p>
             </div>
           ) : !hasSearched ? (
             /* Initial Empty State */
-            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] border border-[#A28B52]/10 bg-[#151515] shadow-[0_12px_40px_rgba(0,0,0,0.15)] relative overflow-hidden">
-               <Search size={32} className="text-[#A28B52]/30 mb-4" strokeWidth={1.5} />
-               <div className="text-sm text-[#A0A0A0] font-medium text-center">Search for players to build your squad</div>
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent border border-[#151515]/10 relative overflow-hidden">
+               <Search size={32} className="text-[#A28B52] mb-4" strokeWidth={1.5} />
+               <div className="text-sm text-[#151515]/70 font-medium text-center">Search for players to build your squad</div>
             </div>
           ) : (
             <div className="space-y-4 pb-8">
