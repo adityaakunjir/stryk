@@ -365,20 +365,20 @@ export default function IdentityPage() {
                   )}
                 </div>
 
-                <div className="mt-8 space-y-4">
+                <div className="mt-8 space-y-5">
                   {/* Floating Label Inputs */}
                   <div className="relative group">
                     <input
                       id="fullName"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
-                      className="block w-full h-[60px] px-4 pt-4 pb-1 text-[15px] text-[#E8E8E8] bg-[#151515] border border-[#2A2A2A] rounded-2xl appearance-none focus:outline-none focus:ring-0 focus:border-[#A28B52] transition-all duration-200 peer"
+                      className="block w-full h-[64px] px-5 pt-5 pb-1 text-[16px] font-medium text-[#E8E8E8] bg-[#1A1A1A] border border-[#A28B52]/20 rounded-2xl appearance-none focus:outline-none focus:ring-1 focus:ring-[#A28B52]/50 focus:border-[#A28B52] focus:bg-[#222222] transition-all duration-300 peer shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
                       placeholder=" "
                     />
-                    <label htmlFor="fullName" className="absolute text-[9px] font-bold uppercase tracking-[0.15em] text-[#A28B52] duration-200 transform -translate-y-3 scale-75 top-[18px] z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#A28B52]">
+                    <label htmlFor="fullName" className="absolute text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] duration-300 transform -translate-y-3 scale-75 top-[20px] z-10 origin-[0] left-5 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#D4F829] cursor-text">
                       Full Name
                     </label>
-                    <UserRound size={18} strokeWidth={1.5} className="absolute right-4 top-5 text-[#A28B52]/50" />
+                    <UserRound size={18} strokeWidth={1.5} className="absolute right-5 top-5 text-[#A28B52]/50 pointer-events-none" />
                   </div>
 
                   <div className="relative group">
@@ -386,18 +386,18 @@ export default function IdentityPage() {
                       id="username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, "").slice(0, 20))}
-                      className="block w-full h-[60px] px-4 pt-4 pb-1 text-[15px] text-[#E8E8E8] bg-[#151515] border border-[#2A2A2A] rounded-2xl appearance-none focus:outline-none focus:ring-0 focus:border-[#A28B52] transition-all duration-200 peer"
+                      className="block w-full h-[64px] px-5 pt-5 pb-1 text-[16px] font-medium text-[#E8E8E8] bg-[#1A1A1A] border border-[#A28B52]/20 rounded-2xl appearance-none focus:outline-none focus:ring-1 focus:ring-[#A28B52]/50 focus:border-[#A28B52] focus:bg-[#222222] transition-all duration-300 peer shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
                       placeholder=" "
                     />
-                    <label htmlFor="username" className="absolute text-[9px] font-bold uppercase tracking-[0.15em] text-[#A28B52] duration-200 transform -translate-y-3 scale-75 top-[18px] z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#A28B52]">
+                    <label htmlFor="username" className="absolute text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] duration-300 transform -translate-y-3 scale-75 top-[20px] z-10 origin-[0] left-5 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#D4F829] cursor-text">
                       Username
                     </label>
                     
-                    <div className="absolute inset-y-0 right-4 flex items-center justify-center pointer-events-none">
+                    <div className="absolute inset-y-0 right-5 flex items-center justify-center pointer-events-none">
                       {usernameStatus === "checking" && <Loader2 size={16} className="animate-spin text-[#808080]" />}
                       {usernameStatus === "available" && <Check size={18} strokeWidth={2.5} className="text-[#D4F829]" />}
                       {usernameStatus === "taken" && <X size={18} strokeWidth={2.5} className="text-[#FF3333]" />}
-                      {usernameStatus === "idle" && <Check size={18} strokeWidth={2.5} className="text-[#D4F829]" />}
+                      {usernameStatus === "idle" && <Check size={18} strokeWidth={2.5} className="text-[#A28B52]/30" />}
                     </div>
                   </div>
 

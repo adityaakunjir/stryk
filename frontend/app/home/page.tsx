@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Bell, Play, Users, Trophy, MapPin, 
   Loader2, X, Target, Shield, Star,
-  ChevronRight, Home, User, Globe, BarChart3, UserPlus
+  ChevronRight, Home, User, Globe, BarChart3, UserPlus, ChevronDown
 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { useUser } from "@clerk/nextjs";
@@ -281,16 +281,19 @@ export default function HomeLobbyPage() {
       </div>
 
       {/* Spacer to push the drawer strictly below the absolute-positioned card */}
-      <div style={{ height: 'calc(1.35 * min(100vw, 448px))' }} className="w-full shrink-0 pointer-events-none relative flex flex-col justify-end pb-8">
-        {/* Subtle Scroll Hint */}
-        <div className="animate-bounce flex flex-col items-center text-[#A28B52]/70 relative z-20">
-          <span className="text-[9px] uppercase tracking-[0.2em] font-bold mb-1">Scroll for more</span>
-          <ChevronRight size={14} className="rotate-90" />
-        </div>
+      <div style={{ height: 'calc(1.35 * min(100vw, 448px))' }} className="w-full shrink-0 pointer-events-none flex flex-col justify-end items-center pb-6">
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          className="flex flex-col items-center opacity-50"
+        >
+          <div className="text-[8px] tracking-[0.3em] font-black uppercase text-[#A28B52] mb-1">Scroll</div>
+          <ChevronDown size={16} className="text-[#A28B52]" strokeWidth={2.5} />
+        </motion.div>
       </div>
 
       {/* Bottom Sheet Navigation */}
-      <div className="relative mt-auto w-full z-30 bg-[#151515] rounded-t-[2rem] px-5 pt-6 pb-[85px] shadow-[0_-20px_50px_rgba(0,0,0,0.6)] border-t border-[#8E793E]/30 text-white">
+      <div className="relative mt-auto w-full z-30 bg-[#151515] rounded-t-[2rem] px-5 pt-5 pb-[85px] shadow-[0_-20px_50px_rgba(0,0,0,0.6)] border-t border-[#8E793E]/30 text-white">
         <div className="w-full">
             
             {/* Level & XP */}
@@ -302,7 +305,7 @@ export default function HomeLobbyPage() {
               <span className="text-[10px] font-bold text-white/50 tracking-wider">XP {xpCurrent}/{xpTotal}</span>
             </div>
             {/* Progress Bar */}
-            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-6">
+            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-4">
               <motion.div 
                 className="h-full bg-[#C3DF1B] rounded-full shadow-[0_0_10px_rgba(195,223,27,0.4)]"
                 initial={{ width: 0 }} animate={{ width: `${(xpCurrent/xpTotal)*100}%` }} transition={{ duration: 1.5, delay: 0.5, type: "spring" }}
@@ -310,33 +313,24 @@ export default function HomeLobbyPage() {
             </div>
 
             {/* Next Objective Card */}
-            <div className="bg-[#151515] rounded-[1.5rem] p-4 border border-[#2A2A2A] flex items-center justify-between shadow-sm group hover:border-[#A28B52]/50 transition cursor-pointer relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-              <div className="flex items-start gap-3 relative z-10">
-                <div className="w-10 h-10 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#C3DF1B] shrink-0 group-hover:bg-[#C3DF1B]/10 group-hover:border-[#C3DF1B]/30 transition shadow-inner">
-                  <Target size={18} />
+            <div className="bg-[#151515] rounded-[1.5rem] p-4 border border-[#2A2A2A] flex items-center justify-between mb-4 shadow-sm group hover:border-[#A28B52]/50 transition cursor-pointer">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#C3DF1B] shrink-0 group-hover:bg-[#C3DF1B]/10 group-hover:border-[#C3DF1B]/30 transition">
+                  <Target size={16} />
                 </div>
                 <div>
-                  <div className="text-[9px] tracking-[0.2em] uppercase text-[#A28B52] font-bold mb-0.5">NEXT OBJECTIVE</div>
-                  <div className="text-[13px] font-bold text-white uppercase tracking-wide leading-tight">PLAY YOUR FIRST MATCH</div>
-                  <div className="text-[10px] text-white/50 font-medium mt-1">Jump into a match and start your journey.</div>
+                  <div className="text-[8px] tracking-[0.2em] uppercase text-[#A28B52] font-bold">NEXT OBJECTIVE</div>
+                  <div className="text-[12px] font-bold text-white uppercase mt-0.5 tracking-wider">PLAY YOUR FIRST MATCH</div>
+                  <div className="text-[9px] text-white/40 font-medium mt-0.5">Jump into a match and start your journey.</div>
                 </div>
               </div>
-              <div className="text-[11px] font-black text-[#C3DF1B] ml-2 drop-shadow-sm bg-[#C3DF1B]/10 px-2.5 py-1 rounded-full border border-[#C3DF1B]/20 relative z-10">
-                0/1
-              </div>
+              <div className="text-[10px] font-bold text-[#C3DF1B] ml-2 drop-shadow-sm">0/1</div>
             </div>
 
-            {/* Quick Actions Section */}
-            <div className="mt-8 mb-2">
-              <div className="flex items-center gap-3 mb-4">
-                 <div className="text-[10px] uppercase font-bold text-[#A28B52] tracking-[0.2em]">Quick Actions</div>
-                 <div className="flex-1 h-px bg-gradient-to-r from-[#A28B52]/30 to-transparent" />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <ActionButton icon={<UserPlus size={20} className="text-[#A28B52] group-hover:text-[#D4F829] transition-colors" />} label="ADD FRIEND" subtext="Find & invite players" onClick={() => router.push("/search")} />
-                <ActionButton icon={<Trophy size={20} className="text-[#A28B52] group-hover:text-[#D4F829] transition-colors" />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
-              </div>
+            {/* Action Grid (2 buttons) */}
+            <div className="grid grid-cols-2 gap-3">
+              <ActionButton icon={<UserPlus size={18} className="text-[#C3DF1B]" />} label="ADD FRIEND" subtext="Find & invite players" onClick={() => router.push("/search")} />
+              <ActionButton icon={<BarChart3 size={18} className="text-[#C3DF1B]" />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
             </div>
 
           </div>
