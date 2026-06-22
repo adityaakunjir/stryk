@@ -108,13 +108,13 @@ export default function HomeLobbyPage() {
 
         <div className="flex justify-between items-start mt-2">
           <div className="flex flex-col">
-            <div className="text-[10px] font-bold tracking-[0.2em] text-[#A28B52] uppercase mb-1">
-              READY FOR TODAY&apos;S MATCH?
-            </div>
-            <div className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none flex items-center gap-2 mt-1">
+            <div className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none flex items-center gap-2">
               HEY, {firstName}
             </div>
-            <div className="text-[10px] text-[#151515]/70 font-medium mt-1.5">
+            <div className="text-[10px] font-bold tracking-[0.2em] text-[#A28B52] uppercase mt-2 mb-0.5">
+              READY FOR TODAY&apos;S MATCH?
+            </div>
+            <div className="text-[10px] text-[#151515]/70 font-medium">
               Level up, compete, and build your legacy.
             </div>
           </div>

@@ -69,17 +69,17 @@ const smartSecondary: Record<string, string[]> = {
 
 function Stepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-display tracking-[0.2em] uppercase text-[#151515]/60 font-medium">
+    <div className="flex items-center gap-3 text-[10px] sm:text-[11px] font-bold tracking-[0.2em] uppercase text-[#151515]/80">
       <div className="flex items-center gap-1.5 text-[#151515]/60">
-        IDENTITY <Check size={12} className="text-[#151515]" />
+        IDENTITY <Check size={12} className="text-[#151515]/60" strokeWidth={3} />
       </div>
-      <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
-      <div className="text-[#151515] font-bold flex items-center gap-1.5">
+      <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
+      <div className="text-[#151515] font-black flex items-center gap-1.5 drop-shadow-sm">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         POSITION
       </div>
-      <div className="w-4 sm:w-6 h-[1px] bg-black/20" />
-      <div>STATS <div className="inline-block w-1.5 h-1.5 rounded-full border border-black/20 ml-1.5" /></div>
+      <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
+      <div>STYLE <div className="inline-block w-1.5 h-1.5 rounded-full border border-[#151515]/40 ml-1.5" /></div>
     </div>
   );
 }

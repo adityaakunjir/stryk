@@ -283,36 +283,34 @@ export default function MatchesPage() {
             <Loader2 className="size-8 text-[#A28B52] animate-spin" />
           </div>
         ) : matches.length === 0 ? (
-          <div className="relative flex flex-col items-center justify-center py-12 pb-14 border border-[#A28B52]/20 rounded-[1.5rem] bg-[#151515] shadow-[0_12px_32px_rgba(0,0,0,0.3)] px-6 overflow-hidden">
+          <div className="relative flex flex-col items-center justify-center py-10 pb-12 border border-[#151515]/10 rounded-[1.5rem] bg-transparent px-6 overflow-hidden">
             
             {/* Elegant Golden Radar Circles */}
             <div className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-               <div className="w-[180px] h-[180px] rounded-full border border-[#A28B52]/5" />
+               <div className="w-[180px] h-[180px] rounded-full border border-[#A28B52]/20" />
             </div>
             <div className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-               <div className="w-[100px] h-[100px] rounded-full border border-[#A28B52]/10" />
+               <div className="w-[100px] h-[100px] rounded-full border border-[#A28B52]/30" />
             </div>
 
-            <div className="relative z-10 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-              <Calendar size={32} strokeWidth={1.5} className="text-[#A28B52] drop-shadow-sm" />
+            <div className="relative z-10 w-16 h-16 rounded-full flex items-center justify-center mb-5">
+              <Calendar size={32} strokeWidth={1.5} className="text-[#A28B52]" />
             </div>
 
             <div className="relative z-10 flex flex-col items-center">
               <div className="text-[22px] font-display uppercase tracking-tight text-center drop-shadow-sm">
-                <span className="text-[#E5DCC5] font-black">NO MATCHES </span>
+                <span className="text-[#151515] font-black">NO MATCHES </span>
                 <span className="text-[#A28B52] font-black italic">FOUND</span>
               </div>
-              {/* Elegant Flare */}
-              <div className="w-[80px] h-[2px] mt-1.5 bg-gradient-to-r from-transparent via-[#A28B52] to-transparent shadow-[0_0_8px_rgba(162,139,82,0.5)]" />
             </div>
             
-            <p className="relative z-10 text-[13px] text-[#A0A0A0] text-center mt-5 max-w-[220px] leading-relaxed mb-5">
+            <p className="relative z-10 text-[13px] text-[#151515]/70 font-medium text-center mt-2 max-w-[220px] leading-relaxed mb-6">
               Be the first to organize a lobby at your local turf!
             </p>
             
             <button
               onClick={() => setShowCreateModal(true)}
-              className="relative z-10 h-[46px] px-10 rounded-full bg-[#D4F829] text-[#151515] text-[12px] uppercase font-black tracking-[0.15em] hover:bg-[#cbf026] transition shadow-[0_0_16px_rgba(212,248,41,0.25)]"
+              className="relative z-10 h-[46px] px-8 rounded-full bg-[#D4F829] text-[#151515] text-[12px] uppercase font-black tracking-[0.15em] hover:bg-[#cbf026] transition shadow-[0_4px_14px_rgba(212,248,41,0.4)]"
             >
               Organize Match
             </button>
