@@ -397,7 +397,7 @@ export default function IdentityPage() {
                       {usernameStatus === "checking" && <Loader2 size={16} className="animate-spin text-[#808080]" />}
                       {usernameStatus === "available" && <Check size={18} strokeWidth={2.5} className="text-[#D4F829]" />}
                       {usernameStatus === "taken" && <X size={18} strokeWidth={2.5} className="text-[#FF3333]" />}
-                      {usernameStatus === "idle" && <Check size={18} strokeWidth={2.5} className="text-[#A28B52]/30" />}
+                      {usernameStatus === "idle" && <Check size={18} strokeWidth={2.5} className="text-[#D4F829]" />}
                     </div>
                   </div>
 
