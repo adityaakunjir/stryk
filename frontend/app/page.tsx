@@ -79,7 +79,7 @@ export default function Home() {
           {isLoaded && isSignedIn ? (
             <button 
               onClick={() => { setIsTransitioning(true); router.push("/sync"); }}
-              className="w-full h-[48px] rounded-lg bg-gradient-to-r from-[#D7F035] to-[#E5FA50] text-[11.5px] font-bold tracking-[0.2em] text-[#151515] flex items-center justify-center relative hover:opacity-90 transition-all active:scale-95"
+              className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center relative transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
             >
               GO TO DASHBOARD
               <svg className="absolute right-5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +92,7 @@ export default function Home() {
               <SignUpButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
                 <button 
                   onClick={handleJoinTap}
-                  className="w-full h-[48px] rounded-lg bg-gradient-to-r from-[#D7F035] to-[#E5FA50] text-[11.5px] font-bold tracking-[0.2em] text-[#151515] flex items-center justify-center relative hover:opacity-90 transition-all active:scale-95 shadow-[0_0_15px_rgba(215,240,53,0.1)]"
+                  className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center relative transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
                 >
                   JOIN STRYK
                   <svg className="absolute right-5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,17 +102,17 @@ export default function Home() {
               </SignUpButton>
 
               {/* Divider */}
-              <div className="flex items-center gap-4 my-1">
-                <div className="h-[1px] flex-1 bg-[#262013]"></div>
+              <div className="flex items-center gap-4 my-2">
+                <div className="h-[1px] flex-1 bg-black/10"></div>
                 <div className="text-[9px] tracking-[0.1em] text-[#69542E] font-medium">ALREADY HAVE AN ACCOUNT?</div>
-                <div className="h-[1px] flex-1 bg-[#262013]"></div>
+                <div className="h-[1px] flex-1 bg-black/10"></div>
               </div>
 
               {/* LOG IN Button */}
               <SignInButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
-                <button className="w-full h-[48px] rounded-lg bg-[#050505] border border-[#2A2315] text-[11.5px] font-bold tracking-[0.2em] text-[#8F7441] flex items-center justify-center relative hover:bg-[#151515] transition-all active:scale-95">
+                <button className="w-full h-[54px] rounded-full border border-[#D4F829]/50 bg-transparent text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center relative hover:bg-black/5 transition duration-300">
                   LOG IN
-                  <svg className="absolute right-5 w-4 h-4 text-[#8F7441]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="absolute right-5 w-4 h-4 text-[#151515]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </button>

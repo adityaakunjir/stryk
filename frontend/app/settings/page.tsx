@@ -152,20 +152,22 @@ export default function SettingsPage() {
           ))}
         </div>
 
-        {/* Sign Out Button */}
-        <button
-          onClick={handleSignOut}
-          disabled={isSigningOut}
-          className="w-full h-[48px] mt-6 rounded-[1.2rem] bg-[#151515] border border-[#A28B52]/40 text-[#C3DF1B] flex items-center justify-center gap-2.5 cursor-pointer hover:bg-[#151515] active:scale-[0.98] transition duration-200 shadow-[0_8px_16px_-8px_rgba(162,139,82,0.3)] disabled:opacity-50 shrink-0"
-          type="button"
-        >
-          {isSigningOut ? (
-            <Loader2 size={16} className="animate-spin text-[#C3DF1B]" />
-          ) : (
-            <LogOut size={16} strokeWidth={1.5} className="text-[#C3DF1B]" />
-          )}
-          <span className="font-display font-bold tracking-[0.2em] text-[12px] text-[#C3DF1B] uppercase">SIGN OUT</span>
-        </button>
+        {/* LOG OUT CTA */}
+        <div className="mt-8 shrink-0">
+          <button 
+            onClick={handleSignOut}
+            disabled={isSigningOut}
+            className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center gap-2 transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)] disabled:opacity-50"
+            type="button"
+          >
+            {isSigningOut ? (
+              <Loader2 className="animate-spin text-[#151515]" size={18} />
+            ) : (
+              <LogOut size={18} className="text-[#151515]" />
+            )}
+            SIGN OUT
+          </button>
+        </div>
 
       </div>
     </main>
