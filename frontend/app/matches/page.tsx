@@ -208,10 +208,11 @@ export default function MatchesPage() {
         <header className="flex items-center justify-between mb-5 relative">
           <button 
             onClick={() => router.push("/home")} 
-            className="w-12 h-12 rounded-full shadow-sm bg-[#EBE3D1] flex items-center justify-center cursor-pointer hover:bg-[#E5DCC5] transition relative z-10 border-none"
+            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
+            aria-label="Back"
             type="button"
           >
-            <ArrowLeft size={20} className="text-[#A28B52]" strokeWidth={2} />
+            <ArrowLeft size={18} strokeWidth={2} />
           </button>
           
           <div className="flex-1" />

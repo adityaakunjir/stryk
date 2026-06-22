@@ -58,11 +58,11 @@ export default function SettingsPage() {
         <header className="flex items-center justify-between mb-3 shrink-0">
           <button
             onClick={() => router.push("/home")}
-            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm"
+            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
             aria-label="Back to home"
             type="button"
           >
-            <ArrowLeft size={18} />
+            <ArrowLeft size={18} strokeWidth={2} />
           </button>
         </header>
 

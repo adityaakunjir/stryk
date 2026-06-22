@@ -188,9 +188,9 @@ export default function PositionPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" className="h-8 rounded-full bg-black/5 border border-black/10 hover:bg-black/10 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-[#151515]/60 hover:text-[#151515]">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to Identity" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10">
             <Link href="/identity">
-              <ArrowLeft size={14} className="mr-1.5" /> Identity
+              <ArrowLeft size={18} strokeWidth={2} />
             </Link>
           </Button>
           <div className="hidden sm:block"><Stepper /></div>
