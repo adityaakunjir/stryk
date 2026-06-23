@@ -168,7 +168,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
               <img
                 src={avatar}
                 alt="Player"
-                className="absolute z-20 w-full h-full object-cover object-top"
+                className="absolute z-20 w-full aspect-square object-cover object-top top-[5%]"
               />
             )}
           </div>
