@@ -87,6 +87,8 @@ app.add_middleware(
         "https://stryk.vercel.app",  # Vercel preview
         "https://stryk.games",  # Production custom domain
         "https://www.stryk.games",  # Production www
+        "https://mystrike.games",
+        "https://www.mystrike.games",
     ],
     allow_credentials=True,
     allow_methods=["*"],
