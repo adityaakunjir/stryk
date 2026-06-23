@@ -450,3 +450,208 @@ async def close_match(
     await session.commit()
     await session.refresh(match)
     return {"success": True, "data": _serialize_match(match)}
+
+
+class LeaveMatchRequest(BaseModel):
+    matchId: str
+
+@router.post("/leave")
+async def leave_match(
+    payload: LeaveMatchRequest,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    player_result = await session.execute(
+        select(MatchPlayer).where(MatchPlayer.matchId == payload.matchId, MatchPlayer.userId == db_user.id)
+    )
+    player = player_result.scalars().first()
+    if not player:
+        raise HTTPException(status_code=400, detail="You are not in this match")
+
+    await session.delete(player)
+    await session.commit()
+    
+    return {"success": True, "message": "Successfully left the match"}
+
+
+class KickPlayerRequest(BaseModel):
+    userId: str
+
+@router.post("/{match_id}/kick")
+async def kick_player(
+    match_id: str,
+    payload: KickPlayerRequest,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    
+    match_result = await session.execute(select(Match).where(Match.id == match_id))
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+        
+    if match.hostId != db_user.id:
+        raise HTTPException(status_code=403, detail="Only the host can kick players")
+
+    player_result = await session.execute(
+        select(MatchPlayer).where(MatchPlayer.matchId == match_id, MatchPlayer.userId == payload.userId)
+    )
+    player = player_result.scalars().first()
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not in match")
+        
+    await session.delete(player)
+    await session.commit()
+    return {"success": True, "message": "Player kicked"}
+
+
+@router.post("/{match_id}/start")
+async def start_match(
+    match_id: str,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    
+    match_result = await session.execute(select(Match).where(Match.id == match_id))
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+        
+    if match.hostId != db_user.id:
+        raise HTTPException(status_code=403, detail="Only the host can start the match")
+
+    match.status = "in_progress"
+    await session.commit()
+    await session.refresh(match)
+    return {"success": True, "data": _serialize_match(match)}
+
+
+class CheckInRequest(BaseModel):
+    matchId: str
+
+@router.post("/check-in")
+async def check_in(
+    payload: CheckInRequest,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    
+    player_result = await session.execute(
+        select(MatchPlayer).where(MatchPlayer.matchId == payload.matchId, MatchPlayer.userId == db_user.id)
+    )
+    player = player_result.scalars().first()
+    if not player:
+        raise HTTPException(status_code=400, detail="You are not in this match")
+        
+    player.checkedIn = True
+    await session.commit()
+    
+    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players)))
+    match = match_result.scalars().first()
+    return {"success": True, "data": _serialize_match(match)}
+
+
+class AssignTeamRequest(BaseModel):
+    matchId: str
+    participantId: str
+    team: Optional[str] = None
+
+@router.post("/assign-team")
+async def assign_team(
+    payload: AssignTeamRequest,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    
+    match_result = await session.execute(select(Match).where(Match.id == payload.matchId))
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+        
+    if match.hostId != db_user.id:
+        raise HTTPException(status_code=403, detail="Only host can assign teams")
+
+    player_result = await session.execute(
+        select(MatchPlayer).where(MatchPlayer.id == payload.participantId)
+    )
+    player = player_result.scalars().first()
+    if not player:
+        raise HTTPException(status_code=404, detail="Participant not found")
+        
+    player.team = payload.team
+    await session.commit()
+    
+    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players)))
+    match = match_result.scalars().first()
+    return {"success": True, "data": _serialize_match(match)}
+
+
+class BalanceRequest(BaseModel):
+    matchId: str
+
+@router.post("/balance")
+async def balance_teams(
+    payload: BalanceRequest,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    
+    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+        
+    if match.hostId != db_user.id:
+        raise HTTPException(status_code=403, detail="Only host can balance teams")
+
+    players = match.players
+    # Sort by overall descending
+    players_sorted = sorted(players, key=lambda p: p.user.overall if p.user and p.user.overall else 50, reverse=True)
+    
+    team_a = []
+    team_b = []
+    
+    for i, p in enumerate(players_sorted):
+        if i % 2 == 0:
+            p.team = "Team A"
+            team_a.append(p)
+        else:
+            p.team = "Team B"
+            team_b.append(p)
+            
+    await session.commit()
+    
+    avg_a = sum(p.user.overall or 50 for p in team_a) / len(team_a) if team_a else 0
+    avg_b = sum(p.user.overall or 50 for p in team_b) / len(team_b) if team_b else 0
+    
+    return {
+        "success": True, 
+        "data": {
+            "avgA": round(avg_a, 1),
+            "avgB": round(avg_b, 1),
+            "ratingDiff": round(abs(avg_a - avg_b), 1),
+            "match": _serialize_match(match)
+        }
+    }
+

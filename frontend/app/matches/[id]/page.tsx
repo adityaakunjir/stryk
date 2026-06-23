@@ -177,6 +177,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
         router.push("/submit");
       }, 2000);
     });
+    channel.bind("match-started", () => {
+      addNotification("Match has started!", "success");
+      fetchMatchDetails();
+    });
 
     return () => {
       channel.unbind("player-joined", handleJoined);
@@ -185,6 +189,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       channel.unbind("player-checked-in", handleCheckedIn);
       channel.unbind("teams-balanced");
       channel.unbind("match-closed");
+      channel.unbind("match-started");
       pusher.unsubscribe(channelName);
     };
   }, [matchId, fetchMatchDetails, addNotification, router]);
@@ -377,6 +382,50 @@ export default function MatchDetailsPage({ params }: PageProps) {
     } catch (err) {
       console.error(err);
       toast.error("An error occurred. Please try again.");
+      setActionLoading(false);
+    }
+  };
+
+  const handleKickPlayer = async (userId: string) => {
+    if (!confirm("Are you sure you want to kick this player?")) return;
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/matches/${matchId}/kick`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addNotification("Player kicked successfully", "success");
+        await fetchMatchDetails();
+      } else {
+        toast.error(data.message || "Failed to kick player");
+      }
+    } catch (err) {
+      toast.error("An error occurred");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleStartMatch = async () => {
+    if (!confirm("Are you ready to start the match?")) return;
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/matches/${matchId}/start`, {
+        method: "POST"
+      });
+      const data = await res.json();
+      if (data.success) {
+        addNotification("Match started!", "success");
+        await fetchMatchDetails();
+      } else {
+        toast.error(data.message || "Failed to start match");
+      }
+    } catch (err) {
+      toast.error("An error occurred");
+    } finally {
       setActionLoading(false);
     }
   };
@@ -645,7 +694,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 </div>
               ) : (
                 teamAPlayers.map(p => (
-                  <PlayerRow key={p.id} participant={p} showJoinedIcon={currentUserId === p.userId} />
+                  <PlayerRow 
+                    key={p.id} 
+                    participant={p} 
+                    showJoinedIcon={currentUserId === p.userId} 
+                    onKick={currentUserId === match.hostId ? () => handleKickPlayer(p.userId) : undefined}
+                  />
                 ))
               )}
             </div>
@@ -677,7 +731,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 </div>
               ) : (
                 teamBPlayers.map(p => (
-                  <PlayerRow key={p.id} participant={p} showJoinedIcon={currentUserId === p.userId} />
+                  <PlayerRow 
+                    key={p.id} 
+                    participant={p} 
+                    showJoinedIcon={currentUserId === p.userId} 
+                    onKick={currentUserId === match.hostId ? () => handleKickPlayer(p.userId) : undefined}
+                  />
                 ))
               )}
             </div>
@@ -705,7 +764,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 </div>
               ) : (
                 unassignedPlayers.map(p => (
-                  <PlayerRow key={p.id} participant={p} showJoinedIcon={currentUserId === p.userId} />
+                  <PlayerRow 
+                    key={p.id} 
+                    participant={p} 
+                    showJoinedIcon={currentUserId === p.userId} 
+                    onKick={currentUserId === match.hostId ? () => handleKickPlayer(p.userId) : undefined}
+                  />
                 ))
               )}
             </div>
@@ -741,6 +805,24 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     </>
                   )}
                 </button>
+              )}
+              {currentUserId === match.hostId && match.status !== "closed" && (
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <button
+                    onClick={handleStartMatch}
+                    disabled={actionLoading || match.status === "in_progress"}
+                    className="w-full h-11 rounded-2xl bg-[#00ff88]/20 hover:bg-[#00ff88]/30 border border-[#00ff88]/30 text-[#00ff88] text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    {match.status === "in_progress" ? "STARTED" : "START MATCH"}
+                  </button>
+                  <button
+                    onClick={handleCloseMatch}
+                    disabled={actionLoading}
+                    className="w-full h-11 rounded-2xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    CLOSE LOBBY
+                  </button>
+                </div>
               )}
               <button
                 onClick={handleLeaveMatch}
@@ -859,7 +941,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   );
 }
 
-function PlayerRow({ participant, showJoinedIcon }: { participant: MatchParticipant; showJoinedIcon?: boolean }) {
+function PlayerRow({ participant, showJoinedIcon, onKick }: { participant: MatchParticipant; showJoinedIcon?: boolean; onKick?: () => void }) {
   const user = participant.user;
   return (
     <div className="p-2.5 rounded-xl border border-white/5 bg-white/[0.01] flex items-center gap-3">
@@ -892,6 +974,15 @@ function PlayerRow({ participant, showJoinedIcon }: { participant: MatchParticip
         <span className="text-[9px] uppercase tracking-widest text-white/35">OVR</span>
         <span className="font-display text-xs text-white font-bold">{user.overall}</span>
       </div>
+      {onKick && !showJoinedIcon && (
+        <button 
+          onClick={onKick}
+          className="ml-2 w-6 h-6 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition cursor-pointer"
+          title="Kick Player"
+        >
+          <X size={12} />
+        </button>
+      )}
     </div>
   );
 }

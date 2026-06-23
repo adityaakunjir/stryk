@@ -17,6 +17,7 @@ interface Match {
   players: number;
   spotsLeft: number;
   participants: any[];
+  privacy?: string;
 }
 
 export default function MatchesPage() {
