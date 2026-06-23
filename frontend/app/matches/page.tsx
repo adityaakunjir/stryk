@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Search, Calendar, MapPin, Users, Loader2, X, ChevronDown } from "lucide-react";
+import { ArrowLeft, Plus, Search, Calendar, MapPin, Users, Loader2, X, ChevronDown, Key } from "lucide-react";
 import { toast } from "sonner";
 
 interface Match {
@@ -39,6 +39,13 @@ export default function MatchesPage() {
 
   // Join loading states
   const [joiningId, setJoiningId] = useState<string | null>(null);
+
+  // Join by code modal states
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const [joinCode, setJoinCode] = useState("");
+  const [joinPassword, setJoinPassword] = useState("");
+  const [joinCodeLoading, setJoinCodeLoading] = useState(false);
+  const [joinCodeError, setJoinCodeError] = useState("");
 
   // Toast state removed in favor of sonner
 
@@ -143,6 +150,43 @@ export default function MatchesPage() {
     }
   };
 
+  const handleJoinByCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setJoinCodeLoading(true);
+    setJoinCodeError("");
+
+    try {
+      const payload = {
+        code: joinCode,
+        password: joinPassword || null,
+      };
+
+      const res = await fetch(`/api/matches/join-by-code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        setShowJoinModal(false);
+        setJoinCode("");
+        setJoinPassword("");
+        toast.success("Successfully joined the match!");
+        // Navigate to match details
+        router.push(`/matches/${data.matchId}`);
+      } else {
+        const errMsg = typeof data.detail === "string" ? data.detail : (data.message || JSON.stringify(data));
+        setJoinCodeError(errMsg);
+      }
+    } catch (err) {
+      setJoinCodeError("An error occurred. Please try again.");
+    } finally {
+      setJoinCodeLoading(false);
+    }
+  };
+
   const handleCreateMatch = async (e: React.FormEvent) => {
     e.preventDefault();
     setCreateLoading(true);
@@ -236,13 +280,22 @@ export default function MatchesPage() {
           
           <div className="flex-1" />
 
-          <button 
-            onClick={() => setShowCreateModal(true)}
-            className="w-12 h-12 rounded-full bg-[#151515] shadow-md border border-[#A28B52]/40 flex items-center justify-center cursor-pointer hover:bg-black transition relative z-10"
-            title="Create Match"
-          >
-            <Plus size={22} strokeWidth={2} className="text-[#D4F829]" />
-          </button>
+          <div className="flex items-center gap-3 relative z-10">
+            <button 
+              onClick={() => setShowJoinModal(true)}
+              className="w-12 h-12 rounded-full bg-[#151515] shadow-md border border-[#A28B52]/40 flex items-center justify-center cursor-pointer hover:bg-black transition"
+              title="Join via Code"
+            >
+              <Key size={20} strokeWidth={2} className="text-[#A28B52]" />
+            </button>
+            <button 
+              onClick={() => setShowCreateModal(true)}
+              className="w-12 h-12 rounded-full bg-[#151515] shadow-md border border-[#A28B52]/40 flex items-center justify-center cursor-pointer hover:bg-black transition"
+              title="Create Match"
+            >
+              <Plus size={22} strokeWidth={2} className="text-[#D4F829]" />
+            </button>
+          </div>
         </header>
 
         {/* Title */}
@@ -584,6 +637,77 @@ export default function MatchesPage() {
                   </>
                 ) : (
                   "CREATE LOBBY"
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Join Match Modal */}
+      {showJoinModal && (
+        <div className="absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-6">
+          <div className="w-full max-w-md bg-[#111] sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl border border-white/10 overflow-hidden flex flex-col max-h-[90dvh] animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-10 duration-300 relative">
+            
+            <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#111]/80 backdrop-blur-md z-10">
+              <h2 className="text-white font-black tracking-widest uppercase text-lg italic">
+                JOIN LOBBY
+              </h2>
+              <button 
+                onClick={() => setShowJoinModal(false)}
+                className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition text-white/70"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleJoinByCode} className="p-6 overflow-y-auto space-y-5 relative">
+              <div>
+                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                  Invite Code (6 Characters)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. A9F2K1"
+                  value={joinCode}
+                  onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 uppercase font-medium shadow-inner"
+                  required
+                  maxLength={10}
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                  Password (Optional)
+                </label>
+                <input
+                  type="password"
+                  placeholder="Leave blank if public"
+                  value={joinPassword}
+                  onChange={(e) => setJoinPassword(e.target.value)}
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                />
+              </div>
+
+              {joinCodeError && (
+                <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-center text-xs font-semibold text-red-400 mt-2">
+                  {joinCodeError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={joinCodeLoading || !joinCode.trim()}
+                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+              >
+                {joinCodeLoading ? (
+                  <>
+                    <Loader2 className="size-5 animate-spin" />
+                    JOINING...
+                  </>
+                ) : (
+                  "ENTER MATCH"
                 )}
               </button>
             </form>

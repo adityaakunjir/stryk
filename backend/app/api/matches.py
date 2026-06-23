@@ -152,3 +152,50 @@ async def join_match(
     }}
 
 
+class MatchJoinCode(BaseModel):
+    code: str
+    password: Optional[str] = None
+
+
+@router.post("/join-by-code")
+async def join_match_by_code(
+    payload: MatchJoinCode,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    clerk_id = user.get("sub")
+    result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Find the match
+    stmt = select(Match).where(Match.shortId == payload.code.upper()).options(selectinload(Match.players))
+    match_result = await session.execute(stmt)
+    match = match_result.scalars().first()
+
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found with this code")
+
+    if match.password and match.password != payload.password:
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
+    if len(match.players) >= match.maxPlayers:
+        raise HTTPException(status_code=400, detail="Match is already full")
+
+    # Check if already joined
+    stmt = select(MatchPlayer).where(
+        MatchPlayer.matchId == match.id,
+        MatchPlayer.userId == db_user.id
+    )
+    existing = await session.execute(stmt)
+    if existing.scalars().first():
+        return {"success": True, "matchId": match.id, "message": "Already joined"}
+
+    player = MatchPlayer(matchId=match.id, userId=db_user.id)
+    session.add(player)
+    await session.commit()
+    return {"success": True, "matchId": match.id}
+
+
+
