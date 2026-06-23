@@ -121,7 +121,12 @@ async def send_friend_request(
     session.add(new_request)
     await session.commit()
     
-    return {"success": True, "message": "Friend request sent"}
+    return {
+        "success": True, 
+        "message": "Friend request sent",
+        "targetUserClerkId": target_user.clerkId,
+        "senderName": db_user.fullName or db_user.username
+    }
 
 @router.post("/friends/respond")
 async def respond_friend_request(

@@ -49,8 +49,24 @@ export function RealtimeProvider() {
       });
     });
 
+    channel.bind("friend-request", (data: any) => {
+      console.log("Received friend request:", data);
+      
+      toast(`New Friend Request!`, {
+        description: `${data.senderName} wants to be your friend.`,
+        action: {
+          label: "View",
+          onClick: () => {
+            router.push(`/notifications`);
+          },
+        },
+        duration: 10000,
+      });
+    });
+
     return () => {
       channel.unbind("match-invite");
+      channel.unbind("friend-request");
       pusherClientInstance?.unsubscribe(channelName);
     };
   }, [user, isLoaded, router]);
