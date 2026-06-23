@@ -84,7 +84,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",   # Next.js dev server
-        "https://stryk.vercel.app",  # Production frontend
+        "https://stryk.vercel.app",  # Vercel preview
+        "https://stryk.games",  # Production custom domain
+        "https://www.stryk.games",  # Production www
     ],
     allow_credentials=True,
     allow_methods=["*"],
