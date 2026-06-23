@@ -27,8 +27,6 @@ async def migrate():
     engine = create_async_engine(db_url, echo=True)
     
     async with engine.begin() as conn:
-        print("Dropping all existing tables to apply new schema (WARNING: DATA LOSS)...")
-        await conn.run_sync(SQLModel.metadata.drop_all)
         print("Creating new tables from SQLModel metadata...")
         await conn.run_sync(SQLModel.metadata.create_all)
         
