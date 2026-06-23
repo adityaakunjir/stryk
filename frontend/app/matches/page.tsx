@@ -30,9 +30,11 @@ export default function MatchesPage() {
   // Create match modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createTitle, setCreateTitle] = useState("");
+  const [createTurf, setCreateTurf] = useState("");
   const [createLocation, setCreateLocation] = useState("");
   const [createDateTime, setCreateDateTime] = useState("");
   const [createFormat, setCreateFormat] = useState("");
+  const [createPrivacy, setCreatePrivacy] = useState("Public");
   const [createPassword, setCreatePassword] = useState("");
   const [createLoading, setCreateLoading] = useState(false);
   const [createError, setCreateError] = useState("");
@@ -199,11 +201,12 @@ export default function MatchesPage() {
 
       const payload = {
         title: createTitle,
+        turf: createTurf,
         location: createLocation,
         date_time: createDateTime,
         format: createFormat || "11v11",
         max_players: formatToPlayers[createFormat] || 22,
-        password: createPassword || null
+        password: createPrivacy === "Private" ? (createPassword || null) : null
       };
       console.log("[STRYK] Creating match with payload:", payload);
 
@@ -221,9 +224,11 @@ export default function MatchesPage() {
       if (res.ok) {
         setShowCreateModal(false);
         setCreateTitle("");
+        setCreateTurf("");
         setCreateLocation("");
         setCreateDateTime("");
         setCreateFormat("");
+        setCreatePrivacy("Public");
         setCreatePassword("");
         
         // Re-fetch the full matches list so all fields + participants load correctly
@@ -555,11 +560,25 @@ export default function MatchesPage() {
 
               <div>
                 <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
-                  Turf / Location
+                  Turf Name
                 </label>
                 <input
                   type="text"
                   placeholder="Phoenix Turf"
+                  value={createTurf}
+                  onChange={(e) => setCreateTurf(e.target.value)}
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                  Location / City
+                </label>
+                <input
+                  type="text"
+                  placeholder="Phoenix, AZ"
                   value={createLocation}
                   onChange={(e) => setCreateLocation(e.target.value)}
                   className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
@@ -608,16 +627,38 @@ export default function MatchesPage() {
 
               <div>
                 <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
-                  Password (Optional)
+                  Privacy
                 </label>
-                <input
-                  type="text"
-                  placeholder="Leave blank for public match"
-                  value={createPassword}
-                  onChange={(e) => setCreatePassword(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
-                />
+                <div className="relative">
+                  <select
+                    value={createPrivacy}
+                    onChange={(e) => setCreatePrivacy(e.target.value)}
+                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner appearance-none cursor-pointer"
+                  >
+                    <option value="Public">Public</option>
+                    <option value="Private">Private</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-[#A28B52]/70">
+                    <ChevronDown size={18} />
+                  </div>
+                </div>
               </div>
+
+              {createPrivacy === "Private" && (
+                <div>
+                  <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                    Match Password
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter a secret password"
+                    value={createPassword}
+                    onChange={(e) => setCreatePassword(e.target.value)}
+                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                    required
+                  />
+                </div>
+              )}
 
               {createError && (
                 <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-center text-xs font-semibold text-red-400 mt-2">

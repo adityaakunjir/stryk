@@ -22,11 +22,13 @@ from pydantic import BaseModel
 
 class MatchCreate(BaseModel):
     title: str
+    turf: Optional[str] = None
     location: str
     date_time: datetime
     max_players: int = 22
     format: str = "11v11"
     password: Optional[str] = None
+    discordLink: Optional[str] = None
 
 
 def _serialize_match(match: Match) -> dict:
@@ -47,11 +49,13 @@ def _serialize_match(match: Match) -> dict:
         "id": match.id,
         "shortId": match.shortId,
         "title": match.title,
+        "turf": match.turf,
         "location": match.location,
         "format": match.format,
         "matchDate": match.matchDate.isoformat() if match.matchDate else None,
         "maxPlayers": match.maxPlayers,
         "status": match.status,
+        "discordLink": match.discordLink,
         "hostId": match.hostId,
         "createdAt": match.createdAt.isoformat() if match.createdAt else None,
         "participants": players, # Keeping key as 'participants' for frontend compatibility if needed, or update frontend too
@@ -73,11 +77,13 @@ async def create_match(
 
     match = Match(
         title=match_in.title,
+        turf=match_in.turf,
         location=match_in.location,
         matchDate=match_in.date_time,
         format=match_in.format,
         maxPlayers=match_in.max_players,
         password=match_in.password,
+        discordLink=match_in.discordLink,
         hostId=db_user.id
     )
     session.add(match)
@@ -282,3 +288,65 @@ async def invite_to_match(
     await session.refresh(invite)
     
     return {"success": True, "invite": {"id": invite.id, "matchId": invite.matchId, "status": invite.status}}
+
+
+class MatchUpdate(BaseModel):
+    discordLink: Optional[str] = None
+    turf: Optional[str] = None
+
+
+@router.patch("/{match_id}")
+async def update_match(
+    match_id: str,
+    payload: MatchUpdate,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    match_result = await session.execute(select(Match).where(Match.id == match_id))
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    if match.hostId != db_user.id:
+        raise HTTPException(status_code=403, detail="Only the host can update the match")
+
+    if payload.discordLink is not None:
+        match.discordLink = payload.discordLink
+    if payload.turf is not None:
+        match.turf = payload.turf
+
+    await session.commit()
+    await session.refresh(match)
+    return {"success": True, "data": _serialize_match(match)}
+
+
+@router.post("/{match_id}/close")
+async def close_match(
+    match_id: str,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    match_result = await session.execute(select(Match).where(Match.id == match_id))
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    if match.hostId != db_user.id:
+        raise HTTPException(status_code=403, detail="Only the host can close the match")
+
+    match.status = "closed"
+    await session.commit()
+    await session.refresh(match)
+    return {"success": True, "data": _serialize_match(match)}

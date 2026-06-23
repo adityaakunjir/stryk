@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sparkles, CheckCircle2, Mail, X } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sparkles, CheckCircle2, Mail, X, MessageSquare, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getPusherClient } from "@/lib/pusher";
 import { toast } from "sonner";
@@ -37,10 +37,12 @@ interface MatchCreator {
 interface MatchDetails {
   id: string;
   title: string;
+  turf?: string;
   location: string;
   matchDate: string;
   maxPlayers: number;
   status: string;
+  discordLink?: string;
   hostId: string;
   createdAt: string;
   participants: MatchParticipant[];
@@ -64,6 +66,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [friends, setFriends] = useState<any[]>([]);
   const [friendsLoading, setFriendsLoading] = useState(false);
   const [invitingFriendId, setInvitingFriendId] = useState<string | null>(null);
+  const [discordLinkEdit, setDiscordLinkEdit] = useState("");
+  const [isEditingDiscord, setIsEditingDiscord] = useState(false);
 
   const addNotification = useCallback((message: string, type: "info" | "success" | "warning" = "info") => {
     if (type === "success") {
@@ -167,6 +171,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
       addNotification("Teams have been auto-balanced by AI!", "success");
       fetchMatchDetails();
     });
+    channel.bind("match-closed", () => {
+      addNotification("Match has been closed! Redirecting to stats submission...", "warning");
+      setTimeout(() => {
+        router.push("/submit");
+      }, 2000);
+    });
 
     return () => {
       channel.unbind("player-joined", handleJoined);
@@ -174,9 +184,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
       channel.unbind("team-assigned", handleTeamAssigned);
       channel.unbind("player-checked-in", handleCheckedIn);
       channel.unbind("teams-balanced");
+      channel.unbind("match-closed");
       pusher.unsubscribe(channelName);
     };
-  }, [matchId, fetchMatchDetails, addNotification]);
+  }, [matchId, fetchMatchDetails, addNotification, router]);
 
   useEffect(() => {
     if (!showInviteModal) return;
@@ -348,6 +359,47 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
+  const handleCloseMatch = async () => {
+    if (!confirm("Are you sure you want to close this match lobby? This will trigger stats submission for all players.")) return;
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/matches/${matchId}/close`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (data.success) {
+        addNotification("Match closed successfully!", "success");
+        // We will rely on the Pusher event to redirect us and others.
+      } else {
+        toast.error(data.message || "Failed to close match");
+        setActionLoading(false); // only disable loader if failed, otherwise wait for redirect
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("An error occurred. Please try again.");
+      setActionLoading(false);
+    }
+  };
+
+  const handleUpdateDiscordLink = async (link: string) => {
+    try {
+      const res = await fetch(`/api/matches/${matchId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ discordLink: link }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addNotification("Discord link updated!", "success");
+        await fetchMatchDetails();
+      } else {
+        toast.error(data.message || "Failed to update Discord link");
+      }
+    } catch (err) {
+      toast.error("An error occurred.");
+    }
+  };
+
   if (loading) {
     return (
       <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white flex items-center justify-center">
@@ -431,7 +483,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           </h1>
           <div className="flex items-center gap-1.5 text-xs text-white/50 mt-2">
             <MapPin size={13} className="text-[#C6FF00]" />
-            <span className="truncate">{match.location}</span>
+            <span className="truncate">{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
           </div>
         </div>
 
@@ -456,6 +508,66 @@ export default function MatchDetailsPage({ params }: PageProps) {
               </span>
             </div>
           </div>
+
+          {(match.discordLink || currentUserId === match.hostId) && (
+            <>
+              <div className="border-t border-white/5 my-2" />
+              <div className="flex items-start gap-3">
+                <MessageSquare size={16} className="text-[#5865F2] mt-0.5 shrink-0" />
+                <div className="flex-1">
+                  <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold block mb-0.5">Discord Lobby</span>
+                  {isEditingDiscord ? (
+                    <div className="flex items-center gap-2 mt-1">
+                      <input 
+                        type="url"
+                        value={discordLinkEdit}
+                        onChange={(e) => setDiscordLinkEdit(e.target.value)}
+                        placeholder="https://discord.gg/..."
+                        className="w-full bg-[#151515] border border-white/10 rounded-lg px-2 py-1 text-xs text-white outline-none focus:border-[#5865F2]"
+                      />
+                      <button 
+                        onClick={() => {
+                          handleUpdateDiscordLink(discordLinkEdit);
+                          setIsEditingDiscord(false);
+                        }}
+                        className="p-1.5 rounded-lg bg-[#5865F2] hover:bg-[#4752C4] text-white transition"
+                      >
+                        <Check size={12} />
+                      </button>
+                      <button 
+                        onClick={() => setIsEditingDiscord(false)}
+                        className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/70 transition"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      {match.discordLink ? (
+                        <a href={match.discordLink} target="_blank" rel="noopener noreferrer" className="text-xs text-[#5865F2] hover:underline font-semibold leading-none flex items-center gap-1">
+                          Join Voice Channel
+                        </a>
+                      ) : (
+                        <span className="text-xs text-white/50 leading-none">No link added</span>
+                      )}
+                      
+                      {currentUserId === match.hostId && (
+                        <button 
+                          onClick={() => {
+                            setDiscordLinkEdit(match.discordLink || "");
+                            setIsEditingDiscord(true);
+                          }}
+                          className="text-[9px] uppercase font-bold text-white/40 hover:text-white transition tracking-widest px-2 py-1 rounded bg-white/5 border border-white/10"
+                        >
+                          Edit
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Captain/Organizer Section */}
@@ -647,6 +759,25 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   </>
                 )}
               </button>
+              {currentUserId === match.hostId && (
+                <button
+                  onClick={handleCloseMatch}
+                  disabled={actionLoading}
+                  className="w-full h-11 rounded-2xl border border-[#A28B52]/40 bg-[#151515] hover:bg-white/5 text-[#A28B52] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 mt-2"
+                >
+                  {actionLoading ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin text-[#A28B52]" />
+                      CLOSING...
+                    </>
+                  ) : (
+                    <>
+                      <X size={14} />
+                      CLOSE MATCH LOBBY
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           ) : (
             <button
