@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth-provider";
 import { PlayerProvider } from "@/components/player-context";
+import { RealtimeProvider } from "@/components/realtime-provider";
 
 export const viewport: Viewport = {
   themeColor: "#05070B",
@@ -37,6 +38,7 @@ export default function RootLayout({
         <AuthProvider>
           <PlayerProvider>
             {children}
+            <RealtimeProvider />
             <Toaster theme="dark" position="top-center" richColors />
           </PlayerProvider>
         </AuthProvider>

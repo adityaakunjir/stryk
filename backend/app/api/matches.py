@@ -12,7 +12,7 @@ from sqlalchemy.orm import selectinload
 from sqlmodel import select
 
 from app.core.database import get_session
-from app.models.match import Match, MatchPlayer
+from app.models.match import Match, MatchPlayer, MatchInvite
 from app.models.player import User
 from app.core.auth import get_current_user
 
@@ -198,4 +198,87 @@ async def join_match_by_code(
     return {"success": True, "matchId": match.id}
 
 
+class InviteCreate(BaseModel):
+    receiverId: str
 
+
+@router.get("/invites/me")
+async def get_my_invites(
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    invites_result = await session.execute(
+        select(MatchInvite)
+        .where(MatchInvite.receiverId == db_user.id, MatchInvite.status == "pending")
+        .options(selectinload(MatchInvite.match), selectinload(MatchInvite.sender))
+    )
+    invites = invites_result.scalars().all()
+    
+    return {
+        "success": True, 
+        "invites": [
+            {
+                "id": inv.id,
+                "matchId": inv.matchId,
+                "matchTitle": inv.match.title if inv.match else "Match",
+                "senderId": inv.senderId,
+                "senderName": inv.sender.fullName or inv.sender.username if inv.sender else "Someone",
+                "senderAvatar": inv.sender.avatarUrl if inv.sender else None,
+                "status": inv.status,
+                "createdAt": inv.createdAt.isoformat() if inv.createdAt else None
+            }
+            for inv in invites
+        ]
+    }
+
+
+@router.post("/{match_id}/invite")
+async def invite_to_match(
+    match_id: str,
+    payload: InviteCreate,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    
+    sender_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    sender = sender_result.scalars().first()
+    if not sender:
+        raise HTTPException(status_code=404, detail="Sender not found")
+
+    match_result = await session.execute(select(Match).where(Match.id == match_id))
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    receiver_result = await session.execute(select(User).where(User.id == payload.receiverId))
+    receiver = receiver_result.scalars().first()
+    if not receiver:
+        raise HTTPException(status_code=404, detail="Receiver not found")
+
+    existing_invite_result = await session.execute(
+        select(MatchInvite).where(
+            MatchInvite.matchId == match_id,
+            MatchInvite.receiverId == payload.receiverId
+        )
+    )
+    if existing_invite_result.scalars().first():
+        return {"success": True, "message": "Already invited"}
+
+    invite = MatchInvite(
+        matchId=match_id,
+        senderId=sender.id,
+        receiverId=payload.receiverId,
+        status="pending"
+    )
+    session.add(invite)
+    await session.commit()
+    await session.refresh(invite)
+    
+    return {"success": True, "invite": {"id": invite.id, "matchId": invite.matchId, "status": invite.status}}

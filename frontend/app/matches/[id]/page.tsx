@@ -2,7 +2,8 @@
 
 import { useState, useEffect, use, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sparkles, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sparkles, CheckCircle2, Mail, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { getPusherClient } from "@/lib/pusher";
 import { toast } from "sonner";
 
@@ -59,6 +60,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [friends, setFriends] = useState<any[]>([]);
+  const [friendsLoading, setFriendsLoading] = useState(false);
+  const [invitingFriendId, setInvitingFriendId] = useState<string | null>(null);
 
   const addNotification = useCallback((message: string, type: "info" | "success" | "warning" = "info") => {
     if (type === "success") {
@@ -172,6 +177,57 @@ export default function MatchDetailsPage({ params }: PageProps) {
       pusher.unsubscribe(channelName);
     };
   }, [matchId, fetchMatchDetails, addNotification]);
+
+  useEffect(() => {
+    if (!showInviteModal) return;
+    async function fetchFriends() {
+      setFriendsLoading(true);
+      try {
+        const res = await fetch("/api/friends");
+        const data = await res.json();
+        if (data.success) {
+          setFriends(data.friends.map((f: any) => ({
+            id: f.user.id,
+            name: f.user.fullName || f.user.username,
+            handle: f.user.username,
+            avatar: f.user.avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(f.user.username)}`
+          })));
+        }
+      } catch (err) {
+        console.error("Failed to fetch friends", err);
+      } finally {
+        setFriendsLoading(false);
+      }
+    }
+    fetchFriends();
+  }, [showInviteModal]);
+
+  const handleInviteFriend = async (friendId: string) => {
+    setInvitingFriendId(friendId);
+    try {
+      const senderName = currentUserId ? (match?.participants.find(p => p.userId === currentUserId)?.user.fullName || "A friend") : "A friend";
+      
+      const res = await fetch(`/api/matches/${matchId}/invite`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          receiverId: friendId,
+          senderName: senderName,
+          matchTitle: match?.title || "a match"
+        })
+      });
+      const data = await res.json();
+      if (data.success || data.message === "Already invited") {
+        toast.success(data.message === "Already invited" ? "Already invited" : "Invite sent!");
+      } else {
+        toast.error(data.message || data.detail || "Failed to send invite");
+      }
+    } catch (err) {
+      toast.error("An error occurred");
+    } finally {
+      setInvitingFriendId(null);
+    }
+  };
 
   const handleJoinMatch = async () => {
     setActionLoading(true);
@@ -548,6 +604,13 @@ export default function MatchDetailsPage({ params }: PageProps) {
         <div className="fixed bottom-0 left-0 right-0 p-5 bg-[#05070B]/80 backdrop-blur-lg border-t border-white/5 max-w-md mx-auto z-20">
           {isJoined ? (
             <div className="flex flex-col gap-2">
+              <button
+                onClick={() => setShowInviteModal(true)}
+                className="w-full h-11 mb-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Mail size={14} />
+                INVITE FRIENDS
+              </button>
               {!isCheckedIn && (
                 <button
                   onClick={handleCheckIn}
@@ -606,6 +669,61 @@ export default function MatchDetailsPage({ params }: PageProps) {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {showInviteModal && (
+          <div className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowInviteModal(false)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, y: 100, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 100, scale: 0.95 }}
+              className="relative w-full max-w-md bg-[#151515] border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-display text-xl uppercase italic tracking-wide text-white">Invite Friends</h3>
+                <button onClick={() => setShowInviteModal(false)} className="p-2 rounded-full hover:bg-white/10 text-white/50 hover:text-white transition">
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-3">
+                {friendsLoading ? (
+                  <div className="flex justify-center py-10"><Loader2 className="animate-spin text-[#C6FF00]" /></div>
+                ) : friends.length === 0 ? (
+                  <div className="text-center py-10 text-white/40 text-sm">No friends found. Add some friends first!</div>
+                ) : (
+                  friends.map((friend) => (
+                    <div key={friend.id} className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.02] border border-white/5">
+                      <div className="flex items-center gap-3">
+                        <img src={friend.avatar} alt={friend.name} className="w-10 h-10 rounded-full object-cover border border-white/10" />
+                        <div>
+                          <div className="text-sm font-bold text-white">{friend.name}</div>
+                          <div className="text-[10px] text-white/50">@{friend.handle}</div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleInviteFriend(friend.id)}
+                        disabled={invitingFriendId === friend.id}
+                        className="px-4 py-2 rounded-xl bg-[#C6FF00]/10 text-[#C6FF00] hover:bg-[#C6FF00]/20 text-[10px] font-bold uppercase tracking-widest transition disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {invitingFriendId === friend.id ? <Loader2 size={12} className="animate-spin" /> : <Mail size={12} />}
+                        {invitingFriendId === friend.id ? "SENDING" : "INVITE"}
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
