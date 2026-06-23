@@ -62,8 +62,6 @@ export default function IdentityPage() {
   const [avatar, setAvatar] = useState(playerData?.avatar || "");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken" | "invalid">("idle");
   const [cropSrc, setCropSrc] = useState<string | null>(null);
-  
-  const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   
@@ -145,22 +143,6 @@ export default function IdentityPage() {
   const handleRemovePhoto = () => {
     setAvatar("");
     updatePlayerData({ avatar: "" });
-  };
-
-  const handleGeneratePhoto = () => {
-    setIsGenerating(true);
-    // Fake progress for premium feel
-    setTimeout(() => {
-      const gradients = [
-        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'><defs><radialGradient id='g' cx='50%' cy='35%' r='65%'><stop offset='0%' stop-color='%23bef518'/><stop offset='45%' stop-color='%2310b981'/><stop offset='100%' stop-color='%23064e3b'/></radialGradient></defs><rect width='100' height='100' fill='url(%23g)'/><circle cx='50' cy='40' r='18' fill='%23ffffff' opacity='0.9'/><path d='M25 80 C 25 60, 75 60, 75 80' fill='%23ffffff' opacity='0.9'/></svg>",
-        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'><defs><radialGradient id='g' cx='50%' cy='35%' r='65%'><stop offset='0%' stop-color='%2367e8f9'/><stop offset='50%' stop-color='%230284c7'/><stop offset='100%' stop-color='%230f172a'/></radialGradient></defs><rect width='100' height='100' fill='url(%23g)'/><circle cx='50' cy='40' r='18' fill='%23ffffff' opacity='0.9'/><path d='M25 80 C 25 60, 75 60, 75 80' fill='%23ffffff' opacity='0.9'/></svg>",
-        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'><defs><radialGradient id='g' cx='50%' cy='35%' r='65%'><stop offset='0%' stop-color='%23f472b6'/><stop offset='50%' stop-color='%23db2777'/><stop offset='100%' stop-color='%234c0519'/></radialGradient></defs><rect width='100' height='100' fill='url(%23g)'/><circle cx='50' cy='40' r='18' fill='%23ffffff' opacity='0.9'/><path d='M25 80 C 25 60, 75 60, 75 80' fill='%23ffffff' opacity='0.9'/></svg>",
-      ];
-      const selected = gradients[Math.floor(Math.random() * gradients.length)];
-      setAvatar(selected);
-      updatePlayerData({ avatar: selected });
-      setIsGenerating(false);
-    }, 1200);
   };
 
   const handleNext = async (e: React.FormEvent) => {
@@ -326,42 +308,17 @@ export default function IdentityPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
-                      <motion.button
-                        whileHover={{ scale: 0.98, backgroundColor: "rgba(212,248,41,0.05)" }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={triggerFileUpload}
-                        className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] bg-[#151515] p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-[#E8E8E8] cursor-pointer"
-                        type="button"
-                      >
-                        <ImageUp size={24} className="text-[#D4F829]" />
-                        <span className="text-[11px] font-bold uppercase tracking-wider">Upload Photo</span>
-                        <span className="text-[9px] text-[#808080] uppercase">Max 5MB • PNG JPG</span>
-                      </motion.button>
-                      
-                      <span className="text-center text-[10px] font-bold text-[#404040]">OR</span>
-                      
-                      <motion.button
-                        whileHover={{ scale: 0.98, backgroundColor: "rgba(255,255,255,0.02)" }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleGeneratePhoto}
-                        disabled={isGenerating}
-                        className="relative overflow-hidden flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border border-[#2A2A2A] bg-[#151515] p-4 text-[#808080] transition hover:border-[#404040] hover:text-[#E8E8E8] cursor-pointer disabled:opacity-70"
-                        type="button"
-                      >
-                        {isGenerating ? (
-                          <Loader2 size={24} className="text-[#D4F829] animate-spin" />
-                        ) : (
-                          <>
-                            <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-600 to-yellow-400 text-white text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
-                              <Sparkles size={8} /> AI
-                            </div>
-                            <Camera size={24} className="text-[#D4F829]" />
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-center">Generate Avatar</span>
-                          </>
-                        )}
-                      </motion.button>
-                    </div>
+                    <motion.button
+                      whileHover={{ scale: 0.98, backgroundColor: "rgba(212,248,41,0.05)" }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={triggerFileUpload}
+                      className="flex min-h-24 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] bg-[#151515] p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-[#E8E8E8] cursor-pointer"
+                      type="button"
+                    >
+                      <ImageUp size={24} className="text-[#D4F829]" />
+                      <span className="text-[11px] font-bold uppercase tracking-wider">Upload Photo</span>
+                      <span className="text-[9px] text-[#808080] uppercase">Max 5MB • PNG JPG</span>
+                    </motion.button>
                   )}
                 </div>
 
