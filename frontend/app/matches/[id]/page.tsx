@@ -96,6 +96,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
         const data = await res.json();
         if (data.success && data.player) {
           setCurrentUserId(data.player.id);
+        } else if (data && data.id) {
+          setCurrentUserId(data.id);
         }
       } catch (err) {
         console.error("Failed to fetch user profile:", err);

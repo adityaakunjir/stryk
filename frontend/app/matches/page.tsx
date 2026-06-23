@@ -49,6 +49,8 @@ export default function MatchesPage() {
         const data = await res.json();
         if (data.success && data.player) {
           setCurrentUserId(data.player.id);
+        } else if (data && data.id) {
+          setCurrentUserId(data.id);
         }
       } catch {
         // Fallback handled gracefully
@@ -166,8 +168,8 @@ export default function MatchesPage() {
         setCreateDateTime("");
         setCreateMaxPlayers("22");
         
-        // Optimistically update matches list
-        setMatches([data, ...matches]);
+        // Re-fetch the full matches list so all fields + participants load correctly
+        await fetchMatches();
       } else {
         setCreateError(typeof data.detail === "string" ? data.detail : "Failed to create match");
       }

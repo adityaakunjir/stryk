@@ -8,6 +8,7 @@ from typing import List, Optional
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlmodel import select
 
 from app.core.database import get_session
@@ -25,7 +26,36 @@ class MatchCreate(BaseModel):
     date_time: datetime
     max_players: int = 22
 
-@router.post("/", response_model=Match, status_code=status.HTTP_201_CREATED)
+
+def _serialize_match(match: Match) -> dict:
+    """Serialize a Match ORM object to a plain dict including participants."""
+    participants = []
+    if match.participants:
+        for p in match.participants:
+            participants.append({
+                "id": p.id,
+                "matchId": p.matchId,
+                "userId": p.userId,
+                "team": p.team,
+                "checkedIn": p.checkedIn,
+                "createdAt": p.createdAt.isoformat() if p.createdAt else None,
+            })
+
+    return {
+        "id": match.id,
+        "title": match.title,
+        "location": match.location,
+        "dateTime": match.dateTime.isoformat() if match.dateTime else None,
+        "maxPlayers": match.maxPlayers,
+        "status": match.status,
+        "creatorId": match.creatorId,
+        "createdAt": match.createdAt.isoformat() if match.createdAt else None,
+        "participants": participants,
+        "players": len(participants),
+    }
+
+
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_match(
     match_in: MatchCreate,
     user: dict = Depends(get_current_user),
@@ -53,17 +83,36 @@ async def create_match(
     session.add(participant)
     await session.commit()
 
-    return match
+    # Re-fetch with participants eagerly loaded
+    stmt = select(Match).where(Match.id == match.id).options(selectinload(Match.participants))
+    fresh = await session.execute(stmt)
+    match = fresh.scalars().first()
+
+    return _serialize_match(match)
 
 
-@router.get("/", response_model=List[Match])
+@router.get("/")
 async def get_all_matches(session: AsyncSession = Depends(get_session)):
-    statement = select(Match)
-    matches = await session.execute(statement)
-    return matches.scalars().all()
+    statement = select(Match).options(selectinload(Match.participants))
+    result = await session.execute(statement)
+    matches = result.scalars().all()
+    return [_serialize_match(m) for m in matches]
 
 
-@router.post("/{match_id}/join", response_model=MatchParticipant)
+@router.get("/{match_id}")
+async def get_match_by_id(
+    match_id: str,
+    session: AsyncSession = Depends(get_session),
+):
+    stmt = select(Match).where(Match.id == match_id).options(selectinload(Match.participants))
+    result = await session.execute(stmt)
+    match = result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+    return {"success": True, "data": _serialize_match(match)}
+
+
+@router.post("/{match_id}/join")
 async def join_match(
     match_id: str,
     user: dict = Depends(get_current_user),
@@ -88,4 +137,11 @@ async def join_match(
     session.add(participant)
     await session.commit()
     await session.refresh(participant)
-    return participant
+    return {"success": True, "data": {
+        "id": participant.id,
+        "matchId": participant.matchId,
+        "userId": participant.userId,
+        "team": participant.team,
+        "checkedIn": participant.checkedIn,
+    }}
+
