@@ -218,6 +218,7 @@ export default function HomeLobbyPage() {
               style={{
                 background: "linear-gradient(105deg, transparent 20%, rgba(255, 215, 0, 0.1) 30%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 215, 0, 0.1) 70%, transparent 80%)",
                 backgroundSize: "200% 200%",
+                backgroundRepeat: "no-repeat",
                 WebkitMaskImage: "url('/player_card.webp')",
                 WebkitMaskSize: "contain",
                 WebkitMaskRepeat: "no-repeat",
@@ -228,7 +229,7 @@ export default function HomeLobbyPage() {
                 maskPosition: "center",
               }}
               animate={{ backgroundPosition: ["200% 0%", "-100% 0%"] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "linear", repeatDelay: 6 }}
+              transition={{ duration: 5, repeat: Infinity, ease: "linear", repeatDelay: 5 }}
             />
             
             {/* 6. Text + Stats (Top Layer) */}
