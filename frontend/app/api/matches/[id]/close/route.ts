@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { triggerPusherEvent } from "@/lib/pusher-server";
+import { triggerPusherEvent } from "@/lib/pusher";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
