@@ -142,7 +142,7 @@ export default function HomeLobbyPage() {
             className="absolute inset-0 pointer-events-auto cursor-pointer"
             onClick={() => setShowCardDossier(true)}
             animate={{ rotateY: [0.01, -6, 6, -0.01, 0.01], rotateX: [0.01, 2, -2, -0.01, 0.01], z: 0.01 }}
-            transition={{ duration: 8, repeat: Infinity, times: [0, 0.125, 0.25, 0.375, 1], ease: ["easeInOut", "easeInOut", "easeInOut", "linear"] }}
+            transition={{ duration: 10, repeat: Infinity, times: [0, 0.05, 0.1, 0.2, 1], ease: ["easeInOut", "easeInOut", "easeInOut", "linear"] }}
             whileHover={{ scale: 1.04, transition: { duration: 0.4, ease: "easeOut" } }}
             style={{ transformStyle: 'preserve-3d', WebkitFontSmoothing: 'antialiased', backfaceVisibility: 'hidden', filter: 'drop-shadow(0px 0px 0px transparent)' }}
           >
@@ -229,7 +229,7 @@ export default function HomeLobbyPage() {
                 maskPosition: "center",
               }}
               animate={{ backgroundPosition: ["200% 0%", "-100% 0%", "-100% 0%"] }}
-              transition={{ duration: 8, repeat: Infinity, times: [0, 0.1875, 1], ease: ["linear", "linear"] }}
+              transition={{ duration: 10, repeat: Infinity, times: [0, 0.1, 1], ease: ["linear", "linear"] }}
             />
             
             {/* 6. Text + Stats (Top Layer) */}
