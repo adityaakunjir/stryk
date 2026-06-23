@@ -37,3 +37,37 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ detail: "Internal Proxy Error" }, { status: 500 });
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const { getToken } = await auth();
+    const token = await getToken();
+
+    const url = `${API_BASE_URL}/profile/me`;
+
+    const headers = new Headers(req.headers);
+    headers.set("Authorization", `Bearer ${token}`);
+    headers.delete("host");
+
+    const body = await req.text();
+
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers,
+      body,
+      cache: "no-store",
+    });
+
+    const data = await response.text();
+    
+    return new NextResponse(data, {
+      status: response.status,
+      headers: {
+        "Content-Type": response.headers.get("Content-Type") || "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Proxy error:", error);
+    return NextResponse.json({ detail: "Internal Proxy Error" }, { status: 500 });
+  }
+}

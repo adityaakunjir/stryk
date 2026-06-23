@@ -141,8 +141,6 @@ export default function HomeLobbyPage() {
           <motion.div 
             className="absolute inset-0 pointer-events-auto cursor-pointer"
             onClick={() => setShowCardDossier(true)}
-            animate={{ rotateY: [0, -6, 6, 0, 0], rotateX: [0, 2, -2, 0, 0] }}
-            transition={{ duration: 10, repeat: Infinity, times: [0, 0.05, 0.1, 0.2, 1], ease: ["easeInOut", "easeInOut", "easeInOut", "linear"] }}
             whileHover={{ scale: 1.04, transition: { duration: 0.4, ease: "easeOut" } }}
           >
             {/* Main Card Container */}
