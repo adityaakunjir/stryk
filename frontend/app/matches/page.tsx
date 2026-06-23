@@ -9,10 +9,10 @@ interface Match {
   id: string;
   title: string;
   location: string;
-  dateTime: string;
+  matchDate: string;
   maxPlayers: number;
   status: string;
-  creatorId: string;
+  hostId: string;
   createdAt: string;
   players: number;
   spotsLeft: number;
@@ -32,7 +32,8 @@ export default function MatchesPage() {
   const [createTitle, setCreateTitle] = useState("");
   const [createLocation, setCreateLocation] = useState("");
   const [createDateTime, setCreateDateTime] = useState("");
-  const [createMaxPlayers, setCreateMaxPlayers] = useState("");
+  const [createFormat, setCreateFormat] = useState("");
+  const [createPassword, setCreatePassword] = useState("");
   const [createLoading, setCreateLoading] = useState(false);
   const [createError, setCreateError] = useState("");
 
@@ -148,11 +149,17 @@ export default function MatchesPage() {
     setCreateError("");
 
     try {
+      const formatToPlayers: Record<string, number> = {
+        "3v3": 6, "5v5": 10, "6v6": 12, "7v7": 14, "8v8": 16, "9v9": 18, "11v11": 22
+      };
+
       const payload = {
         title: createTitle,
         location: createLocation,
         date_time: createDateTime,
-        max_players: parseInt(createMaxPlayers, 10) || 22
+        format: createFormat || "11v11",
+        max_players: formatToPlayers[createFormat] || 22,
+        password: createPassword || null
       };
       console.log("[STRYK] Creating match with payload:", payload);
 
@@ -172,7 +179,8 @@ export default function MatchesPage() {
         setCreateTitle("");
         setCreateLocation("");
         setCreateDateTime("");
-        setCreateMaxPlayers("22");
+        setCreateFormat("");
+        setCreatePassword("");
         
         // Re-fetch the full matches list so all fields + participants load correctly
         await fetchMatches();
@@ -329,7 +337,7 @@ export default function MatchesPage() {
         ) : (
           <div className="space-y-4 mt-2">
             {matches.map((match) => {
-              const isJoined = currentUserId && (match.creatorId === currentUserId || match.participants?.some(p => p.userId === currentUserId));
+              const isJoined = currentUserId && (match.hostId === currentUserId || match.participants?.some(p => p.userId === currentUserId));
               const currentPlayers = match.players || match.participants?.length || 1;
               const maxPlayers = match.maxPlayers || 22;
               const isFull = currentPlayers >= maxPlayers;
@@ -374,7 +382,7 @@ export default function MatchesPage() {
                         <span className="text-[9px] uppercase tracking-widest text-[#A28B52] mb-1.5 font-bold">Schedule</span>
                         <div className="flex items-center gap-2 text-[12px] text-[#E5DCC5] font-semibold leading-none">
                           <Calendar size={13} className="text-[#A28B52]/80" />
-                          <span className="truncate">{match.dateTime ? formatMatchDate(match.dateTime) : "TBD"}</span>
+                          <span className="truncate">{match.matchDate ? formatMatchDate(match.matchDate) : "TBD"}</span>
                         </div>
                       </div>
 
@@ -508,22 +516,23 @@ export default function MatchesPage() {
 
               <div>
                 <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
-                  Match Format (Total Players)
+                  Match Format
                 </label>
                 <div className="relative">
                   <select
-                    value={createMaxPlayers}
-                    onChange={(e) => setCreateMaxPlayers(e.target.value)}
+                    value={createFormat}
+                    onChange={(e) => setCreateFormat(e.target.value)}
                     className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner appearance-none cursor-pointer"
                     required
                   >
                     <option value="" disabled>Select Format</option>
-                    <option value="10">5v5 (10 Players)</option>
-                    <option value="12">6v6 (12 Players)</option>
-                    <option value="14">7v7 (14 Players)</option>
-                    <option value="16">8v8 (16 Players)</option>
-                    <option value="18">9v9 (18 Players)</option>
-                    <option value="22">11v11 (22 Players)</option>
+                    <option value="3v3">3v3 (6 Players)</option>
+                    <option value="5v5">5v5 (10 Players)</option>
+                    <option value="6v6">6v6 (12 Players)</option>
+                    <option value="7v7">7v7 (14 Players)</option>
+                    <option value="8v8">8v8 (16 Players)</option>
+                    <option value="9v9">9v9 (18 Players)</option>
+                    <option value="11v11">11v11 (22 Players)</option>
                   </select>
                   <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-[#A28B52]/70">
                     <ChevronDown size={18} />
@@ -541,6 +550,19 @@ export default function MatchesPage() {
                   onChange={(e) => setCreateDateTime(e.target.value)}
                   className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 block font-medium shadow-inner"
                   required
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                  Password (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="Leave blank for public match"
+                  value={createPassword}
+                  onChange={(e) => setCreatePassword(e.target.value)}
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
                 />
               </div>
 

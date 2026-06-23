@@ -37,10 +37,10 @@ interface MatchDetails {
   id: string;
   title: string;
   location: string;
-  dateTime: string;
+  matchDate: string;
   maxPlayers: number;
   status: string;
-  creatorId: string;
+  hostId: string;
   createdAt: string;
   participants: MatchParticipant[];
   creator: MatchCreator | null;
@@ -385,7 +385,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
             <Calendar size={16} className="text-[#C6FF00] mt-0.5 shrink-0" />
             <div>
               <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold block mb-0.5">Lobby Schedule</span>
-              <span className="text-xs text-white/85 leading-snug">{formatDateTime(match.dateTime)}</span>
+              <span className="text-xs text-white/85 leading-snug">{formatDateTime(match.matchDate)}</span>
             </div>
           </div>
 
@@ -432,7 +432,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         {/* Teams Dashboard */}
         <div className="space-y-6">
           {/* AI Balance Button */}
-          {isJoined && participants.length >= 2 && match.creatorId === currentUserId && (
+          {isJoined && participants.length >= 2 && match.hostId === currentUserId && (
             <button
               onClick={handleBalanceTeams}
               disabled={actionLoading}

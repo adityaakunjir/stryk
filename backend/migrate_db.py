@@ -1,39 +1,39 @@
-import sqlite3
+import asyncio
 import os
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlmodel import SQLModel
 
-def migrate():
-    db_path = os.path.join(os.path.dirname(__file__), "stryk.db")
-    print(f"Migrating database at {db_path}...")
+# Import all models so they are registered with SQLModel.metadata
+from app.models.player import User
+from app.models.team import Team, TeamMember, TeamInvite
+from app.models.match import Match, MatchPlayer, MatchTeam, MatchInvite, MatchStats, MatchVerification, XPLog
+from app.models.friend import FriendRequest
+
+async def migrate():
+    # Try to get Railway DATABASE_URL, fallback to local sqlite
+    db_url = os.environ.get("DATABASE_URL")
+    if not db_url:
+        db_path = os.path.join(os.path.dirname(__file__), "stryk.db")
+        db_url = f"sqlite+aiosqlite:///{db_path}"
+        print(f"No DATABASE_URL found. Using local SQLite database at {db_path}")
+    else:
+        # Railway provides postgres:// but asyncpg needs postgresql+asyncpg://
+        if db_url.startswith("postgres://"):
+            db_url = db_url.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif db_url.startswith("postgresql://"):
+            db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        print("Using provided DATABASE_URL.")
+
+    engine = create_async_engine(db_url, echo=True)
     
-    if not os.path.exists(db_path):
-        print("Database file does not exist yet. It will be created on startup.")
-        return
-
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
-    columns_to_add = [
-        ("matches_played", "INTEGER DEFAULT 0"),
-        ("goals", "INTEGER DEFAULT 0"),
-        ("assists", "INTEGER DEFAULT 0"),
-        ("tackles", "INTEGER DEFAULT 0"),
-        ("saves", "INTEGER DEFAULT 0"),
-        ("intercepts", "INTEGER DEFAULT 0"),
-    ]
-
-    for col_name, col_type in columns_to_add:
-        try:
-            cursor.execute(f"ALTER TABLE players ADD COLUMN {col_name} {col_type}")
-            print(f"Successfully added column: {col_name}")
-        except sqlite3.OperationalError as e:
-            if "duplicate column name" in str(e).lower():
-                print(f"Column '{col_name}' already exists.")
-            else:
-                print(f"Error adding '{col_name}': {e}")
-
-    conn.commit()
-    conn.close()
+    async with engine.begin() as conn:
+        print("Dropping all existing tables to apply new schema (WARNING: DATA LOSS)...")
+        await conn.run_sync(SQLModel.metadata.drop_all)
+        print("Creating new tables from SQLModel metadata...")
+        await conn.run_sync(SQLModel.metadata.create_all)
+        
     print("Database migration completed.")
 
 if __name__ == "__main__":
-    migrate()
+    asyncio.run(migrate())
+

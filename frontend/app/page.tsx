@@ -110,9 +110,9 @@ export default function Home() {
 
               {/* LOG IN Button */}
               <SignInButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
-                <button className="w-full h-[54px] rounded-full border border-[#D4F829]/50 bg-transparent text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center relative hover:bg-black/5 transition duration-300">
+                <button className="w-full h-[54px] rounded-full border border-[#D4F829]/50 bg-transparent text-[#D4F829] text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center relative hover:bg-[#D4F829]/10 transition duration-300">
                   LOG IN
-                  <svg className="absolute right-5 w-4 h-4 text-[#151515]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="absolute right-5 w-4 h-4 text-[#D4F829]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </button>

@@ -46,12 +46,23 @@ class User(UserBase, table=True):
 
     # Relationships (defined as strings to avoid circular imports initially)
     team_members: List["TeamMember"] = Relationship(back_populates="user")
-    match_participants: List["MatchParticipant"] = Relationship(back_populates="user")
+    match_players: List["MatchPlayer"] = Relationship(back_populates="user")
+    match_stats: List["MatchStats"] = Relationship(back_populates="user")
     
     # Captain of teams
     captained_teams: List["Team"] = Relationship(back_populates="captain")
-    # Creator of matches
-    created_matches: List["Match"] = Relationship(back_populates="creator")
+    # Host of matches
+    hosted_matches: List["Match"] = Relationship(back_populates="host")
+
+    # Match Invites
+    sent_match_invites: List["MatchInvite"] = Relationship(
+        back_populates="sender",
+        sa_relationship_kwargs={"foreign_keys": "MatchInvite.senderId"}
+    )
+    received_match_invites: List["MatchInvite"] = Relationship(
+        back_populates="receiver",
+        sa_relationship_kwargs={"foreign_keys": "MatchInvite.receiverId"}
+    )
 
     # Friend requests
     sent_friend_requests: List["FriendRequest"] = Relationship(
