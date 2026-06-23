@@ -141,10 +141,9 @@ export default function HomeLobbyPage() {
           <motion.div 
             className="absolute inset-0 pointer-events-auto cursor-pointer"
             onClick={() => setShowCardDossier(true)}
-            animate={{ rotateY: [0.01, -6, 6, -0.01, 0.01], rotateX: [0.01, 2, -2, -0.01, 0.01], z: 0.01 }}
+            animate={{ rotateY: [0, -6, 6, 0, 0], rotateX: [0, 2, -2, 0, 0] }}
             transition={{ duration: 10, repeat: Infinity, times: [0, 0.05, 0.1, 0.2, 1], ease: ["easeInOut", "easeInOut", "easeInOut", "linear"] }}
             whileHover={{ scale: 1.04, transition: { duration: 0.4, ease: "easeOut" } }}
-            style={{ transformStyle: 'preserve-3d', WebkitFontSmoothing: 'antialiased', backfaceVisibility: 'hidden', filter: 'drop-shadow(0px 0px 0px transparent)' }}
           >
             {/* Main Card Container */}
             
@@ -214,9 +213,9 @@ export default function HomeLobbyPage() {
 
             {/* Shimmer Overlay */}
             <motion.div
-              className="absolute inset-0 z-[35] pointer-events-none mix-blend-overlay"
+              className="absolute inset-0 z-[35] pointer-events-none"
               style={{
-                background: "linear-gradient(105deg, transparent 20%, rgba(255, 215, 0, 0.1) 30%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 215, 0, 0.1) 70%, transparent 80%)",
+                background: "linear-gradient(105deg, transparent 20%, rgba(255, 215, 0, 0.1) 30%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 215, 0, 0.1) 70%, transparent 80%)",
                 backgroundSize: "200% 200%",
                 backgroundRepeat: "no-repeat",
                 WebkitMaskImage: "url('/player_card.webp')",
