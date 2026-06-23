@@ -194,7 +194,7 @@ export default function HomeLobbyPage() {
                     <img
                       src={playerData.avatar}
                       alt="Player"
-                      className="absolute z-20 w-full h-full object-cover object-top"
+                      className="absolute z-20 left-0 w-full h-[66%] top-0 object-cover object-top"
                     />
                   )}
                 </div>
