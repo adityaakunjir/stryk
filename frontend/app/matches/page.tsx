@@ -148,19 +148,25 @@ export default function MatchesPage() {
     setCreateError("");
 
     try {
+      const payload = {
+        title: createTitle,
+        location: createLocation,
+        date_time: createDateTime,
+        max_players: parseInt(createMaxPlayers, 10) || 22
+      };
+      console.log("[STRYK] Creating match with payload:", payload);
+
       const res = await fetch(`/api/matches`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          title: createTitle,
-          location: createLocation,
-          date_time: createDateTime,
-          max_players: parseInt(createMaxPlayers, 10) || 22
-        })
+        body: JSON.stringify(payload)
       });
+
       const data = await res.json();
+      console.log("[STRYK] Create match response:", res.status, data);
+
       if (res.ok) {
         setShowCreateModal(false);
         setCreateTitle("");
@@ -171,9 +177,12 @@ export default function MatchesPage() {
         // Re-fetch the full matches list so all fields + participants load correctly
         await fetchMatches();
       } else {
-        setCreateError(typeof data.detail === "string" ? data.detail : "Failed to create match");
+        const errMsg = typeof data.detail === "string" ? data.detail : (data.message || JSON.stringify(data));
+        console.error("[STRYK] Create match failed:", errMsg);
+        setCreateError(errMsg);
       }
-    } catch {
+    } catch (err) {
+      console.error("[STRYK] Create match exception:", err);
       setCreateError("An error occurred. Please try again.");
     } finally {
       setCreateLoading(false);
