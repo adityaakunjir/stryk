@@ -144,7 +144,7 @@ export default function HomeLobbyPage() {
             animate={{ rotateY: [0, -6, 6, 0], rotateX: [0, 2, -2, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", repeatDelay: 5 }}
             whileHover={{ scale: 1.04, transition: { duration: 0.4, ease: "easeOut" } }}
-            style={{ transformStyle: 'preserve-3d' }}
+            style={{ transformStyle: 'preserve-3d', WebkitFontSmoothing: 'antialiased', backfaceVisibility: 'hidden', willChange: 'transform' }}
           >
             {/* Main Card Container */}
             
@@ -179,7 +179,7 @@ export default function HomeLobbyPage() {
                 }}
               >
                 <div 
-                  className="absolute inset-0 flex justify-center pointer-events-none translate-y-[0.8px] scale-[0.985]"
+                  className="absolute inset-0 flex justify-center pointer-events-none translate-y-[1px] scale-[0.99]"
                   style={{
                     WebkitMaskImage: "url('/player_card.webp')",
                     WebkitMaskSize: "contain",
@@ -209,7 +209,7 @@ export default function HomeLobbyPage() {
             <img 
               src="/player_card_frame.webp" 
               alt="Card Frame" 
-              className="absolute inset-0 z-30 h-full w-full object-contain pointer-events-none translate-y-[0.8px] scale-[1.0]"
+              className="absolute inset-0 z-30 h-full w-full object-contain pointer-events-none translate-y-[1px] scale-100"
             />
 
             {/* Shimmer Overlay */}
