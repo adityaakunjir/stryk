@@ -229,7 +229,7 @@ export default function HomeLobbyPage() {
                 maskPosition: "center",
               }}
               animate={{ backgroundPosition: ["200% 0%", "-100% 0%"] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "linear", repeatDelay: 5 }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear", repeatDelay: 6.5 }}
             />
             
             {/* 6. Text + Stats (Top Layer) */}
