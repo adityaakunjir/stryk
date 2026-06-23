@@ -3,7 +3,6 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { X, Check, ZoomIn, ZoomOut, Loader2 } from "lucide-react";
 import AvatarEditor from "react-avatar-editor";
-import * as faceapi from 'face-api.js';
 
 const CROP_SIZE = 280;
 const IMAGE_FORMAT = "image/webp";
@@ -20,92 +19,6 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   const [scale, setScale] = useState<number>(1);
   const [rotate] = useState<number>(0);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
-  const [isDetecting, setIsDetecting] = useState<boolean>(true);
-
-  // Refs to persist detected values and guard against editor overwrites
-  const detectedPositionRef = useRef<{ x: number; y: number }>({ x: 0.5, y: 0.5 });
-  const detectedScaleRef = useRef<number>(1);
-  const lastProgrammaticSetRef = useRef<number>(0);
-  const hasAppliedInitialPositionRef = useRef<boolean>(false);
-
-  useEffect(() => {
-    let isMounted = true;
-    const detectFace = async () => {
-      try {
-        setIsDetecting(true);
-        await faceapi.loadTinyFaceDetectorModel('/models');
-        
-        const img = new window.Image();
-        img.crossOrigin = "anonymous";
-        img.src = src;
-        
-        await new Promise((resolve, reject) => {
-          img.onload = resolve;
-          img.onerror = reject;
-        });
-
-        const detection = await faceapi.detectSingleFace(
-          img,
-          new faceapi.TinyFaceDetectorOptions({ 
-            inputSize: 512,
-            scoreThreshold: 0.15 
-          })
-        );
-
-        if (detection && isMounted) {
-          const imgWidth = img.naturalWidth;
-          const imgHeight = img.naturalHeight;
-          const { x, y, width, height } = detection.box;
-          
-          const faceCenterX = x + width / 2;
-          const faceCenterY = y + height * 0.35;
-          
-          const xPercent = faceCenterX / imgWidth;
-          const yPercent = faceCenterY / imgHeight;
-          
-          // Zoom: both values in display-pixel units
-          const minDim = Math.min(imgWidth, imgHeight);
-          const faceDisplayAtScale1 = (width / minDim) * CROP_SIZE;
-          const targetFaceDisplay = CROP_SIZE * 0.45;
-          const idealZoom = targetFaceDisplay / faceDisplayAtScale1;
-          const clampedZoom = Math.max(1, Math.min(3, idealZoom));
-
-          console.log("[FaceCrop] Detected face:", {
-            box: { x: Math.round(x), y: Math.round(y), w: Math.round(width), h: Math.round(height) },
-            imgSize: { w: imgWidth, h: imgHeight },
-            position: { x: xPercent.toFixed(3), y: yPercent.toFixed(3) },
-            zoom: { idealZoom: idealZoom.toFixed(2), clamped: clampedZoom.toFixed(2) },
-          });
-
-          detectedPositionRef.current = { x: xPercent, y: yPercent };
-          detectedScaleRef.current = clampedZoom;
-          lastProgrammaticSetRef.current = Date.now();
-          setScale(clampedZoom);
-          setPosition({ x: xPercent, y: yPercent });
-
-        } else if (isMounted) {
-          console.log("[FaceCrop] No face detected — using fallback");
-          detectedPositionRef.current = { x: 0.5, y: 0.35 };
-          detectedScaleRef.current = 1.2;
-          lastProgrammaticSetRef.current = Date.now();
-          setPosition({ x: 0.5, y: 0.35 });
-          setScale(1.2);
-        }
-      } catch (err: any) {
-        console.error("[FaceCrop] Detection error:", err);
-        if (isMounted) {
-          lastProgrammaticSetRef.current = Date.now();
-          setPosition({ x: 0.5, y: 0.35 });
-          setScale(1);
-        }
-      } finally {
-        if (isMounted) setIsDetecting(false);
-      }
-    };
-    
-    if (src) detectFace();
-    return () => { isMounted = false; };
-  }, [src]);
 
   const handleConfirm = useCallback(async () => {
     if (!editorRef.current) return;
@@ -160,14 +73,6 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
             style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px`, touchAction: 'none' }}
             onWheel={handleWheel}
           >
-            {isDetecting ? (
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm rounded-full">
-                <Loader2 className="size-8 text-[#D4F829] animate-spin mb-3 drop-shadow-[0_0_10px_rgba(212,248,41,0.5)]" />
-                <p className="text-[#D4F829] font-display font-bold uppercase tracking-widest text-[10px] animate-pulse">
-                  Scanning Face
-                </p>
-              </div>
-            ) : (
               <AvatarEditor
                 ref={editorRef}
                 image={src}
@@ -179,29 +84,9 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
                 scale={scale}
                 rotate={rotate}
                 position={position}
-                onPositionChange={(pos) => {
-                  // Ignore position changes from editor's internal initialization.
-                  // Only accept position changes that happen 500ms+ after our last
-                  // programmatic set — those are from user dragging.
-                  if (Date.now() - lastProgrammaticSetRef.current < 500) {
-                    return;
-                  }
-                  setPosition(pos);
-                }}
-                onImageReady={() => {
-                  if (hasAppliedInitialPositionRef.current) return;
-                  
-                  // Editor has fully loaded the image. Re-apply our detected
-                  // position to override whatever the editor set during init.
-                  console.log("[FaceCrop] Editor ready — applying initial position:", detectedPositionRef.current);
-                  hasAppliedInitialPositionRef.current = true;
-                  lastProgrammaticSetRef.current = Date.now();
-                  setPosition({ ...detectedPositionRef.current });
-                  setScale(detectedScaleRef.current);
-                }}
+                onPositionChange={setPosition}
                 style={{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }}
               />
-            )}
 
             <div className="absolute inset-0 pointer-events-none rounded-full ring-1 ring-white/10 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)] z-20" />
           </div>
