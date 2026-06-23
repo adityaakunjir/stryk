@@ -141,10 +141,10 @@ export default function HomeLobbyPage() {
           <motion.div 
             className="absolute inset-0 pointer-events-auto cursor-pointer"
             onClick={() => setShowCardDossier(true)}
-            animate={{ rotateY: [0, -6, 6, 0, 0], rotateX: [0, 2, -2, 0, 0], z: 0.01 }}
+            animate={{ rotateY: [0.01, -6, 6, -0.01, 0.01], rotateX: [0.01, 2, -2, -0.01, 0.01], z: 0.01 }}
             transition={{ duration: 8, repeat: Infinity, times: [0, 0.125, 0.25, 0.375, 1], ease: ["easeInOut", "easeInOut", "easeInOut", "linear"] }}
             whileHover={{ scale: 1.04, transition: { duration: 0.4, ease: "easeOut" } }}
-            style={{ transformStyle: 'preserve-3d', WebkitFontSmoothing: 'antialiased', backfaceVisibility: 'hidden' }}
+            style={{ transformStyle: 'preserve-3d', WebkitFontSmoothing: 'antialiased', backfaceVisibility: 'hidden', filter: 'drop-shadow(0px 0px 0px transparent)' }}
           >
             {/* Main Card Container */}
             
