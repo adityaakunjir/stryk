@@ -55,6 +55,7 @@ def _serialize_match(match: Match) -> dict:
         "matchDate": match.matchDate.isoformat() if match.matchDate else None,
         "maxPlayers": match.maxPlayers,
         "status": match.status,
+        "privacy": "private" if match.password else "public",
         "discordLink": match.discordLink,
         "hostId": match.hostId,
         "createdAt": match.createdAt.isoformat() if match.createdAt else None,
@@ -124,9 +125,13 @@ async def get_match_by_id(
     return {"success": True, "data": _serialize_match(match)}
 
 
-@router.post("/{match_id}/join")
+class MatchJoinRequest(BaseModel):
+    matchId: str
+    password: Optional[str] = None
+
+@router.post("/join")
 async def join_match(
-    match_id: str,
+    payload: MatchJoinRequest,
     user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
@@ -136,16 +141,31 @@ async def join_match(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    # Fetch Match
+    stmt = select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players))
+    match_res = await session.execute(stmt)
+    match = match_res.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    # Validate Capacity
+    if len(match.players) >= match.maxPlayers:
+        raise HTTPException(status_code=400, detail="Match is already full")
+
+    # Validate Password
+    if match.password and match.password != payload.password:
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
     # Check if already joined
     stmt = select(MatchPlayer).where(
-        MatchPlayer.matchId == match_id,
+        MatchPlayer.matchId == match.id,
         MatchPlayer.userId == db_user.id
     )
     existing = await session.execute(stmt)
     if existing.scalars().first():
         raise HTTPException(status_code=400, detail="Already joined this match")
         
-    player = MatchPlayer(matchId=match_id, userId=db_user.id)
+    player = MatchPlayer(matchId=match.id, userId=db_user.id)
     session.add(player)
     await session.commit()
     await session.refresh(player)
@@ -242,6 +262,86 @@ async def get_my_invites(
             for inv in invites
         ]
     }
+
+
+@router.post("/invites/{invite_id}/accept")
+async def accept_match_invite(
+    invite_id: str,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    invite_result = await session.execute(
+        select(MatchInvite).where(MatchInvite.id == invite_id).options(selectinload(MatchInvite.match))
+    )
+    invite = invite_result.scalars().first()
+    if not invite:
+        raise HTTPException(status_code=404, detail="Invite not found")
+
+    if invite.receiverId != db_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to accept this invite")
+
+    if invite.status != "pending":
+        raise HTTPException(status_code=400, detail="Invite is no longer pending")
+
+    match = invite.match
+    if not match:
+        raise HTTPException(status_code=404, detail="Associated match not found")
+
+    # Refresh match to get players count
+    await session.refresh(match, ["players"])
+
+    # Capacity Check
+    if len(match.players) >= match.maxPlayers:
+        raise HTTPException(status_code=400, detail="Match is already full")
+
+    # Check if already joined
+    stmt = select(MatchPlayer).where(
+        MatchPlayer.matchId == match.id,
+        MatchPlayer.userId == db_user.id
+    )
+    existing = await session.execute(stmt)
+    if existing.scalars().first():
+        invite.status = "accepted"
+        await session.commit()
+        return {"success": True, "message": "Already joined"}
+
+    player = MatchPlayer(matchId=match.id, userId=db_user.id)
+    invite.status = "accepted"
+    session.add(player)
+    await session.commit()
+    return {"success": True, "matchId": match.id}
+
+
+@router.post("/invites/{invite_id}/decline")
+async def decline_match_invite(
+    invite_id: str,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    invite_result = await session.execute(select(MatchInvite).where(MatchInvite.id == invite_id))
+    invite = invite_result.scalars().first()
+    if not invite:
+        raise HTTPException(status_code=404, detail="Invite not found")
+
+    if invite.receiverId != db_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to decline this invite")
+
+    invite.status = "declined"
+    await session.commit()
+    return {"success": True}
+
 
 
 @router.post("/{match_id}/invite")

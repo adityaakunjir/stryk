@@ -42,6 +42,11 @@ export default function MatchesPage() {
   // Join loading states
   const [joiningId, setJoiningId] = useState<string | null>(null);
 
+  // Private join state
+  const [showPrivateJoinModal, setShowPrivateJoinModal] = useState(false);
+  const [privateJoinMatchId, setPrivateJoinMatchId] = useState<string | null>(null);
+  const [privateJoinPassword, setPrivateJoinPassword] = useState("");
+
   // Join by code modal states
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [joinCode, setJoinCode] = useState("");
@@ -106,21 +111,24 @@ export default function MatchesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, searchQuery]);
 
-  const handleJoinMatch = async (matchId: string) => {
+  const handleJoinMatch = async (matchId: string, password?: string) => {
     setJoiningId(matchId);
     try {
       const res = await fetch("/api/matches/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ matchId }),
+        body: JSON.stringify({ matchId, password: password || null }),
       });
 
       const data = await res.json();
-      if (data.success) {
+      if (res.ok && data.success) {
         toast.success("Successfully joined the match lobby!");
+        setShowPrivateJoinModal(false);
+        setPrivateJoinPassword("");
+        setPrivateJoinMatchId(null);
         await fetchMatches();
       } else {
-        toast.error(data.message || "Failed to join match");
+        toast.error(data.message || data.detail || "Failed to join match");
       }
     } catch {
       toast.error("An error occurred. Please try again.");
@@ -500,7 +508,14 @@ export default function MatchesPage() {
                       </button>
                     ) : (
                       <button
-                        onClick={() => handleJoinMatch(match.id)}
+                        onClick={() => {
+                          if (match.privacy === 'private') {
+                            setPrivateJoinMatchId(match.id);
+                            setShowPrivateJoinModal(true);
+                          } else {
+                            handleJoinMatch(match.id);
+                          }
+                        }}
                         disabled={joiningId !== null}
                         className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
                         type="button"
@@ -749,6 +764,66 @@ export default function MatchesPage() {
                   </>
                 ) : (
                   "ENTER MATCH"
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Private Join Modal */}
+      {showPrivateJoinModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-5 animate-in fade-in duration-200">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setShowPrivateJoinModal(false)} />
+          <div className="relative w-full max-w-sm rounded-[2rem] bg-[#101010] border border-[#A28B52]/20 shadow-2xl p-6 overflow-hidden">
+            <button
+              onClick={() => setShowPrivateJoinModal(false)}
+              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition z-10"
+              type="button"
+            >
+              <X size={16} />
+            </button>
+
+            <h3 className="font-display text-2xl uppercase tracking-wide text-white mb-2 italic">
+              Private Match
+            </h3>
+            <p className="text-white/50 text-sm mb-6 leading-relaxed">
+              This match requires a password to join.
+            </p>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (privateJoinMatchId) handleJoinMatch(privateJoinMatchId, privateJoinPassword);
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  required
+                  placeholder="Enter match password"
+                  value={privateJoinPassword}
+                  onChange={(e) => setPrivateJoinPassword(e.target.value)}
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={joiningId !== null || !privateJoinPassword.trim()}
+                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+              >
+                {joiningId ? (
+                  <>
+                    <Loader2 className="size-5 animate-spin" />
+                    JOINING...
+                  </>
+                ) : (
+                  "JOIN MATCH"
                 )}
               </button>
             </form>

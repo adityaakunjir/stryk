@@ -7,9 +7,17 @@ import { toast } from "sonner";
 
 interface Invite {
   id: string;
-  teamId: string;
-  teamName: string;
-  teamLogo: string;
+  type: "team" | "match";
+  // Team
+  teamId?: string;
+  teamName?: string;
+  teamLogo?: string;
+  // Match
+  matchId?: string;
+  matchTitle?: string;
+  senderId?: string;
+  senderName?: string;
+  
   status: string;
   createdAt: string;
 }
@@ -22,11 +30,30 @@ export default function InvitesPage() {
 
   const fetchInvites = async () => {
     try {
-      const res = await fetch("/api/team/invite");
-      const data = await res.json();
-      if (data.success) {
-        setInvites(data.invites || []);
+      const [teamRes, matchRes] = await Promise.all([
+        fetch("/api/team/invite"),
+        fetch("/api/matches/invites/me")
+      ]);
+      
+      let allInvites: Invite[] = [];
+      
+      if (teamRes.ok) {
+        const teamData = await teamRes.json();
+        if (teamData.success && teamData.invites) {
+          allInvites = [...allInvites, ...teamData.invites.map((i: any) => ({ ...i, type: "team" }))];
+        }
       }
+
+      if (matchRes.ok) {
+        const matchData = await matchRes.json();
+        if (matchData.success && matchData.invites) {
+          allInvites = [...allInvites, ...matchData.invites.map((i: any) => ({ ...i, type: "match" }))];
+        }
+      }
+      
+      allInvites.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      
+      setInvites(allInvites);
     } catch {
       // Handled implicitly by fallback UI
     } finally {
@@ -38,27 +65,40 @@ export default function InvitesPage() {
     fetchInvites();
   }, []);
 
-  const handleRespond = async (inviteId: string, action: "accept" | "decline") => {
-    setActionLoadingId(inviteId);
+  const handleRespond = async (invite: Invite, action: "accept" | "decline") => {
+    setActionLoadingId(invite.id);
 
     try {
-      const endpoint = action === "accept" ? "/api/team/accept" : "/api/team/invite";
-      const method = action === "accept" ? "POST" : "DELETE";
+      let endpoint = "";
+      let method = "";
+      let body: any = {};
+
+      if (invite.type === "team") {
+        endpoint = action === "accept" ? "/api/team/accept" : "/api/team/invite";
+        method = action === "accept" ? "POST" : "DELETE";
+        body = { inviteId: invite.id };
+      } else {
+        endpoint = action === "accept" ? `/api/matches/invites/${invite.id}/accept` : `/api/matches/invites/${invite.id}/decline`;
+        method = "POST";
+        body = {};
+      }
+
       const res = await fetch(endpoint, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inviteId })});
+        body: Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
+      });
 
       const data = await res.json();
-      if (data.success) {
+      if (res.ok && data.success) {
         toast.success(
           action === "accept"
-            ? "Successfully joined the squad!"
+            ? (invite.type === "team" ? "Successfully joined the squad!" : "Successfully joined the match!")
             : "Invitation declined."
         );
         await fetchInvites();
       } else {
-        toast.error(data.message || "Failed to respond to invitation");
+        toast.error(data.message || data.detail || "Failed to respond to invitation");
       }
     } catch {
       toast.error("An error occurred. Please try again.");
@@ -120,17 +160,21 @@ export default function InvitesPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold text-white leading-snug">
-                      <span className="text-[#C6FF00] font-bold">{invite.teamName}</span> invited you
+                      {invite.type === "team" ? (
+                        <><span className="text-[#C6FF00] font-bold">{invite.teamName}</span> invited you</>
+                      ) : (
+                        <><span className="text-[#C6FF00] font-bold">{invite.senderName}</span> invited you</>
+                      )}
                     </div>
-                    <div className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5">
-                      Squad Invitation
+                    <div className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5 truncate pr-2">
+                      {invite.type === "team" ? "Squad Invitation" : `Match: ${invite.matchTitle}`}
                     </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <button
-                    onClick={() => handleRespond(invite.id, "decline")}
+                    onClick={() => handleRespond(invite, "decline")}
                     disabled={actionLoadingId !== null}
                     className="h-10 rounded-2xl border border-white/10 bg-white/5 text-xs font-display tracking-widest text-white/80 uppercase hover:bg-white/10 hover:text-white cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-1.5"
                     type="button"
@@ -147,7 +191,7 @@ export default function InvitesPage() {
                     )}
                   </button>
                   <button
-                    onClick={() => handleRespond(invite.id, "accept")}
+                    onClick={() => handleRespond(invite, "accept")}
                     disabled={actionLoadingId !== null}
                     className="h-10 rounded-2xl bg-[#C6FF00] text-black text-xs font-display tracking-widest font-bold uppercase hover:bg-[#b0e600] cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-[0_10px_20px_-5px_rgba(198,255,0,0.3)]"
                     type="button"
