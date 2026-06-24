@@ -91,32 +91,39 @@ async def create_match(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    match = Match(
-        title=match_in.title,
-        turf=match_in.turf,
-        location=match_in.location,
-        matchDate=match_in.date_time,
-        format=match_in.format,
-        maxPlayers=match_in.max_players,
-        password=match_in.password,
-        discordLink=match_in.discordLink,
-        hostId=db_user.id
-    )
-    session.add(match)
-    await session.commit()
-    await session.refresh(match)
+    try:
+        match = Match(
+            title=match_in.title,
+            turf=match_in.turf,
+            location=match_in.location,
+            matchDate=match_in.date_time,
+            format=match_in.format,
+            maxPlayers=match_in.max_players,
+            password=match_in.password,
+            discordLink=match_in.discordLink,
+            hostId=db_user.id
+        )
+        session.add(match)
+        await session.commit()
+        await session.refresh(match)
 
-    # Automatically add creator as a player
-    player = MatchPlayer(matchId=match.id, userId=db_user.id)
-    session.add(player)
-    await session.commit()
+        # Automatically add creator as a player
+        player = MatchPlayer(matchId=match.id, userId=db_user.id)
+        session.add(player)
+        await session.commit()
 
-    # Re-fetch with players eagerly loaded
-    stmt = select(Match).where(Match.id == match.id).options(selectinload(Match.players).selectinload(MatchPlayer.user))
-    fresh = await session.execute(stmt)
-    match = fresh.scalars().first()
+        # Re-fetch with players eagerly loaded
+        stmt = select(Match).where(Match.id == match.id).options(selectinload(Match.players).selectinload(MatchPlayer.user))
+        fresh = await session.execute(stmt)
+        match = fresh.scalars().first()
 
-    return _serialize_match(match)
+        return _serialize_match(match)
+    except Exception as e:
+        import traceback
+        error_msg = str(e)
+        traceback.print_exc()
+        return JSONResponse(status_code=500, content={"success": False, "detail": "Internal Server Error", "error": error_msg})
+
 
 
 @router.get("/")
