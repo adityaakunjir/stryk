@@ -100,7 +100,7 @@ export default function HomeLobbyPage() {
                 )}
               </button>
               <button onClick={() => router.push("/settings")} className="flex items-center gap-2 p-1 pr-2 rounded-full bg-[#151515]/5 backdrop-blur-md border border-[#151515]/10 shadow-sm hover:bg-[#151515]/10 transition">
-                <img src={playerData.avatar || "https://api.dicebear.com/7.x/initials/svg?seed=aditya"} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+                <img src={playerData.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(rawName)}`} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
                 <ChevronRight size={14} className="text-[#151515]/60 rotate-90" />
               </button>
             </div>
