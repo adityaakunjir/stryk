@@ -92,6 +92,16 @@ async function proxyRequest(req: NextRequest, path: string[]) {
               await triggerPusherEvent(channelName, "stats-submitted", {});
             } else if (subpath === "balance" || (path.length === 2 && path[1] === "save-teams")) {
               await triggerPusherEvent(channelName, "teams-balanced", {});
+            } else if (path.length === 2 && path[1] === "invite") {
+              const receiverId = parsedBody.receiverId;
+              if (receiverId) {
+                await triggerPusherEvent(`user-${receiverId}`, "match-invite", {
+                  matchId: path[0],
+                  senderName: parsedBody.senderName || "A friend",
+                  senderAvatar: parsedBody.senderAvatar || null,
+                  matchTitle: parsedBody.matchTitle || "a match"
+                });
+              }
             }
           }
         }
