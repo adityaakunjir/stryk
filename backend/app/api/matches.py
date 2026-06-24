@@ -10,10 +10,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from sqlmodel import select
+from sqlmodel import select, delete
 
 from app.core.database import get_session
-from app.models.match import Match, MatchPlayer, MatchInvite, MatchStats, MatchVerification, XPLog
+from app.models.match import Match, MatchPlayer, MatchInvite, MatchStats, MatchVerification, XPLog, MatchTeam
 from app.models.player import User
 from app.core.auth import get_current_user
 
@@ -152,6 +152,40 @@ async def debug_players(session: AsyncSession = Depends(get_session)):
             "found_with_where": p.userId if p else None
         })
     return {"user": user.id, "matches": res}
+
+@router.delete("/{match_id}")
+async def delete_match(
+    match_id: str,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    match_result = await session.execute(
+        select(Match).where((Match.id == match_id) | (Match.shortId == match_id))
+    )
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    if match.hostId != db_user.id:
+        raise HTTPException(status_code=403, detail="Only the host can delete this match")
+
+    # Manually cascade delete to prevent foreign key constraint failures
+    await session.execute(delete(MatchPlayer).where(MatchPlayer.matchId == match.id))
+    await session.execute(delete(MatchTeam).where(MatchTeam.matchId == match.id))
+    await session.execute(delete(MatchInvite).where(MatchInvite.matchId == match.id))
+    await session.execute(delete(MatchStats).where(MatchStats.matchId == match.id))
+    await session.execute(delete(MatchVerification).where(MatchVerification.matchId == match.id))
+
+    await session.delete(match)
+    await session.commit()
+    
+    return {"success": True, "message": "Match deleted successfully"}
 
 @router.get("/{match_id}")
 async def get_match_by_id(

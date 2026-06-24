@@ -161,6 +161,27 @@ export default function MatchesPage() {
     }
   };
 
+  const handleDeleteMatch = async (matchId: string) => {
+    if (!confirm("Are you sure you want to delete this match? This cannot be undone.")) return;
+    setJoiningId(matchId); // Reusing this for loading state
+    try {
+      const res = await fetch(`/api/matches/${matchId}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Match deleted successfully!");
+        await fetchMatches();
+      } else {
+        toast.error(data.message || "Failed to delete match");
+      }
+    } catch {
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setJoiningId(null);
+    }
+  };
   const handleJoinByCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setJoinCodeLoading(true);
@@ -530,6 +551,17 @@ export default function MatchesPage() {
                         ) : (
                           "JOIN MATCH"
                         )}
+                      </button>
+                    )}
+                    
+                    {isHost && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDeleteMatch(match.id); }}
+                        disabled={joiningId !== null}
+                        className="w-full mt-2 h-10 rounded-[1.25rem] border border-red-500/20 bg-transparent text-red-500/80 text-[10px] uppercase font-bold tracking-[0.15em] hover:bg-red-500/10 hover:text-red-500 transition duration-200 cursor-pointer flex items-center justify-center"
+                        type="button"
+                      >
+                        DELETE MATCH
                       </button>
                     )}
                   </div>
