@@ -59,18 +59,24 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
 async def create_db_tables():
     """Create all SQLModel tables and run Alembic migrations. Call during app startup."""
     import logging
+    import asyncio
     import os
-    from alembic import command
-    from alembic.config import Config
 
-    # Run Alembic migrations synchronously in a try/except block
     try:
-        logging.info("Running Alembic migrations...")
-        alembic_cfg = Config("alembic.ini")
-        command.upgrade(alembic_cfg, "head")
-        logging.info("Alembic migrations completed successfully.")
+        logging.info("Running Alembic migrations via subprocess...")
+        # Run alembic upgrade head as a subprocess so we don't conflict with the current running event loop in env.py
+        process = await asyncio.create_subprocess_exec(
+            "alembic", "upgrade", "head",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        stdout, stderr = await process.communicate()
+        if process.returncode == 0:
+            logging.info(f"Alembic migrations completed successfully: {stdout.decode()}")
+        else:
+            logging.error(f"Alembic migration failed. exit={process.returncode} stderr={stderr.decode()}")
     except Exception as e:
-        logging.error(f"Alembic migration failed: {e}")
+        logging.error(f"Alembic subprocess failed: {e}")
 
     if engine is None:
         return
