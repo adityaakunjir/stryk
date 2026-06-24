@@ -997,7 +997,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           onClose={() => setShowStatSubmission(false)}
           matchId={matchId}
           matchFormat={match.format}
-          isGoalkeeper={match.participants.find(p => p.userId === currentUserId)?.user.position === "GK"}
+          isGoalkeeper={match.participants.find(p => p.userId === currentUserId)?.user?.position === "GK"}
           onSuccess={() => {
             setHasSubmittedStats(true);
             fetchMatchDetails();
@@ -1053,7 +1053,7 @@ function PlayerRow({ participant, showJoinedIcon, onKick }: { participant: Match
           )}
         </div>
         <div className="text-[9px] text-white/40 uppercase font-medium tracking-wide mt-0.5">
-          {user.position || "N/A"} &bull; {user.playStyle || "N/A"}
+          {user?.position || "N/A"} &bull; {user.playStyle || "N/A"}
         </div>
       </div>
       <div className="shrink-0 flex flex-col items-end px-1.5">

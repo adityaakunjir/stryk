@@ -36,14 +36,29 @@ def _serialize_match(match: Match) -> dict:
     players = []
     if match.players:
         for p in match.players:
-            players.append({
+            player_dict = {
                 "id": p.id,
                 "matchId": p.matchId,
                 "userId": p.userId,
                 "team": p.team,
                 "status": p.status,
                 "joinedAt": p.joinedAt.isoformat() if p.joinedAt else None,
-            })
+            }
+            if hasattr(p, "user") and p.user:
+                player_dict["user"] = {
+                    "id": p.user.id,
+                    "clerkId": p.user.clerkId,
+                    "username": p.user.username,
+                    "firstName": p.user.firstName,
+                    "lastName": p.user.lastName,
+                    "avatarUrl": p.user.avatarUrl,
+                    "position": p.user.position,
+                    "playStyle": p.user.playStyle,
+                    "overall": p.user.overall,
+                    "xp": getattr(p.user, "xp", 0),
+                    "level": getattr(p.user, "level", 1)
+                }
+            players.append(player_dict)
 
     return {
         "id": match.id,
@@ -97,7 +112,7 @@ async def create_match(
     await session.commit()
 
     # Re-fetch with players eagerly loaded
-    stmt = select(Match).where(Match.id == match.id).options(selectinload(Match.players))
+    stmt = select(Match).where(Match.id == match.id).options(selectinload(Match.players).selectinload(MatchPlayer.user))
     fresh = await session.execute(stmt)
     match = fresh.scalars().first()
 
@@ -106,7 +121,7 @@ async def create_match(
 
 @router.get("/")
 async def get_all_matches(session: AsyncSession = Depends(get_session)):
-    statement = select(Match).options(selectinload(Match.players))
+    statement = select(Match).options(selectinload(Match.players).selectinload(MatchPlayer.user))
     result = await session.execute(statement)
     matches = result.scalars().all()
     return [_serialize_match(m) for m in matches]
@@ -117,7 +132,7 @@ async def get_match_by_id(
     match_id: str,
     session: AsyncSession = Depends(get_session),
 ):
-    stmt = select(Match).where(Match.id == match_id).options(selectinload(Match.players))
+    stmt = select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user))
     result = await session.execute(stmt)
     match = result.scalars().first()
     if not match:
@@ -142,7 +157,7 @@ async def join_match(
         raise HTTPException(status_code=404, detail="User not found")
 
     # Fetch Match
-    stmt = select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players))
+    stmt = select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players).selectinload(MatchPlayer.user))
     match_res = await session.execute(stmt)
     match = match_res.scalars().first()
     if not match:
@@ -196,7 +211,7 @@ async def join_match_by_code(
         raise HTTPException(status_code=404, detail="User not found")
 
     # Find the match
-    stmt = select(Match).where(Match.shortId == payload.code.upper()).options(selectinload(Match.players))
+    stmt = select(Match).where(Match.shortId == payload.code.upper()).options(selectinload(Match.players).selectinload(MatchPlayer.user))
     match_result = await session.execute(stmt)
     match = match_result.scalars().first()
 
@@ -561,7 +576,7 @@ async def check_in(
     player.checkedIn = True
     await session.commit()
     
-    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players)))
+    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
     match = match_result.scalars().first()
     return {"success": True, "data": _serialize_match(match)}
 
@@ -599,7 +614,7 @@ async def assign_team(
     player.team = payload.team
     await session.commit()
     
-    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players)))
+    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
     match = match_result.scalars().first()
     return {"success": True, "data": _serialize_match(match)}
 
@@ -671,7 +686,7 @@ async def save_teams(
     db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
     db_user = db_user_result.scalars().first()
     
-    match_result = await session.execute(select(Match).where(Match.id == match_id).options(selectinload(Match.players)))
+    match_result = await session.execute(select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
     match = match_result.scalars().first()
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
@@ -755,7 +770,7 @@ async def check_in(
     player.checkedIn = True
     await session.commit()
     
-    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players)))
+    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
     match = match_result.scalars().first()
     return {"success": True, "data": _serialize_match(match)}
 
@@ -793,7 +808,7 @@ async def assign_team(
     player.team = payload.team
     await session.commit()
     
-    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players)))
+    match_result = await session.execute(select(Match).where(Match.id == payload.matchId).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
     match = match_result.scalars().first()
     return {"success": True, "data": _serialize_match(match)}
 
@@ -865,7 +880,7 @@ async def save_teams(
     db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
     db_user = db_user_result.scalars().first()
     
-    match_result = await session.execute(select(Match).where(Match.id == match_id).options(selectinload(Match.players)))
+    match_result = await session.execute(select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
     match = match_result.scalars().first()
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
@@ -1264,7 +1279,7 @@ async def finalize_verifications(
         raise HTTPException(status_code=404, detail="User not found")
 
     match_result = await session.execute(
-        select(Match).where(Match.id == match_id).options(selectinload(Match.players))
+        select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user))
     )
     match = match_result.scalars().first()
     if not match:
