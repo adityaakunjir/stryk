@@ -195,7 +195,7 @@ export default function LeaderboardsPage() {
 
         {/* List Rankings (Ranks 4-10) */}
         <div className="mt-4 space-y-2 flex-1 min-h-0">
-          <div className="text-[9px] tracking-[0.2em] uppercase text-white/35 font-bold mb-1 px-1">Lobby Rankings</div>
+          <div className="text-[9px] tracking-[0.2em] uppercase text-white/35 font-bold mb-1 px-1">Global Rankings</div>
           {listItems.length === 0 ? (
             <div className="text-center py-8 text-xs text-white/30 font-medium border border-dashed border-white/5 rounded-2xl bg-white/[0.005]">
               No more ranks registered in this category.

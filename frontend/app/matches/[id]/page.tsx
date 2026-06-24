@@ -168,9 +168,9 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
     const handleJoined = (data: { participant: any; isFull: boolean }) => {
       const username = data?.participant?.user?.fullName || data?.participant?.user?.username || "A player";
-      addNotification(`${username} joined the lobby!`, data.isFull ? "warning" : "success");
+      addNotification(`${username} joined the match!`, data.isFull ? "warning" : "success");
       if (data.isFull) {
-        addNotification("Match lobby is now full!", "warning");
+        addNotification("Match is now full!", "warning");
       }
       fetchMatchDetails();
     };
@@ -180,7 +180,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         if (prevMatch) {
           const leavingPlayer = prevMatch.participants.find(p => p.id === data.participantId);
           const name = leavingPlayer?.user?.fullName || leavingPlayer?.user?.username || "A player";
-          addNotification(`${name} left the lobby.`, "info");
+          addNotification(`${name} left the match.`, "info");
         }
         return prevMatch;
       });
@@ -316,7 +316,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   const handleLeaveMatch = async () => {
-    if (!confirm("Are you sure you want to leave this match lobby?")) return;
+    if (!confirm("Are you sure you want to leave this match?")) return;
     setActionLoading(true);
     try {
       const res = await fetch("/api/matches/leave", {
@@ -487,7 +487,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
     return (
       <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen flex flex-col justify-center items-center px-6 text-center">
         <h1 className="text-xl font-bold text-red-400 uppercase tracking-widest">Match Not Found</h1>
-        <p className="text-xs text-white/50 mt-2">This match lobby may have been cancelled or deleted.</p>
+        <p className="text-xs text-white/50 mt-2">This match may have been cancelled or deleted.</p>
         <button 
           onClick={() => router.push("/matches")}
           className="mt-6 px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition"
@@ -543,7 +543,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           >
             <ArrowLeft size={16} />
           </button>
-          <div className="text-[10px] tracking-[0.3em] uppercase text-[#C6FF00] font-bold">Lobby details</div>
+          <div className="text-[10px] tracking-[0.3em] uppercase text-[#C6FF00] font-bold">Match details</div>
           <div className="w-9 h-9" />
         </header>
 
@@ -585,7 +585,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           <div className="flex items-start gap-3">
             <Calendar size={16} className="text-[#C6FF00] mt-0.5 shrink-0" />
             <div>
-              <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold block mb-0.5">Lobby Schedule</span>
+              <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold block mb-0.5">Match Schedule</span>
               <span className="text-xs text-white/85 leading-snug">{formatDateTime(match.matchDate)}</span>
             </div>
           </div>
@@ -608,7 +608,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <div className="flex items-start gap-3">
                 <MessageSquare size={16} className="text-[#5865F2] mt-0.5 shrink-0" />
                 <div className="flex-1">
-                  <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold block mb-0.5">Discord Lobby</span>
+                  <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold block mb-0.5">Discord Match Link</span>
                   {isEditingDiscord ? (
                     <div className="flex items-center gap-2 mt-1">
                       <input 
@@ -666,7 +666,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         {/* Captain/Organizer Section */}
         {match.creator && (
           <div className="mb-6">
-            <h2 className="text-[10px] tracking-[0.25em] uppercase text-white/40 font-bold mb-3 pl-1">Lobby Captain</h2>
+            <h2 className="text-[10px] tracking-[0.25em] uppercase text-white/40 font-bold mb-3 pl-1">Match Host</h2>
             <div className="p-3 rounded-2xl border border-[#C6FF00]/20 bg-[#C6FF00]/5 flex items-center gap-4">
               <div className="relative size-12 rounded-full overflow-hidden border border-[#C6FF00]/40 bg-[#0A0D15] shrink-0 flex items-center justify-center">
                 {match.creator.avatarUrl ? (
@@ -789,7 +789,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           {/* Unassigned Pool */}
           <div className="rounded-3xl border border-dashed border-white/10 bg-white/[0.01] p-4">
             <div className="flex items-center justify-between mb-3.5">
-              <span className="text-[10px] tracking-[0.2em] uppercase text-white/45 font-bold">Lobby Draft Pool</span>
+              <span className="text-[10px] tracking-[0.2em] uppercase text-white/45 font-bold">Match Draft Pool</span>
               {isJoined && currentTeam !== null && (
                 <button
                   onClick={() => handleAssignTeam(null)}
@@ -864,7 +864,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     disabled={actionLoading}
                     className="w-full h-11 rounded-2xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
                   >
-                    CLOSE LOBBY
+                    CLOSE MATCH
                   </button>
                 </div>
               )}
@@ -881,7 +881,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 ) : (
                   <>
                     <LogOut size={14} />
-                    LEAVE MATCH LOBBY
+                    LEAVE MATCH
                   </>
                 )}
               </button>
@@ -899,7 +899,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   ) : (
                     <>
                       <X size={14} />
-                      CLOSE MATCH LOBBY
+                      CLOSE MATCH
                     </>
                   )}
                 </button>
@@ -919,7 +919,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               ) : (
                 <>
                   <UserPlus size={14} />
-                  {participants.length >= match.maxPlayers ? "LOBBY FULL" : "JOIN MATCH LOBBY"}
+                  {participants.length >= match.maxPlayers ? "MATCH FULL" : "JOIN MATCH"}
                 </>
               )}
             </button>

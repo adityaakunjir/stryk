@@ -123,7 +123,7 @@ export default function MatchesPage() {
 
       const data = await res.json();
       if (res.ok && data.success) {
-        toast.success("Successfully joined the match lobby!");
+        toast.success("Successfully joined the match!");
         setShowPrivateJoinModal(false);
         setPrivateJoinPassword("");
         setPrivateJoinMatchId(null);
@@ -149,7 +149,7 @@ export default function MatchesPage() {
 
       const data = await res.json();
       if (data.success) {
-        toast.success("Successfully left the match lobby!");
+        toast.success("Successfully left the match!");
         await fetchMatches();
       } else {
         toast.error(data.message || "Failed to leave match");
@@ -496,7 +496,7 @@ export default function MatchesPage() {
                       />
                     </div>
                     <div className="flex justify-between items-center mt-2">
-                      <span className="text-[9px] uppercase tracking-[0.15em] text-[#A28B52] font-bold">Lobby Progress</span>
+                      <span className="text-[9px] uppercase tracking-[0.15em] text-[#A28B52] font-bold">Match Progress</span>
                       <span className="text-[10px] text-[#A0A0A0] font-semibold tracking-wide">
                         {isFull ? "No spots left" : `${spotsLeft} spots remaining`}
                       </span>
@@ -527,7 +527,7 @@ export default function MatchesPage() {
                         className="w-full h-12 rounded-[1.25rem] border border-white/5 bg-[#151515] text-white/30 text-[11px] uppercase font-bold tracking-[0.15em] shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"
                         type="button"
                       >
-                        LOBBY FULL
+                        MATCH FULL
                       </button>
                     ) : (
                       <button
