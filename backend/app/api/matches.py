@@ -135,6 +135,24 @@ async def get_all_matches(session: AsyncSession = Depends(get_session)):
     return [_serialize_match(m) for m in matches]
 
 
+@router.get("/debug-players")
+async def debug_players(session: AsyncSession = Depends(get_session)):
+    user = (await session.execute(select(User))).scalars().first()
+    if not user:
+        return {"error": "no user"}
+    matches = (await session.execute(select(Match).where(Match.hostId == user.id))).scalars().all()
+    res = []
+    for m in matches:
+        players = (await session.execute(select(MatchPlayer).where(MatchPlayer.matchId == m.id))).scalars().all()
+        p = (await session.execute(select(MatchPlayer).where(MatchPlayer.matchId == m.id, MatchPlayer.userId == user.id))).scalars().first()
+        res.append({
+            "matchId": m.id,
+            "shortId": m.shortId,
+            "players": [pl.userId for pl in players],
+            "found_with_where": p.userId if p else None
+        })
+    return {"user": user.id, "matches": res}
+
 @router.get("/{match_id}")
 async def get_match_by_id(
     match_id: str,
