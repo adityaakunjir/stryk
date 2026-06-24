@@ -57,7 +57,7 @@ export default function HomeLobbyPage() {
     );
   }
 
-  const rawName = user?.firstName || user?.fullName || playerData.fullName || "PLAYER";
+  const rawName = playerData.fullName || user?.fullName || user?.firstName || "PLAYER";
   const firstName = rawName.split(" ")[0].toUpperCase();
   const position = playerData.position || "CAM";
   const playStyle = playerData.playStyle || "PLAYMAKER";

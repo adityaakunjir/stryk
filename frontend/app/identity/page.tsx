@@ -70,23 +70,33 @@ export default function IdentityPage() {
   // Debounced username
   const debouncedUsername = useDebounce(username, 500);
 
+  const autofillAttempted = useRef(false);
+  const contextSynced = useRef(false);
+
   // Autofill from Clerk
   useEffect(() => {
-    if (clerkLoaded && user && !fullName && !playerData?.fullName) {
-      if (user.fullName) setFullName(user.fullName);
+    if (clerkLoaded && user && !autofillAttempted.current) {
+      autofillAttempted.current = true;
+      if (!fullName && !playerData?.fullName && user.fullName) {
+        setFullName(user.fullName);
+      }
     }
-  }, [clerkLoaded, user, fullName, playerData]);
+  }, [clerkLoaded, user, fullName, playerData?.fullName]);
 
   // Sync with context on load
   useEffect(() => {
-    if (playerData) {
-      queueMicrotask(() => {
-        if (playerData.fullName) setFullName(playerData.fullName);
-        if (playerData.username) setUsername(playerData.username);
-        if (playerData.avatar) setAvatar(playerData.avatar);
-      });
+    if (playerData && !contextSynced.current) {
+      // Only sync if there is actually data, so we don't prematurely lock it out
+      if (playerData.fullName || playerData.username || playerData.avatar) {
+        contextSynced.current = true;
+        queueMicrotask(() => {
+          if (playerData.fullName && !fullName) setFullName(playerData.fullName);
+          if (playerData.username && !username) setUsername(playerData.username);
+          if (playerData.avatar && !avatar) setAvatar(playerData.avatar);
+        });
+      }
     }
-  }, [playerData]);
+  }, [playerData, fullName, username, avatar]);
 
   // Real-time username validation
   useEffect(() => {
