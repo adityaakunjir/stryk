@@ -99,6 +99,7 @@ async def create_db_tables():
             
         # Raw SQL fallbacks in case Alembic fails or misses something during deployment
         try:
+            # Users
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS xp INTEGER NOT NULL DEFAULT 0;'))
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS level INTEGER NOT NULL DEFAULT 1;'))
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "needsUpgradeAnimation" BOOLEAN NOT NULL DEFAULT FALSE;'))
@@ -109,5 +110,38 @@ async def create_db_tables():
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS defending FLOAT NOT NULL DEFAULT 60.0;'))
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS physical FLOAT NOT NULL DEFAULT 60.0;'))
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS gk FLOAT NOT NULL DEFAULT 60.0;'))
+            
+            # Matches
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS turf VARCHAR;'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "discordLink" VARCHAR;'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "teamAScore" INTEGER;'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "teamBScore" INTEGER;'))
+            
+            # Match Stats
+            stats_cols = [
+                ("shotsOnTarget", "INTEGER NOT NULL DEFAULT 0"),
+                ("keyPasses", "INTEGER NOT NULL DEFAULT 0"),
+                ("interceptions", "INTEGER NOT NULL DEFAULT 0"),
+                ("ballRecoveries", "INTEGER NOT NULL DEFAULT 0"),
+                ("progressivePasses", "INTEGER NOT NULL DEFAULT 0"),
+                ("blocks", "INTEGER NOT NULL DEFAULT 0"),
+                ("clearances", "INTEGER NOT NULL DEFAULT 0"),
+                ("bigSaves", "INTEGER NOT NULL DEFAULT 0"),
+                ("penaltySaves", "INTEGER NOT NULL DEFAULT 0"),
+                ("distributionAssists", "INTEGER NOT NULL DEFAULT 0"),
+                ("duelsWon", "INTEGER NOT NULL DEFAULT 0"),
+                ("aerialDuelsWon", "INTEGER NOT NULL DEFAULT 0"),
+                ("yellowCards", "INTEGER NOT NULL DEFAULT 0"),
+                ("redCards", "INTEGER NOT NULL DEFAULT 0"),
+                ("ownGoals", "INTEGER NOT NULL DEFAULT 0"),
+                ("noShow", "BOOLEAN NOT NULL DEFAULT FALSE"),
+                ("status", "VARCHAR NOT NULL DEFAULT 'pending'"),
+                ("verificationNote", "VARCHAR")
+            ]
+            for col, dtype in stats_cols:
+                await conn.execute(text(f'ALTER TABLE match_stats ADD COLUMN IF NOT EXISTS "{col}" {dtype};'))
+                
+            # Match Verifications
+            await conn.execute(text('ALTER TABLE match_verifications ADD COLUMN IF NOT EXISTS "disputeReason" VARCHAR;'))
         except Exception as e:
-            logging.error(f"Raw SQL fallback for users columns failed (expected on SQLite): {e}")
+            logging.error(f"Raw SQL fallback for columns failed (expected on SQLite): {e}")
