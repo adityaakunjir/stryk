@@ -24,7 +24,19 @@ class UserBase(SQLModel):
     strongFoot: Optional[str] = Field(max_length=10, default=None)
     bio: Optional[str] = Field(default=None, max_length=120)
     
+    xp: int = Field(default=0, ge=0)
+    level: int = Field(default=1, ge=1)
+    needsUpgradeAnimation: bool = Field(default=False)
+
     overall: int = Field(default=60, ge=1, le=99)
+    pace: float = Field(default=60.0)
+    shooting: float = Field(default=60.0)
+    passing: float = Field(default=60.0)
+    dribbling: float = Field(default=60.0)
+    defending: float = Field(default=60.0)
+    physical: float = Field(default=60.0)
+    gk: float = Field(default=60.0)
+
     matchesPlayed: int = Field(default=0, ge=0)
     wins: int = Field(default=0, ge=0)
     losses: int = Field(default=0, ge=0)

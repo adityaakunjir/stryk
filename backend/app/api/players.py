@@ -127,3 +127,24 @@ async def update_my_profile(
     await session.flush()
     await session.refresh(player)
     return player
+
+@router.post("/clear-upgrade")
+async def clear_upgrade_animation(
+    session: AsyncSession = Depends(get_session),
+    user: dict = Depends(get_current_user),
+):
+    clerkId = user.get("sub")
+    result = await session.execute(
+        select(User).where(User.clerkId == clerkId)
+    )
+    player = result.scalars().first()
+    if not player:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Player profile not found",
+        )
+
+    player.needsUpgradeAnimation = False
+    session.add(player)
+    await session.commit()
+    return {"success": True}

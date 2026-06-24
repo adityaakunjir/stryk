@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { FriendActionButton } from "@/components/friend-action-button";
+import { UpgradeOverlay } from "@/components/upgrade-overlay";
 
 const BASE_URL_RAW = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 const API_BASE_URL = (!BASE_URL_RAW.endsWith("/api/v1") && !BASE_URL_RAW.endsWith("/api/v1/")) 
@@ -236,6 +237,14 @@ export default async function PublicPlayerPage({ params }: Props) {
           ) : null}
         </div>
       </div>
+      
+      {viewerUserId === user.id && user.needsUpgradeAnimation && (
+        <UpgradeOverlay 
+          level={user.level || 1} 
+          needsUpgrade={true} 
+          onClose={() => {}} 
+        />
+      )}
     </main>
   );
 }

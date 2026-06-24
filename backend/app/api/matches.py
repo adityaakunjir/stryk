@@ -897,12 +897,26 @@ async def save_teams(
 class SubmitStatsRequest(BaseModel):
     goals: int = 0
     assists: int = 0
-    saves: int = 0
+    shotsOnTarget: int = 0
+    keyPasses: int = 0
+    interceptions: int = 0
+    ballRecoveries: int = 0
+    progressivePasses: int = 0
     tackles: int = 0
+    blocks: int = 0
+    clearances: int = 0
+    saves: int = 0
+    bigSaves: int = 0
+    penaltySaves: int = 0
+    distributionAssists: int = 0
+    duelsWon: int = 0
+    aerialDuelsWon: int = 0
     cleanSheet: bool = False
     motm: bool = False
     yellowCards: int = 0
     redCards: int = 0
+    ownGoals: int = 0
+    noShow: bool = False
 
 class MatchClosePayload(BaseModel):
     teamAScore: Optional[int] = None
@@ -1001,12 +1015,26 @@ async def submit_stats(
         userId=db_user.id,
         goals=goals,
         assists=assists,
-        saves=payload.saves,
+        shotsOnTarget=payload.shotsOnTarget,
+        keyPasses=payload.keyPasses,
+        interceptions=payload.interceptions,
+        ballRecoveries=payload.ballRecoveries,
+        progressivePasses=payload.progressivePasses,
         tackles=payload.tackles,
+        blocks=payload.blocks,
+        clearances=payload.clearances,
+        saves=payload.saves,
+        bigSaves=payload.bigSaves,
+        penaltySaves=payload.penaltySaves,
+        distributionAssists=payload.distributionAssists,
+        duelsWon=payload.duelsWon,
+        aerialDuelsWon=payload.aerialDuelsWon,
         cleanSheet=clean_sheet,
         motm=payload.motm,
         yellowCards=yellow_cards,
         redCards=red_cards,
+        ownGoals=payload.ownGoals,
+        noShow=payload.noShow,
         status="pending_verification"
     )
 
@@ -1254,7 +1282,9 @@ async def finalize_verifications(
     quorum_threshold = 0.6 * N
 
     stats_result = await session.execute(
-        select(MatchStats).where(MatchStats.matchId == match_id)
+        select(MatchStats)
+        .where(MatchStats.matchId == match_id)
+        .options(selectinload(MatchStats.user))
     )
     all_stats = stats_result.scalars().all()
 
@@ -1278,19 +1308,84 @@ async def finalize_verifications(
         if total_votes >= quorum_threshold:
             if approvals >= quorum_threshold:
                 stat.status = "verified"
-                # Award XP
-                xp_award = (stat.goals * 10) + (stat.assists * 5) + (stat.saves * 2) + (stat.tackles * 1)
-                if stat.cleanSheet:
-                    xp_award += 20
-                if stat.motm:
+                # Calculate Base XP
+                is_win = (match.teamAScore > match.teamBScore and stat.user.id in [p.userId for p in match.players if p.team == "A"]) or \
+                         (match.teamBScore > match.teamAScore and stat.user.id in [p.userId for p in match.players if p.team == "B"])
+                is_draw = match.teamAScore == match.teamBScore and match.teamAScore is not None
+
+                xp_award = 50 # Join Match
+                if not stat.noShow:
+                    xp_award += 30 # Finish Match
+                
+                if is_win:
                     xp_award += 50
-                if stat.yellowCards > 0:
-                    xp_award -= (stat.yellowCards * 5)
-                if stat.redCards > 0:
-                    xp_award -= 20
+                elif is_draw:
+                    xp_award += 20
                 
-                xp_award = max(xp_award, 10) # Minimum 10 XP for participating
+                xp_award += 20 # Verified Stats
+                if stat.motm:
+                    xp_award += 40
                 
+                # Performance XP
+                xp_award += (stat.goals * 25)
+                xp_award += (stat.assists * 18)
+                xp_award += (stat.shotsOnTarget * 5)
+                xp_award += (stat.keyPasses * 8)
+                xp_award += (stat.interceptions * 8)
+                xp_award += (stat.ballRecoveries * 6)
+                xp_award += (stat.progressivePasses * 6)
+                xp_award += (stat.tackles * 10)
+                xp_award += (stat.blocks * 9)
+                xp_award += (stat.clearances * 6)
+                if stat.cleanSheet:
+                    xp_award += 25
+                xp_award += (stat.saves * 12)
+                xp_award += (stat.bigSaves * 18)
+                xp_award += (stat.penaltySaves * 30)
+                xp_award += (stat.distributionAssists * 15)
+                xp_award += (stat.duelsWon * 5)
+                xp_award += (stat.aerialDuelsWon * 6)
+                
+                # Discipline XP
+                xp_award -= (stat.yellowCards * 10)
+                xp_award -= (stat.redCards * 25)
+                xp_award -= (stat.ownGoals * 20)
+                if stat.noShow:
+                    xp_award -= 40
+                
+                # Update User XP and Level
+                stat.user.xp += max(0, xp_award)
+                new_level = (stat.user.xp // 1000) + 1
+                if new_level > stat.user.level:
+                    # Check threshold for frame change
+                    if (stat.user.level <= 5 and new_level >= 6) or (stat.user.level <= 15 and new_level >= 16):
+                        stat.user.needsUpgradeAnimation = True
+                    stat.user.level = new_level
+
+                # Update User OVR Attributes
+                stat.user.shooting += (stat.goals * 0.2) + (stat.shotsOnTarget * 0.05)
+                stat.user.pace += (stat.goals * 0.1)
+                stat.user.passing += (stat.assists * 0.15) + (stat.keyPasses * 0.1) + (stat.progressivePasses * 0.1) + (stat.distributionAssists * 0.1)
+                stat.user.dribbling += (stat.assists * 0.1)
+                stat.user.defending += (stat.tackles * 0.1) + (stat.interceptions * 0.1) + (stat.blocks * 0.1) + (stat.clearances * 0.1)
+                stat.user.physical += (stat.ballRecoveries * 0.1) + (stat.duelsWon * 0.1) + (stat.aerialDuelsWon * 0.1)
+                stat.user.gk += (stat.saves * 0.1) + (stat.bigSaves * 0.2) + (stat.penaltySaves * 0.3)
+                
+                if stat.cleanSheet:
+                    if stat.user.position == "GK":
+                        stat.user.gk += 0.3
+                    else:
+                        stat.user.defending += 0.2
+                
+                # Recalculate Overall
+                if stat.user.position == "GK":
+                    stat.user.overall = int((stat.user.gk + stat.user.pace + stat.user.passing + stat.user.physical) / 4)
+                else:
+                    stat.user.overall = int((stat.user.pace + stat.user.shooting + stat.user.passing + stat.user.dribbling + stat.user.defending + stat.user.physical) / 6)
+                
+                # Cap attributes
+                stat.user.overall = min(99, stat.user.overall)
+
                 log = XPLog(userId=target_id, matchId=match_id, amount=xp_award, reason="Match Stats Verified")
                 session.add(log)
             else:

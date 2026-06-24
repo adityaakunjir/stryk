@@ -12,12 +12,26 @@ interface PendingVerification {
   avatarUrl: string | null;
   goals: number;
   assists: number;
-  saves: number;
+  shotsOnTarget: number;
+  keyPasses: number;
+  progressivePasses: number;
   tackles: number;
+  interceptions: number;
+  blocks: number;
+  clearances: number;
+  ballRecoveries: number;
+  duelsWon: number;
+  aerialDuelsWon: number;
+  saves: number;
+  bigSaves: number;
+  penaltySaves: number;
+  distributionAssists: number;
   cleanSheet: boolean;
   motm: boolean;
   yellowCards: number;
   redCards: number;
+  ownGoals: number;
+  noShow: boolean;
   status: string;
   verificationNote: string | null;
 }
@@ -181,22 +195,48 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
               )}
 
               <div className="grid grid-cols-2 gap-3 mb-6">
-                <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col items-center">
-                  <span className="text-2xl font-display text-white">{currentStat.goals}</span>
-                  <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Goals</span>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col items-center">
-                  <span className="text-2xl font-display text-white">{currentStat.assists}</span>
-                  <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Assists</span>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col items-center">
-                  <span className="text-2xl font-display text-white">{currentStat.saves}</span>
-                  <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Saves</span>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col items-center">
-                  <span className="text-2xl font-display text-white">{currentStat.tackles}</span>
-                  <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Tackles</span>
-                </div>
+                {[
+                  { label: "Goals", value: currentStat.goals },
+                  { label: "Assists", value: currentStat.assists },
+                  { label: "Shots (T)", value: currentStat.shotsOnTarget },
+                  { label: "Key Passes", value: currentStat.keyPasses },
+                  { label: "Prog. Passes", value: currentStat.progressivePasses },
+                  { label: "Tackles", value: currentStat.tackles },
+                  { label: "Interceptions", value: currentStat.interceptions },
+                  { label: "Blocks", value: currentStat.blocks },
+                  { label: "Clearances", value: currentStat.clearances },
+                  { label: "Ball Recov.", value: currentStat.ballRecoveries },
+                  { label: "Duels", value: currentStat.duelsWon },
+                  { label: "Aerial", value: currentStat.aerialDuelsWon },
+                  { label: "Saves", value: currentStat.saves },
+                  { label: "Big Saves", value: currentStat.bigSaves },
+                  { label: "Pen Saves", value: currentStat.penaltySaves },
+                  { label: "Dist. Assists", value: currentStat.distributionAssists },
+                  { label: "Yellow", value: currentStat.yellowCards },
+                  { label: "Red", value: currentStat.redCards },
+                  { label: "Own Goals", value: currentStat.ownGoals }
+                ].filter(s => s.value > 0).map(s => (
+                  <div key={s.label} className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col items-center">
+                    <span className="text-2xl font-display text-white">{s.value}</span>
+                    <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest text-center">{s.label}</span>
+                  </div>
+                ))}
+                
+                {currentStat.cleanSheet && (
+                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 flex flex-col items-center col-span-2">
+                    <span className="text-lg font-bold text-blue-400 uppercase tracking-widest mt-1">Clean Sheet</span>
+                  </div>
+                )}
+                {currentStat.motm && (
+                  <div className="bg-[#A28B52]/10 border border-[#A28B52]/30 rounded-xl p-3 flex flex-col items-center col-span-2">
+                    <span className="text-lg font-bold text-[#A28B52] uppercase tracking-widest mt-1">Man of the Match</span>
+                  </div>
+                )}
+                {currentStat.noShow && (
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 flex flex-col items-center col-span-2">
+                    <span className="text-lg font-bold text-red-500 uppercase tracking-widest mt-1">No Show</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center gap-2 mb-8">
