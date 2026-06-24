@@ -12,7 +12,7 @@ from sqlalchemy.orm import selectinload
 from sqlmodel import select
 
 from app.core.database import get_session
-from app.models.match import Match, MatchPlayer, MatchInvite, MatchStats
+from app.models.match import Match, MatchPlayer, MatchInvite, MatchStats, MatchVerification, XPLog
 from app.models.player import User
 from app.core.auth import get_current_user
 
@@ -1109,3 +1109,197 @@ async def reconcile_match_stats(
         "message": f"Reconciliation complete. Flagged {flagged_count} outlier stats.",
         "flaggedCount": flagged_count
     }
+
+# --- Peer Verification Endpoints ---
+
+@router.get("/{match_id}/pending-verifications")
+async def get_pending_verifications(
+    match_id: str,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Get match stats submitted by OTHER players, which haven't been verified by current user
+    # and are still in pending_verification status.
+    stats_result = await session.execute(
+        select(MatchStats)
+        .where(MatchStats.matchId == match_id)
+        .where(MatchStats.userId != db_user.id)
+        .where(MatchStats.status.in_(["pending_verification", "flagged_peer_verification"]))
+        .options(selectinload(MatchStats.user))
+    )
+    all_other_stats = stats_result.scalars().all()
+
+    # Get verifications already made by this user
+    verifications_result = await session.execute(
+        select(MatchVerification)
+        .where(MatchVerification.matchId == match_id)
+        .where(MatchVerification.verifierId == db_user.id)
+    )
+    already_verified_target_ids = {v.targetPlayerId for v in verifications_result.scalars().all()}
+
+    pending = []
+    for stat in all_other_stats:
+        if stat.userId not in already_verified_target_ids:
+            pending.append({
+                "id": stat.id,
+                "userId": stat.userId,
+                "username": stat.user.username,
+                "avatarUrl": stat.user.avatarUrl,
+                "goals": stat.goals,
+                "assists": stat.assists,
+                "saves": stat.saves,
+                "tackles": stat.tackles,
+                "cleanSheet": stat.cleanSheet,
+                "motm": stat.motm,
+                "yellowCards": stat.yellowCards,
+                "redCards": stat.redCards,
+                "status": stat.status,
+                "verificationNote": stat.verificationNote
+            })
+
+    return {"success": True, "data": pending}
+
+
+class VerifyStatsRequest(BaseModel):
+    targetPlayerId: str
+    vote: int  # 1 for approve, -1 for dispute
+    disputeReason: Optional[str] = None
+
+@router.post("/{match_id}/verify")
+async def verify_stats(
+    match_id: str,
+    payload: VerifyStatsRequest,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if payload.targetPlayerId == db_user.id:
+        raise HTTPException(status_code=400, detail="Cannot verify your own stats")
+
+    # Check if already verified
+    existing_result = await session.execute(
+        select(MatchVerification)
+        .where(MatchVerification.matchId == match_id)
+        .where(MatchVerification.verifierId == db_user.id)
+        .where(MatchVerification.targetPlayerId == payload.targetPlayerId)
+    )
+    if existing_result.scalars().first():
+        raise HTTPException(status_code=400, detail="Already voted on this player's stats")
+
+    # Check if stats exist
+    stat_result = await session.execute(
+        select(MatchStats)
+        .where(MatchStats.matchId == match_id)
+        .where(MatchStats.userId == payload.targetPlayerId)
+    )
+    if not stat_result.scalars().first():
+        raise HTTPException(status_code=404, detail="Stats not found for target player")
+
+    if payload.vote == -1 and not payload.disputeReason:
+        raise HTTPException(status_code=400, detail="Dispute reason is required")
+
+    verification = MatchVerification(
+        matchId=match_id,
+        targetPlayerId=payload.targetPlayerId,
+        verifierId=db_user.id,
+        vote=payload.vote,
+        disputeReason=payload.disputeReason
+    )
+    session.add(verification)
+    await session.commit()
+
+    return {"success": True, "message": "Vote recorded"}
+
+
+@router.post("/{match_id}/finalize-verifications")
+async def finalize_verifications(
+    match_id: str,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    # This would usually be called by a cron job, but we'll expose it for manual/host triggering
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    match_result = await session.execute(
+        select(Match).where(Match.id == match_id).options(selectinload(Match.players))
+    )
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    if match.status != "closed":
+        raise HTTPException(status_code=400, detail="Match is not closed")
+
+    # Total players in match
+    total_players = len(match.players)
+    if total_players <= 1:
+        return {"success": True, "message": "Not enough players to verify"}
+
+    N = total_players - 1  # Total OTHER players
+    quorum_threshold = 0.6 * N
+
+    stats_result = await session.execute(
+        select(MatchStats).where(MatchStats.matchId == match_id)
+    )
+    all_stats = stats_result.scalars().all()
+
+    verifications_result = await session.execute(
+        select(MatchVerification).where(MatchVerification.matchId == match_id)
+    )
+    all_verifications = verifications_result.scalars().all()
+
+    results = []
+    
+    for stat in all_stats:
+        if stat.status in ["verified", "voided"]:
+            continue # already finalized
+            
+        target_id = stat.userId
+        votes_for_target = [v for v in all_verifications if v.targetPlayerId == target_id]
+        
+        total_votes = len(votes_for_target)
+        approvals = sum(1 for v in votes_for_target if v.vote == 1)
+        
+        if total_votes >= quorum_threshold:
+            if approvals >= quorum_threshold:
+                stat.status = "verified"
+                # Award XP
+                xp_award = (stat.goals * 10) + (stat.assists * 5) + (stat.saves * 2) + (stat.tackles * 1)
+                if stat.cleanSheet:
+                    xp_award += 20
+                if stat.motm:
+                    xp_award += 50
+                if stat.yellowCards > 0:
+                    xp_award -= (stat.yellowCards * 5)
+                if stat.redCards > 0:
+                    xp_award -= 20
+                
+                xp_award = max(xp_award, 10) # Minimum 10 XP for participating
+                
+                log = XPLog(userId=target_id, matchId=match_id, amount=xp_award, reason="Match Stats Verified")
+                session.add(log)
+            else:
+                stat.status = "voided"
+        else:
+            # Under 60% responded after 24 hrs
+            stat.status = "voided"
+            
+        results.append({"userId": target_id, "status": stat.status})
+
+    await session.commit()
+    return {"success": True, "message": "Verifications finalized", "results": results}

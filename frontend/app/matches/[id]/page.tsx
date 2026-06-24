@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { TeamBuilderModal } from "@/components/team-builder-modal";
 import { StatSubmissionModal } from "@/components/stat-submission-modal";
 import { CloseMatchModal } from "@/components/close-match-modal";
+import { PeerVerificationModal } from "@/components/peer-verification-modal";
 
 interface MatchParticipant {
   id: string;
@@ -76,6 +77,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [showStatSubmission, setShowStatSubmission] = useState(false);
   const [hasSubmittedStats, setHasSubmittedStats] = useState(false);
   const [showCloseModal, setShowCloseModal] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [pendingVerificationCount, setPendingVerificationCount] = useState(0);
 
   const addNotification = useCallback((message: string, type: "info" | "success" | "warning" = "info") => {
     if (type === "success") {
@@ -117,6 +120,19 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   }, [matchId]);
 
+  const checkPendingVerifications = useCallback(async () => {
+    if (!matchId || !currentUserId) return;
+    try {
+      const res = await fetch(`/api/matches/${matchId}/pending-verifications`);
+      const data = await res.json();
+      if (data.success && data.data) {
+        setPendingVerificationCount(data.data.length);
+      }
+    } catch (err) {
+      console.error("Failed to check verifications", err);
+    }
+  }, [matchId, currentUserId]);
+
   // Sync profile to get current user ID
   useEffect(() => {
     const fetchUserId = async () => {
@@ -135,6 +151,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
     fetchUserId();
     fetchMatchDetails();
   }, [fetchMatchDetails]);
+
+  useEffect(() => {
+    if (currentUserId && match?.status === "closed") {
+      checkPendingVerifications();
+    }
+  }, [currentUserId, match?.status, checkPendingVerifications]);
 
   // Listen for real-time updates via Pusher
   useEffect(() => {
@@ -202,6 +224,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
       addNotification("Match has started!", "success");
       fetchMatchDetails();
     });
+    channel.bind("stats-submitted", () => {
+      // Check if we need to verify them
+      checkPendingVerifications();
+    });
 
     return () => {
       channel.unbind("player-joined", handleJoined);
@@ -211,9 +237,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
       channel.unbind("teams-balanced");
       channel.unbind("match-closed");
       channel.unbind("match-started");
+      channel.unbind("stats-submitted");
       pusher.unsubscribe(channelName);
     };
-  }, [matchId, fetchMatchDetails, addNotification, router]);
+  }, [matchId, fetchMatchDetails, addNotification, router, checkPendingVerifications]);
 
   useEffect(() => {
     if (!showInviteModal) return;
@@ -534,6 +561,24 @@ export default function MatchDetailsPage({ params }: PageProps) {
             <span className="truncate">{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
           </div>
         </div>
+
+        {/* Verification Alert */}
+        {pendingVerificationCount > 0 && (
+          <div className="mb-6 p-4 rounded-2xl bg-[#C6FF00]/10 border border-[#C6FF00]/20 flex items-center justify-between shadow-[0_0_15px_rgba(198,255,0,0.1)]">
+            <div className="flex-1">
+              <h3 className="text-[#C6FF00] font-bold text-sm tracking-wide">Action Required</h3>
+              <p className="text-[#C6FF00]/70 text-xs mt-0.5 leading-tight">
+                You have {pendingVerificationCount} peer stat submissions to review.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowVerificationModal(true)}
+              className="ml-4 px-4 h-10 rounded-xl bg-[#C6FF00] text-black font-bold text-xs uppercase tracking-widest hover:bg-[#C6FF00]/90 transition"
+            >
+              Verify
+            </button>
+          </div>
+        )}
 
         {/* Schedule & Info */}
         <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-3 mb-6">
@@ -964,6 +1009,17 @@ export default function MatchDetailsPage({ params }: PageProps) {
         <CloseMatchModal
           isOpen={showCloseModal}
           onClose={() => setShowCloseModal(false)}
+          matchId={matchId}
+        />
+      )}
+
+      {match && (
+        <PeerVerificationModal
+          isOpen={showVerificationModal}
+          onClose={() => {
+            setShowVerificationModal(false);
+            checkPendingVerifications();
+          }}
           matchId={matchId}
         />
       )}

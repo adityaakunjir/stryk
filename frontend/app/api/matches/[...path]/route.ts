@@ -55,7 +55,11 @@ async function proxyRequest(req: NextRequest, path: string[]) {
           
           if (["join", "leave", "balance", "check-in", "assign-team"].includes(subpath)) {
             matchId = parsedBody.matchId;
-          } else if (path.length === 2 && (path[1] === "kick" || path[1] === "start" || path[1] === "save-teams" || path[1] === "close" || path[1] === "submit-stats" || path[1] === "reconcile")) {
+          } else if (path.length === 2 && (
+            path[1] === "kick" || path[1] === "start" || path[1] === "save-teams" || 
+            path[1] === "close" || path[1] === "submit-stats" || path[1] === "reconcile" ||
+            path[1] === "pending-verifications" || path[1] === "verify" || path[1] === "finalize-verifications"
+          )) {
             matchId = path[0];
           }
 
@@ -84,6 +88,8 @@ async function proxyRequest(req: NextRequest, path: string[]) {
               await triggerPusherEvent(channelName, "player-checked-in", { fullName: "A player" });
             } else if (subpath === "assign-team") {
               await triggerPusherEvent(channelName, "team-assigned", { team: parsedBody.team, participantId: parsedBody.participantId });
+            } else if (path.length === 2 && path[1] === "submit-stats") {
+              await triggerPusherEvent(channelName, "stats-submitted", {});
             } else if (subpath === "balance" || (path.length === 2 && path[1] === "save-teams")) {
               await triggerPusherEvent(channelName, "teams-balanced", {});
             }

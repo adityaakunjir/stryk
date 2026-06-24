@@ -142,6 +142,7 @@ class MatchVerificationBase(SQLModel):
     targetPlayerId: str = Field(index=True, foreign_key="users.id")
     verifierId: str = Field(index=True, foreign_key="users.id")
     vote: int = Field(default=1) # 1 for valid, -1 for invalid
+    disputeReason: Optional[str] = Field(default=None, max_length=100)
 
 
 class MatchVerification(MatchVerificationBase, table=True):
