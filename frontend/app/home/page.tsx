@@ -349,10 +349,10 @@ export default function HomeLobbyPage() {
               <div className="text-[10px] font-bold text-[#C3DF1B] ml-2 drop-shadow-sm">0/1</div>
             </div>
 
-            {/* Action Grid (2 buttons) */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Action Grid (1 button for now) */}
+            <div className="grid grid-cols-1 gap-3">
               <ActionButton icon={<UserPlus size={18} />} label="ADD FRIEND" subtext="Find & invite players" onClick={() => router.push("/search")} isPrimary={true} />
-              <ActionButton icon={<BarChart3 size={18} className="text-[#C3DF1B]" />} label="LEADERBOARD" subtext="See top players" onClick={() => router.push("/leaderboards")} />
+              {/* Leaderboard removed temporarily */}
             </div>
 
           </div>
