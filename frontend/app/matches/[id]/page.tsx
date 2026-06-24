@@ -6,6 +6,9 @@ import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sp
 import { motion, AnimatePresence } from "framer-motion";
 import { getPusherClient } from "@/lib/pusher";
 import { toast } from "sonner";
+import { TeamBuilderModal } from "@/components/team-builder-modal";
+import { StatSubmissionModal } from "@/components/stat-submission-modal";
+import { CloseMatchModal } from "@/components/close-match-modal";
 
 interface MatchParticipant {
   id: string;
@@ -45,6 +48,7 @@ interface MatchDetails {
   discordLink?: string;
   hostId: string;
   createdAt: string;
+  format: string;
   participants: MatchParticipant[];
   creator: MatchCreator | null;
 }
@@ -68,6 +72,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [invitingFriendId, setInvitingFriendId] = useState<string | null>(null);
   const [discordLinkEdit, setDiscordLinkEdit] = useState("");
   const [isEditingDiscord, setIsEditingDiscord] = useState(false);
+  const [showTeamBuilder, setShowTeamBuilder] = useState(false);
+  const [showStatSubmission, setShowStatSubmission] = useState(false);
+  const [hasSubmittedStats, setHasSubmittedStats] = useState(false);
+  const [showCloseModal, setShowCloseModal] = useState(false);
 
   const addNotification = useCallback((message: string, type: "info" | "success" | "warning" = "info") => {
     if (type === "success") {
@@ -86,6 +94,18 @@ export default function MatchDetailsPage({ params }: PageProps) {
       const data = await res.json();
       if (data.success) {
         setMatch(data.data);
+        
+        // Fetch stats if match is closed
+        if (data.data.status === "closed") {
+          const statsRes = await fetch(`/api/matches/${matchId}/my-stats`);
+          const statsData = await statsRes.json();
+          if (statsData.success && statsData.hasSubmitted) {
+            setHasSubmittedStats(true);
+          } else {
+            setHasSubmittedStats(false);
+            setShowStatSubmission(true);
+          }
+        }
       } else {
         setMatch(null);
       }
@@ -172,10 +192,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
       fetchMatchDetails();
     });
     channel.bind("match-closed", () => {
-      addNotification("Match has been closed! Redirecting to stats submission...", "warning");
+      addNotification("Match has been closed! Opening stats submission...", "warning");
+      fetchMatchDetails();
       setTimeout(() => {
-        router.push("/submit");
-      }, 2000);
+        setShowStatSubmission(true);
+      }, 1000);
     });
     channel.bind("match-started", () => {
       addNotification("Match has started!", "success");
@@ -337,24 +358,20 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
-  const handleBalanceTeams = async () => {
-    if (!confirm("AI will auto-balance all players into two fair teams based on their OVR ratings. Continue?")) return;
+  const handleSaveTeams = async (teamA: string[], teamB: string[]) => {
     setActionLoading(true);
     try {
-      const res = await fetch("/api/matches/balance", {
+      const res = await fetch(`/api/matches/${matchId}/save-teams`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ matchId })});
+        body: JSON.stringify({ teamA, teamB })});
 
       const data = await res.json();
       if (data.success) {
-        addNotification(
-          `Teams balanced! Rating diff: ${data.data.ratingDiff} (Avg A: ${data.data.avgA} vs Avg B: ${data.data.avgB})`,
-          "success"
-        );
+        addNotification("Teams saved successfully!", "success");
         await fetchMatchDetails();
       } else {
-        toast.error(data.message || "Failed to balance teams");
+        toast.error(data.message || "Failed to save teams");
       }
     } catch (err) {
       console.error(err);
@@ -364,26 +381,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
-  const handleCloseMatch = async () => {
-    if (!confirm("Are you sure you want to close this match lobby? This will trigger stats submission for all players.")) return;
-    setActionLoading(true);
-    try {
-      const res = await fetch(`/api/matches/${matchId}/close`, {
-        method: "POST",
-      });
-      const data = await res.json();
-      if (data.success) {
-        addNotification("Match closed successfully!", "success");
-        // We will rely on the Pusher event to redirect us and others.
-      } else {
-        toast.error(data.message || "Failed to close match");
-        setActionLoading(false); // only disable loader if failed, otherwise wait for redirect
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("An error occurred. Please try again.");
-      setActionLoading(false);
-    }
+  const handleCloseMatch = () => {
+    setShowCloseModal(true);
   };
 
   const handleKickPlayer = async (userId: string) => {
@@ -648,22 +647,22 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
         {/* Teams Dashboard */}
         <div className="space-y-6">
-          {/* AI Balance Button */}
+          {/* Team Builder Button */}
           {isJoined && participants.length >= 2 && match.hostId === currentUserId && (
             <button
-              onClick={handleBalanceTeams}
+              onClick={() => setShowTeamBuilder(true)}
               disabled={actionLoading}
-              className="w-full h-11 rounded-2xl bg-gradient-to-r from-[#7c3aed] to-[#a855f7] hover:from-[#6d28d9] hover:to-[#9333ea] text-white text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_10px_30px_-8px_rgba(168,85,247,0.5)]"
+              className="w-full h-11 rounded-2xl bg-gradient-to-r from-[#A28B52] to-[#8A7542] hover:from-[#B39B5A] hover:to-[#9B854A] text-white text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_10px_30px_-8px_rgba(162,139,82,0.5)]"
             >
               {actionLoading ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
-                  BALANCING...
+                  LOADING...
                 </>
               ) : (
                 <>
-                  <Sparkles size={14} />
-                  AI Auto-Balance Teams
+                  <Users size={14} />
+                  OPEN TEAM BUILDER
                 </>
               )}
             </button>
@@ -841,7 +840,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   </>
                 )}
               </button>
-              {currentUserId === match.hostId && (
+              {currentUserId === match.hostId && match.status !== "closed" && (
                 <button
                   onClick={handleCloseMatch}
                   disabled={actionLoading}
@@ -937,6 +936,37 @@ export default function MatchDetailsPage({ params }: PageProps) {
           </div>
         )}
       </AnimatePresence>
+
+      {match && (
+        <TeamBuilderModal
+          isOpen={showTeamBuilder}
+          onClose={() => setShowTeamBuilder(false)}
+          participants={match.participants}
+          onSaveTeams={handleSaveTeams}
+        />
+      )}
+
+      {match && currentUserId && (
+        <StatSubmissionModal
+          isOpen={showStatSubmission}
+          onClose={() => setShowStatSubmission(false)}
+          matchId={matchId}
+          matchFormat={match.format}
+          isGoalkeeper={match.participants.find(p => p.userId === currentUserId)?.user.position === "GK"}
+          onSuccess={() => {
+            setHasSubmittedStats(true);
+            fetchMatchDetails();
+          }}
+        />
+      )}
+
+      {match && (
+        <CloseMatchModal
+          isOpen={showCloseModal}
+          onClose={() => setShowCloseModal(false)}
+          matchId={matchId}
+        />
+      )}
     </main>
   );
 }

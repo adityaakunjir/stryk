@@ -33,6 +33,8 @@ class MatchBase(SQLModel):
     discordLink: Optional[str] = Field(default=None, max_length=200)
     hostId: str = Field(index=True, foreign_key="users.id")
     shortId: str = Field(default_factory=generate_short_id, index=True, unique=True, max_length=10)
+    teamAScore: Optional[int] = Field(default=None)
+    teamBScore: Optional[int] = Field(default=None)
 
 
 class Match(MatchBase, table=True):
@@ -119,6 +121,10 @@ class MatchStatsBase(SQLModel):
     tackles: int = Field(default=0)
     cleanSheet: bool = Field(default=False)
     motm: bool = Field(default=False)
+    yellowCards: int = Field(default=0)
+    redCards: int = Field(default=0)
+    status: str = Field(default="pending_verification", max_length=30)
+    verificationNote: Optional[str] = Field(default=None, max_length=255)
 
 
 class MatchStats(MatchStatsBase, table=True):
