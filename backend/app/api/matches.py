@@ -530,6 +530,13 @@ async def leave_match(
     await session.delete(player)
     await session.commit()
     
+    # Clean up empty matches
+    all_players_res = await session.execute(select(MatchPlayer).where(MatchPlayer.matchId == match.id))
+    remaining = all_players_res.scalars().all()
+    if not remaining:
+        await session.delete(match)
+        await session.commit()
+
     return {"success": True, "message": "Successfully left the match"}
 
 

@@ -404,8 +404,9 @@ export default function MatchesPage() {
         ) : (
           <div className="space-y-4 mt-2">
             {matches.map((match) => {
-              const isJoined = currentUserId && (match.hostId === currentUserId || match.participants?.some(p => p.userId === currentUserId));
-              const currentPlayers = match.players || match.participants?.length || 1;
+              const isJoined = currentUserId && match.participants?.some(p => p.userId === currentUserId);
+              const isHost = currentUserId && match.hostId === currentUserId;
+              const currentPlayers = match.players || (match.participants ? match.participants.length : 0);
               const maxPlayers = match.maxPlayers || 22;
               const isFull = currentPlayers >= maxPlayers;
               const fillPct = Math.min(100, (currentPlayers / maxPlayers) * 100);
