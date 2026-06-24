@@ -55,7 +55,21 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def create_db_tables():
-    """Create all SQLModel tables. Call during app startup."""
+    """Create all SQLModel tables and run Alembic migrations. Call during app startup."""
+    import logging
+    import os
+    from alembic import command
+    from alembic.config import Config
+
+    # Run Alembic migrations synchronously in a try/except block
+    try:
+        logging.info("Running Alembic migrations...")
+        alembic_cfg = Config("alembic.ini")
+        command.upgrade(alembic_cfg, "head")
+        logging.info("Alembic migrations completed successfully.")
+    except Exception as e:
+        logging.error(f"Alembic migration failed: {e}")
+
     if engine is None:
         return
     async with engine.begin() as conn:
