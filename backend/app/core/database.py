@@ -14,7 +14,9 @@ from app.core.config import settings
 
 # Default to local SQLite when DATABASE_URL is not configured.
 database_url = settings.database_url or "sqlite+aiosqlite:///./stryk.db"
-if database_url.startswith("postgresql://"):
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+elif database_url.startswith("postgresql://"):
     database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
 
 # Setup engine arguments (some are PostgreSQL-specific)

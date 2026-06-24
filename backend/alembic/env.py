@@ -36,7 +36,9 @@ target_metadata = SQLModel.metadata
 
 database_url = os.environ.get("DATABASE_URL")
 if database_url:
-    if database_url.startswith("postgresql://"):
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql+asyncpg://")
+    elif database_url.startswith("postgresql://"):
         database_url = database_url.replace("postgresql://", "postgresql+asyncpg://")
     elif database_url.startswith("sqlite://"):
         database_url = database_url.replace("sqlite://", "sqlite+aiosqlite://")
