@@ -62,11 +62,12 @@ async def create_db_tables():
     import asyncio
     import os
 
+    import sys
     try:
         logging.info("Running Alembic migrations via subprocess...")
         # Run alembic upgrade head as a subprocess so we don't conflict with the current running event loop in env.py
         process = await asyncio.create_subprocess_exec(
-            "alembic", "upgrade", "head",
+            sys.executable, "-m", "alembic", "upgrade", "head",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
