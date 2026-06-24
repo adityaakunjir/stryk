@@ -196,8 +196,8 @@ export default async function PublicPlayerPage({ params }: Props) {
                </div>
                
                {/* Match History Widget */}
-               <div className="mt-3">
-                 <div className="flex justify-between text-[8px] uppercase tracking-[0.2em] text-white/40 font-bold mb-1.5">
+               <Link href={`/player/${username}/history`} className="mt-3 block group hover:bg-white/5 transition rounded-xl p-2 -mx-2 cursor-pointer">
+                 <div className="flex justify-between text-[8px] uppercase tracking-[0.2em] text-white/40 font-bold mb-1.5 group-hover:text-white/60 transition">
                    <span>Match History</span>
                    <span className="text-[#E8D196]/80">{totalMatches} Matches</span>
                  </div>
@@ -215,12 +215,12 @@ export default async function PublicPlayerPage({ params }: Props) {
                        <div style={{ width: `${lossPercent}%` }} className="h-full bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.4)]" />
                      </div>
                    </div>
-                   <div className="shrink-0 text-center bg-[#151515] border border-white/5 rounded-xl px-2 py-1.5 min-w-[3.5rem] shadow-lg">
+                   <div className="shrink-0 text-center bg-[#151515] border border-white/5 rounded-xl px-2 py-1.5 min-w-[3.5rem] shadow-lg group-hover:bg-[#1a1a1a] transition">
                      <div className="text-[6px] uppercase tracking-widest text-[#E8D196]/50 font-bold">Win Rate</div>
                      <div className="font-display text-xs text-white font-extrabold mt-0.5">{winRate}%</div>
                    </div>
                  </div>
-               </div>
+               </Link>
             </div>
         </div>
 

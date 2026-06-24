@@ -11,6 +11,7 @@ from sqlmodel import select
 from app.core.auth import get_current_user
 from app.core.database import get_session
 from app.models.player import User, UserCreate, UserRead, UserUpdate
+from datetime import datetime
 
 router = APIRouter(prefix="/players", tags=["players"])
 
@@ -148,3 +149,107 @@ async def clear_upgrade_animation(
     session.add(player)
     await session.commit()
     return {"success": True}
+
+from app.models.match import Match, MatchStats, XPLog, MatchPlayer, MatchTeam
+from sqlalchemy.orm import selectinload
+
+@router.get("/username/{username}/history")
+async def get_player_history(
+    username: str,
+    session: AsyncSession = Depends(get_session),
+):
+    from sqlalchemy import func
+    # 1. Look up user
+    result = await session.execute(
+        select(User).where(func.lower(User.username) == username.lower())
+    )
+    player = result.scalars().first()
+    if not player:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Player not found",
+        )
+
+    # 2. Get matches and stats where user has VERIFIED stats
+    # Eagerly load the match and its teams
+    stmt = (
+        select(MatchStats)
+        .where(MatchStats.userId == player.id)
+        .where(MatchStats.status == "verified")
+        .options(selectinload(MatchStats.match).selectinload(Match.teams))
+        .order_by(MatchStats.id.desc())  # Approximate chronological order if date isn't directly on stats
+    )
+    stats_result = await session.execute(stmt)
+    stats_list = stats_result.scalars().all()
+
+    # Sort them by actual matchDate descending
+    stats_list = sorted(stats_list, key=lambda s: s.match.matchDate if s.match else datetime.min, reverse=True)
+
+    # 3. Collect MatchPlayers to know the player's team in each match
+    player_match_ids = [s.matchId for s in stats_list]
+    team_map = {}
+    if player_match_ids:
+        mp_stmt = select(MatchPlayer).where(MatchPlayer.userId == player.id).where(MatchPlayer.matchId.in_(player_match_ids))
+        mp_result = await session.execute(mp_stmt)
+        mps = mp_result.scalars().all()
+        for mp in mps:
+            team_map[mp.matchId] = mp.team
+
+    # 4. Collect XP logs
+    xp_map = {}
+    if player_match_ids:
+        from sqlalchemy import text
+        xp_stmt = select(XPLog).where(XPLog.userId == player.id).where(XPLog.matchId.in_(player_match_ids))
+        xp_result = await session.execute(xp_stmt)
+        xps = xp_result.scalars().all()
+        for x in xps:
+            if x.matchId not in xp_map:
+                xp_map[x.matchId] = 0
+            xp_map[x.matchId] += x.amount
+
+    # 5. Format response
+    history = []
+    for s in stats_list:
+        m = s.match
+        if not m:
+            continue
+            
+        player_team = team_map.get(m.id, None)
+        
+        # Calculate outcome based on team scores
+        outcome = "Unknown"
+        if m.teamAScore is not None and m.teamBScore is not None and player_team:
+            if player_team == "A":
+                if m.teamAScore > m.teamBScore: outcome = "Win"
+                elif m.teamAScore < m.teamBScore: outcome = "Loss"
+                else: outcome = "Draw"
+            elif player_team == "B":
+                if m.teamBScore > m.teamAScore: outcome = "Win"
+                elif m.teamBScore < m.teamAScore: outcome = "Loss"
+                else: outcome = "Draw"
+
+        history.append({
+            "matchId": m.id,
+            "title": m.title,
+            "format": m.format,
+            "matchDate": m.matchDate.isoformat(),
+            "outcome": outcome,
+            "team": player_team,
+            "teamAScore": m.teamAScore,
+            "teamBScore": m.teamBScore,
+            "xpGained": xp_map.get(m.id, 0),
+            "stats": {
+                "goals": s.goals,
+                "assists": s.assists,
+                "saves": s.saves,
+                "tackles": s.tackles,
+                "cleanSheet": s.cleanSheet,
+                "motm": s.motm,
+                "yellowCards": s.yellowCards,
+                "redCards": s.redCards,
+                "ownGoals": s.ownGoals,
+                "noShow": s.noShow
+            }
+        })
+
+    return {"success": True, "data": history}
