@@ -65,9 +65,12 @@ async def create_db_tables():
     import sys
     try:
         logging.info("Running Alembic migrations via subprocess...")
+        backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        
         # Run alembic upgrade head as a subprocess so we don't conflict with the current running event loop in env.py
         process = await asyncio.create_subprocess_exec(
             sys.executable, "-m", "alembic", "upgrade", "head",
+            cwd=backend_dir,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
@@ -93,3 +96,18 @@ async def create_db_tables():
             await conn.execute(text('ALTER TABLE teams ALTER COLUMN "logoUrl" TYPE TEXT;'))
         except Exception:
             pass
+            
+        # Raw SQL fallbacks in case Alembic fails or misses something during deployment
+        try:
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS xp INTEGER NOT NULL DEFAULT 0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS level INTEGER NOT NULL DEFAULT 1;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "needsUpgradeAnimation" BOOLEAN NOT NULL DEFAULT FALSE;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS pace FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS shooting FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS passing FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS dribbling FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS defending FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS physical FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS gk FLOAT NOT NULL DEFAULT 60.0;'))
+        except Exception as e:
+            logging.error(f"Raw SQL fallback for users columns failed (expected on SQLite): {e}")
