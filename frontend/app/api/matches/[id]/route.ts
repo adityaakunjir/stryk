@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+let API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+if (!API_BASE_URL.endsWith("/api/v1") && !API_BASE_URL.endsWith("/api/v1/")) {
+  API_BASE_URL = API_BASE_URL.replace(/\/$/, "") + "/api/v1";
+}
 
 export async function GET(
   req: Request,
@@ -12,7 +15,7 @@ export async function GET(
     const { getToken } = await auth();
     const token = await getToken();
 
-    const response = await fetch(`${API_URL}/api/v1/matches/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/matches/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +44,7 @@ export async function PATCH(
     const token = await getToken();
     const body = await req.json();
 
-    const response = await fetch(`${API_URL}/api/v1/matches/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/matches/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
