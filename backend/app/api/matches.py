@@ -519,8 +519,13 @@ async def leave_match(
         select(MatchPlayer).where(MatchPlayer.matchId == match.id, MatchPlayer.userId == db_user.id)
     )
     player = player_result.scalars().first()
+    print(f"DEBUG LEAVE: matchId={match.id}, db_user.id={db_user.id}, player={player}")
     if not player:
-        raise HTTPException(status_code=400, detail="You are not in this match")
+        # Fetch all players for this match just to see
+        all_players_res = await session.execute(select(MatchPlayer).where(MatchPlayer.matchId == match.id))
+        all_players = all_players_res.scalars().all()
+        debug_msg = f"You are not in this match. Match: {match.id}, You: {db_user.id}, Players: {[p.userId for p in all_players]}"
+        raise HTTPException(status_code=400, detail=debug_msg)
 
     await session.delete(player)
     await session.commit()
