@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Search, Loader2, ChevronDown, User, Activity, Shirt } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
+import { calculateOvr } from "@/lib/stat-utils";
 import Image from "next/image";
 
 type SearchResult = {
@@ -277,7 +278,7 @@ export default function SearchPage() {
                     
                     <div className="shrink-0 flex flex-col items-center justify-center pl-3 border-l border-[#A28B52]/10">
                        <span className="text-[9px] uppercase tracking-[0.2em] text-[#A0A0A0] mb-0.5 font-bold">OVR</span>
-                       <span className="font-display text-2xl text-[#E5DCC5] font-black italic">{player.overall ?? 60}</span>
+                       <span className="font-display text-2xl text-[#E5DCC5] font-black italic">{calculateOvr(player as any)}</span>
                     </div>
                   </div>
                 </Link>

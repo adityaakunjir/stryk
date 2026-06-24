@@ -109,12 +109,17 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   // Push local changes to the backend
   const pushToBackend = async (data: PlayerData, token: string) => {
     try {
+      const backendData = {
+        ...data,
+        overall: data.rating,
+      };
+      
       const res = await fetch("/api/profile/me", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`},
-        body: JSON.stringify(data)});
+        body: JSON.stringify(backendData)});
       if (res.ok) {
         setIsBackendSynced(true);
       }
