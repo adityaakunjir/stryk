@@ -111,11 +111,42 @@ async def create_db_tables():
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS physical FLOAT NOT NULL DEFAULT 60.0;'))
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS gk FLOAT NOT NULL DEFAULT 60.0;'))
             
-            # Matches
+            # Matches (add missing fields from earlier migrations)
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS format VARCHAR(20) NOT NULL DEFAULT \'11v11\';'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "matchDate" TIMESTAMP;'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS password VARCHAR(50);'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "hostId" VARCHAR;'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "shortId" VARCHAR(10);'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS turf VARCHAR;'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "discordLink" VARCHAR;'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "teamAScore" INTEGER;'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "teamBScore" INTEGER;'))
+            
+            # Migrate old creatorId to hostId if hostId is null
+            try:
+                await conn.execute(text('UPDATE matches SET "hostId" = "creatorId" WHERE "hostId" IS NULL AND "creatorId" IS NOT NULL;'))
+            except Exception:
+                pass
+                
+            # Migrate old dateTime to matchDate if matchDate is null
+            try:
+                await conn.execute(text('UPDATE matches SET "matchDate" = "dateTime" WHERE "matchDate" IS NULL AND "dateTime" IS NOT NULL;'))
+            except Exception:
+                pass
+                
+            # Fill missing required fields with defaults so NOT NULL constraints pass
+            await conn.execute(text('UPDATE matches SET "shortId" = SUBSTR(MD5(RANDOM()::TEXT), 1, 6) WHERE "shortId" IS NULL;'))
+            await conn.execute(text('UPDATE matches SET "matchDate" = NOW() WHERE "matchDate" IS NULL;'))
+            
+            # Ensure old columns are nullable so SQLModel inserts don't fail if Alembic failed to drop them
+            try:
+                await conn.execute(text('ALTER TABLE matches ALTER COLUMN "dateTime" DROP NOT NULL;'))
+            except Exception:
+                pass
+            try:
+                await conn.execute(text('ALTER TABLE matches ALTER COLUMN "creatorId" DROP NOT NULL;'))
+            except Exception:
+                pass
             
             # Match Stats
             stats_cols = [
