@@ -61,7 +61,7 @@ export default function HomeLobbyPage() {
   const firstName = rawName.split(" ")[0].toUpperCase();
   const position = playerData.position || "CAM";
   const playStyle = playerData.playStyle || "PLAYMAKER";
-  const rating = playerData.rating || 50;
+  const rating = playerData.rating || 60;
   const stats = getStats();
   const xpCurrent = 45; // Dummy XP value
   const xpTotal = 100;

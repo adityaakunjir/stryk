@@ -68,7 +68,7 @@ const defaultPlayerData: PlayerData = {
   strongFoot: "Left",
   playStyle: "Playmaker",
   bio: "",
-  rating: 50,
+  rating: 60,
   matchesPlayed: 0,
   wins: 0,
   draws: 0,

@@ -24,7 +24,7 @@ class UserBase(SQLModel):
     strongFoot: Optional[str] = Field(max_length=10, default=None)
     bio: Optional[str] = Field(default=None, max_length=120)
     
-    overall: int = Field(default=50, ge=1, le=99)
+    overall: int = Field(default=60, ge=1, le=99)
     matchesPlayed: int = Field(default=0, ge=0)
     wins: int = Field(default=0, ge=0)
     losses: int = Field(default=0, ge=0)
