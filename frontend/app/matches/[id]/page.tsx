@@ -71,8 +71,6 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [friends, setFriends] = useState<any[]>([]);
   const [friendsLoading, setFriendsLoading] = useState(false);
   const [invitingFriendId, setInvitingFriendId] = useState<string | null>(null);
-  const [discordLinkEdit, setDiscordLinkEdit] = useState("");
-  const [isEditingDiscord, setIsEditingDiscord] = useState(false);
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [pendingVerificationCount, setPendingVerificationCount] = useState(0);
@@ -456,24 +454,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
-  const handleUpdateDiscordLink = async (link: string) => {
-    try {
-      const res = await fetch(`/api/matches/${matchId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ discordLink: link }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        addNotification("Discord link updated!", "success");
-        await fetchMatchDetails();
-      } else {
-        toast.error(data.message || "Failed to update Discord link");
-      }
-    } catch (err) {
-      toast.error("An error occurred.");
-    }
-  };
+
 
   if (loading) {
     return (
@@ -632,62 +613,6 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     </>
                   )}
                 </button>
-              )}
-              
-              {(match.discordLink || currentUserId === match.hostId) && (
-                <div className="w-full p-4 rounded-[1.25rem] bg-[#5865F2]/10 border border-[#5865F2]/30 flex flex-col gap-2 mt-1">
-                  <div className="flex items-center gap-2 text-[#5865F2] font-bold text-[10px] uppercase tracking-widest">
-                    <MessageSquare size={14} /> Discord Voice
-                  </div>
-                  {isEditingDiscord ? (
-                    <div className="flex items-center gap-2">
-                      <input 
-                        type="url"
-                        value={discordLinkEdit}
-                        onChange={(e) => setDiscordLinkEdit(e.target.value)}
-                        placeholder="https://discord.gg/..."
-                        className="w-full bg-[#111] border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-[#5865F2]"
-                      />
-                      <button 
-                        onClick={() => {
-                          handleUpdateDiscordLink(discordLinkEdit);
-                          setIsEditingDiscord(false);
-                        }}
-                        className="p-2 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white transition shadow-lg"
-                      >
-                        <Check size={14} />
-                      </button>
-                      <button 
-                        onClick={() => setIsEditingDiscord(false)}
-                        className="p-2 rounded-xl bg-[#111] border border-white/10 hover:bg-[#222] text-white/70 transition"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      {match.discordLink ? (
-                        <a href={match.discordLink} target="_blank" rel="noopener noreferrer" className="w-full text-center py-2 rounded-xl bg-[#5865F2] hover:bg-[#4752C4] text-white text-[11px] font-bold tracking-wider transition">
-                          JOIN CHANNEL
-                        </a>
-                      ) : (
-                        <span className="text-[10px] text-white/50 italic">No link added yet</span>
-                      )}
-                      
-                      {currentUserId === match.hostId && (
-                        <button 
-                          onClick={() => {
-                            setDiscordLinkEdit(match.discordLink || "");
-                            setIsEditingDiscord(true);
-                          }}
-                          className={`ml-2 text-[9px] uppercase font-bold text-[#A28B52] hover:text-[#D4F829] transition tracking-widest px-3 py-1.5 rounded-xl bg-[#A28B52]/10 border border-[#A28B52]/20 shrink-0 ${!match.discordLink && "w-full"}`}
-                        >
-                          {match.discordLink ? "EDIT" : "ADD LINK"}
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
               )}
               
               <button
