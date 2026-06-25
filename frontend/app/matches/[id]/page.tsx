@@ -533,9 +533,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 Stryk
               </span>
             </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#151515]/10 bg-[#151515]/5 text-[#151515]/75 shadow-sm backdrop-blur-md">
-              <Trophy size={17} />
-            </div>
+            {/* Placeholder for layout balance if needed, or just let justify-between handle it */}
+            <div className="w-11 h-11" />
           </div>
           
           <div className="mt-5 flex flex-col items-center text-center">
