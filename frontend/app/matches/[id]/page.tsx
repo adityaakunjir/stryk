@@ -6,7 +6,7 @@ import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sp
 import { motion, AnimatePresence } from "framer-motion";
 import { getPusherClient } from "@/lib/pusher";
 import { toast } from "sonner";
-import { TeamBuilderModal } from "@/components/team-builder-modal";
+import { InlineTeamBuilder } from "@/components/inline-team-builder";
 import { StatSubmissionModal } from "@/components/stat-submission-modal";
 import { CloseMatchModal } from "@/components/close-match-modal";
 import { PeerVerificationModal } from "@/components/peer-verification-modal";
@@ -73,12 +73,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [invitingFriendId, setInvitingFriendId] = useState<string | null>(null);
   const [discordLinkEdit, setDiscordLinkEdit] = useState("");
   const [isEditingDiscord, setIsEditingDiscord] = useState(false);
-  const [showTeamBuilder, setShowTeamBuilder] = useState(false);
-  const [showStatSubmission, setShowStatSubmission] = useState(false);
-  const [hasSubmittedStats, setHasSubmittedStats] = useState(false);
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [pendingVerificationCount, setPendingVerificationCount] = useState(0);
+  const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
+  const [showStatSubmission, setShowStatSubmission] = useState(false);
+  const [hasSubmittedStats, setHasSubmittedStats] = useState(false);
 
   const addNotification = useCallback((message: string, type: "info" | "success" | "warning" = "info") => {
     if (type === "success") {
@@ -529,30 +529,33 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#E5DCC5] flex justify-center custom-scrollbar text-[#151515]">
-      <div className="relative min-h-[100dvh] flex flex-col px-5 pt-6 pb-28 max-w-md mx-auto z-10 w-full overflow-y-auto border-x border-[#151515]/5 shadow-2xl bg-transparent">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[url('/create_card_bg.webp')] bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-[#E5DCC5]">
+      {/* Dark overlay for better readability over the marble background */}
+      <div className="fixed inset-0 bg-[#151515]/60 z-0 pointer-events-none" />
+
+      <div className="relative min-h-[100dvh] flex flex-col px-5 pt-6 pb-28 max-w-md mx-auto z-10 w-full overflow-y-auto border-x border-[#151515]/30 shadow-2xl bg-black/20 backdrop-blur-sm">
         {/* Header */}
         <header className="flex items-center justify-between mb-6">
           <button 
             onClick={() => router.push("/matches")} 
-            className="w-9 h-9 rounded-full bg-[#151515]/5 backdrop-blur-md border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition"
+            className="w-9 h-9 rounded-full bg-[#151515]/80 backdrop-blur-md border border-[#A28B52]/20 text-[#E5DCC5] flex items-center justify-center cursor-pointer hover:bg-[#151515] hover:border-[#D4F829]/50 transition shadow-lg"
             type="button"
           >
             <ArrowLeft size={16} />
           </button>
-          <div className="text-[10px] tracking-[0.3em] uppercase text-[#A28B52] font-bold">Match details</div>
+          <div className="text-[10px] tracking-[0.3em] uppercase text-[#D4F829] font-bold drop-shadow-[0_0_8px_rgba(212,248,41,0.3)]">Match Lobby</div>
           <div className="w-9 h-9" />
         </header>
 
         {/* Turf Poster Banner */}
-        <div className="w-full h-36 rounded-[2rem] bg-white/40 border border-[#151515]/10 relative overflow-hidden flex flex-col justify-end p-5 mb-6 shadow-sm">
-          <div className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-[#151515]/10 border border-[#151515]/20 text-[#151515] text-[9px] uppercase tracking-widest font-bold">
+        <div className="w-full h-32 rounded-[2rem] bg-[#151515]/80 border border-[#A28B52]/20 relative overflow-hidden flex flex-col justify-end p-5 mb-4 shadow-xl">
+          <div className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-[#D4F829]/10 border border-[#D4F829]/30 text-[#D4F829] text-[9px] uppercase tracking-widest font-bold">
             {match.status}
           </div>
-          <h1 className="font-display text-2xl uppercase tracking-wider italic leading-none truncate text-[#151515]">
+          <h1 className="font-display text-2xl uppercase tracking-wider italic leading-none truncate text-[#E5DCC5]">
             {match.title}
           </h1>
-          <div className="flex items-center gap-1.5 text-xs text-[#151515]/70 mt-2">
+          <div className="flex items-center gap-1.5 text-xs text-[#E5DCC5]/70 mt-2">
             <MapPin size={13} className="text-[#A28B52]" />
             <span className="truncate">{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
           </div>
@@ -560,39 +563,55 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
         {/* Verification Alert */}
         {pendingVerificationCount > 0 && (
-          <div className="mb-6 p-4 rounded-2xl bg-[#D4F829]/20 border border-[#D4F829]/40 flex items-center justify-between shadow-sm">
+          <div className="mb-4 p-4 rounded-2xl bg-[#D4F829]/10 border border-[#D4F829]/30 flex items-center justify-between shadow-lg backdrop-blur-md">
             <div className="flex-1">
-              <h3 className="text-[#151515] font-bold text-sm tracking-wide">Action Required</h3>
-              <p className="text-[#151515]/80 text-xs mt-0.5 leading-tight">
+              <h3 className="text-[#D4F829] font-bold text-sm tracking-wide">Action Required</h3>
+              <p className="text-[#E5DCC5]/80 text-xs mt-0.5 leading-tight">
                 You have {pendingVerificationCount} peer stat submissions to review.
               </p>
             </div>
             <button
               onClick={() => setShowVerificationModal(true)}
-              className="ml-4 px-4 h-10 rounded-xl bg-[#D4F829] text-[#151515] font-bold text-xs uppercase tracking-widest hover:bg-[#D4F829]/90 transition"
+              className="ml-4 px-4 h-10 rounded-xl bg-[#D4F829] text-[#151515] font-bold text-xs uppercase tracking-widest hover:bg-[#c3e626] transition shadow-[0_0_15px_rgba(212,248,41,0.3)]"
             >
               Verify
             </button>
           </div>
         )}
 
-        {/* Schedule & Info */}
-        <div className="p-4 rounded-2xl bg-[#151515]/5 border border-[#151515]/10 space-y-3 mb-6">
+        {/* Details Toggle */}
+        <button
+          onClick={() => setIsDetailsExpanded(!isDetailsExpanded)}
+          className="w-full py-2 mb-4 text-[10px] uppercase tracking-widest font-bold text-[#A28B52] flex items-center justify-center gap-1.5 hover:text-[#D4F829] transition"
+        >
+          {isDetailsExpanded ? "Hide Match Details" : "Show Match Details"}
+        </button>
+
+        {/* Collapsible Schedule & Info */}
+        <AnimatePresence>
+          {isDetailsExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0, marginBottom: 0 }}
+              animate={{ height: "auto", opacity: 1, marginBottom: 24 }}
+              exit={{ height: 0, opacity: 0, marginBottom: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="p-4 rounded-2xl bg-[#151515]/80 backdrop-blur-md border border-[#A28B52]/20 space-y-3 shadow-lg">
           <div className="flex items-start gap-3">
             <Calendar size={16} className="text-[#A28B52] mt-0.5 shrink-0" />
             <div>
-              <span className="text-[9px] uppercase tracking-widest text-[#151515]/50 font-bold block mb-0.5">Match Schedule</span>
-              <span className="text-xs text-[#151515] leading-snug">{formatDateTime(match.matchDate)}</span>
+              <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5]/50 font-bold block mb-0.5">Match Schedule</span>
+              <span className="text-xs text-[#E5DCC5] leading-snug">{formatDateTime(match.matchDate)}</span>
             </div>
           </div>
 
-          <div className="border-t border-[#151515]/10 my-2" />
+          <div className="border-t border-[#A28B52]/20 my-2" />
 
           <div className="flex items-start gap-3">
             <Users size={16} className="text-[#A28B52] mt-0.5 shrink-0" />
             <div>
-              <span className="text-[9px] uppercase tracking-widest text-[#151515]/50 font-bold block mb-0.5">Capacity</span>
-              <span className="text-xs text-[#151515] leading-none">
+              <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5]/50 font-bold block mb-0.5">Capacity</span>
+              <span className="text-xs text-[#E5DCC5] leading-none">
                 {participants.length} / {match.maxPlayers} Players joined
               </span>
             </div>
@@ -600,11 +619,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
           {(match.discordLink || currentUserId === match.hostId) && (
             <>
-              <div className="border-t border-[#151515]/10 my-2" />
+              <div className="border-t border-[#A28B52]/20 my-2" />
               <div className="flex items-start gap-3">
                 <MessageSquare size={16} className="text-[#5865F2] mt-0.5 shrink-0" />
                 <div className="flex-1">
-                  <span className="text-[9px] uppercase tracking-widest text-[#151515]/50 font-bold block mb-0.5">Discord Match Link</span>
+                  <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5]/50 font-bold block mb-0.5">Discord Match Link</span>
                   {isEditingDiscord ? (
                     <div className="flex items-center gap-2 mt-1">
                       <input 
@@ -612,20 +631,20 @@ export default function MatchDetailsPage({ params }: PageProps) {
                         value={discordLinkEdit}
                         onChange={(e) => setDiscordLinkEdit(e.target.value)}
                         placeholder="https://discord.gg/..."
-                        className="w-full bg-[#151515]/5 border border-[#151515]/10 rounded-lg px-2 py-1 text-xs text-[#151515] outline-none focus:border-[#5865F2]"
+                        className="w-full bg-[#111] border border-[#A28B52]/40 rounded-lg px-2 py-1 text-xs text-[#E5DCC5] outline-none focus:border-[#5865F2]"
                       />
                       <button 
                         onClick={() => {
                           handleUpdateDiscordLink(discordLinkEdit);
                           setIsEditingDiscord(false);
                         }}
-                        className="p-1.5 rounded-lg bg-[#5865F2] hover:bg-[#4752C4] text-white transition"
+                        className="p-1.5 rounded-lg bg-[#5865F2] hover:bg-[#4752C4] text-white transition shadow-lg"
                       >
                         <Check size={12} />
                       </button>
                       <button 
                         onClick={() => setIsEditingDiscord(false)}
-                        className="p-1.5 rounded-lg bg-[#151515]/10 hover:bg-[#151515]/20 text-[#151515]/70 transition"
+                        className="p-1.5 rounded-lg bg-[#111] border border-[#A28B52]/20 hover:bg-[#222] text-[#E5DCC5]/70 transition"
                       >
                         <X size={12} />
                       </button>
@@ -633,11 +652,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   ) : (
                     <div className="flex items-center justify-between">
                       {match.discordLink ? (
-                        <a href={match.discordLink} target="_blank" rel="noopener noreferrer" className="text-xs text-[#5865F2] hover:underline font-semibold leading-none flex items-center gap-1">
+                        <a href={match.discordLink} target="_blank" rel="noopener noreferrer" className="text-xs text-[#5865F2] hover:underline font-semibold leading-none flex items-center gap-1 drop-shadow-[0_0_8px_rgba(88,101,242,0.5)]">
                           Join Voice Channel
                         </a>
                       ) : (
-                        <span className="text-xs text-[#151515]/50 leading-none">No link added</span>
+                        <span className="text-xs text-[#E5DCC5]/50 leading-none">No link added</span>
                       )}
                       
                       {currentUserId === match.hostId && (
@@ -646,7 +665,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                             setDiscordLinkEdit(match.discordLink || "");
                             setIsEditingDiscord(true);
                           }}
-                          className="text-[9px] uppercase font-bold text-[#151515]/40 hover:text-[#151515] transition tracking-widest px-2 py-1 rounded bg-[#151515]/5 border border-[#151515]/10"
+                          className="text-[9px] uppercase font-bold text-[#A28B52] hover:text-[#D4F829] transition tracking-widest px-2 py-1 rounded bg-[#A28B52]/10 border border-[#A28B52]/20"
                         >
                           Edit
                         </button>
@@ -661,10 +680,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
         {/* Captain/Organizer Section */}
         {match.creator && (
-          <div className="mb-6">
-            <h2 className="text-[10px] tracking-[0.25em] uppercase text-[#151515]/40 font-bold mb-3 pl-1">Match Host</h2>
-            <div className="p-3 rounded-2xl border border-[#A28B52]/20 bg-[#A28B52]/5 flex items-center gap-4 shadow-sm">
-              <div className="relative size-12 rounded-full overflow-hidden border border-[#A28B52]/40 bg-[#E5DCC5] shrink-0 flex items-center justify-center">
+          <div>
+            <h2 className="text-[10px] tracking-[0.25em] uppercase text-[#A28B52] font-bold mb-2 pl-1 drop-shadow-[0_0_5px_rgba(162,139,82,0.4)]">Match Host</h2>
+            <div className="p-3 rounded-2xl border border-[#A28B52]/30 bg-[#151515]/90 backdrop-blur-md flex items-center gap-4 shadow-xl">
+              <div className="relative size-12 rounded-full overflow-hidden border-2 border-[#D4F829] bg-[#E5DCC5] shrink-0 flex items-center justify-center shadow-[0_0_10px_rgba(212,248,41,0.5)]">
                 {match.creator.avatarUrl ? (
                    
                   <img src={match.creator.avatarUrl} alt={match.creator.fullName || match.creator.username} className="w-full h-full object-cover" />
@@ -673,156 +692,42 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-bold text-[#151515] truncate">{match.creator.fullName || match.creator.username}</div>
-                <div className="text-[10px] text-[#A28B52] uppercase tracking-wider font-semibold mt-0.5">
+                <div className="text-sm font-bold text-[#E5DCC5] truncate drop-shadow-md">{match.creator.fullName || match.creator.username}</div>
+                <div className="text-[10px] text-[#A28B52] uppercase tracking-wider font-semibold mt-0.5 drop-shadow-sm">
                   @{match.creator.username}
                 </div>
               </div>
               <div className="shrink-0 flex flex-col items-end px-2">
-                <span className="text-[9px] uppercase tracking-widest text-[#151515]/40 mb-0.5">OVR</span>
-                <span className="font-display text-lg text-[#151515] font-bold">{match.creator.overall}</span>
+                <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5]/40 mb-0.5">OVR</span>
+                <span className="font-display text-lg text-[#D4F829] font-bold drop-shadow-[0_0_8px_rgba(212,248,41,0.6)]">{match.creator.overall}</span>
               </div>
             </div>
           </div>
         )}
-
-        {/* Teams Dashboard */}
-        <div className="space-y-6">
-          {/* Team Builder Button */}
-          {isJoined && participants.length >= 2 && match.hostId === currentUserId && (
-            <button
-              onClick={() => setShowTeamBuilder(true)}
-              disabled={actionLoading}
-              className="w-full h-11 rounded-2xl bg-[#151515] hover:bg-[#2A2824] text-white text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-md"
-            >
-              {actionLoading ? (
-                <>
-                  <Loader2 className="size-4 animate-spin text-[#A28B52]" />
-                  LOADING...
-                </>
-              ) : (
-                <>
-                  <Users size={14} className="text-[#A28B52]" />
-                  OPEN TEAM BUILDER
-                </>
-              )}
-            </button>
+            </motion.div>
           )}
-          {/* Team A */}
-          <div className="rounded-3xl border border-[#151515]/10 bg-white/40 p-4 relative shadow-sm">
-            <div className="flex items-center justify-between mb-3.5">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#151515]" />
-                <span className="font-display text-sm tracking-widest uppercase text-[#151515]">Team A</span>
-                <span className="text-[10px] text-[#151515]/50 font-semibold">({teamAPlayers.length} players)</span>
-              </div>
-              {isJoined && currentTeam !== "Team A" && (
-                <button
-                  onClick={() => handleAssignTeam("Team A")}
-                  disabled={actionLoading}
-                  className="px-2.5 py-1 rounded-lg bg-[#151515]/5 hover:bg-[#151515]/10 text-[#151515] text-[9px] uppercase font-bold tracking-widest transition flex items-center gap-1 cursor-pointer"
-                >
-                  Join Team A
-                </button>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              {teamAPlayers.length === 0 ? (
-                <div className="p-4 rounded-2xl border border-dashed border-[#151515]/10 bg-[#151515]/5 text-center text-[10px] uppercase tracking-wider text-[#151515]/30">
-                  No players assigned to Team A
-                </div>
-              ) : (
-                teamAPlayers.map(p => (
-                  <PlayerRow 
-                    key={p.id} 
-                    participant={p} 
-                    showJoinedIcon={currentUserId === p.userId} 
-                    onKick={currentUserId === match.hostId ? () => handleKickPlayer(p.userId) : undefined}
-                  />
-                ))
-              )}
-            </div>
-          </div>
+        </AnimatePresence>
 
-          {/* Team B */}
-          <div className="rounded-3xl border border-[#151515]/10 bg-white/40 p-4 relative shadow-sm">
-            <div className="flex items-center justify-between mb-3.5">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#A28B52]" />
-                <span className="font-display text-sm tracking-widest uppercase text-[#151515]">Team B</span>
-                <span className="text-[10px] text-[#151515]/50 font-semibold">({teamBPlayers.length} players)</span>
-              </div>
-              {isJoined && currentTeam !== "Team B" && (
-                <button
-                  onClick={() => handleAssignTeam("Team B")}
-                  disabled={actionLoading}
-                  className="px-2.5 py-1 rounded-lg bg-[#A28B52]/10 hover:bg-[#A28B52]/20 text-[#A28B52] text-[9px] uppercase font-bold tracking-widest transition flex items-center gap-1 cursor-pointer"
-                >
-                  Join Team B
-                </button>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              {teamBPlayers.length === 0 ? (
-                <div className="p-4 rounded-2xl border border-dashed border-[#151515]/10 bg-[#151515]/5 text-center text-[10px] uppercase tracking-wider text-[#151515]/30">
-                  No players assigned to Team B
-                </div>
-              ) : (
-                teamBPlayers.map(p => (
-                  <PlayerRow 
-                    key={p.id} 
-                    participant={p} 
-                    showJoinedIcon={currentUserId === p.userId} 
-                    onKick={currentUserId === match.hostId ? () => handleKickPlayer(p.userId) : undefined}
-                  />
-                ))
-              )}
-            </div>
+        {/* Inline Squad Builder - REPLACES old lists */}
+        {match && (
+          <div className="mt-2 w-full">
+            <InlineTeamBuilder
+              participants={match.participants}
+              onSaveTeams={handleSaveTeams}
+              isHost={currentUserId === match.hostId}
+              currentUserId={currentUserId}
+              onJoinTeam={handleAssignTeam}
+            />
           </div>
-
-          {/* Unassigned Pool */}
-          <div className="rounded-3xl border border-dashed border-[#151515]/10 bg-[#151515]/5 p-4">
-            <div className="flex items-center justify-between mb-3.5">
-              <span className="text-[10px] tracking-[0.2em] uppercase text-[#151515]/50 font-bold">Match Draft Pool</span>
-              {isJoined && currentTeam !== null && (
-                <button
-                  onClick={() => handleAssignTeam(null)}
-                  disabled={actionLoading}
-                  className="px-2.5 py-1 rounded-lg bg-[#151515]/5 border border-[#151515]/10 text-[#151515]/70 hover:bg-[#151515]/10 text-[9px] uppercase font-bold tracking-widest transition cursor-pointer"
-                >
-                  Leave Team
-                </button>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              {unassignedPlayers.length === 0 ? (
-                <div className="py-2 text-center text-[10px] uppercase tracking-wider text-[#151515]/30 italic">
-                  All players drafted onto teams
-                </div>
-              ) : (
-                unassignedPlayers.map(p => (
-                  <PlayerRow 
-                    key={p.id} 
-                    participant={p} 
-                    showJoinedIcon={currentUserId === p.userId} 
-                    onKick={currentUserId === match.hostId ? () => handleKickPlayer(p.userId) : undefined}
-                  />
-                ))
-              )}
-            </div>
-          </div>
-        </div>
+        )}
 
         {/* Bottom Primary CTAs */}
-        <div className="fixed bottom-0 left-0 right-0 p-5 bg-[#E5DCC5]/90 backdrop-blur-xl border-t border-[#151515]/5 max-w-md mx-auto z-20">
+        <div className="fixed bottom-0 left-0 right-0 p-5 bg-[#151515]/80 backdrop-blur-xl border-t border-[#A28B52]/20 max-w-md mx-auto z-40">
           {isJoined ? (
             <div className="flex flex-col gap-2">
               <button
                 onClick={() => setShowInviteModal(true)}
-                className="w-full h-11 mb-2 rounded-2xl bg-[#151515]/5 border border-[#151515]/10 hover:bg-[#151515]/10 text-[#151515] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
+                className="w-full h-11 mb-2 rounded-2xl bg-[#A28B52]/10 border border-[#A28B52]/20 hover:bg-[#A28B52]/20 text-[#E5DCC5] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
               >
                 <Mail size={14} />
                 INVITE FRIENDS
@@ -831,7 +736,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 <button
                   onClick={handleCheckIn}
                   disabled={actionLoading}
-                  className="w-full h-12 rounded-2xl bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-lg animate-pulse"
+                  className="w-full h-12 rounded-2xl bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(212,248,41,0.3)] animate-pulse"
                 >
                   {actionLoading ? (
                     <>
@@ -851,14 +756,14 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   <button
                     onClick={handleStartMatch}
                     disabled={actionLoading || match.status === "in_progress"}
-                    className="w-full h-11 rounded-2xl bg-[#151515] hover:bg-[#2A2824] text-white text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-md"
+                    className="w-full h-11 rounded-2xl bg-[#D4F829]/20 hover:bg-[#D4F829]/30 border border-[#D4F829]/40 text-[#D4F829] text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-md"
                   >
                     {match.status === "in_progress" ? "STARTED" : "START MATCH"}
                   </button>
                   <button
                     onClick={handleCloseMatch}
                     disabled={actionLoading}
-                    className="w-full h-11 rounded-2xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-600 text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full h-11 rounded-2xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     CLOSE MATCH
                   </button>
@@ -867,11 +772,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <button
                 onClick={handleLeaveMatch}
                 disabled={actionLoading}
-                className="w-full h-11 rounded-2xl border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 text-red-600 text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 mt-2"
+                className="w-full h-11 rounded-2xl border border-red-500/20 bg-[#111] hover:bg-red-500/10 text-red-500 text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 mt-2"
               >
                 {actionLoading ? (
                   <>
-                    <Loader2 className="size-4 animate-spin text-red-600" />
+                    <Loader2 className="size-4 animate-spin text-red-500" />
                     LEAVING...
                   </>
                 ) : (
@@ -886,11 +791,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
             <button
               onClick={handleJoinMatch}
               disabled={actionLoading || participants.length >= match.maxPlayers}
-              className="w-full h-12 rounded-2xl bg-[#151515] hover:bg-[#2A2824] text-[#D4F829] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-xl"
+              className="w-full h-12 rounded-2xl bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_0_15px_rgba(212,248,41,0.3)]"
             >
               {actionLoading ? (
                 <>
-                  <Loader2 className="size-4 animate-spin text-[#D4F829]" />
+                  <Loader2 className="size-4 animate-spin text-[#151515]" />
                   JOINING...
                 </>
               ) : (
@@ -959,14 +864,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         )}
       </AnimatePresence>
 
-      {match && (
-        <TeamBuilderModal
-          isOpen={showTeamBuilder}
-          onClose={() => setShowTeamBuilder(false)}
-          participants={match.participants}
-          onSaveTeams={handleSaveTeams}
-        />
-      )}
+
 
       {match && currentUserId && (
         <StatSubmissionModal
@@ -1004,48 +902,3 @@ export default function MatchDetailsPage({ params }: PageProps) {
   );
 }
 
-function PlayerRow({ participant, showJoinedIcon, onKick }: { participant: MatchParticipant; showJoinedIcon?: boolean; onKick?: () => void }) {
-  const user = participant.user;
-  return (
-    <div className="p-2.5 rounded-xl border border-[#151515]/5 bg-[#151515]/5 flex items-center gap-3 shadow-[0_2px_10px_rgba(21,21,21,0.02)]">
-      <div className="relative size-8 rounded-full overflow-hidden border border-[#151515]/10 bg-white shrink-0 flex items-center justify-center">
-        {user.avatarUrl ? (
-           
-          <img src={user.avatarUrl} alt={user.fullName || user.username} className="w-full h-full object-cover" />
-        ) : (
-          <User size={14} className="text-[#151515]/30" />
-        )}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-xs font-bold text-[#151515] truncate flex items-center gap-1.5 animate-fade-in">
-          {user.fullName || user.username}
-          {showJoinedIcon && (
-            <span className="px-1.5 py-0.5 rounded bg-[#A28B52]/20 text-[#A28B52] text-[8px] uppercase tracking-wider font-bold">You</span>
-          )}
-          {participant.checkedIn && (
-            <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[7px] uppercase tracking-widest font-black flex items-center gap-0.5 border border-emerald-500/20 scale-[0.9] origin-left shrink-0">
-              <CheckCircle2 size={7} className="fill-emerald-400/30" />
-              Here
-            </span>
-          )}
-        </div>
-        <div className="text-[9px] text-[#151515]/50 uppercase font-medium tracking-wide mt-0.5">
-          {user?.position || "N/A"} &bull; {user.playStyle || "N/A"}
-        </div>
-      </div>
-      <div className="shrink-0 flex flex-col items-end px-1.5">
-        <span className="text-[9px] uppercase tracking-widest text-[#151515]/40">OVR</span>
-        <span className="font-display text-xs text-[#151515] font-bold">{user.overall}</span>
-      </div>
-      {onKick && !showJoinedIcon && (
-        <button 
-          onClick={onKick}
-          className="ml-2 w-6 h-6 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition cursor-pointer"
-          title="Kick Player"
-        >
-          <X size={12} />
-        </button>
-      )}
-    </div>
-  );
-}
