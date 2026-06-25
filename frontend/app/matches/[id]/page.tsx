@@ -514,30 +514,33 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   return (
     <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#E5DCC5] bg-[url('/create_card_bg.webp')] bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-[#151515]">
-      <div className="pointer-events-none fixed inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.16),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.55),transparent)]" />
+      <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.22),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.62),transparent)]" />
 
-      <div className="relative min-h-[100dvh] flex flex-col px-5 pt-5 pb-28 max-w-md mx-auto z-10 w-full overflow-y-auto">
+      <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-28 max-w-md mx-auto z-10 w-full overflow-y-auto">
         {/* Top Header Section */}
-        <header className="flex flex-col mb-5 relative">
+        <header className="relative mb-4 overflow-hidden rounded-[2rem] border border-[#151515]/10 bg-white/35 p-4 shadow-[0_18px_50px_rgba(79,60,25,0.12)] backdrop-blur-md">
+          <div className="pointer-events-none absolute -right-12 -top-20 size-52 rounded-full bg-[#D4F829]/22 blur-3xl" />
           <div className="flex items-center justify-between relative z-10">
             <button 
               onClick={() => router.push("/matches")} 
-              className="w-11 h-11 rounded-full bg-[#151515]/5 border border-[#151515]/10 backdrop-blur-md flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition shadow-sm"
+              className="w-10 h-10 rounded-full bg-[#151515] border border-white/10 flex items-center justify-center cursor-pointer hover:scale-105 transition shadow-[0_8px_20px_rgba(0,0,0,0.22)]"
               type="button"
               aria-label="Back to matches"
             >
-              <ArrowLeft size={20} color="#151515" />
+              <ArrowLeft size={18} color="#E5DCC5" />
             </button>
             {/* Placeholder for layout balance if needed, or just let justify-between handle it */}
-            <div className="w-11 h-11" />
+            <div className="rounded-full border border-[#151515]/10 bg-white/40 px-3 py-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-[#151515]/65">
+              {match.format}
+            </div>
           </div>
           
-          <div className="mt-1 flex flex-col items-center text-center">
+          <div className="mt-2 flex flex-col items-center text-center">
             <div className="mb-2 flex items-center gap-2 rounded-full bg-[#D4F829] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-[#151515] shadow-[0_10px_24px_rgba(212,248,41,0.24),inset_0_1px_0_rgba(255,255,255,0.45)]">
               <span className="size-1.5 rounded-full bg-[#151515]" />
               {statusLabel}
             </div>
-            <h1 className="font-display font-black italic uppercase text-[42px] leading-[0.88] tracking-tight text-[#151515] drop-shadow-sm px-2">
+            <h1 className="font-display font-black italic uppercase text-[38px] leading-[0.9] tracking-tight text-[#151515] drop-shadow-sm px-2">
               {match.title}
             </h1>
             
@@ -552,13 +555,13 @@ export default function MatchDetailsPage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="mt-5 grid w-full grid-cols-3 gap-2">
+            <div className="mt-4 grid w-full grid-cols-3 gap-2">
               <MatchMetric icon={<Users size={13} />} label="Players" value={`${participants.length}/${match.maxPlayers}`} />
               <MatchMetric icon={<CheckCircle2 size={13} />} label="Checked" value={`${checkedInCount}`} />
               <MatchMetric icon={<Crown size={13} />} label="Host" value={hostName.split(" ")[0] || "Host"} />
             </div>
 
-            <div className="mt-3 w-full rounded-[1.35rem] border border-[#151515]/10 bg-[#151515]/6 p-3 backdrop-blur-sm">
+            <div className="mt-3 w-full rounded-[1.25rem] border border-[#151515]/10 bg-[#151515]/[0.06] p-3 backdrop-blur-sm">
               <div className="mb-2 flex items-center justify-between text-[9px] font-black uppercase tracking-[0.22em] text-[#8A6A28]">
                 <span>Lobby Fill</span>
                 <span>{playerFill}%</span>
@@ -594,7 +597,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
         {/* Inline Squad Builder - REPLACES old lists */}
         {match && (
-          <div className="mt-2 w-full">
+          <div className="mt-1 w-full rounded-[2rem] border border-[#151515]/10 bg-[#151515] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
             <div className="mb-3 grid grid-cols-3 gap-2">
               <TeamChip label="Team A" value={teamAPlayers.length} tone="lime" />
               <TeamChip label="Free Pool" value={unassignedPlayers.length} tone="gold" />
@@ -611,14 +614,14 @@ export default function MatchDetailsPage({ params }: PageProps) {
         )}
 
         {/* Bottom Primary CTAs */}
-        <div className="mt-6 w-full pb-8">
+        <div className="mt-4 w-full pb-8">
           {isJoined ? (
-            <div className="relative flex flex-col gap-3 p-5 rounded-[2rem] bg-[#151515] shadow-[0_28px_70px_rgba(0,0,0,0.5)] overflow-hidden border border-white/5">
+            <div className="relative flex flex-col gap-3 p-5 rounded-[2rem] bg-[#111210] shadow-[0_28px_70px_rgba(0,0,0,0.42)] overflow-hidden border border-[#D4F829]/15">
               <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#D4F829]/60 to-transparent" />
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h3 className="text-[11px] tracking-[0.3em] uppercase text-[#A28B52] font-black">
-                    Match Actions
+                    Match Command
                   </h3>
                   <p className="mt-1 text-[10px] font-medium text-white/45">
                     {currentTeam ? `You are drafted to ${currentTeam}.` : "Pick a side on the board when ready."}

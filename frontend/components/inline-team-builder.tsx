@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Check, Crown, Grip, Loader2, Save, Shield, Sparkles } from "lucide-react";
+import { Check, ChevronUp, Crown, Grip, Loader2, Save, Shield, Sparkles, Users } from "lucide-react";
 import {
   DndContext,
   KeyboardSensor,
@@ -208,6 +208,7 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
   const [playerStates, setPlayerStates] = useState<Record<string, PlayerState>>({});
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [benchOpen, setBenchOpen] = useState(true);
   
   const pitchRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -413,14 +414,14 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
   const benchPlayers = players.filter(p => !playerStates[p.id]?.x);
 
   return (
-    <div className="w-full flex flex-col relative bg-[#111111] rounded-[2rem] overflow-hidden shadow-[0_28px_70px_rgba(0,0,0,0.5)] select-none h-[760px] md:h-[850px] border border-[#E5DCC5]/5">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_74%_0%,rgba(212,248,41,0.08),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_28%)]" />
+    <div className="w-full flex flex-col relative bg-[#080a08] rounded-[1.75rem] overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.48)] select-none h-[680px] md:h-[760px] border border-[#D4F829]/15">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_0%,rgba(212,248,41,0.13),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.045),transparent_30%)]" />
       
       {/* Top Header */}
       {isHost && (
-        <div className="flex items-center justify-between gap-3 p-4 bg-transparent shrink-0 z-20">
+        <div className="flex items-center justify-between gap-3 px-4 py-3.5 bg-transparent shrink-0 z-20">
           <div className="min-w-0">
-            <div className="font-display text-[18px] italic uppercase leading-none tracking-wide text-white">Squad Board</div>
+            <div className="font-display text-[20px] italic uppercase leading-none tracking-wide text-white">Squad Tactics</div>
             <div className="mt-1 flex items-center gap-1.5 text-[8px] font-black uppercase tracking-[0.22em] text-[#A28B52]">
               <Grip size={11} />
               Drag players into shape
@@ -437,49 +438,19 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
         </div>
       )}
       {!isHost && (
-        <div className="flex items-center justify-between gap-3 p-4 bg-transparent shrink-0 z-20">
+        <div className="flex items-center justify-between gap-3 px-4 py-3.5 bg-transparent shrink-0 z-20">
           <div>
-            <div className="font-display text-[18px] italic uppercase leading-none tracking-wide text-white">Squad Board</div>
+            <div className="font-display text-[20px] italic uppercase leading-none tracking-wide text-white">Squad Tactics</div>
             <div className="mt-1 text-[8px] font-black uppercase tracking-[0.22em] text-[#A28B52]">Move your card to join a side</div>
           </div>
         </div>
       )}
 
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex flex-row flex-1 overflow-hidden relative bg-transparent">
-          
-          {/* Left Sidebar (Lobby / Substitutes) */}
-          <div ref={sidebarRef} className="w-[94px] md:w-[104px] bg-[#141414]/95 shrink-0 flex flex-col z-20 shadow-[12px_0_30px_rgba(0,0,0,0.25)] border-r border-white/5">
-            <div className="p-3 bg-[#0d0d0d]/60 flex flex-col items-center border-b border-white/5">
-              <span className="text-[10px] font-black text-white uppercase tracking-widest">Lobby</span>
-              <span className="mt-1 rounded-full border border-[#A28B52]/30 px-2 py-0.5 text-[8px] font-black text-[#A28B52]">{benchPlayers.length}</span>
-            </div>
-            <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar flex flex-col items-center py-3 gap-4">
-              {benchPlayers.map(p => {
-                const state = playerStates[p.id];
-                if (!state) return null;
-                const isDraggable = isHost || p.id === currentUserId;
-                return (
-                  <DraggablePlayerToken 
-                    key={p.id} 
-                    player={p} 
-                    state={state} 
-                    isDraggable={isDraggable} 
-                    onLabelClick={handleLabelEdit}
-                  />
-                );
-              })}
-              {Object.values(playerStates).filter(s => s.x === null).length === 0 && (
-                <div className="mt-8 text-center text-[9px] italic uppercase tracking-widest text-white/30 px-2 py-4">
-                  Empty
-                </div>
-              )}
-            </div>
-          </div>
-
+        <div className="flex flex-col flex-1 overflow-hidden relative bg-transparent">
           {/* The Pitch (Main Content) */}
           <div ref={pitchRef} className="flex-1 relative overflow-hidden" 
-               style={{ background: 'radial-gradient(circle at 50% 50%, rgba(212,248,41,0.08), transparent 24%), repeating-linear-gradient(0deg, #46684d, #46684d 60px, #416247 60px, #416247 120px)' }}>
+               style={{ background: 'radial-gradient(circle at 50% 50%, rgba(212,248,41,0.12), transparent 25%), repeating-linear-gradient(0deg, #31583b, #31583b 52px, #2b5035 52px, #2b5035 104px)' }}>
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(0deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:44px_44px]" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.12)_58%,rgba(0,0,0,0.32)_100%)]" />
             
@@ -546,6 +517,46 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
                 />
               );
             })}
+          </div>
+
+          <div ref={sidebarRef} className={`relative z-20 shrink-0 border-t border-[#D4F829]/15 bg-[#0d0f0d]/98 transition-[height] duration-300 ${benchOpen ? "h-[132px]" : "h-[46px]"}`}>
+            <button
+              type="button"
+              onClick={() => setBenchOpen((open) => !open)}
+              className="flex h-[46px] w-full items-center justify-between px-4 text-left"
+            >
+              <span className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.22em] text-white">
+                <Users size={13} className="text-[#D4F829]" />
+                Free Pool
+                <span className="rounded-full bg-[#D4F829] px-2 py-0.5 text-[8px] text-black">{benchPlayers.length}</span>
+              </span>
+              <span className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-white/35">
+                Drag onto pitch
+                <ChevronUp size={14} className={`transition-transform ${benchOpen ? "" : "rotate-180"}`} />
+              </span>
+            </button>
+            {benchOpen && (
+              <div className="flex h-[86px] items-start gap-3 overflow-x-auto overflow-y-hidden px-4 pb-3 custom-scrollbar">
+                {benchPlayers.map((p) => {
+                  const state = playerStates[p.id];
+                  if (!state) return null;
+                  return (
+                    <DraggablePlayerToken
+                      key={p.id}
+                      player={p}
+                      state={state}
+                      isDraggable={isHost || p.id === currentUserId}
+                      onLabelClick={handleLabelEdit}
+                    />
+                  );
+                })}
+                {benchPlayers.length === 0 && (
+                  <div className="flex h-14 w-full items-center justify-center text-[9px] font-black uppercase tracking-widest text-white/25">
+                    Everyone is on the pitch
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
