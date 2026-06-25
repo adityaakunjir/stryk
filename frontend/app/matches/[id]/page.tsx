@@ -528,16 +528,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
             >
               <ArrowLeft size={20} color="#151515" />
             </button>
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="font-display font-bold italic text-[#A28B52] tracking-[0.28em] uppercase text-[10px]">
-                Stryk
-              </span>
-            </div>
             {/* Placeholder for layout balance if needed, or just let justify-between handle it */}
             <div className="w-11 h-11" />
           </div>
           
-          <div className="mt-5 flex flex-col items-center text-center">
+          <div className="mt-1 flex flex-col items-center text-center">
             <div className="mb-2 flex items-center gap-2 rounded-full bg-[#D4F829] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-[#151515] shadow-[0_10px_24px_rgba(212,248,41,0.24),inset_0_1px_0_rgba(255,255,255,0.45)]">
               <span className="size-1.5 rounded-full bg-[#151515]" />
               {statusLabel}
