@@ -115,14 +115,14 @@ export default function SearchPage() {
           {/* Main Search Input */}
           <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.15)] rounded-full group">
             <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-              <Search size={20} className="text-[#D4F829] opacity-70 group-focus-within:opacity-100 transition-opacity" />
+              <Search size={20} className="text-[#A28B52] opacity-70 group-focus-within:opacity-100 transition-opacity" />
             </div>
             <input
               type="text"
               placeholder="Search by name or @username..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full h-[52px] pl-12 pr-5 rounded-full border border-[#151515]/10 bg-[#151515] text-sm text-white placeholder:text-white/40 outline-none focus:border-[#D4F829] focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 shadow-inner"
+              className="w-full h-[52px] pl-12 pr-5 rounded-full border border-[#151515]/10 bg-[#151515] text-sm text-white placeholder:text-white/40 outline-none focus:border-[#A28B52] focus:ring-1 focus:ring-[#A28B52]/50 transition duration-300 shadow-inner"
             />
           </div>
 
@@ -130,12 +130,12 @@ export default function SearchPage() {
           <div className="grid grid-cols-2 gap-3">
             <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.15)] rounded-2xl group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Activity size={16} className="text-[#D4F829] opacity-70 group-focus-within:opacity-100 transition-opacity" />
+                <Activity size={16} className="text-[#A28B52] opacity-70 group-focus-within:opacity-100 transition-opacity" />
               </div>
               <select
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
-                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#151515]/10 bg-[#151515] text-[11px] font-bold tracking-wider text-white uppercase appearance-none outline-none focus:border-[#D4F829] transition"
+                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#151515]/10 bg-[#151515] text-[11px] font-bold tracking-wider text-white uppercase appearance-none outline-none focus:border-[#A28B52] transition"
               >
                 <option value="">ANY POSITION</option>
                 <option value="ST">STRIKER (ST)</option>
@@ -151,19 +151,19 @@ export default function SearchPage() {
                 <option value="RB">RIGHT BACK (RB)</option>
                 <option value="GK">GOALKEEPER (GK)</option>
               </select>
-              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-white/50">
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-[#A28B52]/50">
                 <ChevronDown size={16} />
               </div>
             </div>
 
             <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.15)] rounded-2xl group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Shirt size={16} className="text-[#D4F829] opacity-70 group-focus-within:opacity-100 transition-opacity" />
+                <Shirt size={16} className="text-[#A28B52] opacity-70 group-focus-within:opacity-100 transition-opacity" />
               </div>
               <select
                 value={playStyle}
                 onChange={(e) => setPlayStyle(e.target.value)}
-                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#151515]/10 bg-[#151515] text-[11px] font-bold tracking-wider text-white uppercase appearance-none outline-none focus:border-[#D4F829] transition"
+                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#151515]/10 bg-[#151515] text-[11px] font-bold tracking-wider text-white uppercase appearance-none outline-none focus:border-[#A28B52] transition"
               >
                 <option value="">ANY STYLE</option>
                 <option value="Speedster">SPEEDSTER</option>
@@ -174,7 +174,7 @@ export default function SearchPage() {
                 <option value="Destroyer">DESTROYER</option>
                 <option value="Target Man">TARGET MAN</option>
               </select>
-              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-white/50">
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-[#A28B52]/50">
                 <ChevronDown size={16} />
               </div>
             </div>
@@ -250,7 +250,7 @@ export default function SearchPage() {
                   <div className="absolute inset-0 bg-gradient-to-r from-[#D4F829]/0 via-[#D4F829]/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />
                   
                   <div className="flex items-center gap-4 relative z-10">
-                    <div className="relative size-14 rounded-full overflow-hidden border border-white/10 bg-[#0A0A0A] shrink-0 flex items-center justify-center shadow-inner group-hover:border-[#D4F829]/30 transition-colors">
+                    <div className="relative size-14 rounded-full overflow-hidden border border-[#A28B52]/30 bg-[#0A0A0A] shrink-0 flex items-center justify-center shadow-inner group-hover:border-[#D4F829]/30 transition-colors">
                       {player.avatarUrl ? (
                         <Image src={player.avatarUrl} alt={player.username} fill className="object-cover" />
                       ) : (
@@ -267,10 +267,10 @@ export default function SearchPage() {
                         @{player.username}
                       </div>
                       <div className="flex gap-2">
-                        <span className="px-2.5 py-1 rounded-[0.4rem] bg-[#D4F829]/10 border border-[#D4F829]/20 text-[9px] uppercase tracking-widest text-[#D4F829] font-bold">
+                        <span className="px-2.5 py-1 rounded-[0.4rem] bg-[#A28B52]/10 border border-[#A28B52]/20 text-[9px] uppercase tracking-widest text-[#A28B52] font-bold group-hover:border-[#D4F829]/20 transition-colors">
                           {player.position || "N/A"}
                         </span>
-                        <span className="px-2.5 py-1 rounded-[0.4rem] bg-[#D4F829]/10 border border-[#D4F829]/20 text-[9px] uppercase tracking-widest text-[#D4F829] font-bold">
+                        <span className="px-2.5 py-1 rounded-[0.4rem] bg-[#A28B52]/10 border border-[#A28B52]/20 text-[9px] uppercase tracking-widest text-[#A28B52] font-bold group-hover:border-[#D4F829]/20 transition-colors">
                           {player.playStyle || "N/A"}
                         </span>
                       </div>
