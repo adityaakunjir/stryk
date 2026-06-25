@@ -722,21 +722,16 @@ export default function MatchDetailsPage({ params }: PageProps) {
         )}
 
         {/* Bottom Primary CTAs */}
-        <div className="fixed bottom-0 left-0 right-0 p-5 bg-[#151515]/80 backdrop-blur-xl border-t border-[#A28B52]/20 max-w-md mx-auto z-40">
+        <div className="mt-6 w-full pb-8">
           {isJoined ? (
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => setShowInviteModal(true)}
-                className="w-full h-11 mb-2 rounded-2xl bg-[#A28B52]/10 border border-[#A28B52]/20 hover:bg-[#A28B52]/20 text-[#E5DCC5] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
-              >
-                <Mail size={14} />
-                INVITE FRIENDS
-              </button>
+            <div className="flex flex-col gap-2 p-4 rounded-[2rem] border border-[#A28B52]/20 bg-[#151515]/80 backdrop-blur-md shadow-xl">
+              <h3 className="text-[10px] tracking-[0.25em] uppercase text-[#A28B52] font-bold mb-2 text-center drop-shadow-sm">Match Actions</h3>
+              
               {!isCheckedIn && (
                 <button
                   onClick={handleCheckIn}
                   disabled={actionLoading}
-                  className="w-full h-12 rounded-2xl bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(212,248,41,0.3)] animate-pulse"
+                  className="w-full h-12 rounded-2xl bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-display tracking-[0.2em] uppercase font-black transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(212,248,41,0.3)] animate-pulse"
                 >
                   {actionLoading ? (
                     <>
@@ -745,12 +740,21 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     </>
                   ) : (
                     <>
-                      <CheckCircle2 size={14} />
+                      <CheckCircle2 size={15} />
                       {"I'M HERE (CHECK IN)"}
                     </>
                   )}
                 </button>
               )}
+              
+              <button
+                onClick={() => setShowInviteModal(true)}
+                className="w-full h-11 rounded-2xl bg-[#A28B52]/10 border border-[#A28B52]/20 hover:bg-[#A28B52]/20 text-[#E5DCC5] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Mail size={14} />
+                INVITE FRIENDS
+              </button>
+              
               {currentUserId === match.hostId && match.status !== "closed" && (
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <button
@@ -772,7 +776,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <button
                 onClick={handleLeaveMatch}
                 disabled={actionLoading}
-                className="w-full h-11 rounded-2xl border border-red-500/20 bg-[#111] hover:bg-red-500/10 text-red-500 text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 mt-2"
+                className="w-full h-11 rounded-2xl border border-red-500/20 bg-transparent hover:bg-red-500/10 text-red-500/80 hover:text-red-500 text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 mt-2"
               >
                 {actionLoading ? (
                   <>
@@ -781,7 +785,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   </>
                 ) : (
                   <>
-                    <LogOut size={14} />
+                    <LogOut size={13} />
                     LEAVE MATCH
                   </>
                 )}
@@ -791,16 +795,16 @@ export default function MatchDetailsPage({ params }: PageProps) {
             <button
               onClick={handleJoinMatch}
               disabled={actionLoading || participants.length >= match.maxPlayers}
-              className="w-full h-12 rounded-2xl bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_0_15px_rgba(212,248,41,0.3)]"
+              className="w-full h-14 rounded-2xl bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[13px] font-display tracking-[0.2em] uppercase font-black transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_0_20px_rgba(212,248,41,0.4)]"
             >
               {actionLoading ? (
                 <>
-                  <Loader2 className="size-4 animate-spin text-[#151515]" />
+                  <Loader2 className="size-5 animate-spin text-[#151515]" />
                   JOINING...
                 </>
               ) : (
                 <>
-                  <UserPlus size={14} />
+                  <UserPlus size={16} />
                   {participants.length >= match.maxPlayers ? "MATCH FULL" : "JOIN MATCH"}
                 </>
               )}
