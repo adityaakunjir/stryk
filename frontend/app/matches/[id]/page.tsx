@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, use, useCallback } from "react";
+import { useState, useEffect, use, useCallback, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, MapPin, Users, Loader2, User, LogOut, UserPlus, Sparkles, CheckCircle2, Mail, X, MessageSquare, Check } from "lucide-react";
+import { ArrowLeft, Calendar, CheckCircle2, Crown, Loader2, LogOut, Mail, MapPin, Swords, Trophy, UserPlus, Users, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getPusherClient } from "@/lib/pusher";
 import { toast } from "sonner";
@@ -74,7 +74,6 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [pendingVerificationCount, setPendingVerificationCount] = useState(0);
-  const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
   const [showStatSubmission, setShowStatSubmission] = useState(false);
   const [hasSubmittedStats, setHasSubmittedStats] = useState(false);
 
@@ -491,6 +490,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const teamAPlayers = participants.filter(p => p.team === "Team A");
   const teamBPlayers = participants.filter(p => p.team === "Team B");
   const unassignedPlayers = participants.filter(p => p.team !== "Team A" && p.team !== "Team B");
+  const checkedInCount = participants.filter(p => p.checkedIn).length;
+  const hostName = match.creator?.fullName || match.creator?.username || "Host";
+  const playerFill = Math.min(100, Math.round((participants.length / Math.max(match.maxPlayers, 1)) * 100));
+  const statusLabel = match.status === "open" ? "Open Match" : match.status.replace(/_/g, " ");
 
   // Helper to format date
   const formatDateTime = (dateStr: string) => {
@@ -510,43 +513,64 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[url('/create_card_bg.webp')] bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#E5DCC5] bg-[url('/create_card_bg.webp')] bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-[#151515]">
+      <div className="pointer-events-none fixed inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.16),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.55),transparent)]" />
 
-      <div className="relative min-h-[100dvh] flex flex-col px-5 pt-6 pb-28 max-w-md mx-auto z-10 w-full overflow-y-auto">
+      <div className="relative min-h-[100dvh] flex flex-col px-5 pt-5 pb-28 max-w-md mx-auto z-10 w-full overflow-y-auto">
         {/* Top Header Section */}
-        <header className="flex flex-col mb-6 relative">
+        <header className="flex flex-col mb-5 relative">
           <div className="flex items-center justify-between relative z-10">
             <button 
               onClick={() => router.push("/matches")} 
-              className="w-10 h-10 rounded-full bg-[#151515]/5 flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition"
+              className="w-11 h-11 rounded-full bg-[#151515]/5 border border-[#151515]/10 backdrop-blur-md flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition shadow-sm"
               type="button"
+              aria-label="Back to matches"
             >
               <ArrowLeft size={20} color="#151515" />
             </button>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="font-display font-bold italic text-[#A28B52] tracking-[0.2em] uppercase text-[10px]">
+              <span className="font-display font-bold italic text-[#A28B52] tracking-[0.28em] uppercase text-[10px]">
                 Stryk
               </span>
             </div>
-            <div className="w-10 h-10" /> {/* Empty div for flex balance */}
+            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#151515]/10 bg-[#151515]/5 text-[#151515]/75 shadow-sm backdrop-blur-md">
+              <Trophy size={17} />
+            </div>
           </div>
           
-          <div className="mt-6 flex flex-col items-center text-center">
-            <div className="px-3 py-1 rounded-full bg-[#D4F829] text-[#151515] text-[9px] uppercase tracking-widest font-black mb-2 shadow-sm">
-              {match.status === "open" ? "OPEN MATCH" : match.status}
+          <div className="mt-5 flex flex-col items-center text-center">
+            <div className="mb-2 flex items-center gap-2 rounded-full bg-[#D4F829] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-[#151515] shadow-[0_10px_24px_rgba(212,248,41,0.24),inset_0_1px_0_rgba(255,255,255,0.45)]">
+              <span className="size-1.5 rounded-full bg-[#151515]" />
+              {statusLabel}
             </div>
-            <h1 className="font-display font-black italic uppercase text-[32px] leading-none tracking-tight text-[#151515] drop-shadow-sm px-2">
+            <h1 className="font-display font-black italic uppercase text-[42px] leading-[0.88] tracking-tight text-[#151515] drop-shadow-sm px-2">
               {match.title}
             </h1>
             
-            <div className="flex flex-col items-center gap-1.5 mt-3">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#151515]/80">
-                <MapPin size={12} className="text-[#A28B52]" />
+            <div className="mt-4 flex max-w-[340px] flex-col items-center gap-2">
+              <div className="flex items-center gap-1.5 text-[13px] font-extrabold text-[#151515]/82">
+                <MapPin size={13} className="text-[#A28B52]" />
                 <span>{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
               </div>
-              <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#151515]/60">
-                <Calendar size={12} className="text-[#A28B52]" />
+              <div className="flex items-center gap-1.5 text-[12px] font-bold text-[#151515]/62">
+                <Calendar size={13} className="text-[#A28B52]" />
                 <span>{formatDateTime(match.matchDate)}</span>
+              </div>
+            </div>
+
+            <div className="mt-5 grid w-full grid-cols-3 gap-2">
+              <MatchMetric icon={<Users size={13} />} label="Players" value={`${participants.length}/${match.maxPlayers}`} />
+              <MatchMetric icon={<CheckCircle2 size={13} />} label="Checked" value={`${checkedInCount}`} />
+              <MatchMetric icon={<Crown size={13} />} label="Host" value={hostName.split(" ")[0] || "Host"} />
+            </div>
+
+            <div className="mt-3 w-full rounded-[1.35rem] border border-[#151515]/10 bg-[#151515]/6 p-3 backdrop-blur-sm">
+              <div className="mb-2 flex items-center justify-between text-[9px] font-black uppercase tracking-[0.22em] text-[#8A6A28]">
+                <span>Lobby Fill</span>
+                <span>{playerFill}%</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-[#151515]/12">
+                <div className="h-full rounded-full bg-[#D4F829] shadow-[0_0_14px_rgba(212,248,41,0.45)]" style={{ width: `${playerFill}%` }} />
               </div>
             </div>
           </div>
@@ -556,9 +580,9 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
         {/* Verification Alert */}
         {pendingVerificationCount > 0 && (
-          <div className="mb-4 p-4 rounded-[2rem] bg-[#151515] flex items-center justify-between shadow-2xl">
+          <div className="mb-4 p-4 rounded-[2rem] bg-[#151515] flex items-center justify-between shadow-2xl border border-[#D4F829]/15">
             <div className="flex-1 px-2">
-              <h3 className="text-[#D4F829] font-bold text-xs tracking-wide">Action Required</h3>
+              <h3 className="text-[#D4F829] font-black text-[11px] uppercase tracking-[0.2em]">Action Required</h3>
               <p className="text-white/80 text-[10px] mt-0.5 leading-tight">
                 You have {pendingVerificationCount} peer stat submissions to review.
               </p>
@@ -577,6 +601,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
         {/* Inline Squad Builder - REPLACES old lists */}
         {match && (
           <div className="mt-2 w-full">
+            <div className="mb-3 grid grid-cols-3 gap-2">
+              <TeamChip label="Team A" value={teamAPlayers.length} tone="lime" />
+              <TeamChip label="Free Pool" value={unassignedPlayers.length} tone="gold" />
+              <TeamChip label="Team B" value={teamBPlayers.length} tone="lime" />
+            </div>
             <InlineTeamBuilder
               participants={match.participants}
               onSaveTeams={handleSaveTeams}
@@ -590,16 +619,27 @@ export default function MatchDetailsPage({ params }: PageProps) {
         {/* Bottom Primary CTAs */}
         <div className="mt-6 w-full pb-8">
           {isJoined ? (
-            <div className="flex flex-col gap-2 p-5 rounded-[2rem] bg-[#151515] shadow-2xl">
-              <h3 className="text-[11px] tracking-[0.3em] uppercase text-[#A28B52] font-bold mb-3 text-center">
-                Match Actions
-              </h3>
+            <div className="relative flex flex-col gap-3 p-5 rounded-[2rem] bg-[#151515] shadow-[0_28px_70px_rgba(0,0,0,0.5)] overflow-hidden border border-white/5">
+              <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#D4F829]/60 to-transparent" />
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-[11px] tracking-[0.3em] uppercase text-[#A28B52] font-black">
+                    Match Actions
+                  </h3>
+                  <p className="mt-1 text-[10px] font-medium text-white/45">
+                    {currentTeam ? `You are drafted to ${currentTeam}.` : "Pick a side on the board when ready."}
+                  </p>
+                </div>
+                <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[9px] font-black uppercase tracking-widest text-white/50">
+                  {isCheckedIn ? "Ready" : "Pending"}
+                </div>
+              </div>
               
               {!isCheckedIn && (
                 <button
                   onClick={handleCheckIn}
                   disabled={actionLoading}
-                  className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-display tracking-[0.2em] uppercase font-black transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(212,248,41,0.3)] animate-pulse"
+                  className="w-full h-14 rounded-full bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[12px] font-display tracking-[0.18em] uppercase font-black transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.55)]"
                 >
                   {actionLoading ? (
                     <>
@@ -614,28 +654,35 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   )}
                 </button>
               )}
+              {isCheckedIn && (
+                <div className="flex h-14 items-center justify-center gap-2 rounded-full border border-[#D4F829]/30 bg-[#D4F829]/10 text-[11px] font-black uppercase tracking-[0.18em] text-[#D4F829]">
+                  <CheckCircle2 size={15} />
+                  Checked in
+                </div>
+              )}
               
               <button
                 onClick={() => setShowInviteModal(true)}
-                className="w-full h-12 mt-1 rounded-[1.25rem] bg-[#1c1c1e] hover:bg-[#2a2a2c] text-white text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
+                className="w-full h-[52px] rounded-full bg-[#1c1c1e] hover:bg-[#242426] text-white text-[11px] font-display tracking-[0.18em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 border border-white/5"
               >
                 <Mail size={14} />
                 INVITE FRIENDS
               </button>
               
               {currentUserId === match.hostId && match.status !== "closed" && (
-                <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={handleStartMatch}
                     disabled={actionLoading || match.status === "in_progress"}
-                    className="w-full h-12 rounded-[1.25rem] bg-[#3f451b] hover:bg-[#4a5220] text-[#D4F829] text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full h-12 rounded-full bg-[#3f451b] hover:bg-[#4a5220] text-[#D4F829] text-[10px] font-display tracking-[0.16em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
                   >
+                    <Swords size={13} />
                     {match.status === "in_progress" ? "STARTED" : "START MATCH"}
                   </button>
                   <button
                     onClick={handleCloseMatch}
                     disabled={actionLoading}
-                    className="w-full h-12 rounded-[1.25rem] bg-[#3a1515] hover:bg-[#4a1b1b] text-[#ff4444] text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full h-12 rounded-full bg-[#3a1515] hover:bg-[#4a1b1b] text-[#ff4444] text-[10px] font-display tracking-[0.16em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     CLOSE MATCH
                   </button>
@@ -644,7 +691,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <button
                 onClick={handleLeaveMatch}
                 disabled={actionLoading}
-                className="w-full h-12 rounded-[1.25rem] border border-red-500/30 bg-transparent hover:bg-red-500/10 text-red-500/80 hover:text-red-500 text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 mt-2"
+                className="w-full h-12 rounded-full border border-red-500/30 bg-transparent hover:bg-red-500/10 text-red-500/80 hover:text-red-500 text-[11px] font-display tracking-[0.18em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
               >
                 {actionLoading ? (
                   <>
@@ -663,7 +710,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
             <button
               onClick={handleJoinMatch}
               disabled={actionLoading || participants.length >= match.maxPlayers}
-              className="w-full h-14 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[13px] font-display tracking-[0.2em] uppercase font-black transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
+              className="w-full h-14 rounded-full bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[13px] font-display tracking-[0.18em] uppercase font-black transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.55)]"
             >
               {actionLoading ? (
                 <>
@@ -771,6 +818,35 @@ export default function MatchDetailsPage({ params }: PageProps) {
         />
       )}
     </main>
+  );
+}
+
+function MatchMetric({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
+  return (
+    <div className="min-w-0 rounded-[1.1rem] border border-[#151515]/10 bg-[#151515]/6 px-3 py-3 text-left shadow-sm backdrop-blur-sm">
+      <div className="mb-1.5 flex items-center gap-1.5 text-[#A28B52]">
+        {icon}
+        <span className="truncate text-[8px] font-black uppercase tracking-[0.2em]">{label}</span>
+      </div>
+      <div className="truncate font-display text-[21px] font-black uppercase italic leading-none tracking-wide text-[#151515]">
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function TeamChip({ label, value, tone }: { label: string; value: number; tone: "lime" | "gold" }) {
+  const active = tone === "lime";
+  return (
+    <div className="rounded-[1rem] border border-[#151515]/10 bg-[#151515] px-3 py-2 shadow-[0_12px_28px_rgba(0,0,0,0.22)]">
+      <div className={`text-[8px] font-black uppercase tracking-[0.2em] ${active ? "text-[#D4F829]" : "text-[#A28B52]"}`}>
+        {label}
+      </div>
+      <div className="mt-1 flex items-center justify-between">
+        <span className="font-display text-[22px] font-black italic leading-none text-white">{value}</span>
+        <span className={`size-2 rounded-full ${active ? "bg-[#D4F829] shadow-[0_0_10px_rgba(212,248,41,0.8)]" : "bg-[#A28B52]"}`} />
+      </div>
+    </div>
   );
 }
 
