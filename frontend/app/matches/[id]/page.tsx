@@ -591,7 +591,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         <div className="mt-6 w-full pb-8">
           {isJoined ? (
             <div className="flex flex-col gap-2 p-5 rounded-[2rem] bg-[#151515] shadow-2xl">
-              <h3 className="text-[10px] tracking-[0.25em] uppercase text-[#A28B52] font-bold mb-2 text-center">
+              <h3 className="text-[11px] tracking-[0.3em] uppercase text-[#A28B52] font-bold mb-3 text-center">
                 Match Actions
               </h3>
               
@@ -617,7 +617,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               
               <button
                 onClick={() => setShowInviteModal(true)}
-                className="w-full h-12 mt-1 rounded-[1.25rem] bg-white/5 hover:bg-white/10 text-white text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
+                className="w-full h-12 mt-1 rounded-[1.25rem] bg-[#1c1c1e] hover:bg-[#2a2a2c] text-white text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
               >
                 <Mail size={14} />
                 INVITE FRIENDS
@@ -628,14 +628,14 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   <button
                     onClick={handleStartMatch}
                     disabled={actionLoading || match.status === "in_progress"}
-                    className="w-full h-12 rounded-[1.25rem] bg-[#D4F829]/20 hover:bg-[#D4F829]/30 border border-[#D4F829]/40 text-[#D4F829] text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-md"
+                    className="w-full h-12 rounded-[1.25rem] bg-[#3f451b] hover:bg-[#4a5220] text-[#D4F829] text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     {match.status === "in_progress" ? "STARTED" : "START MATCH"}
                   </button>
                   <button
                     onClick={handleCloseMatch}
                     disabled={actionLoading}
-                    className="w-full h-12 rounded-[1.25rem] bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full h-12 rounded-[1.25rem] bg-[#3a1515] hover:bg-[#4a1b1b] text-[#ff4444] text-[10px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     CLOSE MATCH
                   </button>
@@ -644,7 +644,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <button
                 onClick={handleLeaveMatch}
                 disabled={actionLoading}
-                className="w-full h-12 rounded-[1.25rem] border border-red-500/30 bg-[#151515] hover:bg-red-500/10 text-red-500/80 hover:text-red-500 text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 mt-2"
+                className="w-full h-12 rounded-[1.25rem] border border-red-500/30 bg-transparent hover:bg-red-500/10 text-red-500/80 hover:text-red-500 text-[11px] font-display tracking-[0.2em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 mt-2"
               >
                 {actionLoading ? (
                   <>

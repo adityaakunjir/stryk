@@ -413,15 +413,15 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
   const activePlayerState = activeId ? playerStates[activeId] : null;
 
   return (
-    <div className="w-full flex flex-col relative rounded-xl overflow-hidden shadow-2xl select-none h-[750px] md:h-[850px]">
+    <div className="w-full flex flex-col relative bg-[#151515] rounded-[2rem] overflow-hidden shadow-2xl select-none h-[750px] md:h-[850px]">
       
       {/* Top Header */}
       {isHost && (
-        <div className="flex items-center justify-end p-2 bg-[#111] shrink-0 border-b border-white/10 z-20">
+        <div className="flex items-center justify-end p-3 bg-transparent shrink-0 z-20">
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-1.5 px-4 py-1.5 bg-[#D4F829] hover:bg-[#c3e626] text-black rounded-lg font-black tracking-widest uppercase text-[9px] transition disabled:opacity-50"
+            className="flex items-center gap-1.5 px-5 py-2.5 bg-[#D4F829] hover:bg-[#c3e626] text-black rounded-[1.25rem] font-black tracking-widest uppercase text-[9px] transition disabled:opacity-50"
           >
             {isSaving ? <Loader2 className="animate-spin" size={12} /> : <Save size={12} />}
             SAVE FORMATION
@@ -430,11 +430,11 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
       )}
 
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex flex-row flex-1 overflow-hidden relative bg-[#1c1c1e]">
+        <div className="flex flex-row flex-1 overflow-hidden relative bg-transparent">
           
           {/* Left Sidebar (Lobby / Substitutes) */}
-          <div ref={sidebarRef} className="w-[80px] md:w-[90px] bg-[#1c1c1e] shrink-0 flex flex-col border-r border-white/10 z-20">
-            <div className="p-2 bg-[#1c1c1e] border-b border-white/10 flex flex-col items-center">
+          <div ref={sidebarRef} className="w-[80px] md:w-[90px] bg-[#1a1a1a] shrink-0 flex flex-col z-20 shadow-md">
+            <div className="p-3 bg-transparent flex flex-col items-center">
               <span className="text-[10px] font-black text-white uppercase tracking-widest">Lobby</span>
             </div>
             <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar flex flex-col items-center py-3 gap-4">
