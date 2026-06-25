@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useStrykAuth } from "./auth-provider";
 import { calculateStats, calculateOvr } from "@/lib/stat-utils";
 
@@ -37,28 +37,6 @@ interface PlayerContextType {
   isBackendSynced: boolean;
 }
 
-type BackendPlayer = {
-  id?: number;
-  full_name?: string;
-  username?: string;
-  avatar_url?: string;
-  position?: string;
-  secondary_position?: string;
-  strong_foot?: string;
-  play_style?: PlayStyleType;
-  bio?: string;
-  rating?: number;
-  matches_played?: number;
-  wins?: number;
-  losses?: number;
-  draws?: number;
-  goals?: number;
-  assists?: number;
-  tackles?: number;
-  saves?: number;
-  intercepts?: number;
-};
-
 const defaultPlayerData: PlayerData = {
   fullName: "",
   username: "",
@@ -87,6 +65,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [isBackendSynced, setIsBackendSynced] = useState(false);
   
   const { isSignedIn, getToken, user } = useStrykAuth();
+
+  const resetPlayerData = useCallback(() => {
+    setPlayerData(defaultPlayerData);
+    try {
+      localStorage.removeItem("stryk_player_data");
+    } catch (error) {
+      console.error("Error removing player data", error);
+    }
+    setIsBackendSynced(false);
+  }, []);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -182,7 +170,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     if (isSignedIn) {
       syncFromBackend();
     }
-  }, [isSignedIn, user?.id]);
+  }, [isSignedIn, user?.id, resetPlayerData]);
 
   const updatePlayerData = async (data: Partial<PlayerData>) => {
     let finalUpdated: PlayerData | undefined;
@@ -209,15 +197,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         await pushToBackend(finalUpdated, token);
       }
     }
-  };
-
-  const resetPlayerData = () => {
-    setPlayerData(defaultPlayerData);
-    try {
-      localStorage.removeItem("stryk_player_data");
-    } catch (e) { console.error("Error removing player data", e);
-    }
-    setIsBackendSynced(false);
   };
 
   // Helper to generate football stats based on playstyle

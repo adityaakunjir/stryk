@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -50,13 +50,7 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
   const [disputeReason, setDisputeReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchPendingVerifications();
-    }
-  }, [isOpen]);
-
-  const fetchPendingVerifications = async () => {
+  const fetchPendingVerifications = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`/api/matches/${matchId}/pending-verifications`);
@@ -70,7 +64,13 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
     } finally {
       setLoading(false);
     }
-  };
+  }, [matchId]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchPendingVerifications();
+    }
+  }, [isOpen, fetchPendingVerifications]);
 
   const handleVote = async (vote: number) => {
     if (vote === -1 && disputeReason.trim().length === 0) {
@@ -142,7 +142,7 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="font-display text-2xl uppercase italic tracking-wide text-white">Peer Verification</h3>
-              <p className="text-xs text-white/40 mt-1">Review your teammates' claims</p>
+              <p className="text-xs text-white/40 mt-1">Review your teammates&apos; claims</p>
             </div>
             <button onClick={onClose} className="p-2 rounded-full hover:bg-white/10 text-white/50 hover:text-white transition">
               <X size={20} />

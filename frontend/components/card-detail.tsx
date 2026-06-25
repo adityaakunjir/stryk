@@ -156,7 +156,7 @@ function CardBack({ player }: { player: PlayerData | PlayerMockType }) {
       
       {player.bio && (
         <div className="mt-2 text-[11px] leading-relaxed text-[#808080] italic">
-          "{player.bio}"
+          &ldquo;{player.bio}&rdquo;
         </div>
       )}
 

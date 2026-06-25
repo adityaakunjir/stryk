@@ -21,6 +21,7 @@ type SearchResult = {
 export default function SearchPage() {
   const router = useRouter();
   const { playerData } = usePlayer();
+  const currentUsername = playerData.username;
   
   const [query, setQuery] = useState("");
   const [position, setPosition] = useState("");
@@ -54,8 +55,8 @@ export default function SearchPage() {
       
       if (Array.isArray(data)) {
         let finalData = data;
-        if (playerData?.username) {
-          finalData = data.filter((p: any) => p.username?.toLowerCase() !== playerData.username?.toLowerCase());
+        if (currentUsername) {
+          finalData = data.filter((p: SearchResult) => p.username?.toLowerCase() !== currentUsername.toLowerCase());
         }
         setResults(finalData);
       } else {
@@ -67,7 +68,7 @@ export default function SearchPage() {
     } finally {
       setIsSearching(false);
     }
-  }, [query, position, playStyle, playerData?.username]);
+  }, [query, position, playStyle, currentUsername]);
 
   // Debounce search when typing query
   useEffect(() => {

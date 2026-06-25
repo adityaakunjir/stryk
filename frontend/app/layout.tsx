@@ -11,6 +11,7 @@ export const viewport: Viewport = {
   initialScale: 1};
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   title: "STRYK | Your Football Identity",
   description:
     "Build your football identity with real matches, real stats, and premium player cards.",
@@ -49,4 +50,3 @@ export default function RootLayout({
     </html>
   );
 }
-

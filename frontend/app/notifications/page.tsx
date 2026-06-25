@@ -191,7 +191,7 @@ export default function NotificationsPage() {
             </h3>
             
             <p className="text-[13px] text-[#151515]/70 text-center max-w-[240px] leading-relaxed font-medium">
-              You're all set. Check back later for new updates and invites.
+              You&apos;re all set. Check back later for new updates and invites.
             </p>
           </div>
         ) : (

@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth, useUser } from "@clerk/nextjs";
-import { StrykLogo } from "@/components/stryk-logo";
+import { useAuth } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 
 export default function SyncPage() {
@@ -33,7 +32,7 @@ export default function SyncPage() {
           // Some other server error
           setError(true);
         }
-      } catch (e) {
+      } catch {
         setError(true);
       }
     };

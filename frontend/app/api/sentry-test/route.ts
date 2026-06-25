@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
 
   if (backend) {
     // Forward to backend sentry-test (usually at http://127.0.0.1:8000/sentry-test)
-    let API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api/v1";
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api/v1";
     // Strip "/api/v1" to get the host for health router
     const backendRootUrl = API_BASE_URL.replace(/\/api\/v1\/?$/, "");
     const targetUrl = `${backendRootUrl}/sentry-test`;

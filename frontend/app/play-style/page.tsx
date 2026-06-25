@@ -489,7 +489,7 @@ export default function PlayStylePage() {
                 <div className="flex flex-col gap-1.5 mt-2">
                   {suggestions.map((sug, i) => (
                     <button key={i} type="button" onClick={() => setBio(sug)} className="text-left text-[11px] text-[#808080] hover:text-[#E8E8E8] bg-[#151515] hover:bg-[#2A2A2A]/50 border border-[#2A2A2A] rounded-lg px-3 py-2 transition truncate cursor-pointer">
-                      "{sug}"
+                      &ldquo;{sug}&rdquo;
                     </button>
                   ))}
                 </div>

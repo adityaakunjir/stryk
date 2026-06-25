@@ -10,12 +10,14 @@ import {
 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { useUser } from "@clerk/nextjs";
+import { useStrykAuth } from "@/components/auth-provider";
 import { CardDetail } from "@/components/card-detail";
 import { cn } from "@/lib/utils";
 
 export default function HomeLobbyPage() {
   const router = useRouter();
   const { user } = useUser();
+  const { isLoaded: isAuthLoaded, isSignedIn } = useStrykAuth();
   const { playerData, isLoaded, getStats } = usePlayer();
   
   const [showCardDossier, setShowCardDossier] = useState(false);
@@ -24,6 +26,17 @@ export default function HomeLobbyPage() {
 
   const [friends, setFriends] = useState<any[]>([]);
   const [incomingRequests, setIncomingRequests] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!isAuthLoaded) return;
+    if (!isSignedIn) {
+      router.replace("/");
+      return;
+    }
+    if (isLoaded && !playerData.username) {
+      router.replace("/sync");
+    }
+  }, [isAuthLoaded, isSignedIn, isLoaded, playerData.username, router]);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -49,7 +62,7 @@ export default function HomeLobbyPage() {
     fetchFriends();
   }, [isLoaded]);
 
-  if (!isLoaded) {
+  if (!isLoaded || !isAuthLoaded || !isSignedIn || !playerData.username) {
     return (
       <main className="relative min-h-screen overflow-hidden bg-[#05070B] flex items-center justify-center">
         <Loader2 className="size-10 text-[#C6FF00] animate-spin" />

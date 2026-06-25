@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     clerk_jwks_url: str = Field(default="", validation_alias="CLERK_JWKS_URL")
     jwt_secret_key: str = Field(default="dev-secret-change-me", validation_alias="JWT_SECRET_KEY")
     jwt_algorithm: str = Field(default="HS256", validation_alias="JWT_ALGORITHM")
+    allow_demo_auth: bool = Field(default=False, validation_alias="ALLOW_DEMO_AUTH")
     # --- OpenAI ---
     openai_api_key: str = Field(default="", validation_alias="OPENAI_API_KEY")
 

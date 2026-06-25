@@ -174,7 +174,7 @@ export default function PositionPage() {
               </div>
               <div>
                 <div className="text-xs font-bold text-white uppercase tracking-wider">Identity Created</div>
-                <div className="text-[10px] text-white/50">Let's build your player profile.</div>
+                <div className="text-[10px] text-white/50">Let&apos;s build your player profile.</div>
               </div>
             </div>
           </motion.div>

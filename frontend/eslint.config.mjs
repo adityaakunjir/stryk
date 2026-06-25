@@ -20,6 +20,9 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "scratch/**",
+    "query_pg.js",
+    "test_screenshot.js",
+    "fetch_debug.js",
   ]),
 ]);
 
