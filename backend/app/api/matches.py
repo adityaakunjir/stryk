@@ -21,6 +21,12 @@ router = APIRouter(prefix="/matches", tags=["matches"])
 
 from pydantic import BaseModel
 
+class PlayerPositionData(BaseModel):
+    playerId: str
+    x: Optional[float] = None
+    y: Optional[float] = None
+
+
 class MatchCreate(BaseModel):
     title: str
     turf: Optional[str] = None
@@ -30,6 +36,8 @@ class MatchCreate(BaseModel):
     format: str = "11v11"
     password: Optional[str] = None
     discordLink: Optional[str] = None
+    teamA: Optional[List[PlayerPositionData]] = None
+    teamB: Optional[List[PlayerPositionData]] = None
 
 
 def _serialize_match(match: Match) -> dict:
@@ -108,9 +116,38 @@ async def create_match(
         await session.commit()
         await session.refresh(match)
 
-        # Automatically add creator as a player
-        player = MatchPlayer(matchId=match.id, userId=db_user.id)
-        session.add(player)
+        # Add players from draft teams with position data
+        all_players = []
+        
+        if match_in.teamA:
+            for player_data in match_in.teamA:
+                player = MatchPlayer(
+                    matchId=match.id,
+                    userId=player_data.playerId,
+                    team="A",
+                    x=player_data.x,
+                    y=player_data.y
+                )
+                session.add(player)
+                all_players.append(player)
+        
+        if match_in.teamB:
+            for player_data in match_in.teamB:
+                player = MatchPlayer(
+                    matchId=match.id,
+                    userId=player_data.playerId,
+                    team="B",
+                    x=player_data.x,
+                    y=player_data.y
+                )
+                session.add(player)
+                all_players.append(player)
+
+        # If no teams provided, add creator as a player (legacy behavior)
+        if not match_in.teamA and not match_in.teamB:
+            player = MatchPlayer(matchId=match.id, userId=db_user.id)
+            session.add(player)
+
         await session.commit()
 
         # Re-fetch with players eagerly loaded
@@ -124,6 +161,43 @@ async def create_match(
         error_msg = str(e)
         traceback.print_exc()
         return JSONResponse(status_code=500, content={"success": False, "detail": "Internal Server Error", "error": error_msg})
+
+
+@router.get("/available-players")
+async def get_available_players(
+    session: AsyncSession = Depends(get_session),
+    user: dict = Depends(get_current_user),
+):
+    """Get list of all players available for draft (excluding current user)."""
+    clerk_id = user.get("sub")
+    result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    current_user = result.scalars().first()
+    
+    # Get all users except current user
+    stmt = select(User).where(User.id != current_user.id if current_user else User.clerkId != clerk_id)
+    result = await session.execute(stmt)
+    players = result.scalars().all()
+    
+    return {
+        "success": True,
+        "players": [
+            {
+                "playerId": p.id,
+                "username": p.username,
+                "position": p.position,
+                "playStyle": p.playStyle,
+                "overall": p.overall,
+                "rating": p.overall,  # Alias for compatibility
+                "xp": getattr(p, "xp", 0),
+                "level": getattr(p, "level", 1),
+                "wins": getattr(p, "wins", 0),
+                "matches": getattr(p, "matches", 0),
+                "strongFoot": getattr(p, "strongFoot", "right"),
+                "avatarUrl": p.avatarUrl,
+            }
+            for p in players
+        ]
+    }
 
 
 

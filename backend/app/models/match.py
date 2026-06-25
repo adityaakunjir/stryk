@@ -58,6 +58,8 @@ class MatchPlayerBase(SQLModel):
     userId: str = Field(index=True, foreign_key="users.id")
     team: Optional[str] = Field(default=None, max_length=50)
     status: str = Field(default="joined", max_length=20)
+    x: Optional[float] = Field(default=None, ge=0, le=100)  # Normalized pitch coordinate (0-100)
+    y: Optional[float] = Field(default=None, ge=0, le=100)  # Normalized pitch coordinate (0-100)
 
 
 class MatchPlayer(MatchPlayerBase, table=True):

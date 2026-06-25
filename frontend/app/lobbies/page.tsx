@@ -9,6 +9,7 @@ export default function LobbiesPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showDraftOptions, setShowDraftOptions] = useState(false);
 
   // Lobbies state - empty by default, loaded from localStorage
   const [lobbies, setLobbies] = useState<{
@@ -154,68 +155,94 @@ export default function LobbiesPage() {
         <div className="mt-4 flex gap-2 shrink-0">
           <Tab active={activeTab === "all"} onClick={() => setActiveTab("all")}>All</Tab>
           <Tab active={activeTab === "my"} onClick={() => setActiveTab("my")}>My Lobbies</Tab>
+          <Tab active={activeTab === "draft"} onClick={() => setActiveTab("draft")}>Draft Mode</Tab>
         </div>
 
         {/* Lobbies List */}
         <div className="mt-4 flex-1 space-y-3 pr-0.5">
-          {filteredLobbies.map((l, i) => (
-            <div
-              key={l.id}
-              className="rounded-2xl p-4 border bg-white/[0.02] transition hover:bg-white/[0.04]"
-              style={{
-                borderColor: i === 0 ? "rgba(198,255,0,0.35)" : "rgba(255,255,255,0.08)",
-                background: i === 0 ? "linear-gradient(135deg, rgba(198,255,0,0.10), rgba(198,255,0,0.02))" : undefined,
-              }}
-            >
-              <div className="flex items-start justify-between">
-                <div className="min-w-0">
-                  <div className="font-display tracking-wide truncate text-lg">
-                    {l.name.toUpperCase()}
-                  </div>
-                  <div className="mt-1.5 flex items-center gap-1.5 text-xs text-white/55">
-                    <MapPin size={11} className="shrink-0" /> <span className="truncate">{l.venue}</span>
-                  </div>
-                  <div className="mt-1 flex items-center gap-1.5 text-xs text-white/55">
-                    <Clock size={11} className="shrink-0" /> {l.time}
-                  </div>
-                  <div className="mt-1 text-[10px] text-white/40 uppercase tracking-wider">
-                    Host: <span className="text-[#C6FF00]/80 font-bold">{l.host}</span>
-                  </div>
-                </div>
-                {l.live && (
-                  <span className="text-[9px] tracking-[0.25em] uppercase px-2 py-0.5 rounded-full bg-[#C6FF00] text-black font-bold h-fit shrink-0">Live</span>
-                )}
-              </div>
-
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Users size={12} className="text-white/55 shrink-0" />
-                  <div className="text-xs text-white/70">
-                    <span className="text-white font-bold">{l.going}</span>/{l.total} going
-                  </div>
-                  <div className="ml-2 h-1.5 w-16 rounded-full bg-white/10 overflow-hidden">
-                    <div className="h-full bg-[#C6FF00]" style={{ width: `${(l.going/l.total)*100}%` }} />
-                  </div>
-                </div>
+          {activeTab === "draft" ? (
+            <div className="space-y-3">
+              <p className="text-xs text-white/50 text-center py-4">Select match size to start draft mode</p>
+              {[4, 6, 8, 10, 12, 14, 16, 18, 20, 22].map((size) => (
                 <button
-                  onClick={() => router.push("/team-builder")}
-                  className="rounded-full px-4 py-1.5 text-xs font-display tracking-[0.2em] uppercase cursor-pointer transition"
+                  key={size}
+                  onClick={() => router.push(`/lobbies/draft?maxPlayers=${size}`)}
+                  className="w-full rounded-2xl p-4 border bg-white/[0.02] transition hover:bg-white/[0.04] hover:border-[#C6FF00]/40 text-left"
                   style={{
-                    background: i === 0 ? "#C6FF00" : "rgba(255,255,255,0.06)",
-                    color: i === 0 ? "#05070B" : "#fff",
-                    border: i === 0 ? "none" : "1px solid rgba(255,255,255,0.12)",
+                    borderColor: "rgba(255,255,255,0.08)",
                   }}
                 >
-                  {i === 0 ? "Join" : "View"}
+                  <div className="font-display tracking-wide text-lg text-[#C6FF00]">
+                    {size / 2}v{size / 2} DRAFT
+                  </div>
+                  <div className="mt-1.5 text-xs text-white/55">
+                    {size} players total • Pick your team on the pitch
+                  </div>
                 </button>
-              </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <>
+              {filteredLobbies.map((l, i) => (
+                <div
+                  key={l.id}
+                  className="rounded-2xl p-4 border bg-white/[0.02] transition hover:bg-white/[0.04]"
+                  style={{
+                    borderColor: i === 0 ? "rgba(198,255,0,0.35)" : "rgba(255,255,255,0.08)",
+                    background: i === 0 ? "linear-gradient(135deg, rgba(198,255,0,0.10), rgba(198,255,0,0.02))" : undefined,
+                  }}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="min-w-0">
+                      <div className="font-display tracking-wide truncate text-lg">
+                        {l.name.toUpperCase()}
+                      </div>
+                      <div className="mt-1.5 flex items-center gap-1.5 text-xs text-white/55">
+                        <MapPin size={11} className="shrink-0" /> <span className="truncate">{l.venue}</span>
+                      </div>
+                      <div className="mt-1 flex items-center gap-1.5 text-xs text-white/55">
+                        <Clock size={11} className="shrink-0" /> {l.time}
+                      </div>
+                      <div className="mt-1 text-[10px] text-white/40 uppercase tracking-wider">
+                        Host: <span className="text-[#C6FF00]/80 font-bold">{l.host}</span>
+                      </div>
+                    </div>
+                    {l.live && (
+                      <span className="text-[9px] tracking-[0.25em] uppercase px-2 py-0.5 rounded-full bg-[#C6FF00] text-black font-bold h-fit shrink-0">Live</span>
+                    )}
+                  </div>
 
-          {filteredLobbies.length === 0 && (
-            <div className="text-center py-16 text-white/30 text-xs font-medium border border-dashed border-white/8 rounded-2xl bg-white/[0.01]">
-              No active lobbies found.<br/>Press the + button in the header to host a lobby!
-            </div>
+                  <div className="mt-4 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Users size={12} className="text-white/55 shrink-0" />
+                      <div className="text-xs text-white/70">
+                        <span className="text-white font-bold">{l.going}</span>/{l.total} going
+                      </div>
+                      <div className="ml-2 h-1.5 w-16 rounded-full bg-white/10 overflow-hidden">
+                        <div className="h-full bg-[#C6FF00]" style={{ width: `${(l.going/l.total)*100}%` }} />
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => router.push("/team-builder")}
+                      className="rounded-full px-4 py-1.5 text-xs font-display tracking-[0.2em] uppercase cursor-pointer transition"
+                      style={{
+                        background: i === 0 ? "#C6FF00" : "rgba(255,255,255,0.06)",
+                        color: i === 0 ? "#05070B" : "#fff",
+                        border: i === 0 ? "none" : "1px solid rgba(255,255,255,0.12)",
+                      }}
+                    >
+                      {i === 0 ? "Join" : "View"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {filteredLobbies.length === 0 && (
+                <div className="text-center py-16 text-white/30 text-xs font-medium border border-dashed border-white/8 rounded-2xl bg-white/[0.01]">
+                  No active lobbies found.<br/>Press the + button in the header to host a lobby!
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

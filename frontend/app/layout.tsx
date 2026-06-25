@@ -3,6 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/auth-provider";
 import { PlayerProvider } from "@/components/player-context";
 import { RealtimeProvider } from "@/components/realtime-provider";
+import { DraftProvider } from "@/lib/draft-context";
 
 export const viewport: Viewport = {
   themeColor: "#05070B",
@@ -37,9 +38,11 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <AuthProvider>
           <PlayerProvider>
-            {children}
-            <RealtimeProvider />
-            <Toaster theme="dark" position="top-center" richColors />
+            <DraftProvider>
+              {children}
+              <RealtimeProvider />
+              <Toaster theme="dark" position="top-center" richColors />
+            </DraftProvider>
           </PlayerProvider>
         </AuthProvider>
       </body>
