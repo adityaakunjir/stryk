@@ -568,40 +568,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           </div>
         </header>
 
-        {/* LOBBY Section */}
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#A28B52]">Lobby</h2>
-            <span className="text-[9px] text-[#E5DCC5]/60 uppercase tracking-wider font-bold">
-              {participants.length} / {match.maxPlayers} Joined
-            </span>
-          </div>
-          
-          <div className="w-full overflow-x-auto pb-2 custom-scrollbar">
-            <div className="flex gap-3 px-1">
-              {participants.map((p) => (
-                <div key={p.id} className="flex flex-col items-center gap-1 min-w-[56px]">
-                  <div className={`w-12 h-12 rounded-full overflow-hidden border-2 ${p.team === "Team A" ? "border-green-500" : p.team === "Team B" ? "border-blue-500" : "border-[#151515]/50"} shadow-md relative`}>
-                    <img 
-                      src={p.user?.avatarUrl || "/default-avatar.png"} 
-                      alt={p.user?.fullName || "Player"} 
-                      className="w-full h-full object-cover"
-                    />
-                    {p.checkedIn && (
-                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#D4F829] border border-[#151515] rounded-full" />
-                    )}
-                  </div>
-                  <span className="text-[9px] text-[#E5DCC5]/80 font-bold truncate w-full text-center">
-                    {p.user?.username || p.user?.fullName?.split(' ')[0]}
-                  </span>
-                </div>
-              ))}
-              {participants.length === 0 && (
-                <div className="text-[10px] text-[#E5DCC5]/40 italic py-2">No players joined yet</div>
-              )}
-            </div>
-          </div>
-        </div>
+
 
         {/* Verification Alert */}
         {pendingVerificationCount > 0 && (
