@@ -48,7 +48,7 @@ export default function HomeLobbyPage() {
           setFriends(data.friends.map((f: any) => ({
             name: f.user.fullName || f.user.username,
             handle: f.user.username,
-            ovr: f.user.overall || 50,
+            ovr: f.user.overall || 60,
             pos: f.user.position || "CAM",
             avatar: f.user.avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(f.user.username)}`,
             online: true

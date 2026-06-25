@@ -112,7 +112,7 @@ export default async function PublicPlayerPage({ params }: Props) {
     tackles: user.tackles ?? 0,
     saves: user.saves ?? 0,
     intercepts: user.intercepts ?? 0,
-    rating: user.overall ?? 50};
+    rating: user.overall ?? 60};
 
   playerData.rating = calculateOvr(playerData as any);
 

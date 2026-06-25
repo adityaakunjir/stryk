@@ -802,7 +802,7 @@ async def balance_teams(
 
     players = match.players
     # Sort by overall descending
-    players_sorted = sorted(players, key=lambda p: p.user.overall if p.user and p.user.overall else 50, reverse=True)
+    players_sorted = sorted(players, key=lambda p: p.user.overall if p.user and p.user.overall else 60, reverse=True)
     
     team_a = []
     team_b = []
@@ -817,8 +817,8 @@ async def balance_teams(
             
     await session.commit()
     
-    avg_a = sum(p.user.overall or 50 for p in team_a) / len(team_a) if team_a else 0
-    avg_b = sum(p.user.overall or 50 for p in team_b) / len(team_b) if team_b else 0
+    avg_a = sum(p.user.overall or 60 for p in team_a) / len(team_a) if team_a else 0
+    avg_b = sum(p.user.overall or 60 for p in team_b) / len(team_b) if team_b else 0
     
     return {
         "success": True, 
@@ -1003,7 +1003,7 @@ async def balance_teams(
 
     players = match.players
     # Sort by overall descending
-    players_sorted = sorted(players, key=lambda p: p.user.overall if p.user and p.user.overall else 50, reverse=True)
+    players_sorted = sorted(players, key=lambda p: p.user.overall if p.user and p.user.overall else 60, reverse=True)
     
     team_a = []
     team_b = []
@@ -1018,8 +1018,8 @@ async def balance_teams(
             
     await session.commit()
     
-    avg_a = sum(p.user.overall or 50 for p in team_a) / len(team_a) if team_a else 0
-    avg_b = sum(p.user.overall or 50 for p in team_b) / len(team_b) if team_b else 0
+    avg_a = sum(p.user.overall or 60 for p in team_a) / len(team_a) if team_a else 0
+    avg_b = sum(p.user.overall or 60 for p in team_b) / len(team_b) if team_b else 0
     
     return {
         "success": True, 
