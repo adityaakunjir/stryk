@@ -534,179 +534,94 @@ export default function MatchDetailsPage({ params }: PageProps) {
       <div className="fixed inset-0 bg-[#151515]/60 z-0 pointer-events-none" />
 
       <div className="relative min-h-[100dvh] flex flex-col px-5 pt-6 pb-28 max-w-md mx-auto z-10 w-full overflow-y-auto border-x border-[#151515]/30 shadow-2xl bg-black/20 backdrop-blur-sm">
-        {/* Header */}
-        <header className="flex items-center justify-between mb-6">
-          <button 
-            onClick={() => router.push("/matches")} 
-            className="w-9 h-9 rounded-full bg-[#151515]/80 backdrop-blur-md border border-[#A28B52]/20 text-[#E5DCC5] flex items-center justify-center cursor-pointer hover:bg-[#151515] hover:border-[#D4F829]/50 transition shadow-lg"
-            type="button"
-          >
-            <ArrowLeft size={16} />
-          </button>
-          <div className="text-[10px] tracking-[0.3em] uppercase text-[#D4F829] font-bold drop-shadow-[0_0_8px_rgba(212,248,41,0.3)]">Match Lobby</div>
-          <div className="w-9 h-9" />
+        {/* Top Header Section */}
+        <header className="flex flex-col mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => router.push("/matches")} 
+                  className="w-6 h-6 rounded-full bg-[#151515]/50 border border-[#A28B52]/20 text-[#E5DCC5] flex items-center justify-center cursor-pointer hover:bg-[#151515] transition"
+                  type="button"
+                >
+                  <ArrowLeft size={12} />
+                </button>
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[#E5DCC5] truncate max-w-[200px]">
+                  <MapPin size={12} className="text-[#A28B52]" />
+                  <span className="truncate">{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 text-[10px] text-[#E5DCC5]/60 mt-1 pl-8">
+                <Calendar size={10} className="text-[#A28B52]" />
+                <span>{formatDateTime(match.matchDate)}</span>
+              </div>
+            </div>
+            
+            <div className="flex flex-col items-end gap-1">
+              <div className="px-2 py-0.5 rounded-full bg-[#D4F829]/10 border border-[#D4F829]/30 text-[#D4F829] text-[8px] uppercase tracking-widest font-bold">
+                {match.status}
+              </div>
+              <div className="text-[10px] uppercase font-bold text-[#A28B52] tracking-widest text-right max-w-[120px] truncate">
+                {match.title}
+              </div>
+            </div>
+          </div>
         </header>
 
-        {/* Turf Poster Banner */}
-        <div className="w-full h-32 rounded-[2rem] bg-[#151515]/80 border border-[#A28B52]/20 relative overflow-hidden flex flex-col justify-end p-5 mb-4 shadow-xl">
-          <div className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-[#D4F829]/10 border border-[#D4F829]/30 text-[#D4F829] text-[9px] uppercase tracking-widest font-bold">
-            {match.status}
+        {/* LOBBY Section */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#A28B52]">Lobby</h2>
+            <span className="text-[9px] text-[#E5DCC5]/60 uppercase tracking-wider font-bold">
+              {participants.length} / {match.maxPlayers} Joined
+            </span>
           </div>
-          <h1 className="font-display text-2xl uppercase tracking-wider italic leading-none truncate text-[#E5DCC5]">
-            {match.title}
-          </h1>
-          <div className="flex items-center gap-1.5 text-xs text-[#E5DCC5]/70 mt-2">
-            <MapPin size={13} className="text-[#A28B52]" />
-            <span className="truncate">{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
+          
+          <div className="w-full overflow-x-auto pb-2 custom-scrollbar">
+            <div className="flex gap-3 px-1">
+              {participants.map((p) => (
+                <div key={p.id} className="flex flex-col items-center gap-1 min-w-[56px]">
+                  <div className={`w-12 h-12 rounded-full overflow-hidden border-2 ${p.team === "Team A" ? "border-green-500" : p.team === "Team B" ? "border-blue-500" : "border-[#151515]/50"} shadow-md relative`}>
+                    <img 
+                      src={p.user?.avatarUrl || "/default-avatar.png"} 
+                      alt={p.user?.fullName || "Player"} 
+                      className="w-full h-full object-cover"
+                    />
+                    {p.checkedIn && (
+                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#D4F829] border border-[#151515] rounded-full" />
+                    )}
+                  </div>
+                  <span className="text-[9px] text-[#E5DCC5]/80 font-bold truncate w-full text-center">
+                    {p.user?.username || p.user?.fullName?.split(' ')[0]}
+                  </span>
+                </div>
+              ))}
+              {participants.length === 0 && (
+                <div className="text-[10px] text-[#E5DCC5]/40 italic py-2">No players joined yet</div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Verification Alert */}
         {pendingVerificationCount > 0 && (
-          <div className="mb-4 p-4 rounded-2xl bg-[#D4F829]/10 border border-[#D4F829]/30 flex items-center justify-between shadow-lg backdrop-blur-md">
+          <div className="mb-4 p-3 rounded-2xl bg-[#D4F829]/10 border border-[#D4F829]/30 flex items-center justify-between shadow-lg backdrop-blur-md">
             <div className="flex-1">
-              <h3 className="text-[#D4F829] font-bold text-sm tracking-wide">Action Required</h3>
-              <p className="text-[#E5DCC5]/80 text-xs mt-0.5 leading-tight">
+              <h3 className="text-[#D4F829] font-bold text-xs tracking-wide">Action Required</h3>
+              <p className="text-[#E5DCC5]/80 text-[10px] mt-0.5 leading-tight">
                 You have {pendingVerificationCount} peer stat submissions to review.
               </p>
             </div>
             <button
               onClick={() => setShowVerificationModal(true)}
-              className="ml-4 px-4 h-10 rounded-xl bg-[#D4F829] text-[#151515] font-bold text-xs uppercase tracking-widest hover:bg-[#c3e626] transition shadow-[0_0_15px_rgba(212,248,41,0.3)]"
+              className="ml-3 px-3 h-8 rounded-xl bg-[#D4F829] text-[#151515] font-bold text-[10px] uppercase tracking-widest hover:bg-[#c3e626] transition shadow-sm"
             >
               Verify
             </button>
           </div>
         )}
 
-        {/* Details Toggle */}
-        <button
-          onClick={() => setIsDetailsExpanded(!isDetailsExpanded)}
-          className="w-full py-2 mb-4 text-[10px] uppercase tracking-widest font-bold text-[#A28B52] flex items-center justify-center gap-1.5 hover:text-[#D4F829] transition"
-        >
-          {isDetailsExpanded ? "Hide Match Details" : "Show Match Details"}
-        </button>
 
-        {/* Collapsible Schedule & Info */}
-        <AnimatePresence>
-          {isDetailsExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0, marginBottom: 0 }}
-              animate={{ height: "auto", opacity: 1, marginBottom: 24 }}
-              exit={{ height: 0, opacity: 0, marginBottom: 0 }}
-              className="overflow-hidden"
-            >
-              <div className="p-4 rounded-2xl bg-[#151515]/80 backdrop-blur-md border border-[#A28B52]/20 space-y-3 shadow-lg">
-          <div className="flex items-start gap-3">
-            <Calendar size={16} className="text-[#A28B52] mt-0.5 shrink-0" />
-            <div>
-              <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5]/50 font-bold block mb-0.5">Match Schedule</span>
-              <span className="text-xs text-[#E5DCC5] leading-snug">{formatDateTime(match.matchDate)}</span>
-            </div>
-          </div>
-
-          <div className="border-t border-[#A28B52]/20 my-2" />
-
-          <div className="flex items-start gap-3">
-            <Users size={16} className="text-[#A28B52] mt-0.5 shrink-0" />
-            <div>
-              <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5]/50 font-bold block mb-0.5">Capacity</span>
-              <span className="text-xs text-[#E5DCC5] leading-none">
-                {participants.length} / {match.maxPlayers} Players joined
-              </span>
-            </div>
-          </div>
-
-          {(match.discordLink || currentUserId === match.hostId) && (
-            <>
-              <div className="border-t border-[#A28B52]/20 my-2" />
-              <div className="flex items-start gap-3">
-                <MessageSquare size={16} className="text-[#5865F2] mt-0.5 shrink-0" />
-                <div className="flex-1">
-                  <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5]/50 font-bold block mb-0.5">Discord Match Link</span>
-                  {isEditingDiscord ? (
-                    <div className="flex items-center gap-2 mt-1">
-                      <input 
-                        type="url"
-                        value={discordLinkEdit}
-                        onChange={(e) => setDiscordLinkEdit(e.target.value)}
-                        placeholder="https://discord.gg/..."
-                        className="w-full bg-[#111] border border-[#A28B52]/40 rounded-lg px-2 py-1 text-xs text-[#E5DCC5] outline-none focus:border-[#5865F2]"
-                      />
-                      <button 
-                        onClick={() => {
-                          handleUpdateDiscordLink(discordLinkEdit);
-                          setIsEditingDiscord(false);
-                        }}
-                        className="p-1.5 rounded-lg bg-[#5865F2] hover:bg-[#4752C4] text-white transition shadow-lg"
-                      >
-                        <Check size={12} />
-                      </button>
-                      <button 
-                        onClick={() => setIsEditingDiscord(false)}
-                        className="p-1.5 rounded-lg bg-[#111] border border-[#A28B52]/20 hover:bg-[#222] text-[#E5DCC5]/70 transition"
-                      >
-                        <X size={12} />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      {match.discordLink ? (
-                        <a href={match.discordLink} target="_blank" rel="noopener noreferrer" className="text-xs text-[#5865F2] hover:underline font-semibold leading-none flex items-center gap-1 drop-shadow-[0_0_8px_rgba(88,101,242,0.5)]">
-                          Join Voice Channel
-                        </a>
-                      ) : (
-                        <span className="text-xs text-[#E5DCC5]/50 leading-none">No link added</span>
-                      )}
-                      
-                      {currentUserId === match.hostId && (
-                        <button 
-                          onClick={() => {
-                            setDiscordLinkEdit(match.discordLink || "");
-                            setIsEditingDiscord(true);
-                          }}
-                          className="text-[9px] uppercase font-bold text-[#A28B52] hover:text-[#D4F829] transition tracking-widest px-2 py-1 rounded bg-[#A28B52]/10 border border-[#A28B52]/20"
-                        >
-                          Edit
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Captain/Organizer Section */}
-        {match.creator && (
-          <div>
-            <h2 className="text-[10px] tracking-[0.25em] uppercase text-[#A28B52] font-bold mb-2 pl-1 drop-shadow-[0_0_5px_rgba(162,139,82,0.4)]">Match Host</h2>
-            <div className="p-3 rounded-2xl border border-[#A28B52]/30 bg-[#151515]/90 backdrop-blur-md flex items-center gap-4 shadow-xl">
-              <div className="relative size-12 rounded-full overflow-hidden border-2 border-[#D4F829] bg-[#E5DCC5] shrink-0 flex items-center justify-center shadow-[0_0_10px_rgba(212,248,41,0.5)]">
-                {match.creator.avatarUrl ? (
-                   
-                  <img src={match.creator.avatarUrl} alt={match.creator.fullName || match.creator.username} className="w-full h-full object-cover" />
-                ) : (
-                  <User size={20} className="text-[#A28B52]/60" />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-bold text-[#E5DCC5] truncate drop-shadow-md">{match.creator.fullName || match.creator.username}</div>
-                <div className="text-[10px] text-[#A28B52] uppercase tracking-wider font-semibold mt-0.5 drop-shadow-sm">
-                  @{match.creator.username}
-                </div>
-              </div>
-              <div className="shrink-0 flex flex-col items-end px-2">
-                <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5]/40 mb-0.5">OVR</span>
-                <span className="font-display text-lg text-[#D4F829] font-bold drop-shadow-[0_0_8px_rgba(212,248,41,0.6)]">{match.creator.overall}</span>
-              </div>
-            </div>
-          </div>
-        )}
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Inline Squad Builder - REPLACES old lists */}
         {match && (
@@ -745,6 +660,62 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     </>
                   )}
                 </button>
+              )}
+              
+              {(match.discordLink || currentUserId === match.hostId) && (
+                <div className="w-full p-3 rounded-2xl bg-[#5865F2]/10 border border-[#5865F2]/30 flex flex-col gap-2">
+                  <div className="flex items-center gap-2 text-[#5865F2] font-bold text-[10px] uppercase tracking-widest">
+                    <MessageSquare size={14} /> Discord Voice
+                  </div>
+                  {isEditingDiscord ? (
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="url"
+                        value={discordLinkEdit}
+                        onChange={(e) => setDiscordLinkEdit(e.target.value)}
+                        placeholder="https://discord.gg/..."
+                        className="w-full bg-[#111] border border-[#A28B52]/40 rounded-lg px-2 py-1.5 text-xs text-[#E5DCC5] outline-none focus:border-[#5865F2]"
+                      />
+                      <button 
+                        onClick={() => {
+                          handleUpdateDiscordLink(discordLinkEdit);
+                          setIsEditingDiscord(false);
+                        }}
+                        className="p-1.5 rounded-lg bg-[#5865F2] hover:bg-[#4752C4] text-white transition shadow-lg"
+                      >
+                        <Check size={14} />
+                      </button>
+                      <button 
+                        onClick={() => setIsEditingDiscord(false)}
+                        className="p-1.5 rounded-lg bg-[#111] border border-[#A28B52]/20 hover:bg-[#222] text-[#E5DCC5]/70 transition"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      {match.discordLink ? (
+                        <a href={match.discordLink} target="_blank" rel="noopener noreferrer" className="w-full text-center py-1.5 rounded-lg bg-[#5865F2] hover:bg-[#4752C4] text-white text-[11px] font-bold tracking-wider transition">
+                          JOIN CHANNEL
+                        </a>
+                      ) : (
+                        <span className="text-[10px] text-[#E5DCC5]/50 italic">No link added yet</span>
+                      )}
+                      
+                      {currentUserId === match.hostId && (
+                        <button 
+                          onClick={() => {
+                            setDiscordLinkEdit(match.discordLink || "");
+                            setIsEditingDiscord(true);
+                          }}
+                          className={`ml-2 text-[9px] uppercase font-bold text-[#A28B52] hover:text-[#D4F829] transition tracking-widest px-2 py-1 rounded bg-[#A28B52]/10 border border-[#A28B52]/20 shrink-0 ${!match.discordLink && "w-full"}`}
+                        >
+                          {match.discordLink ? "EDIT" : "ADD LINK"}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
               )}
               
               <button
