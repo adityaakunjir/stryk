@@ -477,20 +477,21 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white flex items-center justify-center">
-        <Loader2 className="size-10 text-[#C6FF00] animate-spin" />
+      <main className="relative min-h-screen overflow-hidden bg-[#E5DCC5] flex flex-col items-center justify-center">
+        <Loader2 className="size-10 text-[#151515] animate-spin mb-4" />
+        <h2 className="text-xl font-display font-black text-[#151515] tracking-widest uppercase italic animate-pulse">Loading Match...</h2>
       </main>
     );
   }
 
   if (!match) {
     return (
-      <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen flex flex-col justify-center items-center px-6 text-center">
-        <h1 className="text-xl font-bold text-red-400 uppercase tracking-widest">Match Not Found</h1>
-        <p className="text-xs text-white/50 mt-2">This match may have been cancelled or deleted.</p>
+      <main className="stryk-mobile-shell text-[#151515] bg-[#E5DCC5] min-h-screen flex flex-col justify-center items-center px-6 text-center">
+        <h1 className="text-2xl font-display font-black italic tracking-widest text-[#151515] uppercase">Match Not Found</h1>
+        <p className="text-sm text-[#151515]/60 mt-2 font-semibold">This match may have been cancelled or deleted.</p>
         <button 
           onClick={() => router.push("/matches")}
-          className="mt-6 px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition"
+          className="mt-8 px-6 py-3 rounded-2xl bg-[#151515] text-[#E5DCC5] text-[11px] font-black uppercase tracking-[0.2em] shadow-lg hover:bg-[#2A2824] transition-all"
         >
           Back to Matches
         </button>

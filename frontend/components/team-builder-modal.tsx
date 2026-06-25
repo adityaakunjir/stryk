@@ -18,13 +18,13 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
+  horizontalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Image from "next/image";
 
-// MatchParticipant interface mapped for local usage
+// Map MatchParticipant for local usage
 interface Player {
   id: string; // This is the user.id
   participantId: string; // The match participant id
@@ -35,17 +35,36 @@ interface Player {
   position: string | null;
   playStyle: string | null;
   team: string | null; // "A", "B", or null
+  tempZone?: string; 
 }
 
 interface TeamBuilderModalProps {
   isOpen: boolean;
   onClose: () => void;
-  participants: any[]; // The raw participants from the match
+  participants: any[];
   onSaveTeams: (teamA: string[], teamB: string[]) => Promise<void>;
 }
 
-// Sortable Player Card Component
-function SortablePlayerCard({ player }: { player: Player }) {
+const ZONE_LABELS: Record<string, string> = {
+  unassigned: "BENCH",
+  teamA_ATT: "FWD",
+  teamA_MID: "MID",
+  teamA_DEF: "DEF",
+  teamA_GK: "GK",
+  teamB_ATT: "FWD",
+  teamB_MID: "MID",
+  teamB_DEF: "DEF",
+  teamB_GK: "GK",
+};
+
+const getTierStyles = (ovr: number) => {
+  if (ovr >= 80) return "bg-gradient-to-br from-[#FCECA1] via-[#D4AF37] to-[#AA7900] text-[#3E2B00] shadow-[0_0_15px_rgba(212,175,55,0.5)] border-[#FFF3B0]";
+  if (ovr >= 70) return "bg-gradient-to-br from-[#FFFFFF] via-[#D1D1D1] to-[#808080] text-[#151515] shadow-[0_0_15px_rgba(209,209,209,0.5)] border-[#FFFFFF]";
+  return "bg-gradient-to-br from-[#E8A372] via-[#A0522D] to-[#613014] text-[#FFF] shadow-[0_0_15px_rgba(160,82,45,0.5)] border-[#FFCCB3]";
+};
+
+// Sortable Player Shield Card
+function SortablePlayerCard({ player, zoneId }: { player: Player; zoneId: string }) {
   const {
     attributes,
     listeners,
@@ -53,13 +72,15 @@ function SortablePlayerCard({ player }: { player: Player }) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: player.id, data: player });
+  } = useSortable({ id: player.id, data: { ...player, zoneId } });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.4 : 1,
+    opacity: isDragging ? 0 : 1, 
   };
+
+  const isBench = zoneId === "unassigned";
 
   return (
     <div
@@ -67,115 +88,106 @@ function SortablePlayerCard({ player }: { player: Player }) {
       style={style}
       {...attributes}
       {...listeners}
-      className="bg-[#1A1A1A] border border-[#A28B52]/20 rounded-xl p-3 flex items-center gap-3 cursor-grab active:cursor-grabbing hover:border-[#A28B52]/40 transition-colors"
+      className="relative flex flex-col items-center justify-center cursor-grab active:cursor-grabbing w-[60px] md:w-[72px] shrink-0 group touch-none drop-shadow-md hover:drop-shadow-2xl transition-all z-10 hover:z-30"
     >
-      <div className="w-10 h-10 rounded-full bg-[#2A2A2A] overflow-hidden shrink-0 border border-[#A28B52]/30">
-        {player.avatarUrl ? (
-          <Image src={player.avatarUrl} alt={player.username} width={40} height={40} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-[#E5DCC5] font-bold">
-            {player.username.charAt(0).toUpperCase()}
-          </div>
-        )}
-      </div>
-      <div className="flex-1 min-w-0">
-        <h4 className="text-[#E5DCC5] font-bold truncate text-sm">
-          {player.fullName || player.username}
-        </h4>
-        <div className="flex items-center gap-2 text-xs text-[#A0A0A0]">
-          <span className="text-[#A28B52] font-semibold">{player.position || "CAM"}</span>
-          <span>•</span>
-          <span>{player.playStyle || "Playmaker"}</span>
+      <div 
+        className={`relative w-full aspect-[2.5/3.5] flex flex-col items-center pt-1 md:pt-1.5 ${getTierStyles(player.overall)} border-[1px]`}
+        style={{ clipPath: 'polygon(10% 0, 90% 0, 100% 15%, 100% 80%, 50% 100%, 0 80%, 0 15%)' }}
+      >
+        {/* OVR + POS Top Left */}
+        <div className="absolute top-1 left-1.5 flex flex-col items-center">
+          <span className="text-[11px] md:text-[13px] font-black italic leading-none">{player.overall}</span>
+          {!isBench && (
+            <span className="text-[5px] md:text-[6px] font-bold uppercase mt-0.5 tracking-tighter opacity-80">{ZONE_LABELS[zoneId]}</span>
+          )}
         </div>
-      </div>
-      <div className="shrink-0 flex flex-col items-center justify-center pl-2 border-l border-[#A28B52]/10">
-        <span className="text-[8px] uppercase tracking-[0.1em] text-[#A0A0A0] mb-0.5 font-bold">OVR</span>
-        <span className="font-display text-lg text-[#E5DCC5] font-black italic">{player.overall}</span>
+
+        {/* Avatar */}
+        <div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden mt-1 md:mt-1.5 border border-white/40 bg-black/10 relative">
+          {player.avatarUrl ? (
+            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover" sizes="40px" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-black/40 font-bold text-sm bg-white/50">
+              {player.username.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+
+        {/* Separator line */}
+        <div className="w-3/4 h-[1px] bg-black/10 my-0.5 md:my-1" />
+
+        {/* Name */}
+        <div className="text-[6.5px] md:text-[7.5px] font-black uppercase text-center px-1 leading-none tracking-tighter truncate w-full">
+          {player.fullName?.split(' ')[0] || player.username}
+        </div>
       </div>
     </div>
   );
 }
 
 // Player Card representation for Drag Overlay
-function PlayerCardOverlay({ player }: { player: Player }) {
+function PlayerCardOverlay({ player, zoneId }: { player: Player; zoneId: string }) {
+  const isBench = zoneId === "unassigned";
   return (
-    <div className="bg-[#1A1A1A] border border-[#A28B52] shadow-2xl shadow-[#A28B52]/20 rounded-xl p-3 flex items-center gap-3 cursor-grabbing scale-105">
-      <div className="w-10 h-10 rounded-full bg-[#2A2A2A] overflow-hidden shrink-0 border border-[#A28B52]/50">
-        {player.avatarUrl ? (
-          <Image src={player.avatarUrl} alt={player.username} width={40} height={40} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-[#E5DCC5] font-bold">
-            {player.username.charAt(0).toUpperCase()}
-          </div>
-        )}
-      </div>
-      <div className="flex-1 min-w-0">
-        <h4 className="text-[#E5DCC5] font-bold truncate text-sm">
-          {player.fullName || player.username}
-        </h4>
-        <div className="flex items-center gap-2 text-xs text-[#A0A0A0]">
-          <span className="text-[#A28B52] font-semibold">{player.position || "CAM"}</span>
-          <span>•</span>
-          <span>{player.playStyle || "Playmaker"}</span>
+    <div className="relative flex flex-col items-center justify-center w-[64px] md:w-[76px] shrink-0 scale-110 drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)] z-[100]">
+      <div 
+        className={`relative w-full aspect-[2.5/3.5] flex flex-col items-center pt-1 md:pt-1.5 ${getTierStyles(player.overall)} border-[1px]`}
+        style={{ clipPath: 'polygon(10% 0, 90% 0, 100% 15%, 100% 80%, 50% 100%, 0 80%, 0 15%)' }}
+      >
+        <div className="absolute top-1 left-1.5 flex flex-col items-center">
+          <span className="text-[11px] md:text-[13px] font-black italic leading-none">{player.overall}</span>
+          {!isBench && (
+            <span className="text-[5px] md:text-[6px] font-bold uppercase mt-0.5 tracking-tighter opacity-80">{ZONE_LABELS[zoneId]}</span>
+          )}
         </div>
-      </div>
-      <div className="shrink-0 flex flex-col items-center justify-center pl-2 border-l border-[#A28B52]/10">
-        <span className="text-[8px] uppercase tracking-[0.1em] text-[#A0A0A0] mb-0.5 font-bold">OVR</span>
-        <span className="font-display text-lg text-[#E5DCC5] font-black italic">{player.overall}</span>
+
+        <div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden mt-1 md:mt-1.5 border border-white/40 bg-black/10 relative">
+          {player.avatarUrl ? (
+            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover" sizes="40px" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-black/40 font-bold text-sm bg-white/50">
+              {player.username.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+
+        <div className="w-3/4 h-[1px] bg-black/10 my-0.5 md:my-1" />
+
+        <div className="text-[6.5px] md:text-[7.5px] font-black uppercase text-center px-1 leading-none tracking-tighter truncate w-full">
+          {player.fullName?.split(' ')[0] || player.username}
+        </div>
       </div>
     </div>
   );
 }
 
-// Droppable Column Component
-function DroppableColumn({ id, title, players }: { id: string; title: string; players: Player[] }) {
-  const totalOvr = players.reduce((sum, p) => sum + p.overall, 0);
-  const avgOvr = players.length > 0 ? Math.round(totalOvr / players.length) : 0;
-
+// Droppable Pitch Strip
+function PitchZone({ id, players }: { id: string; players: Player[] }) {
   return (
-    <div className="flex flex-col h-full bg-[#0F0F0F] border border-[#2A2A2A] rounded-xl overflow-hidden">
-      <div className="p-3 bg-[#1A1A1A] border-b border-[#2A2A2A] flex justify-between items-center shrink-0">
-        <h3 className="text-[#E5DCC5] font-bold text-sm tracking-wider uppercase">{title}</h3>
-        <div className="flex items-center gap-3">
-          <div className="text-xs text-[#A0A0A0]"><span className="text-white font-bold">{players.length}</span> players</div>
-          {players.length > 0 && id !== "unassigned" && (
-            <div className="text-xs text-[#A28B52] font-bold bg-[#A28B52]/10 px-2 py-0.5 rounded-full">
-              AVG {avgOvr}
-            </div>
+    <div className="flex-1 w-full relative flex items-center justify-center">
+      <SortableContext id={id} items={players.map((p) => p.id)} strategy={horizontalListSortingStrategy}>
+        <div className="w-full h-full flex items-center justify-center gap-1.5 md:gap-4 px-2 z-10 relative">
+          {players.map((player) => (
+            <SortablePlayerCard key={player.id} player={player} zoneId={id} />
+          ))}
+          {players.length === 0 && (
+            <div className="opacity-0 w-full h-full absolute inset-0" />
           )}
         </div>
-      </div>
-      
-      <div className="flex-1 overflow-y-auto p-2">
-        <SortableContext id={id} items={players.map((p) => p.id)} strategy={verticalListSortingStrategy}>
-          <div className="flex flex-col gap-2 min-h-[100px]">
-            {players.map((player) => (
-              <SortablePlayerCard key={player.id} player={player} />
-            ))}
-            {players.length === 0 && (
-              <div className="flex-1 flex flex-col items-center justify-center text-[#555] py-8 border-2 border-dashed border-[#222] rounded-xl min-h-[120px]">
-                <Users size={24} className="mb-2 opacity-50" />
-                <p className="text-xs font-medium">Drag players here</p>
-              </div>
-            )}
-          </div>
-        </SortableContext>
-      </div>
+      </SortableContext>
     </div>
   );
 }
 
 export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }: TeamBuilderModalProps) {
-  const [mode, setMode] = useState<"MANUAL" | "AUTO">("MANUAL");
   const [items, setItems] = useState<Record<string, Player[]>>({
     unassigned: [],
-    teamA: [],
-    teamB: [],
+    teamA_ATT: [], teamA_MID: [], teamA_DEF: [], teamA_GK: [],
+    teamB_ATT: [], teamB_MID: [], teamB_DEF: [], teamB_GK: [],
   });
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Initialize items from participants
   useEffect(() => {
     if (isOpen && participants) {
       const mappedPlayers: Player[] = participants.map((p) => ({
@@ -190,23 +202,38 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
         team: p.team,
       }));
 
-      const teamA = mappedPlayers.filter((p) => p.team === "A");
-      const teamB = mappedPlayers.filter((p) => p.team === "B");
-      const unassigned = mappedPlayers.filter((p) => !p.team);
+      const newItems: Record<string, Player[]> = {
+        unassigned: [],
+        teamA_ATT: [], teamA_MID: [], teamA_DEF: [], teamA_GK: [],
+        teamB_ATT: [], teamB_MID: [], teamB_DEF: [], teamB_GK: [],
+      };
 
-      setItems({
-        unassigned,
-        teamA,
-        teamB,
+      mappedPlayers.forEach(p => {
+        if (!p.team) {
+          newItems.unassigned.push(p);
+        } else {
+          const pos = p.position || "CM";
+          const teamPrefix = p.team === "A" ? "teamA" : "teamB";
+          
+          if (["ST", "CF", "LW", "RW"].includes(pos)) {
+            newItems[`${teamPrefix}_ATT`].push(p);
+          } else if (["CB", "LB", "RB", "LWB", "RWB"].includes(pos)) {
+            newItems[`${teamPrefix}_DEF`].push(p);
+          } else if (pos === "GK") {
+            newItems[`${teamPrefix}_GK`].push(p);
+          } else {
+            newItems[`${teamPrefix}_MID`].push(p);
+          }
+        }
       });
+
+      setItems(newItems);
     }
   }, [isOpen, participants]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5, // 5px drag distance before firing
-      },
+      activationConstraint: { distance: 5 },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
@@ -226,10 +253,9 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
     const activeContainer = findContainer(active.id as string);
     const overContainer = findContainer(over.id as string) || (over.id as string);
 
-    if (!activeContainer || !overContainer) return;
+    if (!activeContainer || !overContainer || !items[overContainer]) return;
 
     if (activeContainer === overContainer) {
-      // Reordering within the same container
       setItems((prev) => {
         const containerItems = prev[activeContainer];
         const oldIndex = containerItems.findIndex((item) => item.id === active.id);
@@ -241,7 +267,6 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
         };
       });
     } else {
-      // Moving between containers
       setItems((prev) => {
         const activeItems = prev[activeContainer];
         const overItems = prev[overContainer];
@@ -254,10 +279,9 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
         const newActiveItems = [...activeItems];
         const [movedItem] = newActiveItems.splice(activeIndex, 1);
         
-        // Update the item's team property locally just in case
         const updatedItem = { 
           ...movedItem, 
-          team: overContainer === 'teamA' ? 'A' : overContainer === 'teamB' ? 'B' : null 
+          team: overContainer.startsWith('teamA') ? 'A' : overContainer.startsWith('teamB') ? 'B' : null 
         };
 
         const newOverItems = [...overItems];
@@ -287,60 +311,62 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
   };
 
   const activePlayer = activeId 
-    ? [...items.unassigned, ...items.teamA, ...items.teamB].find(p => p.id === activeId)
+    ? Object.values(items).flat().find(p => p.id === activeId)
     : null;
 
-  // AUTO Balance Logic (OVR + Position)
+  const activePlayerZone = activePlayer ? findContainer(activePlayer.id) : null;
+
   const handleAutoBalance = () => {
-    const allPlayers = [...items.unassigned, ...items.teamA, ...items.teamB];
-    
-    // Sort all players by OVR descending
+    const allPlayers = Object.values(items).flat();
     const sortedPlayers = [...allPlayers].sort((a, b) => b.overall - a.overall);
     
-    const newTeamA: Player[] = [];
-    const newTeamB: Player[] = [];
+    const newItems: Record<string, Player[]> = {
+      unassigned: [],
+      teamA_ATT: [], teamA_MID: [], teamA_DEF: [], teamA_GK: [],
+      teamB_ATT: [], teamB_MID: [], teamB_DEF: [], teamB_GK: [],
+    };
+    
     let sumA = 0;
     let sumB = 0;
 
-    // Categorize by position
-    const positionGroups: Record<string, Player[]> = {};
+    const positionGroups: Record<string, Player[]> = { GK: [], DEF: [], MID: [], ATT: [] };
+    
     sortedPlayers.forEach(p => {
-      const pos = p.position || "CAM";
+      const pos = p.position || "CM";
       let cat = "MID";
       if (["ST", "CF", "LW", "RW"].includes(pos)) cat = "ATT";
       if (["CB", "LB", "RB", "LWB", "RWB"].includes(pos)) cat = "DEF";
       if (pos === "GK") cat = "GK";
       
-      if (!positionGroups[cat]) positionGroups[cat] = [];
       positionGroups[cat].push(p);
     });
 
-    // Distribute each category balancing the overall score
     ["GK", "DEF", "MID", "ATT"].forEach(cat => {
-      if (!positionGroups[cat]) return;
       positionGroups[cat].forEach(player => {
         if (sumA <= sumB) {
-          newTeamA.push({ ...player, team: "A" });
+          newItems[`teamA_${cat}`].push({ ...player, team: "A" });
           sumA += player.overall;
         } else {
-          newTeamB.push({ ...player, team: "B" });
+          newItems[`teamB_${cat}`].push({ ...player, team: "B" });
           sumB += player.overall;
         }
       });
     });
 
-    setItems({
-      unassigned: [],
-      teamA: newTeamA,
-      teamB: newTeamB,
-    });
+    setItems(newItems);
   };
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const teamAIds = items.teamA.map(p => p.id);
-      const teamBIds = items.teamB.map(p => p.id);
+      const teamAIds = [
+        ...items.teamA_ATT, ...items.teamA_MID, ...items.teamA_DEF, ...items.teamA_GK
+      ].map(p => p.id);
+      
+      const teamBIds = [
+        ...items.teamB_ATT, ...items.teamB_MID, ...items.teamB_DEF, ...items.teamB_GK
+      ].map(p => p.id);
+      
       await onSaveTeams(teamAIds, teamBIds);
       onClose();
     } catch (err) {
@@ -350,6 +376,19 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
     }
   };
 
+  const getTeamStats = (prefix: string) => {
+    const teamPlayers = [
+      ...items[`${prefix}_ATT`], ...items[`${prefix}_MID`], ...items[`${prefix}_DEF`], ...items[`${prefix}_GK`]
+    ];
+    const avgOvr = teamPlayers.length > 0 
+      ? Math.round(teamPlayers.reduce((s, p) => s + p.overall, 0) / teamPlayers.length) 
+      : 0;
+    return { count: teamPlayers.length, avgOvr };
+  };
+
+  const statsA = getTeamStats('teamA');
+  const statsB = getTeamStats('teamB');
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -357,98 +396,150 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-6 bg-black/60 backdrop-blur-sm"
         >
           <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            className="w-full max-w-5xl h-[90vh] bg-[#0A0A0A] border border-[#2A2A2A] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            className="w-full max-w-4xl h-[95vh] bg-[#E5DCC5] border border-[#151515]/10 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden relative"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-[#2A2A2A] shrink-0">
+            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between p-4 sm:p-5 border-b border-[#151515]/10 shrink-0 bg-[#E5DCC5] z-20 gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#A28B52] to-[#7A683C] flex items-center justify-center shadow-lg">
-                  <Users className="text-white" size={20} />
+                <div className="w-10 h-10 rounded-xl bg-[#151515] flex items-center justify-center shadow-md">
+                  <Users className="text-[#E5DCC5]" size={20} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-display font-bold text-white tracking-wide">TEAM BUILDER</h2>
-                  <p className="text-sm text-[#A0A0A0]">Assign players to Team A and Team B</p>
+                  <h2 className="text-xl font-display font-black text-[#151515] tracking-widest uppercase italic">Squad Builder</h2>
+                  <p className="text-[10px] uppercase font-bold tracking-widest text-[#151515]/50">Manage your match draft</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                {/* Mode Toggle */}
-                <div className="flex bg-[#1A1A1A] p-1 rounded-lg border border-[#2A2A2A]">
-                  <button
-                    onClick={() => setMode("AUTO")}
-                    className={`px-4 py-1.5 text-xs font-bold tracking-wider rounded-md transition-all ${
-                      mode === "AUTO" ? "bg-[#A28B52] text-white shadow-md" : "text-[#A0A0A0] hover:text-white"
-                    }`}
-                  >
-                    AUTO
-                  </button>
-                  <button
-                    onClick={() => setMode("MANUAL")}
-                    className={`px-4 py-1.5 text-xs font-bold tracking-wider rounded-md transition-all ${
-                      mode === "MANUAL" ? "bg-[#A28B52] text-white shadow-md" : "text-[#A0A0A0] hover:text-white"
-                    }`}
-                  >
-                    MANUAL
-                  </button>
-                </div>
-
-                <button onClick={onClose} className="p-2 text-[#A0A0A0] hover:text-white bg-[#1A1A1A] rounded-full transition-colors">
+              <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+                <button
+                  onClick={handleAutoBalance}
+                  className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] uppercase font-bold tracking-widest bg-[#151515]/5 hover:bg-[#151515]/10 border border-[#151515]/10 text-[#151515] rounded-xl transition-all"
+                >
+                  <RefreshCw size={14} />
+                  <span className="hidden sm:inline">AUTO-BALANCE</span>
+                  <span className="sm:hidden">AUTO</span>
+                </button>
+                <button onClick={onClose} className="p-2 sm:p-2.5 text-[#151515]/50 hover:text-[#151515] hover:bg-[#151515]/5 rounded-full transition-colors">
                   <X size={20} />
                 </button>
               </div>
             </div>
 
             {/* Content Body */}
-            <div className="flex-1 overflow-hidden p-4 flex flex-col">
-              {mode === "AUTO" && (
-                <div className="bg-gradient-to-br from-[#A28B52]/10 to-transparent border border-[#A28B52]/20 rounded-xl p-4 mb-4 flex items-center justify-between shrink-0">
-                  <div>
-                    <h3 className="text-[#E5DCC5] font-bold">Auto-Balance Engine</h3>
-                    <p className="text-sm text-[#A0A0A0]">Our AI will balance teams based on Overall Rating (OVR) and Positions.</p>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
+              <div className="flex-1 overflow-hidden flex flex-col relative bg-[#1A2E1D]">
+                {/* The Pitch Container */}
+                <div className="flex-1 relative flex flex-col w-full max-w-2xl mx-auto shadow-2xl border-x border-[#ffffff05]">
+                  {/* Pitch Graphics (Grass & Lines) */}
+                  <div className="absolute inset-0 pointer-events-none opacity-50">
+                    {/* Repeating Turf Stripes */}
+                    <div className="absolute inset-0" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(0,0,0,0.1) 50px, rgba(0,0,0,0.1) 100px)' }}></div>
+                    {/* Center Line */}
+                    <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-white/40 -translate-y-1/2 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                    {/* Center Circle */}
+                    <div className="absolute top-1/2 left-1/2 w-24 h-24 sm:w-32 sm:h-32 rounded-full border-[2px] border-white/40 -translate-x-1/2 -translate-y-1/2 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                    {/* Center Dot */}
+                    <div className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-white/60 -translate-x-1/2 -translate-y-1/2 shadow-[0_0_5px_rgba(255,255,255,0.5)]" />
+                    {/* Top Penalty Area */}
+                    <div className="absolute top-0 left-1/2 w-48 sm:w-64 h-16 sm:h-24 border-x-[2px] border-b-[2px] border-white/40 -translate-x-1/2 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                    <div className="absolute top-0 left-1/2 w-24 sm:w-32 h-6 sm:h-8 border-x-[2px] border-b-[2px] border-white/40 -translate-x-1/2" />
+                    {/* Bottom Penalty Area */}
+                    <div className="absolute bottom-0 left-1/2 w-48 sm:w-64 h-16 sm:h-24 border-x-[2px] border-t-[2px] border-white/40 -translate-x-1/2 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                    <div className="absolute bottom-0 left-1/2 w-24 sm:w-32 h-6 sm:h-8 border-x-[2px] border-t-[2px] border-white/40 -translate-x-1/2" />
                   </div>
-                  <button
-                    onClick={handleAutoBalance}
-                    className="flex items-center gap-2 px-6 py-2 bg-[#A28B52] hover:bg-[#8A7542] text-white rounded-lg font-bold transition-colors shadow-lg"
-                  >
-                    <RefreshCw size={18} />
-                    GENERATE TEAMS
-                  </button>
-                </div>
-              )}
 
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-              >
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1 min-h-0">
-                  <DroppableColumn id="unassigned" title="UNASSIGNED" players={items.unassigned} />
-                  <DroppableColumn id="teamA" title="TEAM A" players={items.teamA} />
-                  <DroppableColumn id="teamB" title="TEAM B" players={items.teamB} />
+                  <div className="absolute left-2 top-2 z-0 pointer-events-none text-white/20 font-black text-2xl sm:text-4xl italic tracking-widest uppercase origin-top-left -rotate-90 translate-y-24">Team A</div>
+                  <div className="absolute right-2 bottom-2 z-0 pointer-events-none text-white/20 font-black text-2xl sm:text-4xl italic tracking-widest uppercase origin-bottom-right -rotate-90 -translate-y-24">Team B</div>
+
+                  <div className="flex-1 flex flex-col z-10 w-full pt-4">
+                    <PitchZone id="teamA_GK" players={items.teamA_GK} />
+                    <PitchZone id="teamA_DEF" players={items.teamA_DEF} />
+                    <PitchZone id="teamA_MID" players={items.teamA_MID} />
+                    <PitchZone id="teamA_ATT" players={items.teamA_ATT} />
+                  </div>
+                  
+                  <div className="absolute top-1/2 left-4 -translate-y-1/2 flex flex-col items-center gap-1 z-20 pointer-events-none hidden sm:flex">
+                    <div className="bg-[#151515] px-3 py-1.5 rounded-lg border border-white/10 shadow-xl flex flex-col items-center">
+                      <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5] font-bold">OVR</span>
+                      <span className="text-sm text-white font-black">{statsA.avgOvr}</span>
+                    </div>
+                  </div>
+                  <div className="absolute top-1/2 right-4 -translate-y-1/2 flex flex-col items-center gap-1 z-20 pointer-events-none hidden sm:flex">
+                    <div className="bg-[#151515] px-3 py-1.5 rounded-lg border border-white/10 shadow-xl flex flex-col items-center">
+                      <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5] font-bold">OVR</span>
+                      <span className="text-sm text-white font-black">{statsB.avgOvr}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex-1 flex flex-col z-10 w-full pb-4">
+                    <PitchZone id="teamB_ATT" players={items.teamB_ATT} />
+                    <PitchZone id="teamB_MID" players={items.teamB_MID} />
+                    <PitchZone id="teamB_DEF" players={items.teamB_DEF} />
+                    <PitchZone id="teamB_GK" players={items.teamB_GK} />
+                  </div>
                 </div>
 
-                <DragOverlay>
-                  {activePlayer ? <PlayerCardOverlay player={activePlayer} /> : null}
-                </DragOverlay>
-              </DndContext>
-            </div>
+                {/* Bench Area */}
+                <div className="h-32 sm:h-36 bg-[#111] border-t border-white/10 shrink-0 flex flex-col z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+                  <div className="px-4 py-1.5 bg-[#151515] border-b border-white/5 flex justify-between items-center">
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-[#E5DCC5]">Match Draft Pool (Bench)</span>
+                    <span className="text-[10px] uppercase font-bold text-white/40">{items.unassigned.length} Available</span>
+                  </div>
+                  <div className="flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar">
+                    <SortableContext id="unassigned" items={items.unassigned.map(p => p.id)} strategy={horizontalListSortingStrategy}>
+                      <div className="h-full flex items-center gap-3 sm:gap-4 px-4 min-w-max pb-2 pt-2">
+                        {items.unassigned.map(player => (
+                          <SortablePlayerCard key={player.id} player={player} zoneId="unassigned" />
+                        ))}
+                        {items.unassigned.length === 0 && (
+                          <div className="text-[10px] uppercase tracking-widest text-white/30 italic w-full text-center">
+                            All players are on the pitch
+                          </div>
+                        )}
+                      </div>
+                    </SortableContext>
+                  </div>
+                </div>
+
+              </div>
+
+              <DragOverlay dropAnimation={{ duration: 250, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}>
+                {activePlayer && activePlayerZone ? (
+                  <PlayerCardOverlay player={activePlayer} zoneId={activePlayerZone} />
+                ) : null}
+              </DragOverlay>
+            </DndContext>
 
             {/* Footer */}
-            <div className="p-4 border-t border-[#2A2A2A] bg-[#111] flex justify-end shrink-0">
+            <div className="p-4 sm:p-5 border-t border-[#151515]/10 bg-white flex justify-between items-center shrink-0 z-30">
+              <div className="hidden sm:flex gap-6">
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-[#151515]/50 font-bold mb-0.5">Team A</div>
+                  <div className="text-sm font-black text-[#151515]">{statsA.count} <span className="text-xs font-semibold text-[#151515]/60">PLYRS</span></div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-[#151515]/50 font-bold mb-0.5">Team B</div>
+                  <div className="text-sm font-black text-[#151515]">{statsB.count} <span className="text-xs font-semibold text-[#151515]/60">PLYRS</span></div>
+                </div>
+              </div>
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#A28B52] to-[#8A7542] hover:from-[#B39B5A] hover:to-[#9B854A] text-white rounded-xl font-bold transition-all shadow-lg shadow-[#A28B52]/20 disabled:opacity-50"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-[#151515] hover:bg-[#2A2824] text-[#E5DCC5] rounded-2xl font-bold tracking-[0.2em] uppercase text-[11px] transition-all shadow-lg disabled:opacity-50 ml-auto"
               >
-                {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-                SAVE TEAMS
+                {isSaving ? <Loader2 className="animate-spin text-[#E5DCC5]" size={16} /> : <Save size={16} />}
+                SAVE SQUAD
               </button>
             </div>
           </motion.div>
