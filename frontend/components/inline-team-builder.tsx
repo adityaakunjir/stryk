@@ -47,48 +47,52 @@ interface InlineTeamBuilderProps {
 
 // --- Helpers ---
 const getAutoPosition = (x: number, y: number) => {
-  if (y > 88) return "GK";
-  if (y > 65) {
-    if (x < 30) return "LB";
-    if (x > 70) return "RB";
-    return "CB";
+  if (y <= 50) {
+    // Team A (playing down)
+    if (y < 10) return "GK";
+    if (y < 25) {
+      if (x < 30) return "LB";
+      if (x > 70) return "RB";
+      return "CB";
+    }
+    if (y < 40) {
+      if (x < 30) return "LMF";
+      if (x > 70) return "RMF";
+      if (y < 32) return "DMF";
+      if (y > 36) return "AMF";
+      return "CMF";
+    }
+    if (x < 30) return "LWF";
+    if (x > 70) return "RWF";
+    if (y < 45) return "SS";
+    return "CF";
+  } else {
+    // Team B (playing up)
+    if (y > 90) return "GK";
+    if (y > 75) {
+      if (x < 30) return "LB";
+      if (x > 70) return "RB";
+      return "CB";
+    }
+    if (y > 60) {
+      if (x < 30) return "LMF";
+      if (x > 70) return "RMF";
+      if (y > 68) return "DMF";
+      if (y < 64) return "AMF";
+      return "CMF";
+    }
+    if (x < 30) return "LWF";
+    if (x > 70) return "RWF";
+    if (y > 55) return "SS";
+    return "CF";
   }
-  if (y > 45) {
-    if (x < 30) return "DMF";
-    if (x > 70) return "DMF";
-    return "DMF";
-  }
-  if (y > 20) {
-    if (x < 30) return "LMF";
-    if (x > 70) return "RMF";
-    if (y < 35) return "AMF";
-    return "CMF";
-  }
-  if (x < 30) return "LWF";
-  if (x > 70) return "RWF";
-  if (y > 10) return "SS";
-  return "CF";
 };
 
-// eFootball style tier background
-const getTierStyles = (ovr: number) => {
-  if (ovr >= 95) return "from-[#8B008B] via-[#4B0082] to-[#000000] border-[#DDA0DD] text-[#FFFFFF]"; // Epic/Legendary
-  if (ovr >= 85) return "from-[#006400] via-[#2E8B57] to-[#000000] border-[#3CB371] text-[#FFFFFF]"; // Special Green
-  if (ovr >= 75) return "from-[#FFD700] via-[#B8860B] to-[#000000] border-[#FFF8DC] text-[#FFD700]"; // Gold
-  return "from-[#C0C0C0] via-[#808080] to-[#000000] border-[#E6E6FA] text-[#FFFFFF]"; // Silver/Standard
-};
-
-const getRoleColor = (pos: string) => {
-  const attackers = ["CF", "SS", "LWF", "RWF"];
-  const midfielders = ["AMF", "CMF", "LMF", "RMF", "DMF"];
-  const defenders = ["CB", "LB", "RB"];
-  const gks = ["GK"];
-  
-  if (attackers.includes(pos)) return "bg-red-500";
-  if (midfielders.includes(pos)) return "bg-green-500";
-  if (defenders.includes(pos)) return "bg-blue-500";
-  if (gks.includes(pos)) return "bg-yellow-500";
-  return "bg-gray-500";
+const getOvrColor = (ovr: number) => {
+  if (ovr >= 80) return "bg-green-600";
+  if (ovr >= 70) return "bg-green-500";
+  if (ovr >= 60) return "bg-yellow-500";
+  return "bg-orange-600";
 };
 
 // --- Draggable Token Component ---
@@ -124,7 +128,6 @@ function DraggablePlayerToken({
   };
 
   const label = state.customLabel || player.position || "POS";
-  const roleColor = getRoleColor(label);
 
   return (
     <div
@@ -132,48 +135,39 @@ function DraggablePlayerToken({
       style={style}
       {...listeners}
       {...attributes}
-      className={`relative flex flex-col items-center justify-center shrink-0 group touch-none drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)] transition-shadow w-[54px] md:w-[64px] ${isDraggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'}`}
+      className={`relative flex flex-col items-center justify-center shrink-0 group touch-none drop-shadow-xl transition-shadow w-[50px] md:w-[60px] ${isDraggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'}`}
     >
-      <div 
-        className={`relative w-full aspect-[3/4] flex flex-col rounded-md overflow-hidden bg-gradient-to-b ${getTierStyles(player.overall)} border-2 shadow-inner`}
-      >
-        <div className="absolute inset-0 bg-[url('/card-texture.png')] opacity-20 mix-blend-overlay pointer-events-none" />
-        
-        {/* Top Left OVR & POS */}
-        <div className="absolute top-1 left-1 flex flex-col items-center z-10">
-          <span className="text-[14px] md:text-[16px] font-black leading-none drop-shadow-md">{player.overall}</span>
-          <span className="text-[7px] md:text-[8px] font-bold uppercase tracking-tighter drop-shadow-md">{label}</span>
-        </div>
-
-        {/* Player Image */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[120%] h-[80%] flex items-end justify-center">
-          {player.avatarUrl ? (
-            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover object-bottom drop-shadow-lg" sizes="80px" />
-          ) : (
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold mb-2 backdrop-blur-sm border border-white/40">
-              {player.username.charAt(0).toUpperCase()}
-            </div>
-          )}
-        </div>
-
-        {/* Bottom Name Plate */}
-        <div className="absolute bottom-0 w-full h-4 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-          <div className="text-[7px] md:text-[8px] font-bold uppercase text-white px-1 truncate w-full text-center">
-            {player.fullName?.split(' ')[0] || player.username}
+      {/* Avatar Circle */}
+      <div className="relative w-[36px] h-[36px] md:w-[44px] md:h-[44px] rounded-full border-[1.5px] border-white/40 shadow-lg bg-[#2a3036]">
+        {player.avatarUrl ? (
+          <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
+        ) : (
+          <div className="w-full h-full rounded-full flex items-center justify-center text-white/50 text-sm font-bold">
+            {player.username.charAt(0).toUpperCase()}
           </div>
+        )}
+        
+        {/* OVR Badge Overlap */}
+        <div className={`absolute -bottom-1 -right-1 w-[16px] h-[16px] md:w-[20px] md:h-[20px] rounded-full flex items-center justify-center text-[7px] md:text-[8px] font-black text-white border border-white/20 shadow-sm ${getOvrColor(player.overall)}`}>
+          {player.overall}
         </div>
       </div>
       
-      {/* Position Label Tag below card */}
-      <button 
+      {/* Name and Position */}
+      <div 
+        className="mt-1 flex flex-col items-center pointer-events-auto cursor-pointer"
         onPointerDown={(e) => {
           e.stopPropagation();
           onLabelClick(player);
         }}
-        className={`mt-1 px-2 py-0.5 rounded border border-black/40 text-[8px] md:text-[9px] font-bold text-white uppercase flex items-center justify-center gap-1 hover:brightness-110 transition-colors pointer-events-auto min-w-[36px] shadow-sm ${roleColor}`}
       >
-        {label}
-      </button>
+        <span className="text-[8px] md:text-[9px] font-bold text-white tracking-tight truncate max-w-[50px] md:max-w-[60px] text-center drop-shadow-md">
+          {player.username}
+        </span>
+        <span className={`text-[7px] md:text-[8px] font-black uppercase tracking-widest text-white/80 mt-[1px] bg-black/40 px-1 rounded-sm border border-white/10 ${state.x !== null ? "block" : "hidden"}`}>
+          {label}
+        </span>
+      </div>
     </div>
   );
 }
@@ -181,34 +175,28 @@ function DraggablePlayerToken({
 // --- Drag Overlay Component ---
 function TokenOverlay({ player, state }: { player: Player; state: PlayerState }) {
   const label = state.customLabel || player.position || "POS";
-  const roleColor = getRoleColor(label);
 
   return (
-    <div className="relative flex flex-col items-center justify-center shrink-0 w-[60px] md:w-[72px] scale-110 drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] z-[100] opacity-95">
-      <div 
-        className={`relative w-full aspect-[3/4] flex flex-col rounded-md overflow-hidden bg-gradient-to-b ${getTierStyles(player.overall)} border-2 shadow-inner`}
-      >
-        <div className="absolute top-1 left-1 flex flex-col items-center z-10">
-          <span className="text-[14px] md:text-[16px] font-black leading-none drop-shadow-md">{player.overall}</span>
-          <span className="text-[7px] md:text-[8px] font-bold uppercase tracking-tighter drop-shadow-md">{label}</span>
-        </div>
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[120%] h-[80%] flex items-end justify-center">
-          {player.avatarUrl ? (
-            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover object-bottom drop-shadow-lg" sizes="80px" />
-          ) : (
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold mb-2 backdrop-blur-sm border border-white/40">
-              {player.username.charAt(0).toUpperCase()}
-            </div>
-          )}
-        </div>
-        <div className="absolute bottom-0 w-full h-4 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-          <div className="text-[7px] md:text-[8px] font-bold uppercase text-white px-1 truncate w-full text-center">
-            {player.fullName?.split(' ')[0] || player.username}
+    <div className="relative flex flex-col items-center justify-center shrink-0 w-[50px] md:w-[60px] scale-110 drop-shadow-2xl z-[100] opacity-95">
+      <div className="relative w-[36px] h-[36px] md:w-[44px] md:h-[44px] rounded-full border-[1.5px] border-white shadow-xl bg-[#2a3036]">
+        {player.avatarUrl ? (
+          <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
+        ) : (
+          <div className="w-full h-full rounded-full flex items-center justify-center text-white/50 text-sm font-bold">
+            {player.username.charAt(0).toUpperCase()}
           </div>
+        )}
+        <div className={`absolute -bottom-1 -right-1 w-[16px] h-[16px] md:w-[20px] md:h-[20px] rounded-full flex items-center justify-center text-[7px] md:text-[8px] font-black text-white border border-white/20 shadow-sm ${getOvrColor(player.overall)}`}>
+          {player.overall}
         </div>
       </div>
-      <div className={`mt-1 px-2 py-0.5 rounded border border-black/40 text-[8px] md:text-[9px] font-bold text-white uppercase min-w-[36px] text-center shadow-sm ${roleColor}`}>
-        {label}
+      <div className="mt-1 flex flex-col items-center">
+        <span className="text-[8px] md:text-[9px] font-bold text-white tracking-tight truncate max-w-[50px] md:max-w-[60px] text-center drop-shadow-md">
+          {player.username}
+        </span>
+        <span className={`text-[7px] md:text-[8px] font-black uppercase tracking-widest text-white mt-[1px] bg-black/60 px-1 rounded-sm border border-white/20 ${state.x !== null ? "block" : "hidden"}`}>
+          {label}
+        </span>
       </div>
     </div>
   );
@@ -221,7 +209,6 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
   const [playerStates, setPlayerStates] = useState<Record<string, PlayerState>>({});
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [viewingTeam, setViewingTeam] = useState<"A" | "B">("A");
   
   const pitchRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -262,12 +249,20 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
           team: p.team === "Team A" ? "A" : p.team === "Team B" ? "B" : null,
         };
       } else {
-        if (p.team === "Team A" || p.team === "Team B") {
+        if (p.team === "Team A") {
           newStates[p.id] = {
             id: p.id,
-            x: 20 + Math.random() * 60, // scatter 20% to 80% width
-            y: 20 + Math.random() * 60, // scatter 20% to 80% height
-            team: p.team === "Team A" ? "A" : "B",
+            x: 20 + Math.random() * 60,
+            y: 15 + Math.random() * 30, // Top half
+            team: "A",
+            customLabel: p.position || "CMF",
+          };
+        } else if (p.team === "Team B") {
+          newStates[p.id] = {
+            id: p.id,
+            x: 20 + Math.random() * 60,
+            y: 65 + Math.random() * 30, // Bottom half
+            team: "B",
             customLabel: p.position || "CMF",
           };
         } else {
@@ -285,7 +280,6 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
     setPlayerStates(newStates);
   }, [participants, matchId]);
 
-  // Save to local storage whenever playerStates change
   useEffect(() => {
     if (matchId && Object.keys(playerStates).length > 0) {
       localStorage.setItem(`match_${matchId}_squad_state`, JSON.stringify(playerStates));
@@ -299,7 +293,7 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
 
   const handleDragStart = (event: DragStartEvent) => {
     const pId = event.active.id as string;
-    if (!isHost && pId !== currentUserId) return; // Non-hosts can only drag themselves
+    if (!isHost && pId !== currentUserId) return;
     setActiveId(pId);
   };
 
@@ -312,12 +306,10 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
     
     if (!active.rect.current.translated) return;
 
-    // Check if dropped on pitch or sidebar
     const dropCenterX = active.rect.current.translated.left + active.rect.current.translated.width / 2;
     const dropCenterY = active.rect.current.translated.top + active.rect.current.translated.height / 2;
 
     const pitchRect = pitchRef.current?.getBoundingClientRect();
-    const sidebarRect = sidebarRef.current?.getBoundingClientRect();
 
     let droppedOnPitch = false;
     let percentX = 0;
@@ -337,22 +329,24 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
 
     if (droppedOnPitch) {
       const autoPos = getAutoPosition(percentX, percentY);
+      // Determine team based on Y
+      const newTeam = percentY <= 50 ? "A" : "B";
+      
       setPlayerStates(prev => ({
         ...prev,
         [pId]: { 
           ...prev[pId], 
           x: percentX, 
           y: percentY, 
-          team: viewingTeam,
+          team: newTeam,
           customLabel: autoPos
         }
       }));
 
-      if (currentTeam !== viewingTeam) {
-        handleJoinAction(viewingTeam === "A" ? "Team A" : "Team B", pId);
+      if (currentTeam !== newTeam) {
+        handleJoinAction(newTeam === "A" ? "Team A" : "Team B", pId);
       }
     } else {
-      // Dropped off pitch (back to unassigned/lobby)
       setPlayerStates(prev => ({
         ...prev,
         [pId]: { ...prev[pId], x: null, y: null, team: null }
@@ -364,7 +358,6 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
   };
 
   const handleJoinAction = async (team: "Team A" | "Team B" | null, pId: string) => {
-    // If it's the current user, call onJoinTeam immediately to trigger DB save & notification
     if (pId === currentUserId) {
       try {
         await onJoinTeam(team);
@@ -399,7 +392,7 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
       ...prev,
       [editingLabelId]: { 
         ...prev[editingLabelId], 
-        customLabel: editLabelValue.substring(0, 5).toUpperCase() // Max 5 chars
+        customLabel: editLabelValue.substring(0, 5).toUpperCase()
       }
     }));
     setEditingLabelId(null);
@@ -414,52 +407,37 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
     return { count: teamPlayers.length, avgOvr };
   };
 
-  const stats = getTeamStats(viewingTeam);
+  const statsA = getTeamStats("A");
+  const statsB = getTeamStats("B");
   const activePlayer = activeId ? players.find(p => p.id === activeId) : null;
   const activePlayerState = activeId ? playerStates[activeId] : null;
 
   return (
-    <div className="w-full flex flex-col relative rounded-xl overflow-hidden border border-[#A28B52]/20 shadow-2xl bg-[#000] select-none h-[600px] md:h-[700px]">
+    <div className="w-full flex flex-col relative rounded-xl overflow-hidden shadow-2xl select-none h-[750px] md:h-[850px]">
       
-      {/* Top Toggle Bar */}
-      <div className="flex items-center justify-between p-3 bg-[#111] border-b border-white/10 z-20 shrink-0">
-        <div className="flex items-center gap-1 bg-black/50 p-1 rounded-lg border border-white/5">
-          <button 
-            onClick={() => setViewingTeam("A")}
-            className={`px-4 py-1.5 rounded-md text-[10px] font-black tracking-widest uppercase transition ${viewingTeam === "A" ? "bg-[#D4F829] text-black" : "text-white/50 hover:text-white"}`}
-          >
-            Team A
-          </button>
-          <button 
-            onClick={() => setViewingTeam("B")}
-            className={`px-4 py-1.5 rounded-md text-[10px] font-black tracking-widest uppercase transition ${viewingTeam === "B" ? "bg-[#D4F829] text-black" : "text-white/50 hover:text-white"}`}
-          >
-            Team B
-          </button>
-        </div>
-
-        {isHost && (
+      {/* Top Header */}
+      {isHost && (
+        <div className="flex items-center justify-end p-2 bg-[#111] shrink-0 border-b border-white/10 z-20">
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-1.5 px-4 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg font-bold tracking-widest uppercase text-[9px] transition disabled:opacity-50 border border-white/10"
+            className="flex items-center gap-1.5 px-4 py-1.5 bg-[#D4F829] hover:bg-[#c3e626] text-black rounded-lg font-black tracking-widest uppercase text-[9px] transition disabled:opacity-50"
           >
             {isSaving ? <Loader2 className="animate-spin" size={12} /> : <Save size={12} />}
-            SAVE
+            SAVE FORMATION
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex flex-row flex-1 overflow-hidden relative">
+        <div className="flex flex-row flex-1 overflow-hidden relative bg-[#1c1c1e]">
           
           {/* Left Sidebar (Lobby / Substitutes) */}
-          <div ref={sidebarRef} className="w-[85px] md:w-[100px] bg-[#F5F5F5] shrink-0 flex flex-col border-r border-black/10 z-20">
-            <div className="p-2 bg-white border-b border-black/10 flex flex-col items-center">
-              <span className="text-[10px] font-black text-black uppercase tracking-widest">Lobby</span>
-              <span className="text-[8px] font-bold text-black/50">Unassigned</span>
+          <div ref={sidebarRef} className="w-[80px] md:w-[90px] bg-[#1c1c1e] shrink-0 flex flex-col border-r border-white/10 z-20">
+            <div className="p-2 bg-[#1c1c1e] border-b border-white/10 flex flex-col items-center">
+              <span className="text-[10px] font-black text-white uppercase tracking-widest">Lobby</span>
             </div>
-            <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar flex flex-col items-center py-3 gap-3">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar flex flex-col items-center py-3 gap-4">
               {players.filter(p => !playerStates[p.id]?.x).map(p => {
                 const state = playerStates[p.id];
                 if (!state) return null;
@@ -475,7 +453,7 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
                 );
               })}
               {Object.values(playerStates).filter(s => s.x === null).length === 0 && (
-                <div className="text-[9px] uppercase tracking-widest text-black/30 italic text-center px-2 py-4">
+                <div className="text-[9px] uppercase tracking-widest text-white/30 italic text-center px-2 py-4">
                   Empty
                 </div>
               )}
@@ -483,36 +461,54 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
           </div>
 
           {/* The Pitch (Main Content) */}
-          <div ref={pitchRef} className="flex-1 relative bg-[#0a2311] overflow-hidden">
-            {/* Pitch Grass Pattern */}
-            <div className="absolute inset-0 opacity-80" 
-                 style={{ 
-                   backgroundImage: `
-                     linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                     linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
-                   `, 
-                   backgroundSize: '20px 20px' 
-                 }} 
-            />
-            {/* Pitch Lines */}
-            <div className="absolute inset-4 border border-white/30 pointer-events-none" />
-            <div className="absolute top-1/2 left-4 right-4 h-[1px] bg-white/30 -translate-y-1/2 pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 w-20 h-20 rounded-full border border-white/30 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-            <div className="absolute top-4 left-1/2 w-32 h-12 border-x border-b border-white/30 -translate-x-1/2 pointer-events-none" />
-            <div className="absolute bottom-4 left-1/2 w-32 h-12 border-x border-t border-white/30 -translate-x-1/2 pointer-events-none" />
+          <div ref={pitchRef} className="flex-1 relative overflow-hidden" 
+               style={{ background: 'repeating-linear-gradient(0deg, #4d6d53, #4d6d53 50px, #48664e 50px, #48664e 100px)' }}>
+            
+            {/* Pitch Lines Wrapper */}
+            <div className="absolute inset-4 border-[1.5px] border-white/40 pointer-events-none" />
+            
+            {/* Center Line */}
+            <div className="absolute top-1/2 left-4 right-4 h-[1.5px] bg-white/40 -translate-y-1/2 pointer-events-none" />
+            
+            {/* Center Circle */}
+            <div className="absolute top-1/2 left-1/2 w-20 h-20 rounded-full border-[1.5px] border-white/40 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 w-1.5 h-1.5 rounded-full bg-white/60 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
-            {/* Team Info Overlay */}
-            <div className="absolute top-6 right-6 flex flex-col items-end pointer-events-none z-10">
-              <span className="text-[10px] text-white/50 uppercase font-bold tracking-widest">Strength</span>
-              <span className="text-3xl text-white font-black drop-shadow-md italic">{stats.avgOvr * 10}</span>
-              <span className="text-[8px] text-white/50 uppercase mt-1 bg-black/40 px-2 py-0.5 rounded">Team {viewingTeam}</span>
+            {/* Top Penalty Box */}
+            <div className="absolute top-4 left-1/2 w-40 h-20 border-[1.5px] border-t-0 border-white/40 -translate-x-1/2 pointer-events-none" />
+            {/* Top 6-yard Box */}
+            <div className="absolute top-4 left-1/2 w-20 h-8 border-[1.5px] border-t-0 border-white/40 -translate-x-1/2 pointer-events-none" />
+            {/* Top Penalty Arc */}
+            <div className="absolute top-[calc(1rem+20px)] left-1/2 w-16 h-8 border-[1.5px] border-b-0 border-white/40 rounded-t-full -translate-x-1/2 pointer-events-none origin-bottom rotate-180" />
+
+            {/* Bottom Penalty Box */}
+            <div className="absolute bottom-4 left-1/2 w-40 h-20 border-[1.5px] border-b-0 border-white/40 -translate-x-1/2 pointer-events-none" />
+            {/* Bottom 6-yard Box */}
+            <div className="absolute bottom-4 left-1/2 w-20 h-8 border-[1.5px] border-b-0 border-white/40 -translate-x-1/2 pointer-events-none" />
+            {/* Bottom Penalty Arc */}
+            <div className="absolute bottom-[calc(1rem+20px)] left-1/2 w-16 h-8 border-[1.5px] border-b-0 border-white/40 rounded-t-full -translate-x-1/2 pointer-events-none" />
+
+
+            {/* Headers/Footers OVER the pitch */}
+            <div className="absolute top-0 left-0 right-0 bg-black/40 h-8 flex items-center justify-between px-3 pointer-events-none z-10 backdrop-blur-[2px]">
+              <span className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-1.5">
+                <Shield size={12} className="text-white/50" /> Team A
+              </span>
+              <span className="text-[10px] font-black text-white bg-green-700/80 px-2 py-0.5 rounded-sm">{statsA.avgOvr * 10}</span>
+            </div>
+
+            <div className="absolute bottom-0 left-0 right-0 bg-black/40 h-8 flex items-center justify-between px-3 pointer-events-none z-10 backdrop-blur-[2px]">
+              <span className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-1.5">
+                <Shield size={12} className="text-white/50" /> Team B
+              </span>
+              <span className="text-[10px] font-black text-white bg-green-700/80 px-2 py-0.5 rounded-sm">{statsB.avgOvr * 10}</span>
             </div>
 
             {/* Players on Pitch */}
             {players.map(p => {
               const state = playerStates[p.id];
-              // Only render players who are on the pitch AND belong to the viewing team
-              if (!state || state.x === null || state.y === null || state.team !== viewingTeam) return null;
+              // Render players who have x,y coords
+              if (!state || state.x === null || state.y === null) return null;
               
               const isDraggable = isHost || p.id === currentUserId;
               
