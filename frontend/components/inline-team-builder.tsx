@@ -150,61 +150,73 @@ function DraggablePlayerToken({
 
   const label = state.customLabel || player.position || "POS";
 
-  const wrapperClass = isLargeSquad ? "w-[44px] md:w-[50px]" : "w-[50px] md:w-[56px]";
-  const avatarClass = isLargeSquad ? "h-[22px] w-[22px] md:h-[26px] md:w-[26px]" : "h-[26px] w-[26px] md:h-[30px] md:w-[30px]";
-  const badgeClass = isLargeSquad ? "h-[14px] w-[14px] md:h-[16px] md:w-[16px] text-[6px] md:text-[7px]" : "h-[16px] w-[16px] md:h-[18px] md:w-[18px] text-[7px] md:text-[8px]";
-  const nameClass = isLargeSquad ? "text-[5px] md:text-[6px] w-full" : "text-[6px] md:text-[7px] w-full";
-  const labelClass = isLargeSquad ? "text-[5px]" : "text-[6px]";
+  const wrapperClass = isLargeSquad ? "w-[48px] md:w-[52px] h-[68px] md:h-[74px]" : "w-[56px] md:w-[62px] h-[80px] md:h-[88px]";
+  const avatarClass = isLargeSquad ? "h-[22px] w-[22px] md:h-[26px] md:w-[26px]" : "h-[28px] w-[28px] md:h-[32px] md:w-[32px]";
+  const nameClass = isLargeSquad ? "text-[5px] md:text-[6px] max-w-[40px] md:max-w-[46px]" : "text-[6px] md:text-[7px] max-w-[48px] md:max-w-[54px]";
+  
+  const clipPathShape = "polygon(15% 0, 85% 0, 100% 15%, 100% 75%, 50% 100%, 0 75%, 0 15%)";
 
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={{
+        ...style,
+        filter: "drop-shadow(0px 6px 10px rgba(0,0,0,0.4))"
+      }}
       {...listeners}
       {...attributes}
-      className={`relative flex flex-col items-center justify-center shrink-0 group touch-none drop-shadow-2xl transition-all ${wrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing hover:-translate-y-1 hover:scale-105' : 'cursor-default'}`}
+      className={`relative flex flex-col items-center justify-start shrink-0 group touch-none transition-all ${wrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing hover:-translate-y-1' : 'cursor-default'}`}
     >
-      {/* Base Card Shape (Outer Border) */}
+      {/* Outer Border Layer */}
       <div 
-        className="absolute inset-0 bg-gradient-to-br from-[#D4F829]/80 via-[#A28B52]/50 to-[#D4F829]/30 transition-all duration-300 group-hover:from-[#D4F829] group-hover:via-[#D4F829]/80 group-hover:to-[#D4F829]/60"
-        style={{ clipPath: 'polygon(15% 0, 85% 0, 100% 15%, 100% 75%, 50% 100%, 0 75%, 0 15%)' }}
-      />
-      {/* Inner Card Shape (Fill) */}
-      <div 
-        className="absolute inset-[1.5px] bg-gradient-to-b from-[#1C201A] to-[#0A0D0A] backdrop-blur-md"
-        style={{ clipPath: 'polygon(15% 0, 85% 0, 100% 15%, 100% 75%, 50% 100%, 0 75%, 0 15%)' }}
+        className="absolute inset-0 bg-gradient-to-br from-[#EAF7AF] via-[#A28B52] to-[#D4F829] opacity-90 group-hover:opacity-100 transition-opacity"
+        style={{ clipPath: clipPathShape }}
       />
       
+      {/* Inner Background Layer */}
+      <div 
+        className="absolute inset-[1.5px] bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
+        style={{ clipPath: clipPathShape }}
+      />
+
       {/* Content */}
-      <div className="relative flex flex-col items-center w-full z-10 pt-2 pb-3 px-1">
-        <div className={`relative mx-auto overflow-hidden rounded-full border-[1.5px] border-black/60 shadow-inner pointer-events-none ${avatarClass}`}>
+      <div className="relative z-10 flex flex-col items-center w-full h-full pt-1.5 md:pt-2">
+        {/* Top Left Stats */}
+        <div className="absolute top-1.5 md:top-2 left-1.5 md:left-2 flex flex-col items-center justify-center">
+           <span className="font-black text-[9px] md:text-[11px] leading-none text-white drop-shadow-md">
+              {player.overall}
+           </span>
+           <span className={`font-black uppercase text-[5px] md:text-[6px] text-[#D4F829] leading-none mt-[2px] ${state.x !== null ? "block" : "hidden"}`}>
+              {label}
+           </span>
+        </div>
+        
+        {/* Avatar */}
+        <div className={`relative mx-auto mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/40 bg-[#05070B] shadow-sm pointer-events-none ${avatarClass}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50 bg-[#111]">
+            <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
               {player.username.charAt(0).toUpperCase()}
             </div>
           )}
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
         </div>
         
-        <div className={`absolute -right-1 -top-1 flex items-center justify-center rounded bg-gradient-to-br from-[#222] to-black font-black text-white shadow-xl border border-[#D4F829]/60 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 ${badgeClass} ${getOvrColor(player.overall)}`}>
-          {player.overall}
-        </div>
+        {/* Separator */}
+        <div className="w-[60%] h-[1px] bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent mt-1.5 md:mt-2" />
         
+        {/* Name */}
         <div
-          className="relative mt-1.5 flex flex-col items-center pointer-events-auto cursor-pointer w-full"
+          className="relative mt-1 md:mt-1.5 flex flex-col items-center pointer-events-auto cursor-pointer px-1 w-full"
           onPointerDown={(e) => {
             e.stopPropagation();
             onLabelClick(player);
           }}
         >
-          <span className={`truncate text-center font-black tracking-widest text-[#EAF7AF] drop-shadow-md px-1 ${nameClass}`}>
+          <span className={`truncate text-center font-black tracking-wide text-white/90 group-hover:text-white transition-colors drop-shadow-md ${nameClass}`}>
             {player.username}
           </span>
-          <div className={`mt-0.5 flex items-center justify-center font-black uppercase tracking-[0.2em] text-[#D4F829] drop-shadow-[0_0_4px_rgba(212,248,41,0.4)] ${labelClass} ${state.x !== null ? "flex" : "hidden"}`}>
-            {label}
-          </div>
         </div>
       </div>
     </div>
