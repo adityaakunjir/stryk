@@ -297,10 +297,10 @@ export function InlineTeamBuilder({
       if (savedStates[p.id]) {
         newStates[p.id] = {
           ...savedStates[p.id],
-          team: p.team === "Team A" ? "A" : p.team === "Team B" ? "B" : null,
+          team: p.team === "Team A" || p.team === "A" ? "A" : p.team === "Team B" || p.team === "B" ? "B" : null,
         };
       } else {
-        if (p.team === "Team A") {
+        if (p.team === "Team A" || p.team === "A") {
           newStates[p.id] = {
             id: p.id,
             x: 20 + Math.random() * 60,
@@ -308,7 +308,7 @@ export function InlineTeamBuilder({
             team: "A",
             customLabel: p.position || "CMF",
           };
-        } else if (p.team === "Team B") {
+        } else if (p.team === "Team B" || p.team === "B") {
           newStates[p.id] = {
             id: p.id,
             x: 20 + Math.random() * 60,
