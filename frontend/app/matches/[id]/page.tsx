@@ -516,7 +516,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
     <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#E5DCC5] bg-[url('/create_card_bg.webp')] bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-[#151515]">
       <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.22),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.62),transparent)]" />
 
-      <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-28 max-w-md mx-auto z-10 w-full overflow-y-auto">
+      <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full overflow-y-auto">
         {/* Top Header Section */}
         <header className="shrink-0 relative mb-4 overflow-hidden rounded-[2rem] border border-[#151515]/10 bg-white/35 p-4 shadow-[0_18px_50px_rgba(79,60,25,0.12)] backdrop-blur-md">
           <div className="pointer-events-none absolute -right-12 -top-20 size-52 rounded-full bg-[#D4F829]/22 blur-3xl" />
@@ -614,7 +614,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         )}
 
         {/* Bottom Primary CTAs */}
-        <div className="shrink-0 mt-4 w-full pb-8">
+        <div className="shrink-0 mt-4 w-full mb-4">
           {isJoined ? (
             <div className="relative flex flex-col gap-0 p-5 rounded-[2rem] bg-[#0c0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4F829]/40 to-transparent" />
