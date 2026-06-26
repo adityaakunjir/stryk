@@ -616,111 +616,108 @@ export default function MatchDetailsPage({ params }: PageProps) {
         {/* Bottom Primary CTAs */}
         <div className="shrink-0 mt-4 w-full pb-8">
           {isJoined ? (
-            <div className="relative flex flex-col gap-3 p-5 rounded-[2rem] bg-[#111210] shadow-[0_28px_70px_rgba(0,0,0,0.42)] overflow-hidden border border-[#D4F829]/15">
-              <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#D4F829]/60 to-transparent" />
-              <div className="flex items-start justify-between gap-4">
+            <div className="relative flex flex-col gap-0 p-5 rounded-[2rem] bg-[#0c0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4F829]/40 to-transparent" />
+              <div className="pointer-events-none absolute left-1/2 -top-10 -translate-x-1/2 size-24 rounded-full bg-[#D4F829]/10 blur-2xl" />
+              
+              <div className="flex items-start justify-between gap-4 relative z-10 mb-4">
                 <div>
-                  <h3 className="text-[11px] tracking-[0.3em] uppercase text-[#A28B52] font-black">
-                    Match Command
+                  <h3 className="text-[10px] tracking-[0.25em] uppercase text-white/40 font-bold">
+                    Action Center
                   </h3>
-                  <p className="mt-1 text-[10px] font-medium text-white/45">
-                    {currentTeam ? `You are drafted to ${currentTeam}.` : "Pick a side on the board when ready."}
+                  <p className="mt-1.5 text-[12px] font-medium text-white/90">
+                    {currentTeam ? (
+                      <>Drafted to <span className="font-black text-[#D4F829] uppercase">{currentTeam}</span></>
+                    ) : (
+                      "Awaiting your check-in"
+                    )}
                   </p>
                 </div>
-                <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[9px] font-black uppercase tracking-widest text-white/50">
+                <div className={`rounded-full border px-3 py-1.5 text-[9px] font-black uppercase tracking-widest ${isCheckedIn ? "bg-[#D4F829]/10 border-[#D4F829]/30 text-[#D4F829]" : "bg-white/5 border-white/10 text-white/40"}`}>
                   {isCheckedIn ? "Ready" : "Pending"}
                 </div>
               </div>
               
-              {!isCheckedIn && (
+              <div className="space-y-3 relative z-10">
+                {!isCheckedIn && (
+                  <button
+                    onClick={handleCheckIn}
+                    disabled={actionLoading}
+                    className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.2),inset_0_1px_0_rgba(255,255,255,0.6)] disabled:opacity-50"
+                  >
+                    {actionLoading ? (
+                      <Loader2 className="size-4 animate-spin text-[#151515]" />
+                    ) : (
+                      <>
+                        <CheckCircle2 size={16} strokeWidth={2.5} />
+                        I'm Here (Check In)
+                      </>
+                    )}
+                  </button>
+                )}
+                
                 <button
-                  onClick={handleCheckIn}
+                  onClick={() => setShowInviteModal(true)}
+                  className="w-full h-12 rounded-[1.25rem] bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white text-[11px] font-bold tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <Mail size={15} className="text-white/60" />
+                  Invite Friends
+                </button>
+                
+                {currentUserId === match.hostId && match.status !== "closed" && (
+                  <div className="grid grid-cols-2 gap-3 pt-1">
+                    <button
+                      onClick={handleStartMatch}
+                      disabled={actionLoading || match.status === "in_progress"}
+                      className="w-full h-11 rounded-[1rem] bg-white hover:bg-gray-200 text-[#151515] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                    >
+                      <Swords size={13} strokeWidth={2.5} />
+                      {match.status === "in_progress" ? "Running" : "Start Match"}
+                    </button>
+                    <button
+                      onClick={handleCloseMatch}
+                      disabled={actionLoading}
+                      className="w-full h-11 rounded-[1rem] bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 text-[10px] font-bold tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      Close Match
+                    </button>
+                  </div>
+                )}
+                
+                <button
+                  onClick={handleLeaveMatch}
                   disabled={actionLoading}
-                  className="w-full h-14 rounded-full bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[12px] font-display tracking-[0.18em] uppercase font-black transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.55)]"
+                  className="w-full pt-3 pb-1 text-white/30 hover:text-red-400 text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   {actionLoading ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin text-[#151515]" />
-                      CHECKING IN...
-                    </>
+                    <Loader2 className="size-3 animate-spin" />
                   ) : (
                     <>
-                      <CheckCircle2 size={15} />
-                      {"I'M HERE (CHECK IN)"}
+                      <LogOut size={11} />
+                      Leave Match
                     </>
                   )}
                 </button>
-              )}
-              {isCheckedIn && (
-                <div className="flex h-14 items-center justify-center gap-2 rounded-full border border-[#D4F829]/30 bg-[#D4F829]/10 text-[11px] font-black uppercase tracking-[0.18em] text-[#D4F829]">
-                  <CheckCircle2 size={15} />
-                  Checked in
-                </div>
-              )}
-              
+              </div>
+            </div>
+          ) : (
+            <div className="relative p-5 rounded-[2rem] bg-[#0c0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4F829]/40 to-transparent" />
               <button
-                onClick={() => setShowInviteModal(true)}
-                className="w-full h-[52px] rounded-full bg-[#1c1c1e] hover:bg-[#242426] text-white text-[11px] font-display tracking-[0.18em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2 border border-white/5"
-              >
-                <Mail size={14} />
-                INVITE FRIENDS
-              </button>
-              
-              {currentUserId === match.hostId && match.status !== "closed" && (
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={handleStartMatch}
-                    disabled={actionLoading || match.status === "in_progress"}
-                    className="w-full h-12 rounded-full bg-[#3f451b] hover:bg-[#4a5220] text-[#D4F829] text-[10px] font-display tracking-[0.16em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
-                  >
-                    <Swords size={13} />
-                    {match.status === "in_progress" ? "STARTED" : "START MATCH"}
-                  </button>
-                  <button
-                    onClick={handleCloseMatch}
-                    disabled={actionLoading}
-                    className="w-full h-12 rounded-full bg-[#3a1515] hover:bg-[#4a1b1b] text-[#ff4444] text-[10px] font-display tracking-[0.16em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
-                  >
-                    CLOSE MATCH
-                  </button>
-                </div>
-              )}
-              <button
-                onClick={handleLeaveMatch}
-                disabled={actionLoading}
-                className="w-full h-12 rounded-full border border-red-500/30 bg-transparent hover:bg-red-500/10 text-red-500/80 hover:text-red-500 text-[11px] font-display tracking-[0.18em] uppercase font-bold transition duration-200 cursor-pointer flex items-center justify-center gap-2"
+                onClick={handleJoinMatch}
+                disabled={actionLoading || participants.length >= match.maxPlayers}
+                className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[12px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.6)]"
               >
                 {actionLoading ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin text-red-500" />
-                    LEAVING...
-                  </>
+                  <Loader2 className="size-5 animate-spin text-[#151515]" />
                 ) : (
                   <>
-                    <LogOut size={13} />
-                    LEAVE MATCH
+                    <UserPlus size={16} strokeWidth={2.5} />
+                    {participants.length >= match.maxPlayers ? "Match Full" : "Join Match"}
                   </>
                 )}
               </button>
             </div>
-          ) : (
-            <button
-              onClick={handleJoinMatch}
-              disabled={actionLoading || participants.length >= match.maxPlayers}
-              className="w-full h-14 rounded-full bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[13px] font-display tracking-[0.18em] uppercase font-black transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.55)]"
-            >
-              {actionLoading ? (
-                <>
-                  <Loader2 className="size-5 animate-spin text-[#151515]" />
-                  JOINING...
-                </>
-              ) : (
-                <>
-                  <UserPlus size={16} />
-                  {participants.length >= match.maxPlayers ? "MATCH FULL" : "JOIN MATCH"}
-                </>
-              )}
-            </button>
           )}
         </div>
       </div>
