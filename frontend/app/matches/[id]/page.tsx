@@ -492,7 +492,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const unassignedPlayers = participants.filter(p => p.team !== "Team A" && p.team !== "Team B");
   const checkedInCount = participants.filter(p => p.checkedIn).length;
   const hostParticipant = participants.find(p => p.userId === match.hostId);
-  const hostName = hostParticipant?.user?.firstName ? `${hostParticipant.user.firstName} ${hostParticipant.user.lastName}`.trim() : (hostParticipant?.user?.username || "Host");
+  const hostName = hostParticipant?.user?.fullName?.split(" ")[0] || hostParticipant?.user?.username || "Host";
   const playerFill = Math.min(100, Math.round((participants.length / Math.max(match.maxPlayers, 1)) * 100));
   const statusLabel = match.status === "open" ? "Open Match" : match.status.replace(/_/g, " ");
 
