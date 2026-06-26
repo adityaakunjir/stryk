@@ -193,9 +193,9 @@ function DraggablePlayerToken({
     );
   }
 
-  const wrapperClass = isLargeSquad ? "w-[48px] md:w-[52px] h-[68px] md:h-[74px]" : "w-[56px] md:w-[62px] h-[80px] md:h-[88px]";
-  const avatarClass = isLargeSquad ? "h-[22px] w-[22px] md:h-[26px] md:w-[26px]" : "h-[28px] w-[28px] md:h-[32px] md:w-[32px]";
-  const nameClass = isLargeSquad ? "text-[5px] md:text-[6px] max-w-[40px] md:max-w-[46px]" : "text-[6px] md:text-[7px] max-w-[48px] md:max-w-[54px]";
+  const wrapperClass = isLargeSquad ? "w-[44px] md:w-[48px] h-[64px] md:h-[70px]" : "w-[50px] md:w-[56px] h-[72px] md:h-[80px]";
+  const avatarClass = isLargeSquad ? "h-[20px] w-[20px] md:h-[24px] md:w-[24px]" : "h-[24px] w-[24px] md:h-[28px] md:w-[28px]";
+  const nameClass = isLargeSquad ? "text-[6px] md:text-[7px] max-w-[40px]" : "text-[8px] md:text-[9px] max-w-[48px]";
   
   const clipPathShape = "polygon(15% 0, 85% 0, 100% 15%, 100% 75%, 50% 100%, 0 75%, 0 15%)";
 
@@ -225,17 +225,17 @@ function DraggablePlayerToken({
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center w-full h-full pt-1.5 md:pt-2">
         {/* Top Left Stats */}
-        <div className="absolute top-1.5 md:top-2 left-1.5 md:left-2 flex flex-col items-center justify-center">
-           <span className="font-black text-[9px] md:text-[11px] leading-none text-white drop-shadow-md">
+        <div className="absolute top-1 md:top-1.5 left-1 md:left-1.5 flex flex-col items-center justify-center">
+           <span className="font-black text-[11px] md:text-[13px] leading-none text-white drop-shadow-md tracking-tighter">
               {player.overall}
            </span>
-           <span className={`font-black uppercase text-[5px] md:text-[6px] text-[#D4F829] leading-none mt-[2px] ${state.x !== null ? "block" : "hidden"}`}>
+           <span className={`font-black uppercase text-[6px] md:text-[7px] text-[#D4F829] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"}`}>
               {label}
            </span>
         </div>
         
         {/* Avatar */}
-        <div className={`relative ml-auto mr-1.5 md:mr-2 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/40 bg-[#05070B] shadow-sm pointer-events-none ${avatarClass}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/40 bg-[#05070B] shadow-sm pointer-events-none ${avatarClass}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
@@ -247,17 +247,17 @@ function DraggablePlayerToken({
         </div>
         
         {/* Separator */}
-        <div className="w-[60%] h-[1px] bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent mt-1.5 md:mt-2" />
+        <div className="w-[70%] h-[1px] bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent mt-1.5 md:mt-2" />
         
         {/* Name */}
         <div
-          className="relative mt-1 md:mt-1.5 flex flex-col items-center pointer-events-auto cursor-pointer px-1 w-full"
+          className="relative mt-1 flex flex-col items-center pointer-events-auto cursor-pointer px-0.5 w-full"
           onPointerDown={(e) => {
             e.stopPropagation();
             onLabelClick(player);
           }}
         >
-          <span className={`truncate text-center font-black tracking-wide text-white/90 group-hover:text-white transition-colors drop-shadow-md ${nameClass}`}>
+          <span className={`truncate text-center font-black tracking-tight text-white/90 group-hover:text-white transition-colors drop-shadow-md ${nameClass}`}>
             {player.username}
           </span>
         </div>
@@ -270,9 +270,9 @@ function DraggablePlayerToken({
 function TokenOverlay({ player, state, isLargeSquad = false }: { player: Player; state: PlayerState; isLargeSquad?: boolean; }) {
   const label = state.customLabel || player.position || "POS";
 
-  const wrapperClass = isLargeSquad ? "w-[48px] md:w-[52px] h-[68px] md:h-[74px]" : "w-[56px] md:w-[62px] h-[80px] md:h-[88px]";
-  const avatarClass = isLargeSquad ? "h-[22px] w-[22px] md:h-[26px] md:w-[26px]" : "h-[28px] w-[28px] md:h-[32px] md:w-[32px]";
-  const nameClass = isLargeSquad ? "text-[5px] md:text-[6px] max-w-[40px] md:max-w-[46px]" : "text-[6px] md:text-[7px] max-w-[48px] md:max-w-[54px]";
+  const wrapperClass = isLargeSquad ? "w-[44px] md:w-[48px] h-[64px] md:h-[70px]" : "w-[50px] md:w-[56px] h-[72px] md:h-[80px]";
+  const avatarClass = isLargeSquad ? "h-[20px] w-[20px] md:h-[24px] md:w-[24px]" : "h-[24px] w-[24px] md:h-[28px] md:w-[28px]";
+  const nameClass = isLargeSquad ? "text-[6px] md:text-[7px] max-w-[40px]" : "text-[8px] md:text-[9px] max-w-[48px]";
   
   const clipPathShape = "polygon(15% 0, 85% 0, 100% 15%, 100% 75%, 50% 100%, 0 75%, 0 15%)";
 
@@ -291,16 +291,16 @@ function TokenOverlay({ player, state, isLargeSquad = false }: { player: Player;
       />
 
       <div className="relative z-10 flex flex-col items-center w-full h-full pt-1.5 md:pt-2">
-        <div className="absolute top-1.5 md:top-2 left-1.5 md:left-2 flex flex-col items-center justify-center">
-           <span className="font-black text-[9px] md:text-[11px] leading-none text-white drop-shadow-md">
+        <div className="absolute top-1 md:top-1.5 left-1 md:left-1.5 flex flex-col items-center justify-center">
+           <span className="font-black text-[11px] md:text-[13px] leading-none text-white drop-shadow-md tracking-tighter">
               {player.overall}
            </span>
-           <span className={`font-black uppercase text-[5px] md:text-[6px] text-[#D4F829] leading-none mt-[2px] ${state.x !== null ? "block" : "hidden"}`}>
+           <span className={`font-black uppercase text-[6px] md:text-[7px] text-[#D4F829] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"}`}>
               {label}
            </span>
         </div>
         
-        <div className={`relative ml-auto mr-1.5 md:mr-2 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/60 bg-[#05070B] shadow-sm ${avatarClass}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/60 bg-[#05070B] shadow-sm ${avatarClass}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
           ) : (
@@ -311,10 +311,10 @@ function TokenOverlay({ player, state, isLargeSquad = false }: { player: Player;
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
         </div>
         
-        <div className="w-[60%] h-[1px] bg-gradient-to-r from-transparent via-[#D4F829]/80 to-transparent mt-1.5 md:mt-2" />
+        <div className="w-[70%] h-[1px] bg-gradient-to-r from-transparent via-[#D4F829]/80 to-transparent mt-1.5 md:mt-2" />
         
-        <div className="relative mt-1 md:mt-1.5 flex flex-col items-center px-1 w-full">
-          <span className={`truncate text-center font-black tracking-wide text-white drop-shadow-md ${nameClass}`}>
+        <div className="relative mt-1 flex flex-col items-center px-0.5 w-full">
+          <span className={`truncate text-center font-black tracking-tight text-white drop-shadow-md ${nameClass}`}>
             {player.username}
           </span>
         </div>
