@@ -1190,8 +1190,7 @@ async def submit_stats(
     yellow_cards = min(payload.yellowCards, 2)
     red_cards = min(payload.redCards, 1)
     
-    # GK only can have a clean sheet
-    clean_sheet = payload.cleanSheet if db_user.position == "GK" else False
+    clean_sheet = payload.cleanSheet
 
     stats = MatchStats(
         matchId=match_id,
@@ -1492,9 +1491,12 @@ async def finalize_verifications(
             if approvals >= quorum_threshold:
                 stat.status = "verified"
                 # Calculate Base XP
-                is_win = (match.teamAScore > match.teamBScore and stat.user.id in [p.userId for p in match.players if p.team == "A"]) or \
-                         (match.teamBScore > match.teamAScore and stat.user.id in [p.userId for p in match.players if p.team == "B"])
-                is_draw = match.teamAScore == match.teamBScore and match.teamAScore is not None
+                is_win = False
+                is_draw = False
+                if match.teamAScore is not None and match.teamBScore is not None:
+                    is_win = (match.teamAScore > match.teamBScore and stat.user.id in [p.userId for p in match.players if p.team == "A"]) or \
+                             (match.teamBScore > match.teamAScore and stat.user.id in [p.userId for p in match.players if p.team == "B"])
+                    is_draw = match.teamAScore == match.teamBScore
 
                 xp_award = 50 # Join Match
                 if not stat.noShow:
@@ -1544,6 +1546,21 @@ async def finalize_verifications(
                     if (stat.user.level <= 5 and new_level >= 6) or (stat.user.level <= 15 and new_level >= 16):
                         stat.user.needsUpgradeAnimation = True
                     stat.user.level = new_level
+
+                # Update Raw Stats
+                stat.user.matchesPlayed += 1
+                if is_win:
+                    stat.user.wins += 1
+                elif is_draw:
+                    stat.user.draws += 1
+                else:
+                    stat.user.losses += 1
+                    
+                stat.user.goals += stat.goals
+                stat.user.assists += stat.assists
+                stat.user.tackles += stat.tackles
+                stat.user.saves += stat.saves
+                stat.user.intercepts += stat.interceptions
 
                 # Update User OVR Attributes
                 stat.user.shooting += (stat.goals * 0.2) + (stat.shotsOnTarget * 0.05)
