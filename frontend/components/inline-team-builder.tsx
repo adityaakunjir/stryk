@@ -192,7 +192,7 @@ function DraggablePlayerToken({
         </div>
         
         {/* Avatar */}
-        <div className={`relative mx-auto mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/40 bg-[#05070B] shadow-sm pointer-events-none ${avatarClass}`}>
+        <div className={`relative ml-auto mr-1.5 md:mr-2 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/40 bg-[#05070B] shadow-sm pointer-events-none ${avatarClass}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
