@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { FriendActionButton } from "@/components/friend-action-button";
 import { UpgradeOverlay } from "@/components/upgrade-overlay";
+import { ClientBackButton } from "@/components/client-back-button";
 
 const BASE_URL_RAW = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 const API_BASE_URL = (!BASE_URL_RAW.endsWith("/api/v1") && !BASE_URL_RAW.endsWith("/api/v1/")) 
@@ -159,9 +160,7 @@ export default async function PublicPlayerPage({ params }: Props) {
       <div className="relative h-full flex flex-col px-6 pt-8 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between mb-2 z-30 shrink-0">
-          <button className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm">
-             <Link href="/" className="flex items-center justify-center w-full h-full"><ArrowLeft size={18} /></Link>
-          </button>
+          <ClientBackButton fallbackRoute="/search" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm" iconSize={18} />
           <div className="text-[10px] tracking-[0.35em] uppercase text-[#151515]/50 font-bold drop-shadow-md">STRYK PROFILE</div>
           <div className="w-10 h-10" /> {/* Placeholder for balance */}
         </div>
