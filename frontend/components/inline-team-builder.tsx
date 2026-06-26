@@ -43,6 +43,25 @@ interface InlineTeamBuilderProps {
   isHost: boolean;
   currentUserId: string | null;
   onJoinTeam: (team: "Team A" | "Team B" | null) => Promise<void>;
+  onUpdateTeamNames?: (teamAName?: string, teamBName?: string) => Promise<void>;
+  teamAName?: string;
+  teamBName?: string;
+  matchFormat?: string;
+}
+
+function TeamChip({ label, value, tone }: { label: string; value: number; tone: "lime" | "gold" }) {
+  const active = tone === "lime";
+  return (
+    <div className="rounded-[1rem] border border-[#151515]/10 bg-[#151515] px-3 py-2 shadow-[0_12px_28px_rgba(0,0,0,0.22)]">
+      <div className={`text-[8px] font-black uppercase tracking-[0.2em] ${active ? "text-[#D4F829]" : "text-[#A28B52]"}`}>
+        {label}
+      </div>
+      <div className="mt-1 flex items-center justify-between">
+        <span className="font-display text-[22px] font-black italic leading-none text-white">{value}</span>
+        <span className={`size-2 rounded-full ${active ? "bg-[#D4F829] shadow-[0_0_10px_rgba(212,248,41,0.8)]" : "bg-[#A28B52]"}`} />
+      </div>
+    </div>
+  );
 }
 
 // --- Helpers ---
@@ -51,19 +70,19 @@ const getAutoPosition = (x: number, y: number) => {
     // Team A (playing down)
     if (y < 10) return "GK";
     if (y < 25) {
-      if (x < 30) return "LB";
-      if (x > 70) return "RB";
+      if (x < 30) return "RB";
+      if (x > 70) return "LB";
       return "CB";
     }
     if (y < 40) {
-      if (x < 30) return "LMF";
-      if (x > 70) return "RMF";
+      if (x < 30) return "RMF";
+      if (x > 70) return "LMF";
       if (y < 32) return "DMF";
       if (y > 36) return "AMF";
       return "CMF";
     }
-    if (x < 30) return "LWF";
-    if (x > 70) return "RWF";
+    if (x < 30) return "RWF";
+    if (x > 70) return "LWF";
     if (y < 45) return "SS";
     return "CF";
   } else {
@@ -139,9 +158,9 @@ function DraggablePlayerToken({
     >
       <div className="relative w-[54px] rounded-[0.55rem] border border-[#E5DCC5]/70 bg-[#101812]/90 p-[3px] shadow-[0_10px_22px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.12)] md:w-[60px]">
         <div className="absolute inset-0 rounded-[0.55rem] bg-gradient-to-b from-[#D4F829]/12 via-transparent to-black/25 opacity-0 transition group-hover:opacity-100" />
-        <div className="relative mx-auto h-[34px] w-[34px] overflow-hidden rounded-full border border-[#A28B52]/70 bg-[#05070B] shadow-inner md:h-[40px] md:w-[40px]">
+        <div className="relative mx-auto h-[34px] w-[34px] overflow-hidden rounded-full border border-[#A28B52]/70 bg-[#05070B] shadow-inner md:h-[40px] md:w-[40px] pointer-events-none">
           {player.avatarUrl ? (
-            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
+            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
               {player.username.charAt(0).toUpperCase()}
@@ -203,13 +222,29 @@ function TokenOverlay({ player, state }: { player: Player; state: PlayerState })
 
 
 // --- Main Component ---
-export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUserId, onJoinTeam }: InlineTeamBuilderProps) {
+export function InlineTeamBuilder({ 
+  participants, 
+  onSaveTeams, 
+  isHost, 
+  currentUserId, 
+  onJoinTeam, 
+  onUpdateTeamNames, 
+  teamAName = "Team A", 
+  teamBName = "Team B", 
+  matchFormat = "11v11" 
+}: InlineTeamBuilderProps) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [playerStates, setPlayerStates] = useState<Record<string, PlayerState>>({});
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [benchOpen, setBenchOpen] = useState(true);
   
+  // Editable Names State
+  const [localTeamAName, setLocalTeamAName] = useState(teamAName);
+  const [localTeamBName, setLocalTeamBName] = useState(teamBName);
+  const [isEditingA, setIsEditingA] = useState(false);
+  const [isEditingB, setIsEditingB] = useState(false);
+
   const pitchRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -412,9 +447,32 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
   const activePlayer = activeId ? players.find(p => p.id === activeId) : null;
   const activePlayerState = activeId ? playerStates[activeId] : null;
   const benchPlayers = players.filter(p => !playerStates[p.id]?.x);
+  
+  let pitchHeightClass = "h-[680px] md:h-[760px]";
+  if (matchFormat === "3v3") pitchHeightClass = "h-[400px] md:h-[450px]";
+  else if (matchFormat === "5v5" || matchFormat === "7v7") pitchHeightClass = "h-[500px] md:h-[550px]";
+  else if (matchFormat === "11v11") pitchHeightClass = "h-[700px] md:h-[800px]";
+
+  const handleSaveTeamName = async (team: "A" | "B") => {
+    if (team === "A") {
+      setIsEditingA(false);
+      if (onUpdateTeamNames && localTeamAName !== teamAName) await onUpdateTeamNames(localTeamAName, undefined);
+    } else {
+      setIsEditingB(false);
+      if (onUpdateTeamNames && localTeamBName !== teamBName) await onUpdateTeamNames(undefined, localTeamBName);
+    }
+  };
 
   return (
-    <div className="w-full flex flex-col relative bg-[#080a08] rounded-[1.75rem] overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.48)] select-none h-[680px] md:h-[760px] border border-[#D4F829]/15">
+    <div className="flex flex-col gap-3 w-full">
+      {/* Real-time Counters */}
+      <div className="grid grid-cols-3 gap-2">
+        <TeamChip label={localTeamAName} value={statsA.count} tone="lime" />
+        <TeamChip label="Free Pool" value={benchPlayers.length} tone="gold" />
+        <TeamChip label={localTeamBName} value={statsB.count} tone="lime" />
+      </div>
+
+      <div className={`w-full flex flex-col relative bg-[#080a08] rounded-[1.75rem] overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.48)] select-none ${pitchHeightClass} border border-[#D4F829]/15`}>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_0%,rgba(212,248,41,0.13),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.045),transparent_30%)]" />
       
       {/* Top Header */}
@@ -479,19 +537,70 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
             <div className="absolute bottom-[calc(1rem+20px)] left-1/2 w-16 h-8 border-[1.5px] border-b-0 border-white/40 rounded-t-full -translate-x-1/2 pointer-events-none" />
 
 
-            {/* Headers/Footers OVER the pitch */}
-            <div className="absolute top-0 left-0 right-0 bg-[#142819]/78 h-9 flex items-center justify-between px-3 pointer-events-none z-10 backdrop-blur-[5px] border-b border-white/8">
-              <span className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-1.5">
-                <Shield size={12} className="text-white/50" /> Team A <span className="text-[#A28B52]">{statsA.count}</span>
-              </span>
-              <span className="rounded-md bg-[#139447] px-2.5 py-1 text-[10px] font-black text-white shadow-sm">{statsA.avgOvr ? statsA.avgOvr : 0}</span>
+            {/* Pitch Top Header (Team A) */}
+            <div className="absolute top-0 inset-x-0 h-10 flex items-center justify-between px-4 bg-gradient-to-b from-[#080a08]/80 to-transparent z-10 pointer-events-none">
+              <div className="flex items-center gap-1.5 text-[#E5DCC5] pointer-events-auto">
+                <Shield size={10} className="opacity-70" />
+                {isEditingA ? (
+                  <input
+                    type="text"
+                    autoFocus
+                    maxLength={15}
+                    value={localTeamAName}
+                    onChange={(e) => setLocalTeamAName(e.target.value)}
+                    onBlur={() => handleSaveTeamName("A")}
+                    onKeyDown={(e) => e.key === "Enter" && handleSaveTeamName("A")}
+                    className="bg-black/50 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
+                  />
+                ) : (
+                  <span 
+                    className="text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] cursor-pointer hover:text-[#D4F829] transition"
+                    onClick={() => setIsEditingA(true)}
+                    title="Click to edit team name"
+                  >
+                    {localTeamAName}
+                  </span>
+                )}
+                <span className="ml-1 text-[9px] font-bold text-[#A28B52]">{statsA.count}</span>
+              </div>
+              <div className="flex items-center gap-2 pointer-events-none">
+                <div className="h-4 px-2 rounded-full bg-[#1F7A38]/20 border border-[#4ADE80]/30 flex items-center justify-center">
+                  <span className="text-[9px] font-black text-[#4ADE80]">{statsA.avgOvr}</span>
+                </div>
+              </div>
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 bg-[#142819]/78 h-9 flex items-center justify-between px-3 pointer-events-none z-10 backdrop-blur-[5px] border-t border-white/8">
-              <span className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-1.5">
-                <Shield size={12} className="text-white/50" /> Team B <span className="text-[#A28B52]">{statsB.count}</span>
-              </span>
-              <span className="rounded-md bg-[#139447] px-2.5 py-1 text-[10px] font-black text-white shadow-sm">{statsB.avgOvr ? statsB.avgOvr : 0}</span>
+            {/* Pitch Bottom Header (Team B) */}
+            <div className="absolute bottom-0 inset-x-0 h-10 flex items-center justify-between px-4 bg-gradient-to-t from-[#080a08]/80 to-transparent z-10 pointer-events-none">
+              <div className="flex items-center gap-1.5 text-[#E5DCC5] pointer-events-auto">
+                <Shield size={10} className="opacity-70" />
+                {isEditingB ? (
+                  <input
+                    type="text"
+                    autoFocus
+                    maxLength={15}
+                    value={localTeamBName}
+                    onChange={(e) => setLocalTeamBName(e.target.value)}
+                    onBlur={() => handleSaveTeamName("B")}
+                    onKeyDown={(e) => e.key === "Enter" && handleSaveTeamName("B")}
+                    className="bg-black/50 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
+                  />
+                ) : (
+                  <span 
+                    className="text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] cursor-pointer hover:text-[#D4F829] transition"
+                    onClick={() => setIsEditingB(true)}
+                    title="Click to edit team name"
+                  >
+                    {localTeamBName}
+                  </span>
+                )}
+                <span className="ml-1 text-[9px] font-bold text-[#A28B52]">{statsB.count}</span>
+              </div>
+              <div className="flex items-center gap-2 pointer-events-none">
+                <div className="h-4 px-2 rounded-full bg-[#1F7A38]/20 border border-[#4ADE80]/30 flex items-center justify-center">
+                  <span className="text-[9px] font-black text-[#4ADE80]">{statsB.avgOvr}</span>
+                </div>
+              </div>
             </div>
 
             <div className="pointer-events-none absolute left-1/2 top-1/2 z-[1] flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/14 px-3 py-1 text-[8px] font-black uppercase tracking-[0.24em] text-white/45 backdrop-blur-[2px]">
@@ -601,6 +710,7 @@ export function InlineTeamBuilder({ participants, onSaveTeams, isHost, currentUs
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

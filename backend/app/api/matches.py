@@ -83,6 +83,10 @@ def _serialize_match(match: Match) -> dict:
         "privacy": "private" if match.password else "public",
         "discordLink": match.discordLink,
         "hostId": match.hostId,
+        "teamAName": match.teamAName,
+        "teamBName": match.teamBName,
+        "teamAScore": match.teamAScore,
+        "teamBScore": match.teamBScore,
         "createdAt": match.createdAt.isoformat() if match.createdAt else None,
         "participants": players, # Keeping key as 'participants' for frontend compatibility if needed, or update frontend too
         "players": len(players),
@@ -835,6 +839,8 @@ async def balance_teams(
 class SaveTeamsRequest(BaseModel):
     teamA: List[str]  # List of user IDs
     teamB: List[str]  # List of user IDs
+    teamAName: Optional[str] = None
+    teamBName: Optional[str] = None
 
 @router.post("/{match_id}/save-teams")
 async def save_teams(
@@ -865,23 +871,40 @@ async def save_teams(
             p.team = "B"
         else:
             p.team = None
+
+    if payload.teamAName is not None:
+        match.teamAName = payload.teamAName
+    if payload.teamBName is not None:
+        match.teamBName = payload.teamBName
+
+    await session.commit()
+    return {"success": True, "message": "Teams saved successfully"}
+
+
+class UpdateTeamNamesRequest(BaseModel):
+    teamAName: Optional[str] = None
+    teamBName: Optional[str] = None
+
+@router.patch("/{match_id}/team-names")
+async def update_team_names(
+    match_id: str,
+    payload: UpdateTeamNamesRequest,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    match_result = await session.execute(select(Match).where(Match.id == match_id))
     match = match_result.scalars().first()
+    
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
-        
-    if match.hostId != db_user.id:
-        raise HTTPException(status_code=403, detail="Only the host can kick players")
 
-    player_result = await session.execute(
-        select(MatchPlayer).where(MatchPlayer.matchId == match_id, MatchPlayer.userId == payload.userId)
-    )
-    player = player_result.scalars().first()
-    if not player:
-        raise HTTPException(status_code=404, detail="Player not in match")
+    if payload.teamAName is not None:
+        match.teamAName = payload.teamAName
+    if payload.teamBName is not None:
+        match.teamBName = payload.teamBName
         
-    await session.delete(player)
     await session.commit()
-    return {"success": True, "message": "Player kicked"}
+    return {"success": True, "message": "Team names updated"}
 
 
 @router.post("/{match_id}/start")

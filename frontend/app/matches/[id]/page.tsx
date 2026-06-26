@@ -50,6 +50,8 @@ interface MatchDetails {
   hostId: string;
   createdAt: string;
   format: string;
+  teamAName: string;
+  teamBName: string;
   participants: MatchParticipant[];
   creator: MatchCreator | null;
 }
@@ -432,6 +434,29 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
+  const handleUpdateTeamNames = async (teamAName?: string, teamBName?: string) => {
+    try {
+      const payload: any = {};
+      if (teamAName !== undefined) payload.teamAName = teamAName;
+      if (teamBName !== undefined) payload.teamBName = teamBName;
+      
+      const res = await fetch(`/api/matches/${matchId}/team-names`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetchMatchDetails();
+      } else {
+        toast.error(data.message || "Failed to update team name");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error updating team name");
+    }
+  };
+
   const handleStartMatch = async () => {
     if (!confirm("Are you ready to start the match?")) return;
     setActionLoading(true);
@@ -599,17 +624,16 @@ export default function MatchDetailsPage({ params }: PageProps) {
         {/* Inline Squad Builder - REPLACES old lists */}
         {match && (
           <div className="shrink-0 mt-1 w-full rounded-[2rem] border border-[#151515]/10 bg-[#151515] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
-            <div className="mb-3 grid grid-cols-3 gap-2">
-              <TeamChip label="Team A" value={teamAPlayers.length} tone="lime" />
-              <TeamChip label="Free Pool" value={unassignedPlayers.length} tone="gold" />
-              <TeamChip label="Team B" value={teamBPlayers.length} tone="lime" />
-            </div>
             <InlineTeamBuilder
               participants={match.participants}
               onSaveTeams={handleSaveTeams}
               isHost={currentUserId === match.hostId}
               currentUserId={currentUserId}
               onJoinTeam={handleAssignTeam}
+              onUpdateTeamNames={handleUpdateTeamNames}
+              teamAName={match.teamAName}
+              teamBName={match.teamBName}
+              matchFormat={match.format}
             />
           </div>
         )}
@@ -830,7 +854,7 @@ function MatchMetric({ icon, label, value }: { icon: ReactNode; label: string; v
   );
 }
 
-function TeamChip({ label, value, tone }: { label: string; value: number; tone: "lime" | "gold" }) {
+export function TeamChip({ label, value, tone }: { label: string; value: number; tone: "lime" | "gold" }) {
   const active = tone === "lime";
   return (
     <div className="rounded-[1rem] border border-[#151515]/10 bg-[#151515] px-3 py-2 shadow-[0_12px_28px_rgba(0,0,0,0.22)]">
