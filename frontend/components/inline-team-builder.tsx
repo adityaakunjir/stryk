@@ -150,12 +150,12 @@ function DraggablePlayerToken({
 
   const label = state.customLabel || player.position || "POS";
 
-  const wrapperClass = isLargeSquad ? "w-[48px] md:w-[54px]" : "w-[58px] md:w-[64px]";
-  const innerClass = isLargeSquad ? "w-[44px] md:w-[50px]" : "w-[54px] md:w-[60px]";
-  const avatarClass = isLargeSquad ? "h-[28px] w-[28px] md:h-[32px] md:w-[32px]" : "h-[34px] w-[34px] md:h-[40px] md:w-[40px]";
-  const badgeClass = isLargeSquad ? "h-[15px] w-[15px] md:h-[17px] md:w-[17px] text-[6px] md:text-[7px]" : "h-[19px] w-[19px] md:h-[21px] md:w-[21px] text-[7px] md:text-[8px]";
-  const nameClass = isLargeSquad ? "text-[6px] md:text-[7px] max-w-[40px] md:max-w-[46px]" : "text-[7px] md:text-[8px] max-w-[48px] md:max-w-[54px]";
-  const labelClass = isLargeSquad ? "h-[12px] min-w-[26px] px-1 text-[6px]" : "h-[14px] min-w-[31px] px-1 text-[7px]";
+  const wrapperClass = isLargeSquad ? "w-[44px] md:w-[50px]" : "w-[52px] md:w-[58px]";
+  const innerClass = isLargeSquad ? "w-[40px] md:w-[46px]" : "w-[48px] md:w-[54px]";
+  const avatarClass = isLargeSquad ? "h-[24px] w-[24px] md:h-[28px] md:w-[28px]" : "h-[28px] w-[28px] md:h-[34px] md:w-[34px]";
+  const badgeClass = isLargeSquad ? "h-[14px] w-[14px] md:h-[16px] md:w-[16px] text-[6px] md:text-[7px]" : "h-[16px] w-[16px] md:h-[18px] md:w-[18px] text-[7px] md:text-[8px]";
+  const nameClass = isLargeSquad ? "text-[5px] md:text-[6px] max-w-[36px] md:max-w-[40px]" : "text-[6px] md:text-[7px] max-w-[42px] md:max-w-[48px]";
+  const labelClass = isLargeSquad ? "h-[10px] min-w-[22px] px-1 text-[5px]" : "h-[12px] min-w-[26px] px-1 text-[6px]";
 
   return (
     <div
@@ -163,11 +163,10 @@ function DraggablePlayerToken({
       style={style}
       {...listeners}
       {...attributes}
-      className={`relative flex flex-col items-center justify-center shrink-0 group touch-none drop-shadow-xl transition-shadow ${wrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'}`}
+      className={`relative flex flex-col items-center justify-center shrink-0 group touch-none drop-shadow-2xl transition-all ${wrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing hover:-translate-y-0.5' : 'cursor-default'}`}
     >
-      <div className={`relative rounded-[0.55rem] border border-[#E5DCC5]/70 bg-[#101812]/90 p-[3px] shadow-[0_10px_22px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.12)] ${innerClass}`}>
-        <div className="absolute inset-0 rounded-[0.55rem] bg-gradient-to-b from-[#D4F829]/12 via-transparent to-black/25 opacity-0 transition group-hover:opacity-100" />
-        <div className={`relative mx-auto overflow-hidden rounded-full border border-[#A28B52]/70 bg-[#05070B] shadow-inner pointer-events-none ${avatarClass}`}>
+      <div className={`relative rounded-xl border border-white/5 bg-gradient-to-b from-[#1C201A]/95 to-[#090A09]/95 p-1 shadow-[0_8px_16px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.05)] backdrop-blur-md group-hover:border-[#D4F829]/30 group-hover:shadow-[0_0_20px_rgba(212,248,41,0.15)] transition-all duration-300 ${innerClass}`}>
+        <div className={`relative mx-auto overflow-hidden rounded-full border border-[#D4F829]/40 bg-[#05070B] shadow-[0_0_8px_rgba(212,248,41,0.1)] pointer-events-none ${avatarClass}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
@@ -175,11 +174,13 @@ function DraggablePlayerToken({
               {player.username.charAt(0).toUpperCase()}
             </div>
           )}
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
-        <div className={`absolute -right-1 -top-1 flex items-center justify-center rounded-full bg-gradient-to-br font-black text-white shadow-[0_4px_10px_rgba(0,0,0,0.45)] ring-1 ring-[#E5DCC5]/60 ${badgeClass} ${getOvrColor(player.overall)}`}>
+        
+        <div className={`absolute -right-2 -top-2 flex items-center justify-center rounded-[6px] bg-gradient-to-br from-[#2A2A2A] to-black font-black text-white shadow-lg border border-[#D4F829]/50 rotate-[6deg] group-hover:rotate-12 transition-transform duration-300 ${badgeClass} ${getOvrColor(player.overall)}`}>
           {player.overall}
         </div>
+        
         <div
           className="relative mt-1 flex flex-col items-center pointer-events-auto cursor-pointer"
           onPointerDown={(e) => {
@@ -187,10 +188,10 @@ function DraggablePlayerToken({
             onLabelClick(player);
           }}
         >
-          <span className={`truncate text-center font-black lowercase leading-none tracking-tight text-white drop-shadow-md ${nameClass}`}>
+          <span className={`truncate text-center font-black tracking-wide text-white/90 group-hover:text-white transition-colors drop-shadow-md ${nameClass}`}>
             {player.username}
           </span>
-          <div className={`mt-1 flex items-center justify-center rounded-[0.25rem] border border-[#D4F829]/25 bg-[#D4F829]/14 font-black uppercase tracking-wider text-[#EAF7AF] ${labelClass} ${state.x !== null ? "flex" : "hidden"}`}>
+          <div className={`mt-0.5 flex items-center justify-center rounded bg-black/60 font-black uppercase tracking-widest text-[#D4F829] shadow-inner border border-white/5 ${labelClass} ${state.x !== null ? "flex" : "hidden"}`}>
             {label}
           </div>
         </div>
