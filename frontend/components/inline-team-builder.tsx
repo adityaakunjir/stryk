@@ -420,7 +420,7 @@ export function InlineTeamBuilder({
   };
 
   const handleJoinAction = async (team: "Team A" | "Team B" | null, pId: string) => {
-    if (pId === currentUserId) {
+    if (!isHost && pId === currentUserId) {
       try {
         await onJoinTeam(team);
       } catch (err) {

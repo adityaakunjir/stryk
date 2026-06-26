@@ -340,12 +340,23 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const handleAssignTeam = async (teamName: "Team A" | "Team B" | null) => {
     setActionLoading(true);
     try {
+      const myParticipant = match?.participants.find((p: MatchParticipant) => p.userId === currentUserId);
+      if (!myParticipant) {
+        toast.error("Participant not found");
+        return;
+      }
+      
+      const teamCode = teamName === "Team A" ? "A" : teamName === "Team B" ? "B" : null;
+
       const res = await fetch("/api/matches/assign-team", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           matchId,
-          teamName})});
+          participantId: myParticipant.id,
+          team: teamCode
+        })
+      });
 
       const data = await res.json();
       if (data.success) {

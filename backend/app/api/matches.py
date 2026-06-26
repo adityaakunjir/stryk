@@ -766,15 +766,15 @@ async def assign_team(
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
         
-    if match.hostId != db_user.id:
-        raise HTTPException(status_code=403, detail="Only host can assign teams")
-
     player_result = await session.execute(
         select(MatchPlayer).where(MatchPlayer.id == payload.participantId)
     )
     player = player_result.scalars().first()
     if not player:
         raise HTTPException(status_code=404, detail="Participant not found")
+        
+    if match.hostId != db_user.id and player.userId != db_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to assign this team")
         
     player.team = payload.team
     await session.commit()
@@ -986,15 +986,15 @@ async def assign_team(
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
         
-    if match.hostId != db_user.id:
-        raise HTTPException(status_code=403, detail="Only host can assign teams")
-
     player_result = await session.execute(
         select(MatchPlayer).where(MatchPlayer.id == payload.participantId)
     )
     player = player_result.scalars().first()
     if not player:
         raise HTTPException(status_code=404, detail="Participant not found")
+        
+    if match.hostId != db_user.id and player.userId != db_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to assign this team")
         
     player.team = payload.team
     await session.commit()
