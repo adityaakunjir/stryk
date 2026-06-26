@@ -465,10 +465,10 @@ export function InlineTeamBuilder({
   const benchPlayers = players.filter(p => !playerStates[p.id]?.x);
   
   let pitchHeightClass = "h-[680px] md:h-[760px]";
-  if (matchFormat === "3v3") pitchHeightClass = "h-[400px] md:h-[450px]";
-  else if (matchFormat === "5v5") pitchHeightClass = "h-[500px] md:h-[550px]";
-  else if (matchFormat === "7v7") pitchHeightClass = "h-[600px] md:h-[650px]";
-  else if (matchFormat === "11v11") pitchHeightClass = "h-[750px] md:h-[850px]";
+  if (matchFormat === "3v3") pitchHeightClass = "h-[450px] md:h-[500px]";
+  else if (matchFormat === "5v5") pitchHeightClass = "h-[550px] md:h-[600px]";
+  else if (matchFormat === "7v7") pitchHeightClass = "h-[700px] md:h-[750px]";
+  else if (matchFormat === "11v11") pitchHeightClass = "h-[900px] md:h-[950px]";
 
   const isLargeSquad = matchFormat === "7v7" || matchFormat === "11v11";
 
