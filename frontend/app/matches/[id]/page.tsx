@@ -518,7 +518,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
       <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-28 max-w-md mx-auto z-10 w-full overflow-y-auto">
         {/* Top Header Section */}
-        <header className="relative mb-4 overflow-hidden rounded-[2rem] border border-[#151515]/10 bg-white/35 p-4 shadow-[0_18px_50px_rgba(79,60,25,0.12)] backdrop-blur-md">
+        <header className="shrink-0 relative mb-4 overflow-hidden rounded-[2rem] border border-[#151515]/10 bg-white/35 p-4 shadow-[0_18px_50px_rgba(79,60,25,0.12)] backdrop-blur-md">
           <div className="pointer-events-none absolute -right-12 -top-20 size-52 rounded-full bg-[#D4F829]/22 blur-3xl" />
           <div className="flex items-center justify-between relative z-10">
             <button 
@@ -597,7 +597,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
         {/* Inline Squad Builder - REPLACES old lists */}
         {match && (
-          <div className="mt-1 w-full rounded-[2rem] border border-[#151515]/10 bg-[#151515] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
+          <div className="shrink-0 mt-1 w-full rounded-[2rem] border border-[#151515]/10 bg-[#151515] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
             <div className="mb-3 grid grid-cols-3 gap-2">
               <TeamChip label="Team A" value={teamAPlayers.length} tone="lime" />
               <TeamChip label="Free Pool" value={unassignedPlayers.length} tone="gold" />
@@ -614,7 +614,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         )}
 
         {/* Bottom Primary CTAs */}
-        <div className="mt-4 w-full pb-8">
+        <div className="shrink-0 mt-4 w-full pb-8">
           {isJoined ? (
             <div className="relative flex flex-col gap-3 p-5 rounded-[2rem] bg-[#111210] shadow-[0_28px_70px_rgba(0,0,0,0.42)] overflow-hidden border border-[#D4F829]/15">
               <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#D4F829]/60 to-transparent" />
