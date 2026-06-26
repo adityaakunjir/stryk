@@ -377,34 +377,45 @@ export function InlineTeamBuilder({
     }
 
     const currentTeam = playerStates[pId]?.team;
+    let nextState = { ...playerStates };
 
     if (droppedOnPitch) {
       const autoPos = getAutoPosition(percentX, percentY);
       // Determine team based on Y
       const newTeam = percentY <= 50 ? "A" : "B";
       
-      setPlayerStates(prev => ({
-        ...prev,
+      nextState = {
+        ...nextState,
         [pId]: { 
-          ...prev[pId], 
+          ...nextState[pId], 
           x: percentX, 
           y: percentY, 
           team: newTeam,
           customLabel: autoPos
         }
-      }));
+      };
+
+      setPlayerStates(nextState);
 
       if (currentTeam !== newTeam) {
         handleJoinAction(newTeam === "A" ? "Team A" : "Team B", pId);
       }
     } else {
-      setPlayerStates(prev => ({
-        ...prev,
-        [pId]: { ...prev[pId], x: null, y: null, team: null }
-      }));
+      nextState = {
+        ...nextState,
+        [pId]: { ...nextState[pId], x: null, y: null, team: null }
+      };
+      setPlayerStates(nextState);
       if (currentTeam !== null) {
          handleJoinAction(null, pId);
       }
+    }
+
+    if (isHost) {
+      const teamAIds = Object.values(nextState).filter(s => s.team === "A").map(s => s.id);
+      const teamBIds = Object.values(nextState).filter(s => s.team === "B").map(s => s.id);
+      setIsSaving(true);
+      onSaveTeams(teamAIds, teamBIds).catch(console.error).finally(() => setIsSaving(false));
     }
   };
 
@@ -415,19 +426,6 @@ export function InlineTeamBuilder({
       } catch (err) {
         console.error(err);
       }
-    }
-  };
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      const teamAIds = Object.values(playerStates).filter(s => s.team === "A").map(s => s.id);
-      const teamBIds = Object.values(playerStates).filter(s => s.team === "B").map(s => s.id);
-      await onSaveTeams(teamAIds, teamBIds);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -498,20 +496,15 @@ export function InlineTeamBuilder({
       {isHost && (
         <div className="flex items-center justify-between gap-3 px-4 py-3.5 bg-transparent shrink-0 z-20">
           <div className="min-w-0">
-            <div className="font-display text-[20px] italic uppercase leading-none tracking-wide text-white">Squad Tactics</div>
+            <div className="font-display text-[20px] italic uppercase leading-none tracking-wide text-white flex items-center gap-2">
+              Squad Tactics
+              {isSaving && <Loader2 className="animate-spin text-[#D4F829]" size={14} />}
+            </div>
             <div className="mt-1 flex items-center gap-1.5 text-[8px] font-black uppercase tracking-[0.22em] text-[#A28B52]">
               <Grip size={11} />
-              Drag players into shape
+              Drag players into shape (Auto-saves)
             </div>
           </div>
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-[#D4F829] px-5 text-[9px] font-black uppercase tracking-widest text-black shadow-[0_10px_30px_rgba(212,248,41,0.24),inset_0_1px_0_rgba(255,255,255,0.55)] transition hover:bg-[#c3e626] disabled:opacity-50"
-          >
-            {isSaving ? <Loader2 className="animate-spin" size={12} /> : <Save size={12} />}
-            SAVE FORMATION
-          </button>
         </div>
       )}
       {!isHost && (
