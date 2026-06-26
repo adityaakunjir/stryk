@@ -51,6 +51,7 @@ def _serialize_match(match: Match) -> dict:
                 "userId": p.userId,
                 "team": p.team,
                 "status": p.status,
+                "checkedIn": p.status == "checked_in",
                 "joinedAt": p.joinedAt.isoformat() if p.joinedAt else None,
             }
             if hasattr(p, "user") and p.user:
@@ -733,7 +734,7 @@ async def check_in(
     if not player:
         raise HTTPException(status_code=400, detail="You are not in this match")
         
-    player.checkedIn = True
+    player.status = "checked_in"
     await session.commit()
     
     match_result = await session.execute(select(Match).where(((Match.id == payload.matchId) | (Match.shortId == payload.matchId))).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
@@ -934,7 +935,7 @@ async def check_in(
     if not player:
         raise HTTPException(status_code=400, detail="You are not in this match")
         
-    player.checkedIn = True
+    player.status = "checked_in"
     await session.commit()
     
     match_result = await session.execute(select(Match).where(((Match.id == payload.matchId) | (Match.shortId == payload.matchId))).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
