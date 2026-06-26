@@ -150,6 +150,49 @@ function DraggablePlayerToken({
 
   const label = state.customLabel || player.position || "POS";
 
+  const isOnPitch = state.x !== null;
+
+  if (!isOnPitch) {
+    const compactWrapperClass = isLargeSquad ? "w-[44px] md:w-[48px]" : "w-[50px] md:w-[54px]";
+    const compactAvatarClass = isLargeSquad ? "h-[32px] w-[32px] md:h-[36px] md:w-[36px]" : "h-[38px] w-[38px] md:h-[42px] md:w-[42px]";
+    const compactNameClass = isLargeSquad ? "text-[6px] md:text-[7px] max-w-[40px] md:max-w-[46px]" : "text-[7px] md:text-[8px] max-w-[48px] md:max-w-[54px]";
+    const compactBadgeClass = isLargeSquad ? "h-[14px] w-[14px] md:h-[16px] md:w-[16px] text-[6px] md:text-[7px]" : "h-[16px] w-[16px] md:h-[18px] md:w-[18px] text-[7px] md:text-[8px]";
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...listeners}
+        {...attributes}
+        className={`relative flex flex-col items-center justify-center shrink-0 group touch-none transition-transform ${compactWrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing hover:scale-105' : 'cursor-default'}`}
+      >
+        <div className={`relative mx-auto overflow-hidden rounded-full border-[2px] border-white/10 bg-[#05070B] shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:border-[#D4F829]/50 transition-colors pointer-events-none ${compactAvatarClass}`}>
+          {player.avatarUrl ? (
+            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
+              {player.username.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+        <div className={`absolute right-0 top-0 flex items-center justify-center rounded-full bg-gradient-to-br from-[#2A2A2A] to-black font-black text-white shadow-md border border-white/20 group-hover:border-[#D4F829]/50 transition-colors ${compactBadgeClass} ${getOvrColor(player.overall)}`}>
+          {player.overall}
+        </div>
+        <div
+          className="relative mt-1.5 flex flex-col items-center pointer-events-auto cursor-pointer px-1 w-full"
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            onLabelClick(player);
+          }}
+        >
+          <span className={`truncate text-center font-bold tracking-wide text-white/70 group-hover:text-white transition-colors drop-shadow-sm ${compactNameClass}`}>
+            {player.username}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   const wrapperClass = isLargeSquad ? "w-[48px] md:w-[52px] h-[68px] md:h-[74px]" : "w-[56px] md:w-[62px] h-[80px] md:h-[88px]";
   const avatarClass = isLargeSquad ? "h-[22px] w-[22px] md:h-[26px] md:w-[26px]" : "h-[28px] w-[28px] md:h-[32px] md:w-[32px]";
   const nameClass = isLargeSquad ? "text-[5px] md:text-[6px] max-w-[40px] md:max-w-[46px]" : "text-[6px] md:text-[7px] max-w-[48px] md:max-w-[54px]";
@@ -227,34 +270,54 @@ function DraggablePlayerToken({
 function TokenOverlay({ player, state, isLargeSquad = false }: { player: Player; state: PlayerState; isLargeSquad?: boolean; }) {
   const label = state.customLabel || player.position || "POS";
 
-  const wrapperClass = isLargeSquad ? "w-[48px] md:w-[54px]" : "w-[58px] md:w-[64px]";
-  const innerClass = isLargeSquad ? "w-[44px] md:w-[50px]" : "w-[54px] md:w-[60px]";
-  const avatarClass = isLargeSquad ? "h-[28px] w-[28px] md:h-[32px] md:w-[32px]" : "h-[34px] w-[34px] md:h-[40px] md:w-[40px]";
-  const badgeClass = isLargeSquad ? "h-[15px] w-[15px] md:h-[17px] md:w-[17px] text-[6px] md:text-[7px]" : "h-[19px] w-[19px] md:h-[21px] md:w-[21px] text-[7px] md:text-[8px]";
-  const nameClass = isLargeSquad ? "text-[6px] md:text-[7px] max-w-[40px] md:max-w-[46px]" : "text-[7px] md:text-[8px] max-w-[48px] md:max-w-[54px]";
-  const labelClass = isLargeSquad ? "h-[12px] min-w-[26px] px-1 text-[6px]" : "h-[14px] min-w-[31px] px-1 text-[7px]";
+  const wrapperClass = isLargeSquad ? "w-[48px] md:w-[52px] h-[68px] md:h-[74px]" : "w-[56px] md:w-[62px] h-[80px] md:h-[88px]";
+  const avatarClass = isLargeSquad ? "h-[22px] w-[22px] md:h-[26px] md:w-[26px]" : "h-[28px] w-[28px] md:h-[32px] md:w-[32px]";
+  const nameClass = isLargeSquad ? "text-[5px] md:text-[6px] max-w-[40px] md:max-w-[46px]" : "text-[6px] md:text-[7px] max-w-[48px] md:max-w-[54px]";
+  
+  const clipPathShape = "polygon(15% 0, 85% 0, 100% 15%, 100% 75%, 50% 100%, 0 75%, 0 15%)";
 
   return (
-    <div className={`relative flex flex-col items-center justify-center shrink-0 scale-110 drop-shadow-2xl z-[100] opacity-95 ${wrapperClass}`}>
-      <div className={`relative rounded-[0.55rem] border border-[#D4F829] bg-[#101812]/95 p-[3px] shadow-2xl ${innerClass}`}>
-        <div className={`relative mx-auto overflow-hidden rounded-full border border-[#A28B52] bg-[#05070B] ${avatarClass}`}>
-        {player.avatarUrl ? (
-          <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
-        ) : (
-          <div className="w-full h-full rounded-full flex items-center justify-center text-white/50 text-sm font-bold">
-            {player.username.charAt(0).toUpperCase()}
-          </div>
-        )}
+    <div
+      style={{ filter: "drop-shadow(0px 12px 24px rgba(212,248,41,0.25)) drop-shadow(0px 8px 12px rgba(0,0,0,0.6))" }}
+      className={`relative flex flex-col items-center justify-start shrink-0 scale-110 z-[100] opacity-95 ${wrapperClass}`}
+    >
+      <div 
+        className="absolute inset-0 bg-gradient-to-br from-[#EAF7AF] via-[#A28B52] to-[#D4F829]"
+        style={{ clipPath: clipPathShape }}
+      />
+      <div 
+        className="absolute inset-[1.5px] bg-gradient-to-b from-[#2A3125] to-[#121612]"
+        style={{ clipPath: clipPathShape }}
+      />
+
+      <div className="relative z-10 flex flex-col items-center w-full h-full pt-1.5 md:pt-2">
+        <div className="absolute top-1.5 md:top-2 left-1.5 md:left-2 flex flex-col items-center justify-center">
+           <span className="font-black text-[9px] md:text-[11px] leading-none text-white drop-shadow-md">
+              {player.overall}
+           </span>
+           <span className={`font-black uppercase text-[5px] md:text-[6px] text-[#D4F829] leading-none mt-[2px] ${state.x !== null ? "block" : "hidden"}`}>
+              {label}
+           </span>
         </div>
-        <div className={`absolute -right-1 -top-1 flex items-center justify-center rounded-full bg-gradient-to-br font-black text-white ring-1 ring-[#E5DCC5]/60 ${badgeClass} ${getOvrColor(player.overall)}`}>
-          {player.overall}
+        
+        <div className={`relative ml-auto mr-1.5 md:mr-2 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/60 bg-[#05070B] shadow-sm ${avatarClass}`}>
+          {player.avatarUrl ? (
+            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
+              {player.username.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
         </div>
-        <span className={`mt-1 block truncate text-center font-black lowercase leading-none text-white ${nameClass}`}>
-          {player.username}
-        </span>
-        <span className={`mx-auto mt-1 flex items-center justify-center rounded-[0.25rem] bg-[#D4F829] font-black uppercase tracking-wider text-[#151515] ${labelClass} ${state.x !== null ? "flex" : "hidden"}`}>
-          {label}
-        </span>
+        
+        <div className="w-[60%] h-[1px] bg-gradient-to-r from-transparent via-[#D4F829]/80 to-transparent mt-1.5 md:mt-2" />
+        
+        <div className="relative mt-1 md:mt-1.5 flex flex-col items-center px-1 w-full">
+          <span className={`truncate text-center font-black tracking-wide text-white drop-shadow-md ${nameClass}`}>
+            {player.username}
+          </span>
+        </div>
       </div>
     </div>
   );
