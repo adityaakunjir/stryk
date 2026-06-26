@@ -580,30 +580,7 @@ async def update_match(
     return {"success": True, "data": _serialize_match(match)}
 
 
-@router.post("/{match_id}/close")
-async def close_match(
-    match_id: str,
-    user: dict = Depends(get_current_user),
-    session: AsyncSession = Depends(get_session)
-):
-    clerk_id = user.get("sub")
-    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
-    db_user = db_user_result.scalars().first()
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
 
-    match_result = await session.execute(select(Match).where(Match.id == match_id))
-    match = match_result.scalars().first()
-    if not match:
-        raise HTTPException(status_code=404, detail="Match not found")
-
-    if match.hostId != db_user.id:
-        raise HTTPException(status_code=403, detail="Only the host can close the match")
-
-    match.status = "closed"
-    await session.commit()
-    await session.refresh(match)
-    return {"success": True, "data": _serialize_match(match)}
 
 
 class LeaveMatchRequest(BaseModel):
