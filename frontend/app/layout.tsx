@@ -8,7 +8,10 @@ import { DraftProvider } from "@/lib/draft-context";
 export const viewport: Viewport = {
   themeColor: "#05070B",
   width: "device-width",
-  initialScale: 1};
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
