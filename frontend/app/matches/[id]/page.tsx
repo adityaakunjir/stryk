@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use, useCallback, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, CheckCircle2, Crown, Loader2, LogOut, Mail, MapPin, Swords, Trophy, UserPlus, Users, X, Lock } from "lucide-react";
+import { ArrowLeft, Calendar, CheckCircle2, Crown, Loader2, LogOut, Mail, MapPin, Swords, Trophy, UserPlus, Users, X, Lock, Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getPusherClient } from "@/lib/pusher";
 import { toast } from "sonner";
@@ -649,7 +649,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
             )}
             {isHost && match.status === "open" && (
               <button 
-                onClick={handleLockSquads}
+                onClick={handleCloseMatch}
                 className="flex-1 h-12 rounded-[1.25rem] bg-[#D4F829] text-[#151515] border border-[#151515]/10 text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.25)] transition hover:-translate-y-0.5 active:translate-y-0"
               >
                 Lock Squads
