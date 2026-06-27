@@ -657,6 +657,38 @@ export function InlineTeamBuilder({
     setEditingLabelId(null);
   };
 
+  const toggleTeam = () => {
+    if (!editingLabelId) return;
+    setPlayerStates(prev => {
+      const currentState = prev[editingLabelId];
+      if (!currentState) return prev;
+      
+      const newTeam: "A" | "B" = currentState.team === "A" ? "B" : "A";
+      const nextState = {
+        ...prev,
+        [editingLabelId]: {
+          ...currentState,
+          team: newTeam,
+          customLabel: currentState.x !== null && currentState.y !== null 
+            ? getAutoPosition(currentState.x, currentState.y, newTeam)
+            : currentState.customLabel
+        }
+      };
+      
+      if (isHost) {
+        const positionsPayload = Object.values(nextState).map(s => ({
+          id: s.id,
+          team: s.team === "A" ? "Team A" : s.team === "B" ? "Team B" : null,
+          x: s.x,
+          y: s.y
+        }));
+        onSaveTeams(positionsPayload).catch(console.error);
+      }
+      return nextState;
+    });
+    setEditingLabelId(null);
+  };
+
   const getTeamStats = (team: "A" | "B") => {
     const teamPlayerIds = Object.values(playerStates).filter(s => s.team === team).map(s => s.id);
     const teamPlayers = players.filter(p => teamPlayerIds.includes(p.id));
@@ -918,6 +950,14 @@ export function InlineTeamBuilder({
               className="w-full bg-[#111] border border-white/20 rounded-lg px-3 py-2 text-center font-bold text-white uppercase tracking-wider outline-none focus:border-[#D4F829] transition"
             />
             <div className="flex gap-2 w-full mt-4">
+              <button 
+                onClick={toggleTeam}
+                className="flex-1 py-2 bg-[#222] hover:bg-[#333] border border-white/20 rounded-xl text-white text-[9px] font-bold uppercase tracking-widest transition"
+              >
+                Switch Team
+              </button>
+            </div>
+            <div className="flex gap-2 w-full mt-2">
               <button 
                 onClick={() => setEditingLabelId(null)}
                 className="flex-1 py-2 bg-[#111] hover:bg-[#222] border border-white/10 rounded-xl text-white/70 text-[10px] font-bold uppercase tracking-widest transition"
