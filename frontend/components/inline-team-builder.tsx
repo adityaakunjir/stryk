@@ -461,8 +461,8 @@ export function InlineTeamBuilder({
     let nextState = { ...playerStates };
 
     if (droppedOnPitch) {
-      // Determine team based on Y
-      const newTeam = percentY <= 50 ? "A" : "B";
+      // Determine team: keep current team if already assigned, otherwise assign based on Y
+      const newTeam = currentTeam || (percentY <= 50 ? "A" : "B");
       const autoPos = getAutoPosition(percentX, percentY, newTeam);
       
       nextState = {

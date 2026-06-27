@@ -51,6 +51,8 @@ def _serialize_match(match: Match) -> dict:
                 "userId": p.userId,
                 "team": p.team,
                 "status": p.status,
+                "x": p.x,
+                "y": p.y,
                 "checkedIn": p.status == "checked_in",
                 "joinedAt": p.joinedAt.isoformat() if p.joinedAt else None,
             }
@@ -1028,7 +1030,12 @@ async def save_teams(
     for p in players:
         if p.userId in positions_map:
             pos_data = positions_map[p.userId]
-            p.team = pos_data.team if pos_data.team else ("A" if pos_data.team == "Team A" else "B" if pos_data.team == "Team B" else None)
+            if pos_data.team == "Team A" or pos_data.team == "A":
+                p.team = "A"
+            elif pos_data.team == "Team B" or pos_data.team == "B":
+                p.team = "B"
+            else:
+                p.team = None
             p.x = pos_data.x
             p.y = pos_data.y
         elif p.userId in payload.teamA:
