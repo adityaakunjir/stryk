@@ -11,6 +11,7 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  DragMoveEvent,
   useDraggable,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
@@ -73,31 +74,7 @@ const getAutoPosition = (x: number, y: number, team: "A" | "B" | null) => {
   const isTeamA = team === "A" || (!team && y <= 50);
 
   if (isTeamA) {
-    // Team A (White) plays downwards towards y=100
-    if (y <= 12) return "GK"; // Inside penalty area
-    
-    if (y <= 25) { // Defense (up to just outside the D)
-      if (x <= 30) return "LB";
-      if (x >= 70) return "RB";
-      return "CB";
-    }
-    
-    if (y <= 42) { // Midfield (from defense to top of center circle)
-      if (x <= 30) return "LMF";
-      if (x >= 70) return "RMF";
-      if (y <= 30) return "DMF";
-      if (y <= 37) return "CMF";
-      return "AMF";
-    }
-    
-    // Attack (center circle to opponent goal)
-    if (x <= 30) return "LWF";
-    if (x >= 70) return "RWF";
-    if (y <= 48) return "SS";
-    return "CF";
-    
-  } else {
-    // Team B (Black) plays upwards towards y=0
+    // Team A (Home/White) plays upwards towards y=0
     if (y >= 88) return "GK"; // Inside penalty area
     
     if (y >= 75) { // Defense
@@ -118,6 +95,30 @@ const getAutoPosition = (x: number, y: number, team: "A" | "B" | null) => {
     if (x <= 30) return "LWF";
     if (x >= 70) return "RWF";
     if (y >= 52) return "SS";
+    return "CF";
+    
+  } else {
+    // Team B (Away/Black) plays downwards towards y=100
+    if (y <= 12) return "GK"; // Inside penalty area
+    
+    if (y <= 25) { // Defense (y from 12 to 25)
+      if (x <= 30) return "LB";
+      if (x >= 70) return "RB";
+      return "CB";
+    }
+    
+    if (y <= 42) { // Midfield
+      if (x <= 30) return "LMF";
+      if (x >= 70) return "RMF";
+      if (y <= 30) return "DMF";
+      if (y <= 37) return "CMF";
+      return "AMF";
+    }
+    
+    // Attack (center circle to opponent goal)
+    if (x <= 30) return "LWF";
+    if (x >= 70) return "RWF";
+    if (y <= 48) return "SS";
     return "CF";
   }
 };
@@ -227,13 +228,19 @@ function DraggablePlayerToken({
     >
       {/* Outer Border Layer */}
       <div 
-        className="absolute inset-0 bg-gradient-to-br from-[#EAF7AF] via-[#A28B52] to-[#D4F829] opacity-90 group-hover:opacity-100 transition-opacity"
+        className={`absolute inset-0 opacity-90 group-hover:opacity-100 transition-opacity ${
+          state.team === "A" ? "bg-gradient-to-br from-[#F8FAFC] via-[#CBD5E1] to-[#E2E8F0]" 
+                             : "bg-gradient-to-br from-[#EAF7AF] via-[#A28B52] to-[#D4F829]"
+        }`}
         style={{ clipPath: clipPathShape }}
       />
       
       {/* Inner Background Layer */}
       <div 
-        className="absolute inset-[1.5px] bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
+        className={`absolute inset-[1.5px] ${
+          state.team === "A" ? "bg-gradient-to-b from-[#FFFFFF] to-[#F1F5F9]" 
+                             : "bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
+        }`}
         style={{ clipPath: clipPathShape }}
       />
 
@@ -241,38 +248,38 @@ function DraggablePlayerToken({
       <div className="relative z-10 flex flex-col items-center w-full h-full pt-1.5 md:pt-2">
         {/* Top Left Stats */}
         <div className="absolute top-1 md:top-1.5 left-1 md:left-1.5 flex flex-col items-center justify-center">
-           <span className="font-black text-[11px] md:text-[13px] leading-none text-white drop-shadow-md tracking-tighter">
+           <span className={`font-black text-[11px] md:text-[13px] leading-none drop-shadow-md tracking-tighter ${state.team === "A" ? "text-slate-800" : "text-white"}`}>
               {player.overall}
            </span>
-           <span className={`font-black uppercase text-[6px] md:text-[7px] text-[#D4F829] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"}`}>
+           <span className={`font-black uppercase text-[6px] md:text-[7px] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"} ${state.team === "A" ? "text-slate-500" : "text-[#D4F829]"}`}>
               {label}
            </span>
         </div>
         
         {/* Avatar */}
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/40 bg-[#05070B] shadow-sm pointer-events-none ${avatarClass}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-white" : "border-[#D4F829]/40 bg-[#05070B]"}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
+            <div className={`flex h-full w-full items-center justify-center text-sm font-bold ${state.team === "A" ? "text-slate-400" : "text-white/50"}`}>
               {player.username.charAt(0).toUpperCase()}
             </div>
           )}
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
+          <div className={`absolute inset-x-0 bottom-0 h-1/2 ${state.team === "A" ? "bg-gradient-to-t from-slate-200/80 to-transparent" : "bg-gradient-to-t from-black/80 to-transparent"}`} />
         </div>
         
         {/* Separator */}
-        <div className="w-[70%] h-[1px] bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent mt-1.5 md:mt-2" />
+        <div className={`w-[70%] h-[1px] mt-1.5 md:mt-2 ${state.team === "A" ? "bg-gradient-to-r from-transparent via-slate-300 to-transparent" : "bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent"}`} />
         
         {/* Name */}
         <div
-          className="relative mt-1 flex flex-col items-center pointer-events-auto cursor-pointer px-0.5 w-full"
+          className="relative mt-1 flex flex-col items-center pointer-events-auto cursor-pointer px-1 w-full"
           onPointerDown={(e) => {
             e.stopPropagation();
             onLabelClick(player);
           }}
         >
-          <span className={`truncate text-center font-black tracking-tight text-white/90 group-hover:text-white transition-colors drop-shadow-md ${nameClass}`}>
+          <span className={`truncate text-center font-black tracking-tight transition-colors drop-shadow-md ${nameClass} ${state.team === "A" ? "text-slate-700 group-hover:text-slate-900" : "text-white/90 group-hover:text-white"}`}>
             {player.username}
           </span>
         </div>
@@ -282,8 +289,11 @@ function DraggablePlayerToken({
 }
 
 // --- Drag Overlay Component ---
-function TokenOverlay({ player, state, isLargeSquad = false }: { player: Player; state: PlayerState; isLargeSquad?: boolean; }) {
-  const label = state.customLabel || player.position || "POS";
+function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { player: Player; state: PlayerState; draggedPos?: {x: number, y: number} | null; isLargeSquad?: boolean; }) {
+  const newTeam = state.team || (draggedPos ? (draggedPos.y <= 50 ? "A" : "B") : "B");
+  const label = draggedPos 
+    ? getAutoPosition(draggedPos.x, draggedPos.y, newTeam) 
+    : (state.customLabel || player.position || "POS");
 
   const wrapperClass = isLargeSquad ? "w-[44px] md:w-[48px] h-[64px] md:h-[70px]" : "w-[50px] md:w-[56px] h-[72px] md:h-[80px]";
   const avatarClass = isLargeSquad ? "h-[20px] w-[20px] md:h-[24px] md:w-[24px]" : "h-[24px] w-[24px] md:h-[28px] md:w-[28px]";
@@ -297,11 +307,17 @@ function TokenOverlay({ player, state, isLargeSquad = false }: { player: Player;
       className={`relative flex flex-col items-center justify-start shrink-0 scale-110 z-[100] opacity-95 ${wrapperClass}`}
     >
       <div 
-        className="absolute inset-0 bg-gradient-to-br from-[#EAF7AF] via-[#A28B52] to-[#D4F829]"
+        className={`absolute inset-0 opacity-90 transition-opacity ${
+          state.team === "A" ? "bg-gradient-to-br from-[#F8FAFC] via-[#CBD5E1] to-[#E2E8F0]" 
+                             : "bg-gradient-to-br from-[#EAF7AF] via-[#A28B52] to-[#D4F829]"
+        }`}
         style={{ clipPath: clipPathShape }}
       />
       <div 
-        className="absolute inset-[1.5px] bg-gradient-to-b from-[#2A3125] to-[#121612]"
+        className={`absolute inset-[1.5px] ${
+          state.team === "A" ? "bg-gradient-to-b from-[#FFFFFF] to-[#F1F5F9]" 
+                             : "bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
+        }`}
         style={{ clipPath: clipPathShape }}
       />
 
@@ -364,6 +380,7 @@ export function InlineTeamBuilder({
   const [localTeamBName, setLocalTeamBName] = useState(teamBName);
   const [isEditingA, setIsEditingA] = useState(false);
   const [isEditingB, setIsEditingB] = useState(false);
+  const [draggedPos, setDraggedPos] = useState<{x: number, y: number} | null>(null);
 
   const pitchRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -399,10 +416,12 @@ export function InlineTeamBuilder({
       const newStates: Record<string, PlayerState> = {};
       
       mappedPlayers.forEach((p) => {
-        // If we already have a state for this player with coordinates,
-        // keep it — the local state is the source of truth after drag.
+        // If we are the host, our local state is the absolute source of truth 
+        // after dragging, so we keep it if we already have coordinates.
+        // For non-hosts, the API's coordinates are the source of truth for 
+        // everyone else's cards (especially when the host moves them).
         const existing = prev[p.id];
-        if (existing && existing.x !== null && existing.y !== null) {
+        if (isHost && existing && existing.x !== null && existing.y !== null) {
           newStates[p.id] = existing;
           return;
         }
@@ -504,10 +523,33 @@ export function InlineTeamBuilder({
     const pId = event.active.id as string;
     if (!isHost && pId !== currentUserId) return;
     setActiveId(pId);
+    setDraggedPos(null);
+  };
+
+  const handleDragMove = (event: DragMoveEvent) => {
+    const { active } = event;
+    if (!active.rect.current.translated) return;
+
+    const dropCenterX = active.rect.current.translated.left + active.rect.current.translated.width / 2;
+    const dropCenterY = active.rect.current.translated.top + active.rect.current.translated.height / 2;
+    const pitchRect = pitchRef.current?.getBoundingClientRect();
+
+    if (pitchRect && 
+        dropCenterX >= pitchRect.left && dropCenterX <= pitchRect.right &&
+        dropCenterY >= pitchRect.top && dropCenterY <= pitchRect.bottom) {
+      let percentX = ((dropCenterX - pitchRect.left) / pitchRect.width) * 100;
+      let percentY = ((dropCenterY - pitchRect.top) / pitchRect.height) * 100;
+      percentX = Math.max(5, Math.min(95, percentX));
+      percentY = Math.max(5, Math.min(95, percentY));
+      setDraggedPos({ x: percentX, y: percentY });
+    } else {
+      setDraggedPos(null);
+    }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveId(null);
+    setDraggedPos(null);
     const { active } = event;
     const pId = active.id as string;
     
@@ -684,7 +726,7 @@ export function InlineTeamBuilder({
         </div>
       )}
 
-      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
         <div className="flex flex-col flex-1 overflow-hidden relative bg-transparent">
           {/* The Pitch (Main Content) */}
           <div ref={pitchRef} className="flex-1 relative overflow-hidden" 
@@ -852,9 +894,9 @@ export function InlineTeamBuilder({
         </div>
 
         {/* Drag Overlay */}
-        <DragOverlay dropAnimation={{ duration: 200, easing: 'ease-out' }}>
+        <DragOverlay dropAnimation={null}>
           {activePlayer && activePlayerState ? (
-            <TokenOverlay player={activePlayer} state={activePlayerState} isLargeSquad={isLargeSquad} />
+            <TokenOverlay player={activePlayer} state={activePlayerState} draggedPos={draggedPos} isLargeSquad={isLargeSquad} />
           ) : null}
         </DragOverlay>
       </DndContext>

@@ -1018,8 +1018,7 @@ async def save_teams(
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
         
-    if match.hostId != db_user.id:
-        raise HTTPException(status_code=403, detail="Only host can save teams")
+    is_host = (match.hostId == db_user.id)
 
     players = match.players
     
@@ -1028,6 +1027,10 @@ async def save_teams(
     
     # Update teams based on the payload
     for p in players:
+        # Security: Non-hosts can only update their own position/team
+        if not is_host and p.userId != db_user.id:
+            continue
+            
         if p.userId in positions_map:
             pos_data = positions_map[p.userId]
             if pos_data.team == "Team A" or pos_data.team == "A":
