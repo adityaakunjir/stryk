@@ -374,42 +374,67 @@ export function InlineTeamBuilder({
       position: p.user.position,
       playStyle: p.user.playStyle,
       team: p.team,
+      x: p.x ?? undefined,
+      y: p.y ?? undefined,
     }));
     
     setPlayers(mappedPlayers);
 
-    // Initialize states from participant data (X and Y provided by backend)
-    const newStates: Record<string, PlayerState> = {};
-    
-    mappedPlayers.forEach((p) => {
-      if (p.team === "Team A" || p.team === "A") {
-        newStates[p.id] = {
-          id: p.id,
-          x: p.x ?? (20 + Math.random() * 60),
-          y: p.y ?? (15 + Math.random() * 30),
-          team: "A",
-          customLabel: p.position || "CMF",
-        };
-      } else if (p.team === "Team B" || p.team === "B") {
-        newStates[p.id] = {
-          id: p.id,
-          x: p.x ?? (20 + Math.random() * 60),
-          y: p.y ?? (65 + Math.random() * 30),
-          team: "B",
-          customLabel: p.position || "CMF",
-        };
-      } else {
-        newStates[p.id] = {
-          id: p.id,
-          x: null,
-          y: null,
-          team: null,
-          customLabel: p.position || "CMF",
-        };
-      }
-    });
+    // Merge with existing states — don't overwrite positions that
+    // the user has just dragged (which are already correct locally).
+    setPlayerStates(prev => {
+      const newStates: Record<string, PlayerState> = {};
+      
+      mappedPlayers.forEach((p) => {
+        // If we already have a state for this player with coordinates,
+        // keep it — the local state is the source of truth after drag.
+        const existing = prev[p.id];
+        if (existing && existing.x !== null && existing.y !== null) {
+          newStates[p.id] = existing;
+          return;
+        }
 
-    setPlayerStates(newStates);
+        // Otherwise, initialize from API data
+        const team: "A" | "B" | null = 
+          (p.team === "Team A" || p.team === "A") ? "A" :
+          (p.team === "Team B" || p.team === "B") ? "B" : null;
+
+        if (team && p.x != null && p.y != null) {
+          // API provided coordinates — use them and compute correct label
+          const label = getAutoPosition(p.x, p.y, team);
+          newStates[p.id] = {
+            id: p.id,
+            x: p.x,
+            y: p.y,
+            team,
+            customLabel: label,
+          };
+        } else if (team) {
+          // Has team but no coordinates — place in default position
+          const defaultX = 20 + Math.random() * 60;
+          const defaultY = team === "A" ? (15 + Math.random() * 30) : (65 + Math.random() * 30);
+          const label = getAutoPosition(defaultX, defaultY, team);
+          newStates[p.id] = {
+            id: p.id,
+            x: defaultX,
+            y: defaultY,
+            team,
+            customLabel: label,
+          };
+        } else {
+          // No team — on the bench
+          newStates[p.id] = {
+            id: p.id,
+            x: null,
+            y: null,
+            team: null,
+            customLabel: p.position || "CMF",
+          };
+        }
+      });
+
+      return newStates;
+    });
   }, [participants, matchId]);
 
   useEffect(() => {

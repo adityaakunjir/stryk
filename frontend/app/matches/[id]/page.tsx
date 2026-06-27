@@ -16,6 +16,8 @@ interface MatchParticipant {
   matchId: string;
   userId: string;
   team: string | null;
+  x?: number | null;
+  y?: number | null;
   checkedIn: boolean;
   createdAt: string;
   user: {
@@ -213,8 +215,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
       fetchMatchDetails();
     });
     channel.bind("teams-saved", () => {
-      addNotification("Squad tactics updated", "success");
-      fetchMatchDetails();
+      // Only re-fetch for non-host users. The host already has the
+      // correct local state — re-fetching would reset all positions.
+      if (currentUserId && match?.hostId && currentUserId !== match.hostId) {
+        addNotification("Squad tactics updated", "success");
+        fetchMatchDetails();
+      }
     });
     channel.bind("match-closed", () => {
       addNotification("Match has been closed! Opening stats submission...", "warning");
@@ -411,7 +417,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
       const data = await res.json();
       if (data.success) {
         addNotification("Teams saved successfully!", "success");
-        await fetchMatchDetails();
+        // Do NOT call fetchMatchDetails() here — the host already has
+        // the correct local state. Re-fetching would overwrite the
+        // playerStates in inline-team-builder via useEffect, causing
+        // all cards to jump to random positions.
       } else {
         toast.error(data.message || "Failed to save teams");
       }
