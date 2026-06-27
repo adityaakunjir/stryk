@@ -624,6 +624,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 <span>{formatDateTime(match.matchDate)}</span>
               </div>
             </div>
+
+            <div className="mt-4 grid w-full grid-cols-3 gap-2">
+              <MatchMetric icon={<Users size={13} />} label="Players" value={`${participants.length}/${match.maxPlayers}`} />
+              <MatchMetric icon={<CheckCircle2 size={13} />} label="Checked" value={`${checkedInCount}`} />
+              <MatchMetric icon={<Crown size={13} />} label="Host" value={hostName.split(" ")[0] || "Host"} />
+            </div>
           </div>
         </header>
 
@@ -672,57 +678,6 @@ export default function MatchDetailsPage({ params }: PageProps) {
             <Share2 size={16} />
           </button>
         </div>
-
-        {/* Lobby Status Header */}
-        <header className="shrink-0 relative mb-4 rounded-[1.5rem] bg-[#151515] p-1 shadow-2xl">
-          <div className="relative rounded-[1.25rem] border border-white/10 bg-gradient-to-br from-[#1c1c1c] to-[#111] p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-[#D4F829]">
-                <Users size={16} />
-                <span className="text-xs font-black uppercase tracking-widest">Lobby Status</span>
-              </div>
-              <div className="px-2 py-0.5 rounded text-[9px] font-black bg-[#D4F829] text-black">
-                {participants.length} / {match.maxPlayers}
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <div className="flex-1 bg-black/40 rounded-[1rem] p-3 text-center border border-white/5 relative overflow-hidden">
-                <div className="text-[9px] font-black uppercase tracking-widest text-[#D4F829] mb-1 truncate">{match?.teamAName || "TEAM A"}</div>
-                <div className="text-2xl font-display text-white">{teamAPlayers.length}</div>
-                <div className="absolute top-2 right-2 size-1.5 rounded-full bg-[#D4F829] animate-pulse" />
-              </div>
-              
-              <div className="flex-1 bg-black/40 rounded-[1rem] p-3 text-center border border-white/5 relative overflow-hidden">
-                <div className="text-[9px] font-black uppercase tracking-widest text-[#8A6A28] mb-1 truncate">FREE POOL</div>
-                <div className="text-2xl font-display text-white">{unassignedPlayers.length}</div>
-                <div className="absolute top-2 right-2 size-1.5 rounded-full bg-[#8A6A28]" />
-              </div>
-
-              <div className="flex-1 bg-black/40 rounded-[1rem] p-3 text-center border border-white/5 relative overflow-hidden">
-                <div className="text-[9px] font-black uppercase tracking-widest text-[#D4F829] mb-1 truncate">{match?.teamBName || "TEAM B"}</div>
-                <div className="text-2xl font-display text-white">{teamBPlayers.length}</div>
-                <div className="absolute top-2 right-2 size-1.5 rounded-full bg-[#D4F829] animate-pulse" />
-              </div>
-            </div>
-            
-            <div className="mt-4 flex gap-4 border-t border-white/10 pt-4 px-2">
-              <MatchMetric icon={<Users size={13} />} label="Players" value={`${participants.length}`} />
-              <MatchMetric icon={<CheckCircle2 size={13} />} label="Checked" value={`${checkedInCount}`} />
-              <MatchMetric icon={<Crown size={13} />} label="Host" value={hostName.split(" ")[0] || "Host"} />
-            </div>
-
-            <div className="mt-3 w-full rounded-[1.25rem] border border-[#151515]/10 bg-[#151515]/[0.06] p-3 backdrop-blur-sm">
-              <div className="mb-2 flex items-center justify-between text-[9px] font-black uppercase tracking-[0.22em] text-[#8A6A28]">
-                <span>Lobby Fill</span>
-                <span>{playerFill}%</span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-[#151515]/12">
-                <div className="h-full rounded-full bg-[#D4F829] shadow-[0_0_14px_rgba(212,248,41,0.45)]" style={{ width: `${playerFill}%` }} />
-              </div>
-            </div>
-          </div>
-        </header>
 
 
 
