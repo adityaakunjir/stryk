@@ -451,8 +451,14 @@ export default function MatchesPage() {
 
                   {/* Turf Info & Schedule (Clickable) */}
                   <div 
-                    onClick={() => router.push(`/matches/${match.id}`)}
-                    className="cursor-pointer group"
+                    onClick={() => {
+                      if (isJoined) {
+                        router.push(`/matches/${match.id}`);
+                      } else {
+                        toast.error("You must join the match first to enter the lobby.");
+                      }
+                    }}
+                    className={`${isJoined ? "cursor-pointer" : "cursor-default"} group`}
                   >
                     {/* Turf Info */}
                     <div className="pr-16 mb-5">
