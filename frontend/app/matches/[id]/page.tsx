@@ -74,6 +74,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [friends, setFriends] = useState<any[]>([]);
   const [friendsLoading, setFriendsLoading] = useState(false);
+  const [externalPositionUpdate, setExternalPositionUpdate] = useState<{userId: string; x: number; y: number; team: string | null; ts: number} | null>(null);
   const [invitingFriendId, setInvitingFriendId] = useState<string | null>(null);
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
@@ -233,6 +234,9 @@ export default function MatchDetailsPage({ params }: PageProps) {
       addNotification("Match has started!", "success");
       fetchMatchDetails();
     });
+    channel.bind("position-updated", (data: { userId: string; x: number; y: number; team: string | null }) => {
+      setExternalPositionUpdate({ ...data, ts: Date.now() });
+    });
     channel.bind("stats-submitted", () => {
       // Check if we need to verify them
       checkPendingVerifications();
@@ -247,6 +251,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       channel.unbind("teams-saved");
       channel.unbind("match-closed");
       channel.unbind("match-started");
+      channel.unbind("position-updated");
       channel.unbind("stats-submitted");
       pusher.unsubscribe(channelName);
     };
@@ -380,6 +385,19 @@ export default function MatchDetailsPage({ params }: PageProps) {
       toast.error("An error occurred. Please try again.");
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const handleUpdatePosition = async (x: number | null, y: number | null, team: "Team A" | "Team B" | null) => {
+    try {
+      const teamCode = team === "Team A" ? "A" : team === "Team B" ? "B" : null;
+      await fetch(`/api/matches/${matchId}/update-position`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ x, y, team: teamCode })
+      });
+    } catch (err) {
+      console.error("Failed to update position:", err);
     }
   };
 
@@ -655,10 +673,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
               isHost={currentUserId === match.hostId}
               currentUserId={currentUserId}
               onJoinTeam={handleAssignTeam}
+              onUpdatePosition={handleUpdatePosition}
               onUpdateTeamNames={handleUpdateTeamNames}
               teamAName={match.teamAName}
               teamBName={match.teamBName}
               matchFormat={match.format}
+              externalPositionUpdate={externalPositionUpdate}
             />
           </div>
         )}

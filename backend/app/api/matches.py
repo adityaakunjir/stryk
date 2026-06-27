@@ -1055,6 +1055,59 @@ async def save_teams(
         "data": _serialize_match(match)
     }
 
+class UpdatePositionRequest(BaseModel):
+    x: Optional[float] = None
+    y: Optional[float] = None
+    team: Optional[str] = None
+
+@router.post("/{match_id}/update-position")
+async def update_position(
+    match_id: str,
+    payload: UpdatePositionRequest,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    """Allow any participant to update their own position on the pitch."""
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Find the user's MatchPlayer record
+    player_result = await session.execute(
+        select(MatchPlayer).where(
+            MatchPlayer.matchId == match_id,
+            MatchPlayer.userId == db_user.id
+        )
+    )
+    player = player_result.scalars().first()
+    if not player:
+        raise HTTPException(status_code=404, detail="You are not a participant in this match")
+
+    # Normalize team value
+    if payload.team in ("Team A", "A"):
+        player.team = "A"
+    elif payload.team in ("Team B", "B"):
+        player.team = "B"
+    else:
+        player.team = None
+
+    player.x = payload.x
+    player.y = payload.y
+    await session.commit()
+
+    return {
+        "success": True,
+        "data": {
+            "userId": db_user.id,
+            "x": player.x,
+            "y": player.y,
+            "team": player.team,
+        }
+    }
+
+
 class SubmitStatsRequest(BaseModel):
     goals: int = 0
     assists: int = 0

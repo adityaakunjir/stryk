@@ -45,10 +45,12 @@ interface InlineTeamBuilderProps {
   isHost: boolean;
   currentUserId: string | null;
   onJoinTeam: (team: "Team A" | "Team B" | null) => Promise<void>;
+  onUpdatePosition?: (x: number | null, y: number | null, team: "Team A" | "Team B" | null) => Promise<void>;
   onUpdateTeamNames?: (teamAName?: string, teamBName?: string) => Promise<void>;
   teamAName?: string;
   teamBName?: string;
   matchFormat?: string;
+  externalPositionUpdate?: { userId: string; x: number; y: number; team: string | null; ts: number } | null;
 }
 
 function TeamChip({ label, value, tone }: { label: string; value: number; tone: "lime" | "gold" }) {
@@ -335,10 +337,12 @@ export function InlineTeamBuilder({
   isHost, 
   currentUserId, 
   onJoinTeam, 
+  onUpdatePosition,
   onUpdateTeamNames, 
   teamAName = "Team A", 
   teamBName = "Team B", 
-  matchFormat = "11v11" 
+  matchFormat = "11v11",
+  externalPositionUpdate
 }: InlineTeamBuilderProps) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [playerStates, setPlayerStates] = useState<Record<string, PlayerState>>({});
@@ -443,6 +447,45 @@ export function InlineTeamBuilder({
     }
   }, [playerStates, matchId]);
 
+  // Listen for real-time external updates from other users
+  useEffect(() => {
+    if (externalPositionUpdate) {
+      setPlayerStates(prev => {
+        // Do not overwrite if we are not the host and this is our own update (we already have local state)
+        if (!isHost && externalPositionUpdate.userId === currentUserId) return prev;
+        
+        const existing = prev[externalPositionUpdate.userId];
+        if (!existing) return prev;
+
+        // If they were benched, coordinates are null
+        if (externalPositionUpdate.x === null || externalPositionUpdate.y === null) {
+          return {
+            ...prev,
+            [externalPositionUpdate.userId]: {
+              ...existing,
+              x: null,
+              y: null,
+              team: null,
+              customLabel: existing.customLabel || "BENCH"
+            }
+          };
+        }
+
+        const autoPos = getAutoPosition(externalPositionUpdate.x, externalPositionUpdate.y, externalPositionUpdate.team as "A" | "B" | null);
+        return {
+          ...prev,
+          [externalPositionUpdate.userId]: {
+            ...existing,
+            x: externalPositionUpdate.x,
+            y: externalPositionUpdate.y,
+            team: externalPositionUpdate.team as "A" | "B" | null,
+            customLabel: autoPos
+          }
+        };
+      });
+    }
+  }, [externalPositionUpdate, currentUserId, isHost]);
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor)
@@ -506,6 +549,9 @@ export function InlineTeamBuilder({
       if (currentTeam !== newTeam) {
         handleJoinAction(newTeam === "A" ? "Team A" : "Team B", pId);
       }
+      if (!isHost && pId === currentUserId && onUpdatePosition) {
+        onUpdatePosition(percentX, percentY, newTeam === "A" ? "Team A" : "Team B");
+      }
     } else {
       nextState = {
         ...nextState,
@@ -514,6 +560,9 @@ export function InlineTeamBuilder({
       setPlayerStates(nextState);
       if (currentTeam !== null) {
          handleJoinAction(null, pId);
+      }
+      if (!isHost && pId === currentUserId && onUpdatePosition) {
+        onUpdatePosition(null, null, null);
       }
     }
 

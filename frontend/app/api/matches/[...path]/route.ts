@@ -58,7 +58,8 @@ async function proxyRequest(req: NextRequest, path: string[]) {
           } else if (path.length === 2 && (
             path[1] === "kick" || path[1] === "start" || path[1] === "save-teams" || 
             path[1] === "close" || path[1] === "submit-stats" || path[1] === "reconcile" ||
-            path[1] === "pending-verifications" || path[1] === "verify" || path[1] === "finalize-verifications"
+            path[1] === "pending-verifications" || path[1] === "verify" || path[1] === "finalize-verifications" ||
+            path[1] === "update-position"
           )) {
             matchId = path[0];
           }
@@ -94,6 +95,14 @@ async function proxyRequest(req: NextRequest, path: string[]) {
               await triggerPusherEvent(channelName, "teams-balanced", {});
             } else if (path.length === 2 && path[1] === "save-teams") {
               await triggerPusherEvent(channelName, "teams-saved", {});
+            } else if (path.length === 2 && path[1] === "update-position") {
+              const posData = jsonData.data || {};
+              await triggerPusherEvent(channelName, "position-updated", {
+                userId: posData.userId,
+                x: posData.x,
+                y: posData.y,
+                team: posData.team,
+              });
             } else if (path.length === 2 && path[1] === "invite") {
               const receiverId = parsedBody.receiverId;
               if (receiverId) {
