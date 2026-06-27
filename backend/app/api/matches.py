@@ -813,50 +813,6 @@ async def balance_teams(
         }
 
 
-class SaveTeamsRequest(BaseModel):
-    teamA: List[str]  # List of user IDs
-    teamB: List[str]  # List of user IDs
-    teamAName: Optional[str] = None
-    teamBName: Optional[str] = None
-
-@router.post("/{match_id}/save-teams")
-async def save_teams(
-    match_id: str,
-    payload: SaveTeamsRequest,
-    user: dict = Depends(get_current_user),
-    session: AsyncSession = Depends(get_session)
-):
-    clerk_id = user.get("sub")
-    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
-    db_user = db_user_result.scalars().first()
-    
-    match_result = await session.execute(select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
-    match = match_result.scalars().first()
-    if not match:
-        raise HTTPException(status_code=404, detail="Match not found")
-        
-    if match.hostId != db_user.id:
-        raise HTTPException(status_code=403, detail="Only host can save teams")
-
-    players = match.players
-    
-    # Update teams based on the payload
-    for p in players:
-        if p.userId in payload.teamA:
-            p.team = "A"
-        elif p.userId in payload.teamB:
-            p.team = "B"
-        else:
-            p.team = None
-
-    if payload.teamAName is not None:
-        match.teamAName = payload.teamAName
-    if payload.teamBName is not None:
-        match.teamBName = payload.teamBName
-
-    await session.commit()
-    return {"success": True, "message": "Teams saved successfully"}
-
 
 class UpdateTeamNamesRequest(BaseModel):
     teamAName: Optional[str] = None
@@ -1033,9 +989,16 @@ async def balance_teams(
     }
 
 
+class PositionData(BaseModel):
+    id: str
+    team: Optional[str]
+    x: Optional[float]
+    y: Optional[float]
+
 class SaveTeamsRequest(BaseModel):
-    teamA: List[str]  # List of user IDs
-    teamB: List[str]  # List of user IDs
+    teamA: List[str] = []  # List of user IDs (optional, for backward compatibility)
+    teamB: List[str] = []  # List of user IDs (optional, for backward compatibility)
+    positions: List[PositionData] = []
 
 @router.post("/{match_id}/save-teams")
 async def save_teams(
@@ -1058,9 +1021,17 @@ async def save_teams(
 
     players = match.players
     
+    # Map positions if provided
+    positions_map = {p.id: p for p in payload.positions}
+    
     # Update teams based on the payload
     for p in players:
-        if p.userId in payload.teamA:
+        if p.userId in positions_map:
+            pos_data = positions_map[p.userId]
+            p.team = pos_data.team if pos_data.team else ("A" if pos_data.team == "Team A" else "B" if pos_data.team == "Team B" else None)
+            p.x = pos_data.x
+            p.y = pos_data.y
+        elif p.userId in payload.teamA:
             p.team = "A"
         elif p.userId in payload.teamB:
             p.team = "B"

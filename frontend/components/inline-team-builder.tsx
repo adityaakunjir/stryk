@@ -71,42 +71,42 @@ const getAutoPosition = (x: number, y: number, team: "A" | "B" | null) => {
   const isTeamA = team === "A" || (!team && y <= 50);
 
   if (isTeamA) {
-    // Team A (playing down, towards y=100)
-    if (y < 15) return "GK";
+    // Team A (White) plays downwards towards y=100
+    if (y < 12) return "GK";
     if (y < 35) {
-      if (x < 30) return "RB";
-      if (x > 70) return "LB";
+      if (x < 35) return "LB"; // Left side of pitch
+      if (x > 65) return "RB"; // Right side of pitch
       return "CB";
     }
-    if (y < 50) {
-      if (x < 30) return "RMF";
-      if (x > 70) return "LMF";
+    if (y < 60) {
+      if (x < 35) return "LMF";
+      if (x > 65) return "RMF";
       if (y < 42) return "DMF";
-      if (y > 45) return "AMF";
+      if (y > 48) return "AMF";
       return "CMF";
     }
-    if (x < 30) return "RWF";
-    if (x > 70) return "LWF";
-    if (y < 65) return "SS";
+    if (x < 35) return "LWF";
+    if (x > 65) return "RWF";
+    if (y < 75) return "SS";
     return "CF";
   } else {
-    // Team B (playing up, towards y=0)
-    if (y > 85) return "GK";
+    // Team B (Black) plays upwards towards y=0
+    if (y > 88) return "GK";
     if (y > 65) {
-      if (x < 30) return "LB";
-      if (x > 70) return "RB";
+      if (x < 35) return "LB"; // Left side of pitch
+      if (x > 65) return "RB"; // Right side of pitch
       return "CB";
     }
-    if (y > 50) {
-      if (x < 30) return "LMF";
-      if (x > 70) return "RMF";
+    if (y > 40) {
+      if (x < 35) return "LMF";
+      if (x > 65) return "RMF";
       if (y > 58) return "DMF";
-      if (y < 55) return "AMF";
+      if (y < 52) return "AMF";
       return "CMF";
     }
-    if (x < 30) return "LWF";
-    if (x > 70) return "RWF";
-    if (y > 35) return "SS";
+    if (x < 35) return "LWF";
+    if (x > 65) return "RWF";
+    if (y > 25) return "SS";
     return "CF";
   }
 };
