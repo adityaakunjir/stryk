@@ -74,51 +74,55 @@ const getAutoPosition = (x: number, y: number, team: "A" | "B" | null) => {
   const isTeamA = team === "A" || (!team && y <= 50);
 
   if (isTeamA) {
-    // Team A (Home/White) plays upwards towards y=0
-    if (y >= 88) return "GK"; // Inside penalty area
+    // Team A (Home/White) plays upwards towards y=0 (Defends Bottom y=100)
+    if (y >= 88) return "GK";
     
-    if (y >= 75) { // Defense
-      if (x <= 30) return "LB";
-      if (x >= 70) return "RB";
+    // Defense (y between 68 and 87)
+    if (y >= 68) {
+      if (x <= 28) return "LB";
+      if (x >= 72) return "RB";
       return "CB";
     }
     
-    if (y >= 58) { // Midfield
-      if (x <= 30) return "LMF";
-      if (x >= 70) return "RMF";
-      if (y >= 70) return "DMF";
-      if (y >= 63) return "CMF";
+    // Midfield (y between 45 and 67)
+    if (y >= 45) {
+      if (x <= 28) return "LMF";
+      if (x >= 72) return "RMF";
+      if (y >= 60) return "DMF";
+      if (y >= 52) return "CMF";
       return "AMF";
     }
     
-    // Attack
-    if (x <= 30) return "LWF";
-    if (x >= 70) return "RWF";
-    if (y >= 52) return "SS";
+    // Attack (y < 45)
+    if (x <= 28) return "LWF";
+    if (x >= 72) return "RWF";
+    if (y >= 25) return "SS";
     return "CF";
     
   } else {
-    // Team B (Away/Black) plays downwards towards y=100
-    if (y <= 12) return "GK"; // Inside penalty area
+    // Team B (Away/Black) plays downwards towards y=100 (Defends Top y=0)
+    if (y <= 12) return "GK";
     
-    if (y <= 25) { // Defense (y from 12 to 25)
-      if (x <= 30) return "LB";
-      if (x >= 70) return "RB";
+    // Defense (y between 13 and 32)
+    if (y <= 32) {
+      if (x <= 28) return "LB";
+      if (x >= 72) return "RB";
       return "CB";
     }
     
-    if (y <= 42) { // Midfield
-      if (x <= 30) return "LMF";
-      if (x >= 70) return "RMF";
-      if (y <= 30) return "DMF";
-      if (y <= 37) return "CMF";
+    // Midfield (y between 33 and 55)
+    if (y <= 55) {
+      if (x <= 28) return "LMF";
+      if (x >= 72) return "RMF";
+      if (y <= 40) return "DMF";
+      if (y <= 48) return "CMF";
       return "AMF";
     }
     
-    // Attack (center circle to opponent goal)
-    if (x <= 30) return "LWF";
-    if (x >= 70) return "RWF";
-    if (y <= 48) return "SS";
+    // Attack (y > 55)
+    if (x <= 28) return "LWF";
+    if (x >= 72) return "RWF";
+    if (y <= 75) return "SS";
     return "CF";
   }
 };
@@ -818,8 +822,8 @@ export function InlineTeamBuilder({
                 <span className="ml-1 text-[9px] font-bold text-[#A28B52]">{statsB.count}</span>
               </div>
               <div className="flex items-center gap-2 pointer-events-none">
-                <div className="h-4 px-2 rounded-full bg-[#1F7A38]/20 border border-[#4ADE80]/30 flex items-center justify-center">
-                  <span className="text-[9px] font-black text-[#4ADE80]">{statsB.avgOvr}</span>
+                <div className="h-4 px-2 rounded-full bg-[#A28B52]/20 border border-[#A28B52]/50 flex items-center justify-center">
+                  <span className="text-[9px] font-black text-[#A28B52]">{statsB.avgOvr}</span>
                 </div>
               </div>
             </div>
@@ -848,7 +852,7 @@ export function InlineTeamBuilder({
                     {localTeamAName}
                   </span>
                 )}
-                <span className="ml-1 text-[9px] font-bold text-[#A28B52]">{statsA.count}</span>
+                <span className="ml-1 text-[9px] font-bold text-[#4ADE80]">{statsA.count}</span>
               </div>
               <div className="flex items-center gap-2 pointer-events-none">
                 <div className="h-4 px-2 rounded-full bg-[#1F7A38]/20 border border-[#4ADE80]/30 flex items-center justify-center">
