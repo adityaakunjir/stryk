@@ -2,14 +2,13 @@
 
 import { useState, useEffect, use, useCallback, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, CheckCircle2, Crown, Loader2, LogOut, Mail, MapPin, Swords, Trophy, UserPlus, Users, X } from "lucide-react";
+import { ArrowLeft, Calendar, CheckCircle2, Crown, Loader2, LogOut, Mail, MapPin, Swords, Trophy, UserPlus, Users, X, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getPusherClient } from "@/lib/pusher";
 import { toast } from "sonner";
 import { InlineTeamBuilder } from "@/components/inline-team-builder";
 import { StatSubmissionModal } from "@/components/stat-submission-modal";
 import { CloseMatchModal } from "@/components/close-match-modal";
-import { PeerVerificationModal } from "@/components/peer-verification-modal";
 
 interface MatchParticipant {
   id: string;
@@ -77,8 +76,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [externalPositionUpdate, setExternalPositionUpdate] = useState<{userId: string; x: number; y: number; team: string | null; ts: number} | null>(null);
   const [invitingFriendId, setInvitingFriendId] = useState<string | null>(null);
   const [showCloseModal, setShowCloseModal] = useState(false);
-  const [showVerificationModal, setShowVerificationModal] = useState(false);
-  const [pendingVerificationCount, setPendingVerificationCount] = useState(0);
+  const [pendingVerifications, setPendingVerifications] = useState<any[]>([]);
   const [showStatSubmission, setShowStatSubmission] = useState(false);
   const [hasSubmittedStats, setHasSubmittedStats] = useState(false);
 
@@ -128,7 +126,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       const res = await fetch(`/api/matches/${matchId}/pending-verifications`);
       const data = await res.json();
       if (data.success && data.data) {
-        setPendingVerificationCount(data.data.length);
+        setPendingVerifications(data.data);
       }
     } catch (err) {
       console.error("Failed to check verifications", err);
@@ -388,6 +386,30 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
+  // Verification actions directly from page
+  const handleVerifyStats = async (targetId: string, accept: boolean) => {
+    try {
+      const res = await fetch(`/api/matches/${matchId}/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          targetPlayerId: targetId,
+          vote: accept ? 1 : -1,
+          disputeReason: accept ? undefined : "Disputed from match lobby"
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(accept ? "Stats verified!" : "Stats disputed");
+        setPendingVerifications(prev => prev.filter(v => v.userId !== targetId));
+      } else {
+        toast.error(data.message || "Failed to verify");
+      }
+    } catch (err) {
+      toast.error("Error verifying stats");
+    }
+  };
+
   const handleUpdatePosition = async (x: number | null, y: number | null, team: "Team A" | "Team B" | null) => {
     try {
       const teamCode = team === "Team A" ? "A" : team === "Team B" ? "B" : null;
@@ -500,27 +522,6 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
-  const handleStartMatch = async () => {
-    if (!confirm("Are you ready to start the match?")) return;
-    setActionLoading(true);
-    try {
-      const res = await fetch(`/api/matches/${matchId}/start`, {
-        method: "POST"
-      });
-      const data = await res.json();
-      if (data.success) {
-        addNotification("Match started!", "success");
-        await fetchMatchDetails();
-      } else {
-        toast.error(data.message || "Failed to start match");
-      }
-    } catch (err) {
-      toast.error("An error occurred");
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
 
 
   if (loading) {
@@ -555,9 +556,9 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const isCheckedIn = currentUserParticipant ? currentUserParticipant.checkedIn : false;
 
   // Group participants by teams
-  const teamAPlayers = participants.filter(p => p.team === "Team A");
-  const teamBPlayers = participants.filter(p => p.team === "Team B");
-  const unassignedPlayers = participants.filter(p => p.team !== "Team A" && p.team !== "Team B");
+  const teamAPlayers = participants.filter(p => p.team === "A" || p.team === "Team A");
+  const teamBPlayers = participants.filter(p => p.team === "B" || p.team === "Team B");
+  const unassignedPlayers = participants.filter(p => p.team !== "A" && p.team !== "Team A" && p.team !== "B" && p.team !== "Team B");
   const checkedInCount = participants.filter(p => p.checkedIn).length;
   const hostParticipant = participants.find(p => p.userId === match.hostId);
   const hostName = hostParticipant?.user?.fullName?.split(" ")[0] || hostParticipant?.user?.username || "Host";
@@ -644,23 +645,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
 
 
-        {/* Verification Alert */}
-        {pendingVerificationCount > 0 && (
-          <div className="mb-4 p-4 rounded-[2rem] bg-[#151515] flex items-center justify-between shadow-2xl border border-[#D4F829]/15">
-            <div className="flex-1 px-2">
-              <h3 className="text-[#D4F829] font-black text-[11px] uppercase tracking-[0.2em]">Action Required</h3>
-              <p className="text-white/80 text-[10px] mt-0.5 leading-tight">
-                You have {pendingVerificationCount} peer stat submissions to review.
-              </p>
-            </div>
-            <button
-              onClick={() => setShowVerificationModal(true)}
-              className="ml-3 px-4 h-10 rounded-2xl bg-[#D4F829] text-[#151515] font-bold text-[10px] uppercase tracking-widest hover:bg-[#c3e626] transition shadow-sm"
-            >
-              Verify
-            </button>
-          </div>
-        )}
+        {/* Verification Alert - Removed (now integrated below) */}
 
 
 
@@ -679,11 +664,109 @@ export default function MatchDetailsPage({ params }: PageProps) {
               teamBName={match.teamBName}
               matchFormat={match.format}
               externalPositionUpdate={externalPositionUpdate}
+              isLocked={match.status === "closed"}
             />
           </div>
         )}
 
-        {/* Bottom Primary CTAs */}
+        {/* Stats & Verifications Section */}
+        {match && match.status === "closed" && (
+          <div className="mt-8 mb-12">
+            <h2 className="text-[#D4F829] font-black text-[14px] uppercase tracking-[0.15em] mb-4 flex items-center gap-2">
+              <Trophy size={16} />
+              Match Stats & Verification
+            </h2>
+
+            {/* My Stats Status */}
+            <div className="mb-6 p-5 rounded-[2rem] bg-white/[0.03] border border-white/[0.08] shadow-lg">
+              <h3 className="text-white text-sm font-bold mb-2 tracking-wide">Your Match Performance</h3>
+              {hasSubmittedStats ? (
+                <div className="flex items-center gap-3 text-[#D4F829] text-xs font-medium bg-[#D4F829]/10 p-3 rounded-xl border border-[#D4F829]/20">
+                  <CheckCircle2 size={16} />
+                  Your stats have been submitted and are undergoing peer review!
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <p className="text-white/50 text-xs">You haven't submitted your match stats yet.</p>
+                  <button
+                    onClick={() => setShowStatSubmission(true)}
+                    className="w-full h-12 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center shadow-lg"
+                  >
+                    Submit My Stats
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Pending Peer Reviews */}
+            {pendingVerifications.length > 0 && (
+              <div>
+                <h3 className="text-white text-xs font-bold mb-3 uppercase tracking-widest text-white/50 flex items-center justify-between">
+                  Pending Peer Reviews
+                  <span className="bg-[#D4F829] text-[#151515] px-2 py-0.5 rounded-full text-[9px] font-black">
+                    {pendingVerifications.length}
+                  </span>
+                </h3>
+                
+                <div className="flex flex-col gap-3">
+                  {pendingVerifications.map((v) => (
+                    <div key={v.id} className="p-4 rounded-[1.5rem] bg-[#151515] border border-white/5 flex flex-col gap-4 shadow-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-white/10 overflow-hidden relative">
+                          {v.avatarUrl ? (
+                            <img src={v.avatarUrl} alt={v.username} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-white/50 font-bold uppercase">
+                              {v.username.charAt(0)}
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="text-white font-bold text-sm">@{v.username}</div>
+                          <div className="text-white/40 text-[10px] uppercase tracking-wider">Submitted Stats</div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-4 gap-2 bg-white/[0.02] p-3 rounded-2xl border border-white/[0.03]">
+                        <div className="text-center">
+                          <div className="text-[#D4F829] font-black text-lg">{v.goals}</div>
+                          <div className="text-white/40 text-[9px] uppercase tracking-widest">GLS</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-[#D4F829] font-black text-lg">{v.assists}</div>
+                          <div className="text-white/40 text-[9px] uppercase tracking-widest">AST</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-[#D4F829] font-black text-lg">{v.tackles}</div>
+                          <div className="text-white/40 text-[9px] uppercase tracking-widest">TCK</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-[#D4F829] font-black text-lg">{v.saves}</div>
+                          <div className="text-white/40 text-[9px] uppercase tracking-widest">SAV</div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 mt-1">
+                        <button
+                          onClick={() => handleVerifyStats(v.userId, true)}
+                          className="h-10 rounded-xl bg-white/10 hover:bg-[#D4F829] hover:text-[#151515] text-white text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 flex items-center justify-center"
+                        >
+                          Verify
+                        </button>
+                        <button
+                          onClick={() => handleVerifyStats(v.userId, false)}
+                          className="h-10 rounded-xl bg-white/5 hover:bg-red-500/20 border border-transparent hover:border-red-500/20 text-white/50 hover:text-red-500 text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 flex items-center justify-center"
+                        >
+                          Dispute
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}        {/* Bottom Primary CTAs */}
         <div className="shrink-0 mt-4 w-full mb-4">
           {isJoined ? (
             <div className="relative flex flex-col gap-0 p-5 rounded-[2rem] bg-[#0c0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
@@ -735,21 +818,14 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 </button>
                 
                 {currentUserId === match.hostId && match.status !== "closed" && (
-                  <div className="grid grid-cols-2 gap-3 pt-1">
-                    <button
-                      onClick={handleStartMatch}
-                      disabled={actionLoading || match.status === "in_progress"}
-                      className="w-full h-11 rounded-[1rem] bg-white hover:bg-gray-200 text-[#151515] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
-                    >
-                      <Swords size={13} strokeWidth={2.5} />
-                      {match.status === "in_progress" ? "Running" : "Start Match"}
-                    </button>
+                  <div className="pt-1">
                     <button
                       onClick={handleCloseMatch}
                       disabled={actionLoading}
-                      className="w-full h-11 rounded-[1rem] bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 text-[10px] font-bold tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
+                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
                     >
-                      Close Match
+                      <Lock size={13} strokeWidth={2.5} />
+                      Lock Squads & Open Stat Submission
                     </button>
                   </div>
                 )}
@@ -867,17 +943,6 @@ export default function MatchDetailsPage({ params }: PageProps) {
         <CloseMatchModal
           isOpen={showCloseModal}
           onClose={() => setShowCloseModal(false)}
-          matchId={matchId}
-        />
-      )}
-
-      {match && (
-        <PeerVerificationModal
-          isOpen={showVerificationModal}
-          onClose={() => {
-            setShowVerificationModal(false);
-            checkPendingVerifications();
-          }}
           matchId={matchId}
         />
       )}

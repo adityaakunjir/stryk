@@ -55,7 +55,11 @@ async def create_player(
     player.dribbling = starter["dribbling"]
     player.defending = starter["defending"]
     player.physical = starter["physical"]
-    player.gk = starter["gk"]
+    player.gkDiving = starter["gkDiving"]
+    player.gkHandling = starter["gkHandling"]
+    player.gkKicking = starter["gkKicking"]
+    player.gkReflexes = starter["gkReflexes"]
+    player.gkPositioning = starter["gkPositioning"]
     
     # Calculate initial OVR
     stats_dict = {
@@ -65,7 +69,11 @@ async def create_player(
         "dribbling": player.dribbling,
         "defending": player.defending,
         "physical": player.physical,
-        "gk": player.gk
+        "gkDiving": player.gkDiving,
+        "gkHandling": player.gkHandling,
+        "gkKicking": player.gkKicking,
+        "gkReflexes": player.gkReflexes,
+        "gkPositioning": player.gkPositioning
     }
     player.overall = calculate_ovr(player.position, stats_dict)
 

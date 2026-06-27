@@ -52,6 +52,7 @@ interface InlineTeamBuilderProps {
   teamBName?: string;
   matchFormat?: string;
   externalPositionUpdate?: { userId: string; x: number; y: number; team: string | null; ts: number } | null;
+  isLocked?: boolean;
 }
 
 function TeamChip({ label, value, tone }: { label: string; value: number; tone: "lime" | "gold" }) {
@@ -71,7 +72,7 @@ function TeamChip({ label, value, tone }: { label: string; value: number; tone: 
 
 // --- Helpers ---
 const getAutoPosition = (x: number, y: number, team: "A" | "B" | null) => {
-  const isTeamA = team === "A" || (!team && y <= 50);
+  const isTeamA = team === "A" || (!team && y >= 50);
 
   if (isTeamA) {
     // Team A (Home/White) plays upwards towards y=0 (Defends Bottom y=100)
@@ -140,12 +141,14 @@ function DraggablePlayerToken({
   state, 
   isDraggable, 
   onLabelClick,
+  onSwapClick,
   isLargeSquad = false
 }: { 
   player: Player; 
   state: PlayerState; 
   isDraggable: boolean;
   onLabelClick: (player: Player) => void;
+  onSwapClick?: (player: Player) => void;
   isLargeSquad?: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -287,6 +290,30 @@ function DraggablePlayerToken({
             {player.username}
           </span>
         </div>
+
+        {/* Swap Team Button */}
+        {isDraggable && onSwapClick && (
+          <div 
+            className="absolute top-1 md:top-1.5 right-1 md:right-1.5 pointer-events-auto cursor-pointer z-20 group/swap"
+            onPointerDown={(e) => {
+              e.stopPropagation();
+              onSwapClick(player);
+            }}
+          >
+            <div className={`flex items-center justify-center w-4 h-4 md:w-5 md:h-5 rounded-full border shadow-md transition-all ${
+              state.team === "A" 
+                ? "bg-slate-100 border-slate-300 hover:bg-[#D4F829] hover:border-[#D4F829]" 
+                : "bg-black border-white/20 hover:bg-[#D4F829] hover:border-[#D4F829]"
+            }`}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={state.team === "A" ? "text-slate-600 group-hover/swap:text-black" : "text-white/80 group-hover/swap:text-black"}>
+                <path d="M8 3 4 7l4 4"/>
+                <path d="M4 7h16"/>
+                <path d="m16 21 4-4-4-4"/>
+                <path d="M20 17H4"/>
+              </svg>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -371,7 +398,8 @@ export function InlineTeamBuilder({
   teamAName = "Team A", 
   teamBName = "Team B", 
   matchFormat = "11v11",
-  externalPositionUpdate
+  externalPositionUpdate,
+  isLocked = false
 }: InlineTeamBuilderProps) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [playerStates, setPlayerStates] = useState<Record<string, PlayerState>>({});
@@ -524,6 +552,7 @@ export function InlineTeamBuilder({
   );
 
   const handleDragStart = (event: DragStartEvent) => {
+    if (isLocked) return;
     const pId = event.active.id as string;
     if (!isHost && pId !== currentUserId) return;
     setActiveId(pId);
@@ -531,6 +560,7 @@ export function InlineTeamBuilder({
   };
 
   const handleDragMove = (event: DragMoveEvent) => {
+    if (isLocked) return;
     const { active } = event;
     if (!active.rect.current.translated) return;
 
@@ -552,6 +582,7 @@ export function InlineTeamBuilder({
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    if (isLocked) return;
     setActiveId(null);
     setDraggedPos(null);
     const { active } = event;
@@ -584,8 +615,8 @@ export function InlineTeamBuilder({
     let nextState = { ...playerStates };
 
     if (droppedOnPitch) {
-      // Determine team: keep current team if already assigned, otherwise assign based on Y
-      const newTeam = currentTeam || (percentY <= 50 ? "A" : "B");
+      // Determine team: keep current team if already assigned, otherwise assign based on Y (Team A is bottom half y>=50, Team B is top half y<50)
+      const newTeam = currentTeam || (percentY >= 50 ? "A" : "B");
       const autoPos = getAutoPosition(percentX, percentY, newTeam);
       
       nextState = {
@@ -644,6 +675,7 @@ export function InlineTeamBuilder({
   };
 
   const handleLabelEdit = (player: Player) => {
+    if (isLocked) return;
     const currentState = playerStates[player.id];
     setEditLabelValue(currentState?.customLabel || player.position || "");
     setEditingLabelId(player.id);
@@ -872,7 +904,7 @@ export function InlineTeamBuilder({
               // Render players who have x,y coords
               if (!state || state.x === null || state.y === null) return null;
               
-              const isDraggable = isHost || p.id === currentUserId;
+              const isDraggable = !isLocked && (isHost || p.id === currentUserId);
               
               return (
                 <DraggablePlayerToken 
@@ -913,8 +945,30 @@ export function InlineTeamBuilder({
                       key={p.id}
                       player={p}
                       state={state}
-                      isDraggable={isHost || p.id === currentUserId}
+                      isDraggable={!isLocked && (isHost || p.id === currentUserId)}
                       onLabelClick={handleLabelEdit}
+                      onSwapClick={(player) => {
+                        const currentTeam = playerStates[player.id]?.team;
+                        if (!currentTeam) return;
+                        
+                        const newTeam = currentTeam === "A" ? "B" : "A";
+                        setPlayers((prev) =>
+                          prev.map((mapP) => {
+                            if (mapP.id === player.id) return { ...mapP, team: newTeam === "A" ? "Team A" : "Team B" };
+                            return mapP;
+                          })
+                        );
+                        setPlayerStates((prev) => ({
+                          ...prev,
+                          [player.id]: {
+                            ...prev[player.id],
+                            team: newTeam,
+                          },
+                        }));
+                        if (isHost && onUpdatePosition) {
+                          onUpdatePosition(state.x, state.y, newTeam === "A" ? "Team A" : "Team B");
+                        }
+                      }}
                       isLargeSquad={isLargeSquad}
                     />
                   );

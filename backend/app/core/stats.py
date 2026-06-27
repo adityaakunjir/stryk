@@ -2,20 +2,20 @@ from typing import Dict, Any
 
 # Starter stats based on user spec + extrapolated for missing positions
 STARTER_STATS = {
-    "ST": {"pace": 60.0, "shooting": 62.0, "passing": 50.0, "dribbling": 58.0, "defending": 35.0, "physical": 48.0, "gk": 20.0},
-    "CF": {"pace": 58.0, "shooting": 60.0, "passing": 55.0, "dribbling": 60.0, "defending": 35.0, "physical": 45.0, "gk": 20.0},
-    "LWF": {"pace": 65.0, "shooting": 55.0, "passing": 55.0, "dribbling": 62.0, "defending": 35.0, "physical": 40.0, "gk": 20.0},
-    "RWF": {"pace": 65.0, "shooting": 55.0, "passing": 55.0, "dribbling": 62.0, "defending": 35.0, "physical": 40.0, "gk": 20.0},
-    "CAM": {"pace": 55.0, "shooting": 50.0, "passing": 65.0, "dribbling": 62.0, "defending": 42.0, "physical": 45.0, "gk": 20.0},
-    "CM": {"pace": 52.0, "shooting": 45.0, "passing": 60.0, "dribbling": 58.0, "defending": 55.0, "physical": 55.0, "gk": 20.0},
-    "CDM": {"pace": 50.0, "shooting": 35.0, "passing": 55.0, "dribbling": 50.0, "defending": 62.0, "physical": 62.0, "gk": 20.0},
-    "LMF": {"pace": 62.0, "shooting": 45.0, "passing": 60.0, "dribbling": 60.0, "defending": 45.0, "physical": 45.0, "gk": 20.0},
-    "RMF": {"pace": 62.0, "shooting": 45.0, "passing": 60.0, "dribbling": 60.0, "defending": 45.0, "physical": 45.0, "gk": 20.0},
-    "LB": {"pace": 62.0, "shooting": 35.0, "passing": 50.0, "dribbling": 52.0, "defending": 60.0, "physical": 55.0, "gk": 20.0},
-    "RB": {"pace": 62.0, "shooting": 35.0, "passing": 50.0, "dribbling": 52.0, "defending": 60.0, "physical": 55.0, "gk": 20.0},
-    "CB": {"pace": 42.0, "shooting": 30.0, "passing": 48.0, "dribbling": 35.0, "defending": 65.0, "physical": 60.0, "gk": 20.0},
-    "GK": {"pace": 40.0, "shooting": 20.0, "passing": 40.0, "dribbling": 20.0, "defending": 30.0, "physical": 50.0, "gk": 59.0}, # GK averages (60+62+58+55+61)/5 = 59.2
-    "DEFAULT": {"pace": 50.0, "shooting": 50.0, "passing": 50.0, "dribbling": 50.0, "defending": 50.0, "physical": 50.0, "gk": 50.0},
+    "ST": {"pace": 60.0, "shooting": 62.0, "passing": 50.0, "dribbling": 58.0, "defending": 35.0, "physical": 48.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "CF": {"pace": 58.0, "shooting": 60.0, "passing": 55.0, "dribbling": 60.0, "defending": 35.0, "physical": 45.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "LWF": {"pace": 65.0, "shooting": 55.0, "passing": 55.0, "dribbling": 62.0, "defending": 35.0, "physical": 40.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "RWF": {"pace": 65.0, "shooting": 55.0, "passing": 55.0, "dribbling": 62.0, "defending": 35.0, "physical": 40.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "CAM": {"pace": 55.0, "shooting": 50.0, "passing": 65.0, "dribbling": 62.0, "defending": 42.0, "physical": 45.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "CM": {"pace": 52.0, "shooting": 45.0, "passing": 60.0, "dribbling": 58.0, "defending": 55.0, "physical": 55.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "CDM": {"pace": 50.0, "shooting": 35.0, "passing": 55.0, "dribbling": 50.0, "defending": 62.0, "physical": 62.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "LMF": {"pace": 62.0, "shooting": 45.0, "passing": 60.0, "dribbling": 60.0, "defending": 45.0, "physical": 45.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "RMF": {"pace": 62.0, "shooting": 45.0, "passing": 60.0, "dribbling": 60.0, "defending": 45.0, "physical": 45.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "LB": {"pace": 62.0, "shooting": 35.0, "passing": 50.0, "dribbling": 52.0, "defending": 60.0, "physical": 55.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "RB": {"pace": 62.0, "shooting": 35.0, "passing": 50.0, "dribbling": 52.0, "defending": 60.0, "physical": 55.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "CB": {"pace": 42.0, "shooting": 30.0, "passing": 48.0, "dribbling": 35.0, "defending": 65.0, "physical": 60.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
+    "GK": {"pace": 40.0, "shooting": 20.0, "passing": 40.0, "dribbling": 20.0, "defending": 30.0, "physical": 50.0, "gkDiving": 60.0, "gkHandling": 58.0, "gkKicking": 55.0, "gkReflexes": 62.0, "gkPositioning": 61.0},
+    "DEFAULT": {"pace": 50.0, "shooting": 50.0, "passing": 50.0, "dribbling": 50.0, "defending": 50.0, "physical": 50.0, "gkDiving": 50.0, "gkHandling": 50.0, "gkKicking": 50.0, "gkReflexes": 50.0, "gkPositioning": 50.0},
 }
 
 # OVR Weights per position (Extrapolated for missing ones)
@@ -32,7 +32,7 @@ OVR_WEIGHTS = {
     "LB": {"pace": 0.22, "shooting": 0.05, "passing": 0.15, "dribbling": 0.12, "defending": 0.28, "physical": 0.18},
     "RB": {"pace": 0.22, "shooting": 0.05, "passing": 0.15, "dribbling": 0.12, "defending": 0.28, "physical": 0.18},
     "CB": {"pace": 0.08, "shooting": 0.02, "passing": 0.10, "dribbling": 0.05, "defending": 0.45, "physical": 0.30},
-    "GK": {"gk": 0.85, "physical": 0.05, "pace": 0.05, "passing": 0.05},
+    "GK": {"gkDiving": 0.20, "gkHandling": 0.15, "gkKicking": 0.10, "gkReflexes": 0.20, "gkPositioning": 0.20, "physical": 0.05, "pace": 0.05, "passing": 0.05},
     "DEFAULT": {"pace": 0.17, "shooting": 0.17, "passing": 0.17, "dribbling": 0.16, "defending": 0.16, "physical": 0.17},
 }
 

@@ -26,6 +26,17 @@ export interface PlayerData {
   tackles?: number;
   saves?: number;
   intercepts?: number;
+  pace?: number;
+  shooting?: number;
+  passing?: number;
+  dribbling?: number;
+  defending?: number;
+  physical?: number;
+  gkDiving?: number;
+  gkHandling?: number;
+  gkKicking?: number;
+  gkReflexes?: number;
+  gkPositioning?: number;
 }
 
 interface PlayerContextType {
@@ -143,9 +154,20 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 assists: backendUser.assists ?? 0,
                 tackles: backendUser.tackles ?? 0,
                 saves: backendUser.saves ?? 0,
-                intercepts: backendUser.intercepts ?? 0
+                intercepts: backendUser.intercepts ?? 0,
+                pace: backendUser.pace ?? undefined,
+                shooting: backendUser.shooting ?? undefined,
+                passing: backendUser.passing ?? undefined,
+                dribbling: backendUser.dribbling ?? undefined,
+                defending: backendUser.defending ?? undefined,
+                physical: backendUser.physical ?? undefined,
+                gkDiving: backendUser.gkDiving ?? undefined,
+                gkHandling: backendUser.gkHandling ?? undefined,
+                gkKicking: backendUser.gkKicking ?? undefined,
+                gkReflexes: backendUser.gkReflexes ?? undefined,
+                gkPositioning: backendUser.gkPositioning ?? undefined
               };
-              updated.rating = calculateOvr(updated);
+              updated.rating = backendUser.overall ?? calculateOvr(updated);
               localStorage.setItem("stryk_player_data", JSON.stringify(updated));
               return updated;
             });

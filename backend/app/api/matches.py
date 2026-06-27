@@ -5,7 +5,8 @@ Endpoints for creating matches, joining, checking in, etc.
 """
 
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
+import statistics
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -1064,7 +1065,52 @@ async def submit_stats(
     if existing_stats_result.scalars().first():
         raise HTTPException(status_code=400, detail="Stats already submitted for this match")
 
-    # Format goals caps
+    # 1. Velocity Cap: Max 3 matches per 24 hours
+    twenty_four_hours_ago = datetime.utcnow() - timedelta(hours=24)
+    velocity_result = await session.execute(
+        select(MatchStats).where(MatchStats.userId == db_user.id, MatchStats.createdAt >= twenty_four_hours_ago)
+    )
+    velocity_count = len(velocity_result.scalars().all())
+    if velocity_count >= 3:
+        raise HTTPException(status_code=400, detail="Velocity limit exceeded: You have already submitted stats for 3 matches in the last 24 hours.")
+
+    # 2. Stat Cap Validation
+    if payload.goals > 50 or payload.assists > 50 or payload.saves > 50:
+        raise HTTPException(status_code=400, detail="Submitted stats exceed realistic limits (max 50 for goals/assists/saves).")
+    if payload.tackles > 100 or payload.interceptions > 100 or payload.ballRecoveries > 100:
+        raise HTTPException(status_code=400, detail="Submitted stats exceed realistic limits (max 100 for defensive actions).")
+    if payload.yellowCards > 2 or payload.redCards > 1:
+        raise HTTPException(status_code=400, detail="Invalid discipline stats.")
+
+    # 3. Outlier Flagging
+    is_flagged = False
+    flag_reason = None
+    
+    historical_stats_result = await session.execute(
+        select(MatchStats).where(MatchStats.userId == db_user.id)
+    )
+    historical_stats = historical_stats_result.scalars().all()
+    
+    if len(historical_stats) >= 5:
+        # Check goals
+        hist_goals = [s.goals for s in historical_stats]
+        avg_goals = sum(hist_goals) / len(hist_goals)
+        std_goals = statistics.stdev(hist_goals) if len(hist_goals) > 1 else 0
+        
+        # Check assists
+        hist_assists = [s.assists for s in historical_stats]
+        avg_assists = sum(hist_assists) / len(hist_assists)
+        std_assists = statistics.stdev(hist_assists) if len(hist_assists) > 1 else 0
+        
+        # We only flag if it exceeds 2 stddev AND is a meaningful number (e.g. > 2 goals)
+        if payload.goals > 2 and payload.goals > (avg_goals + 2 * std_goals):
+            is_flagged = True
+            flag_reason = f"Outlier detected: {payload.goals} goals submitted, historical average {avg_goals:.1f} (stddev {std_goals:.1f})."
+        elif payload.assists > 2 and payload.assists > (avg_assists + 2 * std_assists):
+            is_flagged = True
+            flag_reason = f"Outlier detected: {payload.assists} assists submitted, historical average {avg_assists:.1f} (stddev {std_assists:.1f})."
+
+    # Format goals caps (soft cap for stat progression calculations, but we keep the raw submitted stats below)
     format_caps = {
         "3v3": 4,
         "5v5": 5,
@@ -1105,7 +1151,9 @@ async def submit_stats(
         redCards=red_cards,
         ownGoals=payload.ownGoals,
         noShow=payload.noShow,
-        status="pending_verification"
+        status="pending_verification",
+        isFlagged=is_flagged,
+        flagReason=flag_reason
     )
 
     session.add(stats)
@@ -1472,9 +1520,15 @@ async def finalize_verifications(
                     stat.user.defending += calculate_stat_gain(3.0, stat.user.defending)
                     stat.user.passing += calculate_stat_gain(1.0, stat.user.passing)
                 
-                # Saves -> GK
+                # Saves -> gkDiving, gkReflexes, gkHandling
                 for _ in range(stat.saves):
-                    stat.user.gk += calculate_stat_gain(3.5, stat.user.gk)
+                    stat.user.gkDiving += calculate_stat_gain(1.5, stat.user.gkDiving)
+                    stat.user.gkReflexes += calculate_stat_gain(1.5, stat.user.gkReflexes)
+                    stat.user.gkHandling += calculate_stat_gain(0.5, stat.user.gkHandling)
+                
+                # Distribution Assists -> gkKicking
+                for _ in range(stat.distributionAssists):
+                    stat.user.gkKicking += calculate_stat_gain(4.0, stat.user.gkKicking)
                 
                 # Duels won -> PHY
                 for _ in range(stat.duelsWon):
@@ -1492,12 +1546,12 @@ async def finalize_verifications(
                 for _ in range(stat.clearances):
                     stat.user.defending += calculate_stat_gain(2.0, stat.user.defending)
                 
-                # Clean sheets -> DEF, PHY, GK
+                # Clean sheets -> DEF, PHY, gkPositioning
                 if stat.cleanSheet:
                     stat.user.defending += calculate_stat_gain(5.0, stat.user.defending)
                     stat.user.physical += calculate_stat_gain(3.0, stat.user.physical)
                     if stat.user.position == "GK":
-                        stat.user.gk += calculate_stat_gain(5.0, stat.user.gk)
+                        stat.user.gkPositioning += calculate_stat_gain(5.0, stat.user.gkPositioning)
                 
                 # Cap attributes at 99.0
                 stat.user.pace = min(99.0, stat.user.pace)
@@ -1506,7 +1560,11 @@ async def finalize_verifications(
                 stat.user.dribbling = min(99.0, stat.user.dribbling)
                 stat.user.defending = min(99.0, stat.user.defending)
                 stat.user.physical = min(99.0, stat.user.physical)
-                stat.user.gk = min(99.0, stat.user.gk)
+                stat.user.gkDiving = min(99.0, stat.user.gkDiving)
+                stat.user.gkHandling = min(99.0, stat.user.gkHandling)
+                stat.user.gkKicking = min(99.0, stat.user.gkKicking)
+                stat.user.gkReflexes = min(99.0, stat.user.gkReflexes)
+                stat.user.gkPositioning = min(99.0, stat.user.gkPositioning)
                 
                 # Recalculate Overall
                 stats_dict = {
@@ -1516,7 +1574,11 @@ async def finalize_verifications(
                     "dribbling": stat.user.dribbling,
                     "defending": stat.user.defending,
                     "physical": stat.user.physical,
-                    "gk": stat.user.gk
+                    "gkDiving": stat.user.gkDiving,
+                    "gkHandling": stat.user.gkHandling,
+                    "gkKicking": stat.user.gkKicking,
+                    "gkReflexes": stat.user.gkReflexes,
+                    "gkPositioning": stat.user.gkPositioning
                 }
                 stat.user.overall = calculate_ovr(stat.user.position, stats_dict)
 

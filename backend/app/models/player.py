@@ -35,7 +35,11 @@ class UserBase(SQLModel):
     dribbling: float = Field(default=60.0)
     defending: float = Field(default=60.0)
     physical: float = Field(default=60.0)
-    gk: float = Field(default=60.0)
+    gkDiving: float = Field(default=60.0)
+    gkHandling: float = Field(default=60.0)
+    gkKicking: float = Field(default=60.0)
+    gkReflexes: float = Field(default=60.0)
+    gkPositioning: float = Field(default=60.0)
 
     matchesPlayed: int = Field(default=0, ge=0)
     wins: int = Field(default=0, ge=0)

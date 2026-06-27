@@ -143,6 +143,9 @@ class MatchStatsBase(SQLModel):
     noShow: bool = Field(default=False)
     status: str = Field(default="pending_verification", max_length=30)
     verificationNote: Optional[str] = Field(default=None, max_length=255)
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    isFlagged: bool = Field(default=False)
+    flagReason: Optional[str] = Field(default=None, max_length=500)
 
 
 class MatchStats(MatchStatsBase, table=True):
@@ -169,6 +172,22 @@ class MatchVerification(MatchVerificationBase, table=True):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
     match: Match = Relationship(back_populates="verifications")
+
+
+# --- Mutual Verify Flag ---
+
+class MutualVerifyFlagBase(SQLModel):
+    playerAId: str = Field(index=True, foreign_key="users.id")
+    playerBId: str = Field(index=True, foreign_key="users.id")
+    mutualVerifyCount: int = Field(default=0)
+    totalVerifyCount: int = Field(default=0)
+    status: str = Field(default="pending_review", max_length=30)
+
+
+class MutualVerifyFlag(MutualVerifyFlagBase, table=True):
+    __tablename__ = "mutual_verify_flags"
+    id: str = Field(default_factory=lambda: uuid.uuid4().hex, primary_key=True)
+    flaggedAt: datetime = Field(default_factory=datetime.utcnow)
 
 
 # --- XP Log ---
