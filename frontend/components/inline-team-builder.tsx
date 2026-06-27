@@ -205,7 +205,7 @@ function DraggablePlayerToken({
         </div>
         <div
           className="relative mt-1.5 flex flex-col items-center pointer-events-auto cursor-pointer px-1 w-full"
-          onPointerDown={(e) => {
+          onDoubleClick={(e) => {
             e.stopPropagation();
             onLabelClick(player);
           }}
@@ -283,7 +283,7 @@ function DraggablePlayerToken({
         {/* Name */}
         <div
           className="relative mt-1 flex flex-col items-center pointer-events-auto cursor-pointer px-1 w-full"
-          onPointerDown={(e) => {
+          onDoubleClick={(e) => {
             e.stopPropagation();
             onLabelClick(player);
           }}
@@ -798,9 +798,9 @@ export function InlineTeamBuilder({
       )}
 
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
-        <div className="flex flex-col flex-1 overflow-hidden relative bg-transparent">
+        <div className="flex flex-col flex-1 relative bg-transparent">
           {/* The Pitch (Main Content) */}
-          <div ref={pitchRef} className="flex-1 relative overflow-hidden" 
+          <div ref={pitchRef} className="flex-1 relative" 
                style={{ background: 'radial-gradient(circle at 50% 50%, rgba(212,248,41,0.12), transparent 25%), repeating-linear-gradient(0deg, #31583b, #31583b 52px, #2b5035 52px, #2b5035 104px)' }}>
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(0deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:44px_44px]" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.12)_58%,rgba(0,0,0,0.32)_100%)]" />
