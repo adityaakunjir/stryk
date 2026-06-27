@@ -48,6 +48,7 @@
 html, body {
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
   touch-action: manipulation; /* Prevents double-tap zoom on most browsers */
 }
 
@@ -55,9 +56,6 @@ html, body {
 input, textarea, select {
   font-size: 16px !important;
 }
-  overscroll-behavior: none;
-}
-
 body {
   background: var(--stryk-bg);
   color: var(--foreground);
