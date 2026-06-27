@@ -36,8 +36,8 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_mutual_verify_flags_playerAId'), 'mutual_verify_flags', ['playerAId'], unique=False)
     op.create_index(op.f('ix_mutual_verify_flags_playerBId'), 'mutual_verify_flags', ['playerBId'], unique=False)
-    op.add_column('match_stats', sa.Column('createdAt', sa.DateTime(), nullable=False))
-    op.add_column('match_stats', sa.Column('isFlagged', sa.Boolean(), nullable=False))
+    op.add_column('match_stats', sa.Column('createdAt', sa.DateTime(), nullable=False, server_default=sa.text('now()')))
+    op.add_column('match_stats', sa.Column('isFlagged', sa.Boolean(), nullable=False, server_default=sa.text('false')))
     op.add_column('match_stats', sa.Column('flagReason', sqlmodel.sql.sqltypes.AutoString(length=500), nullable=True))
     # ### end Alembic commands ###
 
