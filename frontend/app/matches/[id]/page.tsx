@@ -561,6 +561,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const unassignedPlayers = participants.filter(p => p.team !== "A" && p.team !== "Team A" && p.team !== "B" && p.team !== "Team B");
   const checkedInCount = participants.filter(p => p.checkedIn).length;
   const hostParticipant = participants.find(p => p.userId === match.hostId);
+  const isHost = currentUserId === match.hostId;
   const hostName = hostParticipant?.user?.fullName?.split(" ")[0] || hostParticipant?.user?.username || "Host";
   const playerFill = Math.min(100, Math.round((participants.length / Math.max(match.maxPlayers, 1)) * 100));
   const statusLabel = match.status === "open" ? "Open Match" : match.status.replace(/_/g, " ");
@@ -619,7 +620,6 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 <MapPin size={13} className="text-[#A28B52]" />
                 <span>{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
               </div>
-              <div className="flex items-center gap-1.5 text-[12px] font-bold text-[#151515]/62">
               <div className="flex items-center gap-2 text-[11px] font-bold text-[#151515]/60">
                 <span>{formatDateTime(match.matchDate)}</span>
               </div>
@@ -632,7 +632,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           <div className="flex-1 flex gap-2">
             {!isJoined ? (
               <button 
-                onClick={() => setShowJoinModal(true)}
+                onClick={handleJoinMatch}
                 disabled={playerFill >= 100}
                 className="flex-1 h-12 rounded-[1.25rem] bg-[#151515] text-[#D4F829] text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(0,0,0,0.15)] disabled:opacity-50 disabled:cursor-not-allowed transition hover:-translate-y-0.5 active:translate-y-0"
               >
