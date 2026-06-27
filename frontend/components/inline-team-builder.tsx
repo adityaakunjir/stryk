@@ -74,41 +74,50 @@ const getAutoPosition = (x: number, y: number, team: "A" | "B" | null) => {
 
   if (isTeamA) {
     // Team A (White) plays downwards towards y=100
-    if (y < 12) return "GK";
-    if (y < 35) {
-      if (x < 35) return "LB"; // Left side of pitch
-      if (x > 65) return "RB"; // Right side of pitch
+    if (y <= 12) return "GK"; // Inside penalty area
+    
+    if (y <= 25) { // Defense (up to just outside the D)
+      if (x <= 30) return "LB";
+      if (x >= 70) return "RB";
       return "CB";
     }
-    if (y < 60) {
-      if (x < 35) return "LMF";
-      if (x > 65) return "RMF";
-      if (y < 42) return "DMF";
-      if (y > 48) return "AMF";
-      return "CMF";
+    
+    if (y <= 42) { // Midfield (from defense to top of center circle)
+      if (x <= 30) return "LMF";
+      if (x >= 70) return "RMF";
+      if (y <= 30) return "DMF";
+      if (y <= 37) return "CMF";
+      return "AMF";
     }
-    if (x < 35) return "LWF";
-    if (x > 65) return "RWF";
-    if (y < 75) return "SS";
+    
+    // Attack (center circle to opponent goal)
+    if (x <= 30) return "LWF";
+    if (x >= 70) return "RWF";
+    if (y <= 48) return "SS";
     return "CF";
+    
   } else {
     // Team B (Black) plays upwards towards y=0
-    if (y > 88) return "GK";
-    if (y > 65) {
-      if (x < 35) return "LB"; // Left side of pitch
-      if (x > 65) return "RB"; // Right side of pitch
+    if (y >= 88) return "GK"; // Inside penalty area
+    
+    if (y >= 75) { // Defense
+      if (x <= 30) return "LB";
+      if (x >= 70) return "RB";
       return "CB";
     }
-    if (y > 40) {
-      if (x < 35) return "LMF";
-      if (x > 65) return "RMF";
-      if (y > 58) return "DMF";
-      if (y < 52) return "AMF";
-      return "CMF";
+    
+    if (y >= 58) { // Midfield
+      if (x <= 30) return "LMF";
+      if (x >= 70) return "RMF";
+      if (y >= 70) return "DMF";
+      if (y >= 63) return "CMF";
+      return "AMF";
     }
-    if (x < 35) return "LWF";
-    if (x > 65) return "RWF";
-    if (y > 25) return "SS";
+    
+    // Attack
+    if (x <= 30) return "LWF";
+    if (x >= 70) return "RWF";
+    if (y >= 52) return "SS";
     return "CF";
   }
 };
