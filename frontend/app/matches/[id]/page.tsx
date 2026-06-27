@@ -476,6 +476,28 @@ export default function MatchDetailsPage({ params }: PageProps) {
     setShowCloseModal(true);
   };
 
+  const handleCompleteMatch = async () => {
+    if (!confirm("Are you sure you want to complete the match? This will record stats for all verified players and finalize the match. Unverified stats will be voided.")) return;
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/matches/${matchId}/complete`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(data.message || "Match completed successfully!");
+        router.push("/matches");
+      } else {
+        toast.error(data.message || "Failed to complete match.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleKickPlayer = async (userId: string) => {
     if (!confirm("Are you sure you want to kick this player?")) return;
     setActionLoading(true);
@@ -862,6 +884,19 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     >
                       <Lock size={13} strokeWidth={2.5} />
                       Lock Squads & Open Stat Submission
+                    </button>
+                  </div>
+                )}
+
+                {currentUserId === match.hostId && match.status === "closed" && (
+                  <div className="pt-1">
+                    <button
+                      onClick={handleCompleteMatch}
+                      disabled={actionLoading}
+                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-[0_0_20px_rgba(212,248,41,0.4)]"
+                    >
+                      <Trophy size={13} strokeWidth={2.5} />
+                      Complete Match & Record Stats
                     </button>
                   </div>
                 )}

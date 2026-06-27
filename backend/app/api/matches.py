@@ -211,7 +211,7 @@ async def get_available_players(
 
 @router.get("/")
 async def get_all_matches(session: AsyncSession = Depends(get_session)):
-    statement = select(Match).options(selectinload(Match.players).selectinload(MatchPlayer.user))
+    statement = select(Match).where(Match.status != "completed").options(selectinload(Match.players).selectinload(MatchPlayer.user))
     result = await session.execute(statement)
     matches = result.scalars().all()
     return [_serialize_match(m) for m in matches]
@@ -1368,8 +1368,8 @@ async def verify_stats(
     return {"success": True, "message": "Vote recorded"}
 
 
-@router.post("/{match_id}/finalize-verifications")
-async def finalize_verifications(
+@router.post("/{match_id}/complete")
+async def complete_match(
     match_id: str,
     user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_session)
@@ -1593,5 +1593,6 @@ async def finalize_verifications(
             
         results.append({"userId": target_id, "status": stat.status})
 
+    match.status = "completed"
     await session.commit()
-    return {"success": True, "message": "Verifications finalized", "results": results}
+    return {"success": True, "message": "Match completed successfully and stats recorded.", "results": results}
