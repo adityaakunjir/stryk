@@ -9,9 +9,11 @@ interface CloseMatchModalProps {
   isOpen: boolean;
   onClose: () => void;
   matchId: string;
+  teamAName?: string;
+  teamBName?: string;
 }
 
-export function CloseMatchModal({ isOpen, onClose, matchId }: CloseMatchModalProps) {
+export function CloseMatchModal({ isOpen, onClose, matchId, teamAName = "Team A", teamBName = "Team B" }: CloseMatchModalProps) {
   const [scoreA, setScoreA] = useState<string>("");
   const [scoreB, setScoreB] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -79,7 +81,7 @@ export function CloseMatchModal({ isOpen, onClose, matchId }: CloseMatchModalPro
 
           <div className="flex items-center justify-center gap-4 mb-8">
             <div className="flex flex-col items-center gap-2">
-              <span className="text-xs font-bold text-white/60 uppercase tracking-widest">Team A</span>
+              <span className="text-xs font-bold text-white/60 uppercase tracking-widest truncate max-w-[80px]" title={teamAName}>{teamAName}</span>
               <input
                 type="number"
                 value={scoreA}
@@ -92,7 +94,7 @@ export function CloseMatchModal({ isOpen, onClose, matchId }: CloseMatchModalPro
             <div className="text-2xl font-display text-white/40">-</div>
 
             <div className="flex flex-col items-center gap-2">
-              <span className="text-xs font-bold text-white/60 uppercase tracking-widest">Team B</span>
+              <span className="text-xs font-bold text-white/60 uppercase tracking-widest truncate max-w-[80px]" title={teamBName}>{teamBName}</span>
               <input
                 type="number"
                 value={scoreB}

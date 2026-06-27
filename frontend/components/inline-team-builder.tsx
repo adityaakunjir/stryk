@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Check, ChevronUp, Crown, Grip, Loader2, Save, Shield, Sparkles, Users } from "lucide-react";
+import { Check, ChevronUp, Crown, Grip, Loader2, Save, Shield, Sparkles, Users, Pencil } from "lucide-react";
 import {
   DndContext,
   KeyboardSensor,
@@ -60,8 +60,8 @@ interface InlineTeamBuilderProps {
 function TeamChip({ label, value, tone }: { label: string; value: number; tone: "lime" | "gold" }) {
   const active = tone === "lime";
   return (
-    <div className="rounded-[1rem] border border-[#151515]/10 bg-[#151515] px-3 py-2 shadow-[0_12px_28px_rgba(0,0,0,0.22)]">
-      <div className={`text-[8px] font-black uppercase tracking-[0.2em] ${active ? "text-[#D4F829]" : "text-[#A28B52]"}`}>
+    <div className="rounded-[1.25rem] border border-white/5 bg-[#151515] px-3 py-2 shadow-inner">
+      <div className={`text-[9px] font-black uppercase tracking-widest truncate ${active ? "text-[#D4F829]" : "text-[#8A6A28]"}`}>
         {label}
       </div>
       <div className="mt-1 flex items-center justify-between">
@@ -770,8 +770,8 @@ export function InlineTeamBuilder({
         <TeamChip label={localTeamBName} value={statsB.count} tone="lime" />
       </div>
 
-      <div className={`w-full flex flex-col relative bg-[#080a08] rounded-[1.75rem] overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.48)] select-none ${pitchHeightClass} border border-[#D4F829]/15`}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_0%,rgba(212,248,41,0.13),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.045),transparent_30%)]" />
+      <div className={`w-full flex flex-col relative bg-[#080a08] rounded-[1.75rem] overflow-visible shadow-[0_24px_60px_rgba(0,0,0,0.48)] select-none ${pitchHeightClass} border border-[#D4F829]/15`}>
+      <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] overflow-hidden bg-[radial-gradient(circle_at_78%_0%,rgba(212,248,41,0.13),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.045),transparent_30%)]" />
       
       {/* Top Header */}
       {isHost && (
@@ -847,11 +847,12 @@ export function InlineTeamBuilder({
                   />
                 ) : (
                   <span 
-                    className="text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] cursor-pointer hover:text-[#D4F829] transition"
+                    className="group flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] cursor-pointer hover:text-[#D4F829] transition"
                     onClick={() => setIsEditingB(true)}
                     title="Click to edit team name"
                   >
                     {localTeamBName}
+                    <Pencil size={10} className="opacity-40 group-hover:opacity-100 transition-opacity" />
                   </span>
                 )}
                 <span className="ml-1 text-[9px] font-bold text-[#A28B52]">{statsB.count}</span>
@@ -880,11 +881,12 @@ export function InlineTeamBuilder({
                   />
                 ) : (
                   <span 
-                    className="text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] cursor-pointer hover:text-[#D4F829] transition"
+                    className="group flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] cursor-pointer hover:text-[#D4F829] transition"
                     onClick={() => setIsEditingA(true)}
                     title="Click to edit team name"
                   >
                     {localTeamAName}
+                    <Pencil size={10} className="opacity-40 group-hover:opacity-100 transition-opacity" />
                   </span>
                 )}
                 <span className="ml-1 text-[9px] font-bold text-[#4ADE80]">{statsA.count}</span>

@@ -620,13 +620,94 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 <span>{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
               </div>
               <div className="flex items-center gap-1.5 text-[12px] font-bold text-[#151515]/62">
-                <Calendar size={13} className="text-[#A28B52]" />
+              <div className="flex items-center gap-2 text-[11px] font-bold text-[#151515]/60">
                 <span>{formatDateTime(match.matchDate)}</span>
               </div>
             </div>
+          </div>
+        </header>
 
-            <div className="mt-4 grid w-full grid-cols-3 gap-2">
-              <MatchMetric icon={<Users size={13} />} label="Players" value={`${participants.length}/${match.maxPlayers}`} />
+        {/* Action Bar (Join/Leave, Share) */}
+        <div className="shrink-0 flex items-center gap-2 mb-4">
+          <div className="flex-1 flex gap-2">
+            {!isJoined ? (
+              <button 
+                onClick={() => setShowJoinModal(true)}
+                disabled={playerFill >= 100}
+                className="flex-1 h-12 rounded-[1.25rem] bg-[#151515] text-[#D4F829] text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(0,0,0,0.15)] disabled:opacity-50 disabled:cursor-not-allowed transition hover:-translate-y-0.5 active:translate-y-0"
+              >
+                Join Match
+              </button>
+            ) : (
+              <button 
+                onClick={handleLeaveMatch}
+                disabled={match.status !== "open"}
+                className="flex-1 h-12 rounded-[1.25rem] border-2 border-[#151515] text-[#151515] bg-transparent text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-[#151515]/5"
+              >
+                Leave Match
+              </button>
+            )}
+            {isHost && match.status === "open" && (
+              <button 
+                onClick={handleLockSquads}
+                className="flex-1 h-12 rounded-[1.25rem] bg-[#D4F829] text-[#151515] border border-[#151515]/10 text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.25)] transition hover:-translate-y-0.5 active:translate-y-0"
+              >
+                Lock Squads
+              </button>
+            )}
+          </div>
+          
+          <button 
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: `Join ${match.title}`,
+                  text: `Join this 5v5 match at ${match.location}!`,
+                  url: window.location.href,
+                });
+              }
+            }}
+            className="w-12 h-12 shrink-0 rounded-[1.25rem] border-2 border-[#151515] text-[#151515] flex items-center justify-center hover:bg-[#151515] hover:text-[#E5DCC5] transition shadow-sm"
+          >
+            <Share2 size={16} />
+          </button>
+        </div>
+
+        {/* Lobby Status Header */}
+        <header className="shrink-0 relative mb-4 rounded-[1.5rem] bg-[#151515] p-1 shadow-2xl">
+          <div className="relative rounded-[1.25rem] border border-white/10 bg-gradient-to-br from-[#1c1c1c] to-[#111] p-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 text-[#D4F829]">
+                <Users size={16} />
+                <span className="text-xs font-black uppercase tracking-widest">Lobby Status</span>
+              </div>
+              <div className="px-2 py-0.5 rounded text-[9px] font-black bg-[#D4F829] text-black">
+                {participants.length} / {match.maxPlayers}
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <div className="flex-1 bg-black/40 rounded-[1rem] p-3 text-center border border-white/5 relative overflow-hidden">
+                <div className="text-[9px] font-black uppercase tracking-widest text-[#D4F829] mb-1 truncate">{match?.teamAName || "TEAM A"}</div>
+                <div className="text-2xl font-display text-white">{teamAPlayers.length}</div>
+                <div className="absolute top-2 right-2 size-1.5 rounded-full bg-[#D4F829] animate-pulse" />
+              </div>
+              
+              <div className="flex-1 bg-black/40 rounded-[1rem] p-3 text-center border border-white/5 relative overflow-hidden">
+                <div className="text-[9px] font-black uppercase tracking-widest text-[#8A6A28] mb-1 truncate">FREE POOL</div>
+                <div className="text-2xl font-display text-white">{unassignedPlayers.length}</div>
+                <div className="absolute top-2 right-2 size-1.5 rounded-full bg-[#8A6A28]" />
+              </div>
+
+              <div className="flex-1 bg-black/40 rounded-[1rem] p-3 text-center border border-white/5 relative overflow-hidden">
+                <div className="text-[9px] font-black uppercase tracking-widest text-[#D4F829] mb-1 truncate">{match?.teamBName || "TEAM B"}</div>
+                <div className="text-2xl font-display text-white">{teamBPlayers.length}</div>
+                <div className="absolute top-2 right-2 size-1.5 rounded-full bg-[#D4F829] animate-pulse" />
+              </div>
+            </div>
+            
+            <div className="mt-4 flex gap-4 border-t border-white/10 pt-4 px-2">
+              <MatchMetric icon={<Users size={13} />} label="Players" value={`${participants.length}`} />
               <MatchMetric icon={<CheckCircle2 size={13} />} label="Checked" value={`${checkedInCount}`} />
               <MatchMetric icon={<Crown size={13} />} label="Host" value={hostName.split(" ")[0] || "Host"} />
             </div>
@@ -944,6 +1025,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
           isOpen={showCloseModal}
           onClose={() => setShowCloseModal(false)}
           matchId={matchId}
+          teamAName={match?.teamAName}
+          teamBName={match?.teamBName}
         />
       )}
     </main>
