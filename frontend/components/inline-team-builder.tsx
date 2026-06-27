@@ -791,41 +791,8 @@ export function InlineTeamBuilder({
             <div className="absolute bottom-[calc(1rem+20px)] left-1/2 w-16 h-8 border-[1.5px] border-b-0 border-white/40 rounded-t-full -translate-x-1/2 pointer-events-none" />
 
 
-            {/* Pitch Top Header (Team A) */}
+            {/* Pitch Top Header (Team B) */}
             <div className="absolute top-0 inset-x-0 h-10 flex items-center justify-between px-4 bg-gradient-to-b from-[#080a08]/80 to-transparent z-10 pointer-events-none">
-              <div className="flex items-center gap-1.5 text-[#E5DCC5] pointer-events-auto">
-                <Shield size={10} className="opacity-70" />
-                {isEditingA ? (
-                  <input
-                    type="text"
-                    autoFocus
-                    maxLength={15}
-                    value={localTeamAName}
-                    onChange={(e) => setLocalTeamAName(e.target.value)}
-                    onBlur={() => handleSaveTeamName("A")}
-                    onKeyDown={(e) => e.key === "Enter" && handleSaveTeamName("A")}
-                    className="bg-black/50 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
-                  />
-                ) : (
-                  <span 
-                    className="text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] cursor-pointer hover:text-[#D4F829] transition"
-                    onClick={() => setIsEditingA(true)}
-                    title="Click to edit team name"
-                  >
-                    {localTeamAName}
-                  </span>
-                )}
-                <span className="ml-1 text-[9px] font-bold text-[#A28B52]">{statsA.count}</span>
-              </div>
-              <div className="flex items-center gap-2 pointer-events-none">
-                <div className="h-4 px-2 rounded-full bg-[#1F7A38]/20 border border-[#4ADE80]/30 flex items-center justify-center">
-                  <span className="text-[9px] font-black text-[#4ADE80]">{statsA.avgOvr}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Pitch Bottom Header (Team B) */}
-            <div className="absolute bottom-0 inset-x-0 h-10 flex items-center justify-between px-4 bg-gradient-to-t from-[#080a08]/80 to-transparent z-10 pointer-events-none">
               <div className="flex items-center gap-1.5 text-[#E5DCC5] pointer-events-auto">
                 <Shield size={10} className="opacity-70" />
                 {isEditingB ? (
@@ -853,6 +820,39 @@ export function InlineTeamBuilder({
               <div className="flex items-center gap-2 pointer-events-none">
                 <div className="h-4 px-2 rounded-full bg-[#1F7A38]/20 border border-[#4ADE80]/30 flex items-center justify-center">
                   <span className="text-[9px] font-black text-[#4ADE80]">{statsB.avgOvr}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Pitch Bottom Header (Team A) */}
+            <div className="absolute bottom-0 inset-x-0 h-10 flex items-center justify-between px-4 bg-gradient-to-t from-[#080a08]/80 to-transparent z-10 pointer-events-none">
+              <div className="flex items-center gap-1.5 text-[#E5DCC5] pointer-events-auto">
+                <Shield size={10} className="opacity-70" />
+                {isEditingA ? (
+                  <input
+                    type="text"
+                    autoFocus
+                    maxLength={15}
+                    value={localTeamAName}
+                    onChange={(e) => setLocalTeamAName(e.target.value)}
+                    onBlur={() => handleSaveTeamName("A")}
+                    onKeyDown={(e) => e.key === "Enter" && handleSaveTeamName("A")}
+                    className="bg-black/50 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
+                  />
+                ) : (
+                  <span 
+                    className="text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] cursor-pointer hover:text-[#D4F829] transition"
+                    onClick={() => setIsEditingA(true)}
+                    title="Click to edit team name"
+                  >
+                    {localTeamAName}
+                  </span>
+                )}
+                <span className="ml-1 text-[9px] font-bold text-[#A28B52]">{statsA.count}</span>
+              </div>
+              <div className="flex items-center gap-2 pointer-events-none">
+                <div className="h-4 px-2 rounded-full bg-[#1F7A38]/20 border border-[#4ADE80]/30 flex items-center justify-center">
+                  <span className="text-[9px] font-black text-[#4ADE80]">{statsA.avgOvr}</span>
                 </div>
               </div>
             </div>
