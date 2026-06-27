@@ -16,11 +16,7 @@ export function ClientBackButton({ className = "", iconSize = 18, fallbackRoute 
   return (
     <button
       onClick={() => {
-        if (window.history.length > 2) {
-          router.back();
-        } else {
-          router.push(fallbackRoute);
-        }
+        router.back();
       }}
       className={className}
     >

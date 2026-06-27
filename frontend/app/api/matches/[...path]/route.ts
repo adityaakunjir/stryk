@@ -90,8 +90,10 @@ async function proxyRequest(req: NextRequest, path: string[]) {
               await triggerPusherEvent(channelName, "team-assigned", { team: parsedBody.team, participantId: parsedBody.participantId });
             } else if (path.length === 2 && path[1] === "submit-stats") {
               await triggerPusherEvent(channelName, "stats-submitted", {});
-            } else if (subpath === "balance" || (path.length === 2 && path[1] === "save-teams")) {
+            } else if (subpath === "balance") {
               await triggerPusherEvent(channelName, "teams-balanced", {});
+            } else if (path.length === 2 && path[1] === "save-teams") {
+              await triggerPusherEvent(channelName, "teams-saved", {});
             } else if (path.length === 2 && path[1] === "invite") {
               const receiverId = parsedBody.receiverId;
               if (receiverId) {

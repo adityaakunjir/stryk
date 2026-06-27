@@ -212,6 +212,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
       addNotification("Teams have been auto-balanced by AI!", "success");
       fetchMatchDetails();
     });
+    channel.bind("teams-saved", () => {
+      addNotification("Squad tactics updated", "success");
+      fetchMatchDetails();
+    });
     channel.bind("match-closed", () => {
       addNotification("Match has been closed! Opening stats submission...", "warning");
       fetchMatchDetails();
@@ -234,6 +238,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       channel.unbind("team-assigned", handleTeamAssigned);
       channel.unbind("player-checked-in", handleCheckedIn);
       channel.unbind("teams-balanced");
+      channel.unbind("teams-saved");
       channel.unbind("match-closed");
       channel.unbind("match-started");
       channel.unbind("stats-submitted");
@@ -395,13 +400,13 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
-  const handleSaveTeams = async (teamA: string[], teamB: string[]) => {
+  const handleSaveTeams = async (positions: any[]) => {
     setActionLoading(true);
     try {
       const res = await fetch(`/api/matches/${matchId}/save-teams`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ teamA, teamB })});
+        body: JSON.stringify({ positions })});
 
       const data = await res.json();
       if (data.success) {

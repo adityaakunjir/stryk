@@ -27,6 +27,8 @@ interface Player {
   position: string | null;
   playStyle: string | null;
   team: string | null; // "Team A", "Team B", or null
+  x?: number; // Backend provided X
+  y?: number; // Backend provided Y
 }
 
 interface PlayerState {
@@ -39,7 +41,7 @@ interface PlayerState {
 
 interface InlineTeamBuilderProps {
   participants: any[];
-  onSaveTeams: (teamA: string[], teamB: string[]) => Promise<void>;
+  onSaveTeams: (positions: any[]) => Promise<void>;
   isHost: boolean;
   currentUserId: string | null;
   onJoinTeam: (team: "Team A" | "Team B" | null) => Promise<void>;
@@ -65,44 +67,46 @@ function TeamChip({ label, value, tone }: { label: string; value: number; tone: 
 }
 
 // --- Helpers ---
-const getAutoPosition = (x: number, y: number) => {
-  if (y <= 50) {
-    // Team A (playing down)
-    if (y < 10) return "GK";
-    if (y < 25) {
+const getAutoPosition = (x: number, y: number, team: "A" | "B" | null) => {
+  const isTeamA = team === "A" || (!team && y <= 50);
+
+  if (isTeamA) {
+    // Team A (playing down, towards y=100)
+    if (y < 15) return "GK";
+    if (y < 35) {
       if (x < 30) return "RB";
       if (x > 70) return "LB";
       return "CB";
     }
-    if (y < 40) {
+    if (y < 50) {
       if (x < 30) return "RMF";
       if (x > 70) return "LMF";
-      if (y < 32) return "DMF";
-      if (y > 36) return "AMF";
+      if (y < 42) return "DMF";
+      if (y > 45) return "AMF";
       return "CMF";
     }
     if (x < 30) return "RWF";
     if (x > 70) return "LWF";
-    if (y < 45) return "SS";
+    if (y < 65) return "SS";
     return "CF";
   } else {
-    // Team B (playing up)
-    if (y > 90) return "GK";
-    if (y > 75) {
+    // Team B (playing up, towards y=0)
+    if (y > 85) return "GK";
+    if (y > 65) {
       if (x < 30) return "LB";
       if (x > 70) return "RB";
       return "CB";
     }
-    if (y > 60) {
+    if (y > 50) {
       if (x < 30) return "LMF";
       if (x > 70) return "RMF";
-      if (y > 68) return "DMF";
-      if (y < 64) return "AMF";
+      if (y > 58) return "DMF";
+      if (y < 55) return "AMF";
       return "CMF";
     }
     if (x < 30) return "LWF";
     if (x > 70) return "RWF";
-    if (y > 55) return "SS";
+    if (y > 35) return "SS";
     return "CF";
   }
 };
@@ -374,44 +378,34 @@ export function InlineTeamBuilder({
     
     setPlayers(mappedPlayers);
 
-    // Load states from LocalStorage or initialize
-    const savedStatesStr = matchId ? localStorage.getItem(`match_${matchId}_squad_state`) : null;
-    const savedStates: Record<string, PlayerState> = savedStatesStr ? JSON.parse(savedStatesStr) : {};
-
+    // Initialize states from participant data (X and Y provided by backend)
     const newStates: Record<string, PlayerState> = {};
     
     mappedPlayers.forEach((p) => {
-      if (savedStates[p.id]) {
+      if (p.team === "Team A" || p.team === "A") {
         newStates[p.id] = {
-          ...savedStates[p.id],
-          team: p.team === "Team A" || p.team === "A" ? "A" : p.team === "Team B" || p.team === "B" ? "B" : null,
+          id: p.id,
+          x: p.x ?? (20 + Math.random() * 60),
+          y: p.y ?? (15 + Math.random() * 30),
+          team: "A",
+          customLabel: p.position || "CMF",
+        };
+      } else if (p.team === "Team B" || p.team === "B") {
+        newStates[p.id] = {
+          id: p.id,
+          x: p.x ?? (20 + Math.random() * 60),
+          y: p.y ?? (65 + Math.random() * 30),
+          team: "B",
+          customLabel: p.position || "CMF",
         };
       } else {
-        if (p.team === "Team A" || p.team === "A") {
-          newStates[p.id] = {
-            id: p.id,
-            x: 20 + Math.random() * 60,
-            y: 15 + Math.random() * 30, // Top half
-            team: "A",
-            customLabel: p.position || "CMF",
-          };
-        } else if (p.team === "Team B" || p.team === "B") {
-          newStates[p.id] = {
-            id: p.id,
-            x: 20 + Math.random() * 60,
-            y: 65 + Math.random() * 30, // Bottom half
-            team: "B",
-            customLabel: p.position || "CMF",
-          };
-        } else {
-          newStates[p.id] = {
-            id: p.id,
-            x: null,
-            y: null,
-            team: null,
-            customLabel: p.position || "CMF",
-          };
-        }
+        newStates[p.id] = {
+          id: p.id,
+          x: null,
+          y: null,
+          team: null,
+          customLabel: p.position || "CMF",
+        };
       }
     });
 
@@ -467,9 +461,9 @@ export function InlineTeamBuilder({
     let nextState = { ...playerStates };
 
     if (droppedOnPitch) {
-      const autoPos = getAutoPosition(percentX, percentY);
       // Determine team based on Y
       const newTeam = percentY <= 50 ? "A" : "B";
+      const autoPos = getAutoPosition(percentX, percentY, newTeam);
       
       nextState = {
         ...nextState,
@@ -499,10 +493,14 @@ export function InlineTeamBuilder({
     }
 
     if (isHost) {
-      const teamAIds = Object.values(nextState).filter(s => s.team === "A").map(s => s.id);
-      const teamBIds = Object.values(nextState).filter(s => s.team === "B").map(s => s.id);
+      const positionsPayload = Object.values(nextState).map(s => ({
+        id: s.id,
+        team: s.team === "A" ? "Team A" : s.team === "B" ? "Team B" : null,
+        x: s.x,
+        y: s.y
+      }));
       setIsSaving(true);
-      onSaveTeams(teamAIds, teamBIds).catch(console.error).finally(() => setIsSaving(false));
+      onSaveTeams(positionsPayload).catch(console.error).finally(() => setIsSaving(false));
     }
   };
 
