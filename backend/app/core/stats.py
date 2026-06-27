@@ -18,6 +18,28 @@ STARTER_STATS = {
     "DEFAULT": {"pace": 50.0, "shooting": 50.0, "passing": 50.0, "dribbling": 50.0, "defending": 50.0, "physical": 50.0, "gkDiving": 50.0, "gkHandling": 50.0, "gkKicking": 50.0, "gkReflexes": 50.0, "gkPositioning": 50.0},
 }
 
+PLAYSTYLE_MODIFIERS = {
+    "Speedster": {"pace": 10.0, "dribbling": 5.0},
+    "Playmaker": {"passing": 10.0, "dribbling": 5.0},
+    "Poacher": {"shooting": 10.0, "pace": 5.0},
+    "Box-to-Box": {"physical": 8.0, "defending": 5.0, "passing": 3.0}
+}
+
+def get_initial_stats(position: str, play_style: str) -> dict:
+    """Get the initial starting stats based on position and play style."""
+    pos = position.upper() if position else "DEFAULT"
+    if pos not in STARTER_STATS:
+        pos = "DEFAULT"
+        
+    base = STARTER_STATS[pos].copy()
+    
+    if play_style and play_style in PLAYSTYLE_MODIFIERS:
+        for stat, val in PLAYSTYLE_MODIFIERS[play_style].items():
+            if stat in base:
+                base[stat] += val
+                
+    return base
+
 # OVR Weights per position (Extrapolated for missing ones)
 OVR_WEIGHTS = {
     "ST": {"pace": 0.22, "shooting": 0.30, "passing": 0.12, "dribbling": 0.20, "defending": 0.04, "physical": 0.12},

@@ -176,8 +176,42 @@ async def patch_my_profile(
         )
 
     update_data = profile_update.model_dump(exclude_unset=True)
+    
+    # Check if we should generate new dynamic base stats
+    needs_stat_reset = False
+    if "position" in update_data or "playStyle" in update_data:
+        # Only reset if they are a new player (0 matches). 
+        # Alternatively, if they have matches, we could also reset their base stats and simulate progression, 
+        # but for now we only reset if they haven't played anything. Or we can just let it reset their base stats
+        # wait, if they have 0 matches, they definitely need a reset.
+        if db_user.matchesPlayed == 0:
+            needs_stat_reset = True
+
     for key, value in update_data.items():
         setattr(db_user, key, value)
+
+    if needs_stat_reset:
+        from app.core.stats import get_initial_stats, calculate_ovr
+        base_stats = get_initial_stats(db_user.position, db_user.playStyle)
+        for stat_name, stat_val in base_stats.items():
+            if hasattr(db_user, stat_name):
+                setattr(db_user, stat_name, stat_val)
+                
+        # Recalculate OVR
+        stats_dict = {
+            "pace": db_user.pace,
+            "shooting": db_user.shooting,
+            "passing": db_user.passing,
+            "dribbling": db_user.dribbling,
+            "defending": db_user.defending,
+            "physical": db_user.physical,
+            "gkDiving": db_user.gkDiving,
+            "gkHandling": db_user.gkHandling,
+            "gkKicking": db_user.gkKicking,
+            "gkReflexes": db_user.gkReflexes,
+            "gkPositioning": db_user.gkPositioning
+        }
+        db_user.overall = calculate_ovr(db_user.position, stats_dict)
 
     session.add(db_user)
     await session.commit()
