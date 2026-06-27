@@ -13,6 +13,8 @@ import {
   DragStartEvent,
   DragMoveEvent,
   useDraggable,
+  MouseSensor,
+  TouchSensor,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import Image from "next/image";
@@ -547,7 +549,8 @@ export function InlineTeamBuilder({
   }, [externalPositionUpdate, currentUserId, isHost]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 100, tolerance: 5 } }),
     useSensor(KeyboardSensor)
   );
 
@@ -913,6 +916,28 @@ export function InlineTeamBuilder({
                   state={state} 
                   isDraggable={isDraggable} 
                   onLabelClick={handleLabelEdit}
+                  onSwapClick={(player) => {
+                    const currentTeam = playerStates[player.id]?.team;
+                    if (!currentTeam) return;
+                    
+                    const newTeam = currentTeam === "A" ? "B" : "A";
+                    setPlayers((prev) =>
+                      prev.map((mapP) => {
+                        if (mapP.id === player.id) return { ...mapP, team: newTeam === "A" ? "Team A" : "Team B" };
+                        return mapP;
+                      })
+                    );
+                    setPlayerStates((prev) => ({
+                      ...prev,
+                      [player.id]: {
+                        ...prev[player.id],
+                        team: newTeam,
+                      },
+                    }));
+                    if (isHost && onUpdatePosition) {
+                      onUpdatePosition(state.x, state.y, newTeam === "A" ? "Team A" : "Team B");
+                    }
+                  }}
                   isLargeSquad={isLargeSquad}
                 />
               );
@@ -947,28 +972,6 @@ export function InlineTeamBuilder({
                       state={state}
                       isDraggable={!isLocked && (isHost || p.id === currentUserId)}
                       onLabelClick={handleLabelEdit}
-                      onSwapClick={(player) => {
-                        const currentTeam = playerStates[player.id]?.team;
-                        if (!currentTeam) return;
-                        
-                        const newTeam = currentTeam === "A" ? "B" : "A";
-                        setPlayers((prev) =>
-                          prev.map((mapP) => {
-                            if (mapP.id === player.id) return { ...mapP, team: newTeam === "A" ? "Team A" : "Team B" };
-                            return mapP;
-                          })
-                        );
-                        setPlayerStates((prev) => ({
-                          ...prev,
-                          [player.id]: {
-                            ...prev[player.id],
-                            team: newTeam,
-                          },
-                        }));
-                        if (isHost && onUpdatePosition) {
-                          onUpdatePosition(state.x, state.y, newTeam === "A" ? "Team A" : "Team B");
-                        }
-                      }}
                       isLargeSquad={isLargeSquad}
                     />
                   );
