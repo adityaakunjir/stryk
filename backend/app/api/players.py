@@ -41,6 +41,34 @@ async def create_player(
         )
 
     player = User.model_validate(player_in)
+
+    # Apply Starter Stats based on position
+    from app.core.stats import STARTER_STATS, calculate_ovr
+    pos = player.position.upper() if player.position else "DEFAULT"
+    if pos not in STARTER_STATS:
+        pos = "DEFAULT"
+        
+    starter = STARTER_STATS[pos]
+    player.pace = starter["pace"]
+    player.shooting = starter["shooting"]
+    player.passing = starter["passing"]
+    player.dribbling = starter["dribbling"]
+    player.defending = starter["defending"]
+    player.physical = starter["physical"]
+    player.gk = starter["gk"]
+    
+    # Calculate initial OVR
+    stats_dict = {
+        "pace": player.pace,
+        "shooting": player.shooting,
+        "passing": player.passing,
+        "dribbling": player.dribbling,
+        "defending": player.defending,
+        "physical": player.physical,
+        "gk": player.gk
+    }
+    player.overall = calculate_ovr(player.position, stats_dict)
+
     session.add(player)
     await session.flush()
     await session.refresh(player)

@@ -1450,29 +1450,76 @@ async def finalize_verifications(
                 stat.user.saves += stat.saves
                 stat.user.intercepts += stat.interceptions
 
-                # Update User OVR Attributes
-                stat.user.shooting += (stat.goals * 0.2) + (stat.shotsOnTarget * 0.05)
-                stat.user.pace += (stat.goals * 0.1)
-                stat.user.passing += (stat.assists * 0.15) + (stat.keyPasses * 0.1) + (stat.progressivePasses * 0.1) + (stat.distributionAssists * 0.1)
-                stat.user.dribbling += (stat.assists * 0.1)
-                stat.user.defending += (stat.tackles * 0.1) + (stat.interceptions * 0.1) + (stat.blocks * 0.1) + (stat.clearances * 0.1)
-                stat.user.physical += (stat.ballRecoveries * 0.1) + (stat.duelsWon * 0.1) + (stat.aerialDuelsWon * 0.1)
-                stat.user.gk += (stat.saves * 0.1) + (stat.bigSaves * 0.2) + (stat.penaltySaves * 0.3)
+                # Update User OVR Attributes using Diminishing Returns
+                from app.core.stats import calculate_stat_gain, calculate_ovr
+
+                # Goals -> SHO, PAC (small)
+                for _ in range(stat.goals):
+                    stat.user.shooting += calculate_stat_gain(4.5, stat.user.shooting)
+                    stat.user.pace += calculate_stat_gain(1.5, stat.user.pace)
                 
+                # Assists -> PAS, DRI
+                for _ in range(stat.assists):
+                    stat.user.passing += calculate_stat_gain(3.5, stat.user.passing)
+                    stat.user.dribbling += calculate_stat_gain(1.5, stat.user.dribbling)
+                
+                # Tackles -> DEF
+                for _ in range(stat.tackles):
+                    stat.user.defending += calculate_stat_gain(4.0, stat.user.defending)
+                
+                # Interceptions -> DEF, PAS (small)
+                for _ in range(stat.interceptions):
+                    stat.user.defending += calculate_stat_gain(3.0, stat.user.defending)
+                    stat.user.passing += calculate_stat_gain(1.0, stat.user.passing)
+                
+                # Saves -> GK
+                for _ in range(stat.saves):
+                    stat.user.gk += calculate_stat_gain(3.5, stat.user.gk)
+                
+                # Duels won -> PHY
+                for _ in range(stat.duelsWon):
+                    stat.user.physical += calculate_stat_gain(2.0, stat.user.physical)
+                
+                # Key passes -> PAS
+                for _ in range(stat.keyPasses):
+                    stat.user.passing += calculate_stat_gain(2.5, stat.user.passing)
+                
+                # Blocks -> DEF
+                for _ in range(stat.blocks):
+                    stat.user.defending += calculate_stat_gain(3.0, stat.user.defending)
+                
+                # Clearances -> DEF
+                for _ in range(stat.clearances):
+                    stat.user.defending += calculate_stat_gain(2.0, stat.user.defending)
+                
+                # Clean sheets -> DEF, PHY, GK
                 if stat.cleanSheet:
+                    stat.user.defending += calculate_stat_gain(5.0, stat.user.defending)
+                    stat.user.physical += calculate_stat_gain(3.0, stat.user.physical)
                     if stat.user.position == "GK":
-                        stat.user.gk += 0.3
-                    else:
-                        stat.user.defending += 0.2
+                        stat.user.gk += calculate_stat_gain(5.0, stat.user.gk)
+                
+                # Cap attributes at 99.0
+                stat.user.pace = min(99.0, stat.user.pace)
+                stat.user.shooting = min(99.0, stat.user.shooting)
+                stat.user.passing = min(99.0, stat.user.passing)
+                stat.user.dribbling = min(99.0, stat.user.dribbling)
+                stat.user.defending = min(99.0, stat.user.defending)
+                stat.user.physical = min(99.0, stat.user.physical)
+                stat.user.gk = min(99.0, stat.user.gk)
                 
                 # Recalculate Overall
-                if stat.user.position == "GK":
-                    stat.user.overall = int((stat.user.gk + stat.user.pace + stat.user.passing + stat.user.physical) / 4)
-                else:
-                    stat.user.overall = int((stat.user.pace + stat.user.shooting + stat.user.passing + stat.user.dribbling + stat.user.defending + stat.user.physical) / 6)
-                
-                # Cap attributes
-                stat.user.overall = min(99, stat.user.overall)
+                stats_dict = {
+                    "pace": stat.user.pace,
+                    "shooting": stat.user.shooting,
+                    "passing": stat.user.passing,
+                    "dribbling": stat.user.dribbling,
+                    "defending": stat.user.defending,
+                    "physical": stat.user.physical,
+                    "gk": stat.user.gk
+                }
+                stat.user.overall = calculate_ovr(stat.user.position, stats_dict)
+
 
                 log = XPLog(userId=target_id, matchId=match_id, amount=xp_award, reason="Match Stats Verified")
                 session.add(log)
