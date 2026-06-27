@@ -506,21 +506,27 @@ export default function MatchesPage() {
                   {/* Actions */}
                   <div>
                     {isJoined ? (
-                      <button
-                        onClick={() => handleLeaveMatch(match.id)}
-                        disabled={joiningId !== null}
-                        className="w-full h-12 rounded-[1.25rem] border border-red-500/30 bg-[#151515] text-red-500 text-[11px] uppercase font-bold tracking-[0.15em] hover:bg-red-500/10 transition duration-200 cursor-pointer flex items-center justify-center gap-2"
-                        type="button"
-                      >
-                        {joiningId === match.id ? (
-                          <>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => router.push(`/matches/${match.id}`)}
+                          className="flex-[2] h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[11px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
+                          type="button"
+                        >
+                          ENTER LOBBY
+                        </button>
+                        <button
+                          onClick={() => handleLeaveMatch(match.id)}
+                          disabled={joiningId !== null}
+                          className="flex-1 h-12 rounded-[1.25rem] border border-red-500/30 bg-[#151515] text-red-500 text-[11px] uppercase font-bold tracking-[0.15em] hover:bg-red-500/10 transition duration-200 cursor-pointer flex items-center justify-center gap-2"
+                          type="button"
+                        >
+                          {joiningId === match.id ? (
                             <Loader2 className="size-4 animate-spin text-red-500" />
-                            LEAVING...
-                          </>
-                        ) : (
-                          "LEAVE MATCH"
-                        )}
-                      </button>
+                          ) : (
+                            "LEAVE"
+                          )}
+                        </button>
+                      </div>
                     ) : isFull ? (
                       <button
                         disabled
