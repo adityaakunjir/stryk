@@ -328,7 +328,7 @@ export default function HomeLobbyPage() {
       </div>
 
       {/* Bottom Sheet Navigation */}
-      <div className="relative mt-auto w-full z-30 glass-panel rounded-t-[2rem] px-5 pt-5 pb-[85px] shadow-[0_-20px_50px_rgba(0,0,0,0.6)] border-t border-[#8E793E]/30 text-white">
+      <div className="relative mt-auto w-full z-30 bg-[#151515] rounded-t-[2rem] px-5 pt-5 pb-[85px] shadow-[0_-20px_50px_rgba(0,0,0,0.6)] border-t border-[#8E793E]/30 text-white">
         <div className="w-full">
             
             {/* Level & XP */}
@@ -340,7 +340,7 @@ export default function HomeLobbyPage() {
               <span className="text-[10px] font-bold text-white/50 tracking-wider">XP {xpCurrent}/{xpTotal}</span>
             </div>
             {/* Progress Bar */}
-            <div className="w-full h-1 glass-panel0 rounded-full overflow-hidden mb-4">
+            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-4">
               <motion.div 
                 className="h-full bg-[#C3DF1B] rounded-full shadow-[0_0_10px_rgba(195,223,27,0.4)]"
                 initial={{ width: 0 }} animate={{ width: `${(xpCurrent/xpTotal)*100}%` }} transition={{ duration: 1.5, delay: 0.5, type: "spring" }}
@@ -348,7 +348,7 @@ export default function HomeLobbyPage() {
             </div>
 
             {/* Next Objective Card */}
-            <div className="glass-panel rounded-[1.5rem] p-4 border border-[#2A2A2A] flex items-center justify-between mb-4 shadow-sm group hover:border-[#A28B52]/50 transition cursor-pointer">
+            <div className="bg-[#151515] rounded-[1.5rem] p-4 border border-[#2A2A2A] flex items-center justify-between mb-4 shadow-sm group hover:border-[#A28B52]/50 transition cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#C3DF1B] shrink-0 group-hover:bg-[#C3DF1B]/10 group-hover:border-[#C3DF1B]/30 transition">
                   <Target size={16} />
