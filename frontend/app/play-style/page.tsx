@@ -102,81 +102,118 @@ function JourneyStepper() {
 
 function PlayStyleGraphic({ active = false, color = "#C6FF00", styleName = "Speedster" }: { active?: boolean, color?: string, styleName?: PlayStyleType }) {
   return (
-    <div className="absolute inset-x-0 top-10 h-48 pointer-events-none flex items-center justify-center">
-      {styleName === "Speedster" && (
-        <motion.div 
-          className="relative size-32 flex items-center justify-center"
-          animate={{ x: active ? [0, 10, 0] : 0, skewX: active ? [-10, -20, -10] : -10 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          {/* Speed Chevrons */}
-          <div className="absolute w-24 h-2 bg-gradient-to-r from-transparent to-white rounded-r-full" style={{ top: "30%", boxShadow: active ? `0 0 20px ${color}` : "none", opacity: active ? 0.9 : 0.3 }} />
-          <div className="absolute w-32 h-3 bg-gradient-to-r from-transparent to-white rounded-r-full" style={{ top: "50%", boxShadow: active ? `0 0 30px ${color}` : "none", backgroundColor: color, opacity: active ? 1 : 0.4 }} />
-          <div className="absolute w-20 h-2 bg-gradient-to-r from-transparent to-white rounded-r-full" style={{ top: "70%", boxShadow: active ? `0 0 20px ${color}` : "none", opacity: active ? 0.8 : 0.2 }} />
-        </motion.div>
-      )}
-
-      {styleName === "Playmaker" && (
-        <motion.div className="relative size-32 flex items-center justify-center">
-          {/* Concentric Vision Rings */}
-          <motion.div 
-            className="absolute size-32 rounded-full border-[3px] border-dashed"
-            style={{ borderColor: `${color}60` }}
-            animate={{ rotate: active ? 360 : 0, scale: active ? [1, 1.05, 1] : 1 }}
-            transition={{ rotate: { duration: 10, repeat: Infinity, ease: "linear" }, scale: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
-          />
-          <motion.div 
-            className="absolute size-20 rounded-full border-2"
-            style={{ borderColor: `${color}40` }}
-            animate={{ rotate: active ? -360 : 0 }}
-            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          />
-          <motion.div 
-            className="absolute size-10 rounded-full bg-white shadow-[0_0_30px_rgba(255,255,255,1)]"
-            style={{ backgroundColor: color, boxShadow: active ? `0 0 40px ${color}, inset 0 0 10px white` : "none", opacity: active ? 1 : 0.5 }}
-            animate={{ scale: active ? [1, 1.2, 1] : 1 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </motion.div>
-      )}
-
-      {styleName === "Poacher" && (
-        <div className="relative size-32 flex items-center justify-center">
-          {/* Precision Target Diamond */}
-          <motion.div 
-            className="absolute size-24 border-4 rounded-xl"
-            style={{ borderColor: `${color}30`, rotate: 45 }}
-            animate={{ scale: active ? [1, 0.9, 1] : 1, opacity: active ? [0.5, 1, 0.5] : 0.3 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div 
-            className="absolute size-16 border-2 rounded-lg bg-black/40 backdrop-blur-sm"
-            style={{ borderColor: `${color}60`, rotate: 45 }}
-          />
-          <motion.div 
-            className="absolute size-4 rounded-full bg-white"
-            style={{ backgroundColor: color, boxShadow: active ? `0 0 30px ${color}` : "none", opacity: active ? 1 : 0.4 }}
-            animate={{ scale: active ? [1, 1.5, 1] : 1 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "backOut" }}
-          />
+    <div className="absolute inset-x-0 top-6 h-52 pointer-events-none flex items-center justify-center">
+      <div className="relative w-32 h-44 border-2 rounded-md opacity-80" style={{ borderColor: `${color}40` }}>
+        {/* Pitch Markings */}
+        <div className="absolute inset-0 flex flex-col justify-between p-2">
+          {/* Top Penalty Box */}
+          <div className="w-16 h-8 border-b-2 border-x-2 mx-auto" style={{ borderColor: `${color}30` }} />
+          {/* Halfway Line */}
+          <div className="w-full h-px" style={{ backgroundColor: `${color}30` }} />
+          {/* Center Circle */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-8 border-2 rounded-full" style={{ borderColor: `${color}30` }} />
+          {/* Bottom Penalty Box */}
+          <div className="w-16 h-8 border-t-2 border-x-2 mx-auto" style={{ borderColor: `${color}30` }} />
         </div>
-      )}
 
-      {styleName === "Box-to-Box" && (
-        <div className="relative size-32 flex flex-col items-center justify-between py-2">
-          {/* Zones and Engine Pulse */}
-          <div className="w-24 h-4 border-2 rounded-full" style={{ borderColor: `${color}50` }} />
-          
+        {/* Tactical Diagrams per Style */}
+        {styleName === "Speedster" && (
           <motion.div 
-            className="w-1.5 rounded-full bg-gradient-to-b from-transparent via-white to-transparent"
-            style={{ backgroundColor: color, filter: active ? `drop-shadow(0 0 15px ${color})` : "none" }}
-            animate={{ height: active ? ["20%", "80%", "20%"] : "40%", opacity: active ? 1 : 0.4 }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          />
-          
-          <div className="w-24 h-4 border-2 rounded-full" style={{ borderColor: `${color}50` }} />
-        </div>
-      )}
+            className="absolute inset-0"
+            animate={{ opacity: active ? 1 : 0.4 }}
+          >
+            {/* Player running down the wing */}
+            <div className="absolute left-2 top-1/2 size-2 rounded-full shadow-[0_0_10px_currentColor]" style={{ backgroundColor: color, color }} />
+            
+            {/* Speed lines/arrows */}
+            <motion.div 
+              className="absolute left-[11px] top-6 w-[2px] rounded-full origin-bottom"
+              style={{ backgroundColor: color, height: "40%" }}
+              animate={{ height: active ? ["0%", "40%", "0%"] : "40%", opacity: active ? [0, 1, 0] : 1, y: active ? [40, 0, -40] : 0 }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div 
+              className="absolute left-3 top-12 w-[1px] rounded-full origin-bottom"
+              style={{ backgroundColor: color, height: "30%" }}
+              animate={{ height: active ? ["0%", "30%", "0%"] : "30%", opacity: active ? [0, 1, 0] : 1, y: active ? [40, 0, -40] : 0 }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear", delay: 0.2 }}
+            />
+          </motion.div>
+        )}
+
+        {styleName === "Playmaker" && (
+          <motion.div 
+            className="absolute inset-0 flex items-center justify-center"
+            animate={{ opacity: active ? 1 : 0.4 }}
+          >
+            {/* Central Playmaker node */}
+            <div className="absolute size-3 rounded-full shadow-[0_0_15px_currentColor] z-10" style={{ backgroundColor: color, color }} />
+            
+            {/* Radiating passing lanes */}
+            <motion.div 
+              className="absolute top-10 left-6 w-[1px] h-12 origin-bottom-right rotate-[30deg]"
+              style={{ backgroundColor: color }}
+              animate={{ opacity: active ? [0, 1, 0] : 0.5 }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+            />
+            <motion.div 
+              className="absolute top-8 right-6 w-[1px] h-16 origin-bottom-left -rotate-[25deg]"
+              style={{ backgroundColor: color }}
+              animate={{ opacity: active ? [0, 1, 0] : 0.5 }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
+            />
+            <motion.div 
+              className="absolute top-4 left-1/2 w-[1.5px] h-20 -translate-x-1/2 origin-bottom"
+              style={{ backgroundColor: color }}
+              animate={{ opacity: active ? [0, 1, 0] : 0.5, height: active ? ["0px", "80px", "0px"] : "80px" }}
+              transition={{ duration: 2, repeat: Infinity, delay: 1.4 }}
+            />
+          </motion.div>
+        )}
+
+        {styleName === "Poacher" && (
+          <motion.div 
+            className="absolute inset-0"
+            animate={{ opacity: active ? 1 : 0.4 }}
+          >
+            {/* Goal scoring zone radar */}
+            <motion.div 
+              className="absolute top-6 left-1/2 -translate-x-1/2 size-12 rounded-full border border-dashed"
+              style={{ borderColor: color, backgroundColor: `${color}10` }}
+              animate={{ scale: active ? [1, 1.2, 1] : 1 }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            {/* Striker waiting */}
+            <div className="absolute top-8 left-1/2 -translate-x-1/2 size-3 rounded-full shadow-[0_0_15px_currentColor]" style={{ backgroundColor: color, color }} />
+            
+            {/* Cross/Pass arriving */}
+            <motion.div 
+              className="absolute top-12 right-2 w-[1px] h-12 origin-top -rotate-[60deg]"
+              style={{ backgroundColor: color }}
+              animate={{ opacity: active ? [0, 1, 0] : 0.5 }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+          </motion.div>
+        )}
+
+        {styleName === "Box-to-Box" && (
+          <motion.div 
+            className="absolute inset-0 flex flex-col items-center py-6"
+            animate={{ opacity: active ? 1 : 0.4 }}
+          >
+            {/* Coverage track */}
+            <div className="w-1.5 h-full rounded-full opacity-30" style={{ backgroundColor: color }} />
+            
+            {/* Player moving box to box */}
+            <motion.div 
+              className="absolute size-4 rounded-full shadow-[0_0_15px_currentColor] z-10"
+              style={{ backgroundColor: color, color }}
+              animate={{ top: active ? ["10%", "85%", "10%"] : "50%" }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }
