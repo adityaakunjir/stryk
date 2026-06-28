@@ -41,11 +41,11 @@ export default function SyncPage() {
   }, [isLoaded, isSignedIn, router]);
 
   return (
-    <main className="relative h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center bg-[#E5DCC5]">
+    <main className="relative h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center bg-[#05070B]">
       {/* Premium Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+        
       />
       
       {/* STRYK 3D Logo - Absolutely Centered */}

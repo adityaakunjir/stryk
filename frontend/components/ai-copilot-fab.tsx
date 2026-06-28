@@ -51,10 +51,10 @@ export function AiCopilotFab() {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center justify-center text-center">
           <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
-            <Cpu className="w-8 h-8 text-gray-500" />
+            <Cpu className="w-8 h-8 text-gray-400" />
           </div>
           <p className="text-sm text-gray-400 font-mono mb-2">INITIALIZING RAG SEQUENCE...</p>
-          <p className="text-xs text-gray-500">Agent systems offline. Awaiting Phase 2 connection.</p>
+          <p className="text-xs text-gray-400">Agent systems offline. Awaiting Phase 2 connection.</p>
         </div>
       </div>
 

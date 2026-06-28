@@ -59,7 +59,7 @@ const ZONE_LABELS: Record<string, string> = {
 
 const getTierStyles = (ovr: number) => {
   if (ovr >= 80) return "bg-gradient-to-br from-[#FCECA1] via-[#D4AF37] to-[#AA7900] text-[#3E2B00] shadow-[0_0_15px_rgba(212,175,55,0.5)] border-[#FFF3B0]";
-  if (ovr >= 70) return "bg-gradient-to-br from-[#FFFFFF] via-[#D1D1D1] to-[#808080] text-[#151515] shadow-[0_0_15px_rgba(209,209,209,0.5)] border-[#FFFFFF]";
+  if (ovr >= 70) return "bg-gradient-to-br from-[#FFFFFF] via-[#D1D1D1] to-[#808080] text-white shadow-[0_0_15px_rgba(209,209,209,0.5)] border-[#FFFFFF]";
   return "bg-gradient-to-br from-[#E8A372] via-[#A0522D] to-[#613014] text-[#FFF] shadow-[0_0_15px_rgba(160,82,45,0.5)] border-[#FFCCB3]";
 };
 
@@ -103,18 +103,18 @@ function SortablePlayerCard({ player, zoneId }: { player: Player; zoneId: string
         </div>
 
         {/* Avatar */}
-        <div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden mt-1 md:mt-1.5 border border-white/40 bg-black/10 relative">
+        <div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden mt-1 md:mt-1.5 border border-white/40 bg-white/10 relative">
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover" sizes="40px" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-black/40 font-bold text-sm bg-white/50">
+            <div className="w-full h-full flex items-center justify-center text-white/40 font-bold text-sm bg-white/50">
               {player.username.charAt(0).toUpperCase()}
             </div>
           )}
         </div>
 
         {/* Separator line */}
-        <div className="w-3/4 h-[1px] bg-black/10 my-0.5 md:my-1" />
+        <div className="w-3/4 h-[1px] bg-white/10 my-0.5 md:my-1" />
 
         {/* Name */}
         <div className="text-[6.5px] md:text-[7.5px] font-black uppercase text-center px-1 leading-none tracking-tighter truncate w-full">
@@ -141,17 +141,17 @@ function PlayerCardOverlay({ player, zoneId }: { player: Player; zoneId: string 
           )}
         </div>
 
-        <div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden mt-1 md:mt-1.5 border border-white/40 bg-black/10 relative">
+        <div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden mt-1 md:mt-1.5 border border-white/40 bg-white/10 relative">
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover" sizes="40px" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-black/40 font-bold text-sm bg-white/50">
+            <div className="w-full h-full flex items-center justify-center text-white/40 font-bold text-sm bg-white/50">
               {player.username.charAt(0).toUpperCase()}
             </div>
           )}
         </div>
 
-        <div className="w-3/4 h-[1px] bg-black/10 my-0.5 md:my-1" />
+        <div className="w-3/4 h-[1px] bg-white/10 my-0.5 md:my-1" />
 
         <div className="text-[6.5px] md:text-[7.5px] font-black uppercase text-center px-1 leading-none tracking-tighter truncate w-full">
           {player.fullName?.split(' ')[0] || player.username}
@@ -402,30 +402,30 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="w-full max-w-4xl h-[95vh] bg-[#E5DCC5] border border-[#151515]/10 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden relative"
+            className="w-full max-w-4xl h-[95vh] bg-[#05070B] border border-[#151515]/10 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden relative"
           >
             {/* Header */}
-            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between p-4 sm:p-5 border-b border-[#151515]/10 shrink-0 bg-[#E5DCC5] z-20 gap-3">
+            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between p-4 sm:p-5 border-b border-[#151515]/10 shrink-0 bg-[#05070B] z-20 gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#151515] flex items-center justify-center shadow-md">
                   <Users className="text-[#E5DCC5]" size={20} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-display font-black text-[#151515] tracking-widest uppercase italic">Squad Builder</h2>
-                  <p className="text-[10px] uppercase font-bold tracking-widest text-[#151515]/50">Manage your match draft</p>
+                  <h2 className="text-xl font-display font-black text-white tracking-widest uppercase italic">Squad Builder</h2>
+                  <p className="text-[10px] uppercase font-bold tracking-widest text-white/50">Manage your match draft</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 sm:gap-4 ml-auto">
                 <button
                   onClick={handleAutoBalance}
-                  className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] uppercase font-bold tracking-widest bg-[#151515]/5 hover:bg-[#151515]/10 border border-[#151515]/10 text-[#151515] rounded-xl transition-all"
+                  className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] uppercase font-bold tracking-widest bg-[#151515]/5 hover:bg-[#151515]/10 border border-[#151515]/10 text-white rounded-xl transition-all"
                 >
                   <RefreshCw size={14} />
                   <span className="hidden sm:inline">AUTO-BALANCE</span>
                   <span className="sm:hidden">AUTO</span>
                 </button>
-                <button onClick={onClose} className="p-2 sm:p-2.5 text-[#151515]/50 hover:text-[#151515] hover:bg-[#151515]/5 rounded-full transition-colors">
+                <button onClick={onClose} className="p-2 sm:p-2.5 text-white/50 hover:text-white hover:bg-[#151515]/5 rounded-full transition-colors">
                   <X size={20} />
                 </button>
               </div>
@@ -522,15 +522,15 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
             </DndContext>
 
             {/* Footer */}
-            <div className="p-4 sm:p-5 border-t border-[#151515]/10 bg-white flex justify-between items-center shrink-0 z-30">
+            <div className="p-4 sm:p-5 border-t border-[#151515]/10 bg-white/5 flex justify-between items-center shrink-0 z-30">
               <div className="hidden sm:flex gap-6">
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-[#151515]/50 font-bold mb-0.5">Team A</div>
-                  <div className="text-sm font-black text-[#151515]">{statsA.count} <span className="text-xs font-semibold text-[#151515]/60">PLYRS</span></div>
+                  <div className="text-[10px] uppercase tracking-widest text-white/50 font-bold mb-0.5">Team A</div>
+                  <div className="text-sm font-black text-white">{statsA.count} <span className="text-xs font-semibold text-white/60">PLYRS</span></div>
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-[#151515]/50 font-bold mb-0.5">Team B</div>
-                  <div className="text-sm font-black text-[#151515]">{statsB.count} <span className="text-xs font-semibold text-[#151515]/60">PLYRS</span></div>
+                  <div className="text-[10px] uppercase tracking-widest text-white/50 font-bold mb-0.5">Team B</div>
+                  <div className="text-sm font-black text-white">{statsB.count} <span className="text-xs font-semibold text-white/60">PLYRS</span></div>
                 </div>
               </div>
               <button

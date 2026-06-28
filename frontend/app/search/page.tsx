@@ -90,7 +90,7 @@ export default function SearchPage() {
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+        
       />
 
       <div className="relative h-full flex flex-col px-5 pt-3 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">

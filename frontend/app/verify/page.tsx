@@ -96,7 +96,7 @@ export default function VerifyPage() {
                 </button>
                 <button 
                   onClick={() => handleAction(r.id, true)}
-                  className="rounded-xl py-2 flex items-center justify-center gap-1.5 bg-[#C6FF00] text-black text-[10px] tracking-wider uppercase font-display font-medium cursor-pointer hover:bg-[#b0e600] transition"
+                  className="rounded-xl py-2 flex items-center justify-center gap-1.5 bg-[#C6FF00] text-white text-[10px] tracking-wider uppercase font-display font-medium cursor-pointer hover:bg-[#b0e600] transition"
                 >
                   <Check size={12} strokeWidth={3} /> Verify
                 </button>

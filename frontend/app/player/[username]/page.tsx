@@ -150,18 +150,18 @@ export default async function PublicPlayerPage({ params }: Props) {
   }
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] text-[#151515] min-h-screen relative overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#05070B] text-white min-h-screen relative overflow-hidden">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+        
       />
 
       <div className="relative h-full flex flex-col px-6 pt-8 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between mb-2 z-30 shrink-0">
-          <ClientBackButton fallbackRoute="/search" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm" iconSize={18} />
-          <div className="text-[10px] tracking-[0.35em] uppercase text-[#151515]/50 font-bold drop-shadow-md">STRYK PROFILE</div>
+          <ClientBackButton fallbackRoute="/search" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm" iconSize={18} />
+          <div className="text-[10px] tracking-[0.35em] uppercase text-white/50 font-bold drop-shadow-md">STRYK PROFILE</div>
           <div className="w-10 h-10" /> {/* Placeholder for balance */}
         </div>
 
@@ -229,7 +229,7 @@ export default async function PublicPlayerPage({ params }: Props) {
           ) : !viewerUserId ? (
             <Link
               href="/identity"
-              className="w-full flex items-center justify-center rounded-xl py-3 bg-[#C3DF1B] text-black font-display tracking-[0.2em] font-bold cursor-pointer hover:bg-[#b0c918] transition duration-200 text-[10px] shadow-[0_10px_20px_-5px_rgba(195,223,27,0.4),inset_0_1px_0_rgba(255,255,255,0.5)] active:scale-95"
+              className="w-full flex items-center justify-center rounded-xl py-3 bg-[#C3DF1B] text-white font-display tracking-[0.2em] font-bold cursor-pointer hover:bg-[#b0c918] transition duration-200 text-[10px] shadow-[0_10px_20px_-5px_rgba(195,223,27,0.4),inset_0_1px_0_rgba(255,255,255,0.5)] active:scale-95"
             >
               CREATE YOUR OWN CARD
             </Link>

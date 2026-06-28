@@ -83,16 +83,16 @@ const placeholders = [
 
 function JourneyStepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-[#151515]/80">
-      <div className="flex items-center gap-1.5 text-[#151515]/60">
-        IDENTITY <Check size={12} className="text-[#151515]/60" strokeWidth={3} />
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-white/80">
+      <div className="flex items-center gap-1.5 text-white/60">
+        IDENTITY <Check size={12} className="text-white/60" strokeWidth={3} />
       </div>
       <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
-      <div className="flex items-center gap-1.5 text-[#151515]/60">
-        POSITION <Check size={12} className="text-[#151515]/60" strokeWidth={3} />
+      <div className="flex items-center gap-1.5 text-white/60">
+        POSITION <Check size={12} className="text-white/60" strokeWidth={3} />
       </div>
       <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
-      <div className="text-[#151515] font-black flex items-center gap-1.5 drop-shadow-sm">
+      <div className="text-white font-black flex items-center gap-1.5 drop-shadow-sm">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         STYLE
       </div>
@@ -319,11 +319,11 @@ export default function PlayStylePage() {
 
   // --- NORMAL PAGE RENDER ---
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] overflow-hidden text-[#151515]">
+    <main className="stryk-mobile-shell bg-[#05070B] overflow-hidden text-white">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+        
       />
 
       <section data-scroll-panel className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col px-5 pb-8 pt-6 sm:px-8 lg:px-10 overflow-y-auto min-h-0"
@@ -333,13 +333,13 @@ export default function PlayStylePage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="icon" aria-label="Back to position" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to position" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10">
             <Link href="/position">
               <ArrowLeft size={18} strokeWidth={2} />
             </Link>
           </Button>
           <div className="hidden sm:block"><JourneyStepper /></div>
-          <Button variant="ghost" onClick={() => setShowInfoModal(true)} className="w-10 h-10 rounded-full bg-transparent border border-[#151515]/20 hover:bg-[#151515]/5 cursor-pointer p-0 text-[#151515]">
+          <Button variant="ghost" onClick={() => setShowInfoModal(true)} className="w-10 h-10 rounded-full bg-transparent border border-[#151515]/20 hover:bg-[#151515]/5 cursor-pointer p-0 text-white">
             <Info size={20} />
           </Button>
         </motion.header>
@@ -352,7 +352,7 @@ export default function PlayStylePage() {
               DEFINE YOUR<br/>
               <span className="text-[#A28B52]">PLAY STYLE</span>
             </h2>
-            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#151515]/60 uppercase tracking-[0.2em]">
+            <p className="mt-4 text-[13px] sm:text-sm font-medium text-white/60 uppercase tracking-[0.2em]">
               Pick your signature style
             </p>
           </motion.div>
@@ -529,7 +529,7 @@ export default function PlayStylePage() {
                 disabled={launchStep > 0}
                 className={cn(
                   "relative w-full h-[60px] rounded-full font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-3 transition-all duration-300 overflow-hidden cursor-pointer text-[15px]",
-                  launchStep > 0 ? "bg-[#151515] border border-[#2A2A2A] text-[#808080]" : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
+                  launchStep > 0 ? "bg-[#151515] border border-[#2A2A2A] text-[#808080]" : "bg-[#D4F829] text-white hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
                 )}
                 type="submit"
               >

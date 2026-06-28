@@ -120,7 +120,7 @@ export default function SubmitPage() {
           <button 
             onClick={handleSubmit}
             disabled={isSubmitting || submitted}
-            className="w-full rounded-2xl py-3.5 bg-[#C6FF00] text-black font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-80" 
+            className="w-full rounded-2xl py-3.5 bg-[#C6FF00] text-white font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-80" 
             style={{ fontSize: "0.875rem", boxShadow: "0 20px 40px -10px rgba(198,255,0,0.5)" }}
           >
             {isSubmitting ? (

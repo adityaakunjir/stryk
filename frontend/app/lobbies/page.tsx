@@ -133,7 +133,7 @@ export default function LobbiesPage() {
           </div>
           <button 
             onClick={() => setShowCreateModal(true)}
-            className="w-10 h-10 rounded-full bg-[#C6FF00] text-black flex items-center justify-center cursor-pointer hover:bg-[#b0e600] transition"
+            className="w-10 h-10 rounded-full bg-[#C6FF00] text-white flex items-center justify-center cursor-pointer hover:bg-[#b0e600] transition"
             style={{ boxShadow: "0 14px 30px -8px rgba(198,255,0,0.55)" }}
           >
             <Plus size={18} strokeWidth={2.5} />
@@ -208,7 +208,7 @@ export default function LobbiesPage() {
                       </div>
                     </div>
                     {l.live && (
-                      <span className="text-[9px] tracking-[0.25em] uppercase px-2 py-0.5 rounded-full bg-[#C6FF00] text-black font-bold h-fit shrink-0">Live</span>
+                      <span className="text-[9px] tracking-[0.25em] uppercase px-2 py-0.5 rounded-full bg-[#C6FF00] text-white font-bold h-fit shrink-0">Live</span>
                     )}
                   </div>
 
@@ -301,7 +301,7 @@ export default function LobbiesPage() {
               
               <button
                 type="submit"
-                className="w-full h-11 rounded-xl bg-[#C6FF00] text-black font-display text-sm tracking-wider uppercase cursor-pointer hover:bg-[#b0e600] transition mt-2"
+                className="w-full h-11 rounded-xl bg-[#C6FF00] text-white font-display text-sm tracking-wider uppercase cursor-pointer hover:bg-[#b0e600] transition mt-2"
               >
                 CREATE LOBBY
               </button>

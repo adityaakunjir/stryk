@@ -97,7 +97,7 @@ export function UpgradeOverlay({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="px-8 h-12 rounded-2xl text-black font-bold tracking-[0.2em] uppercase text-xs hover:scale-105 transition-transform"
+            className="px-8 h-12 rounded-2xl text-white font-bold tracking-[0.2em] uppercase text-xs hover:scale-105 transition-transform"
             style={{ backgroundColor: tierColor }}
             onClick={() => { setShow(false); onClose(); }}
           >

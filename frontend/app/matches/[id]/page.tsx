@@ -562,7 +562,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         <p className="text-sm text-white/60 mt-2 font-semibold">This match may have been cancelled or deleted.</p>
         <button 
           onClick={() => router.push("/matches")}
-          className="mt-8 px-6 py-3 rounded-2xl bg-white text-black text-[11px] font-black uppercase tracking-[0.2em] shadow-lg hover:bg-[#2A2824] transition-all"
+          className="mt-8 px-6 py-3 rounded-2xl bg-white/5 text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-lg hover:bg-[#2A2824] transition-all"
         >
           Back to Matches
         </button>
@@ -606,7 +606,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#05070B] bg-[url('/create_card_bg.webp')] bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-white">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#05070B]  bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-white">
       <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.22),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.62),transparent)]" />
 
       <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full overflow-y-auto">

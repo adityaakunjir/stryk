@@ -132,11 +132,11 @@ export default function NotificationsPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] min-h-[100dvh] text-[#151515]">
+    <main className="stryk-mobile-shell bg-[#05070B] min-h-[100dvh] text-white">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+        
       />
 
       <div data-scroll-panel className="relative h-full flex flex-col px-6 pt-12 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
@@ -144,7 +144,7 @@ export default function NotificationsPage() {
         <header className="flex items-center justify-between mb-6 relative">
           <button
             onClick={() => router.push("/home")}
-            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
             aria-label="Back to home"
             type="button"
           >
@@ -152,7 +152,7 @@ export default function NotificationsPage() {
           </button>
         </header>
 
-        <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight mb-1 text-[#151515] drop-shadow-sm mt-4 leading-none">
+        <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight mb-1 text-white drop-shadow-sm mt-4 leading-none">
           NOTIFICATIONS
         </h1>
         <p className="text-[10px] font-bold text-[#8A7038] uppercase tracking-widest mb-6">
@@ -175,7 +175,7 @@ export default function NotificationsPage() {
         {/* Content */}
         {loading ? (
           <div className="flex-1 flex items-center justify-center py-20">
-            <Loader2 className="size-8 text-[#151515] animate-spin" />
+            <Loader2 className="size-8 text-white animate-spin" />
           </div>
         ) : notifications.length === 0 ? (
           <div className="relative flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent border border-[#151515]/10 overflow-hidden mb-safe">
@@ -186,11 +186,11 @@ export default function NotificationsPage() {
               <Bell size={36} className="text-[#D8A53B] relative z-10 drop-shadow-[0_2px_8px_rgba(216,165,59,0.3)]" strokeWidth={1.5} />
             </div>
             
-            <h3 className="font-display text-2xl tracking-[0.15em] text-[#151515] font-black mb-3 text-center">
+            <h3 className="font-display text-2xl tracking-[0.15em] text-white font-black mb-3 text-center">
               ALL CAUGHT UP
             </h3>
             
-            <p className="text-[13px] text-[#151515]/70 text-center max-w-[240px] leading-relaxed font-medium">
+            <p className="text-[13px] text-white/70 text-center max-w-[240px] leading-relaxed font-medium">
               You&apos;re all set. Check back later for new updates and invites.
             </p>
           </div>
@@ -238,11 +238,11 @@ export default function NotificationsPage() {
                   <button
                     onClick={() => handleRespond(n.id, n.type, "accept")}
                     disabled={actionLoadingId !== null}
-                    className="h-11 rounded-[1.25rem] bg-gradient-to-r from-[#D8A53B] to-[#FDE69F] text-[#151515] text-[13px] tracking-widest font-black uppercase hover:opacity-90 cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(216,165,59,0.2)]"
+                    className="h-11 rounded-[1.25rem] bg-gradient-to-r from-[#D8A53B] to-[#FDE69F] text-white text-[13px] tracking-widest font-black uppercase hover:opacity-90 cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(216,165,59,0.2)]"
                     type="button"
                   >
                     {actionLoadingId === n.id ? (
-                      <Loader2 className="size-4 animate-spin text-[#151515]" />
+                      <Loader2 className="size-4 animate-spin text-white" />
                     ) : (
                       <>
                         <Check size={15} strokeWidth={3} /> ACCEPT

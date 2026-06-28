@@ -50,7 +50,7 @@ export default function SettingsPage() {
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+        
       />
 
       <div className="relative h-full flex flex-col px-6 pt-8 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">

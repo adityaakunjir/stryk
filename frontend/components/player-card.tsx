@@ -194,8 +194,8 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
           <div className="font-display text-[clamp(44px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
             {!disableAnimation ? <AnimatedCounter value={ovr} duration={2.5} /> : ovr}
           </div>
-          <div className="font-display text-[clamp(20px,5vw,26px)] text-black leading-none font-bold drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]">{position || "POS"}</div>
-          <img src={`https://flagcdn.com/w40/${nation.toLowerCase() === 'ind' ? 'in' : nation.toLowerCase()}.png`} alt={nation} className="mt-2 h-[16px] w-[26px] object-cover shadow-[0_2px_8px_rgba(0,0,0,0.8)] border border-black/10" />
+          <div className="font-display text-[clamp(20px,5vw,26px)] text-white leading-none font-bold drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]">{position || "POS"}</div>
+          <img src={`https://flagcdn.com/w40/${nation.toLowerCase() === 'ind' ? 'in' : nation.toLowerCase()}.png`} alt={nation} className="mt-2 h-[16px] w-[26px] object-cover shadow-[0_2px_8px_rgba(0,0,0,0.8)] border border-white/10" />
         </div>
 
         {/* ========================================= */}

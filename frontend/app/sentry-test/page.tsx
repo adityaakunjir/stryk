@@ -98,7 +98,7 @@ export default function SentryTestPage() {
                   <div className="text-[10px] text-white/40 mt-0.5 mb-3">Triggers a javascript runtime error in the React browser engine.</div>
                   <button
                     onClick={triggerClientError}
-                    className="w-full py-2.5 rounded-xl bg-purple-500 hover:bg-purple-600 text-black text-[11px] font-bold uppercase tracking-widest transition cursor-pointer"
+                    className="w-full py-2.5 rounded-xl bg-purple-500 hover:bg-purple-600 text-white text-[11px] font-bold uppercase tracking-widest transition cursor-pointer"
                   >
                     Throw JS Exception
                   </button>
@@ -118,7 +118,7 @@ export default function SentryTestPage() {
                   <button
                     onClick={triggerRouteError}
                     disabled={loading !== null}
-                    className="w-full py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-black text-[11px] font-bold uppercase tracking-widest transition cursor-pointer disabled:opacity-50"
+                    className="w-full py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-[11px] font-bold uppercase tracking-widest transition cursor-pointer disabled:opacity-50"
                   >
                     {loading === "route" ? "Sending Request..." : "Trigger Route Error"}
                   </button>
@@ -138,7 +138,7 @@ export default function SentryTestPage() {
                   <button
                     onClick={triggerBackendError}
                     disabled={loading !== null}
-                    className="w-full py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-black text-[11px] font-bold uppercase tracking-widest transition cursor-pointer disabled:opacity-50"
+                    className="w-full py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-[11px] font-bold uppercase tracking-widest transition cursor-pointer disabled:opacity-50"
                   >
                     {loading === "backend" ? "Sending Request..." : "Trigger Backend Error"}
                   </button>

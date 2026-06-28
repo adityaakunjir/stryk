@@ -49,10 +49,10 @@ export default async function MatchHistoryPage({ params }: Props) {
   }
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] text-[#151515] min-h-screen relative overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#05070B] text-white min-h-screen relative overflow-hidden">
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-20"
-        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+        
       />
       <div className="absolute inset-0 bg-[#0a0a0a]/90 z-0" />
 

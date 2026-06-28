@@ -281,7 +281,7 @@ export default function TeamBuilderPage() {
               <button
                 type="submit"
                 disabled={creating || !newTeamName.trim()}
-                className="w-full h-14 rounded-2xl bg-[#C6FF00] text-black font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50"
+                className="w-full h-14 rounded-2xl bg-[#C6FF00] text-white font-display tracking-[0.2em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50"
               >
                 {creating ? (
                   <>
@@ -468,7 +468,7 @@ export default function TeamBuilderPage() {
               <button
                 type="submit"
                 disabled={inviteLoading || !inviteUsername.trim()}
-                className="w-full h-12 rounded-xl bg-[#C6FF00] text-black font-display tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 text-sm font-bold"
+                className="w-full h-12 rounded-xl bg-[#C6FF00] text-white font-display tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 text-sm font-bold"
               >
                 {inviteLoading ? (
                   <>
@@ -575,7 +575,7 @@ export default function TeamBuilderPage() {
                 <button
                   type="submit"
                   disabled={settingsLoading || !editTeamName.trim()}
-                  className="w-full h-11 rounded-xl bg-[#C6FF00] text-black font-display tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 text-xs font-bold"
+                  className="w-full h-11 rounded-xl bg-[#C6FF00] text-white font-display tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#b0e600] disabled:opacity-50 text-xs font-bold"
                 >
                   {settingsLoading ? (
                     <>

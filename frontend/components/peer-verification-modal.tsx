@@ -290,7 +290,7 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
                   <button
                     onClick={() => handleVote(1)}
                     disabled={submitting}
-                    className="flex-[2] h-14 rounded-2xl bg-[#C6FF00] text-black font-display font-bold text-lg uppercase italic tracking-wide hover:bg-[#C6FF00]/90 transition flex justify-center items-center gap-2"
+                    className="flex-[2] h-14 rounded-2xl bg-[#C6FF00] text-white font-display font-bold text-lg uppercase italic tracking-wide hover:bg-[#C6FF00]/90 transition flex justify-center items-center gap-2"
                   >
                      {submitting ? <Loader2 size={20} className="animate-spin" /> : <><Check size={20} /> Verify Stats</>}
                   </button>

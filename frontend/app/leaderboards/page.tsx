@@ -75,7 +75,7 @@ export default function LeaderboardsPage() {
           <p className="text-xs text-white/40 mt-1">Please check your connection and try again.</p>
           <button
             onClick={() => { setError(false); setLoading(true); window.location.reload(); }}
-            className="mt-6 h-10 px-6 rounded-xl bg-[#C6FF00] text-black text-xs font-display tracking-widest uppercase cursor-pointer hover:bg-[#b0e600] transition"
+            className="mt-6 h-10 px-6 rounded-xl bg-[#C6FF00] text-white text-xs font-display tracking-widest uppercase cursor-pointer hover:bg-[#b0e600] transition"
           >
             Retry
           </button>
@@ -138,7 +138,7 @@ export default function LeaderboardsPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`py-2 rounded-lg text-[10px] uppercase font-bold tracking-wider transition-all duration-200 cursor-pointer ${
                 activeTab === tab.id
-                  ? "bg-[#C6FF00] text-black shadow-[0_0_15px_rgba(198,255,0,0.3)]"
+                  ? "bg-[#C6FF00] text-white shadow-[0_0_15px_rgba(198,255,0,0.3)]"
                   : "text-white/60 hover:text-white hover:bg-white/5"
               }`}
             >
@@ -158,7 +158,7 @@ export default function LeaderboardsPage() {
                 rank={2}
                 color="border-slate-400/30 text-slate-350"
                 heightClass="h-28"
-                badgeColor="bg-slate-400 text-black border-slate-300"
+                badgeColor="bg-slate-400 text-white border-slate-300"
                 glowColor="rgba(148, 163, 184, 0.15)"
                 currentUser={playerData.username === (rank2 as any).username}
               />
@@ -171,7 +171,7 @@ export default function LeaderboardsPage() {
                 rank={1}
                 color="border-[#C6FF00]/40 text-[#C6FF00]"
                 heightClass="h-36"
-                badgeColor="bg-[#C6FF00] text-black border-white"
+                badgeColor="bg-[#C6FF00] text-white border-white"
                 glowColor="rgba(198, 255, 0, 0.35)"
                 pulse
                 currentUser={playerData.username === (rank1 as any).username}

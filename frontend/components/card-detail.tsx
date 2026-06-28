@@ -23,7 +23,7 @@ export function CardDetail({ player, onClose }: Props) {
       {/* Full Screen Texture Overlay */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20 pointer-events-none mix-blend-screen"
-        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+        
       />
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-[#05070B] pointer-events-none" />
 

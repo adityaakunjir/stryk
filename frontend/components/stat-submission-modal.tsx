@@ -170,7 +170,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab as any)}
-                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest whitespace-nowrap transition ${activeTab === tab ? "bg-white text-black" : "bg-white/5 text-white/50 hover:bg-white/10"}`}
+                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest whitespace-nowrap transition ${activeTab === tab ? "bg-white/5 text-white" : "bg-white/5 text-white/50 hover:bg-white/10"}`}
               >
                 {tab}
               </button>
@@ -192,7 +192,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
                     <div className={`font-bold uppercase tracking-widest text-sm ${motm ? 'text-[#A28B52]' : 'text-white'}`}>Man of the Match</div>
                   </div>
                   <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${motm ? 'bg-[#A28B52]' : 'bg-white/10'}`}>
-                    <div className={`w-4 h-4 rounded-full bg-white shadow-md transform transition ${motm ? 'translate-x-6' : 'translate-x-0'}`} />
+                    <div className={`w-4 h-4 rounded-full bg-white/5 shadow-md transform transition ${motm ? 'translate-x-6' : 'translate-x-0'}`} />
                   </div>
                 </div>
 
@@ -205,7 +205,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
                     <div className={`font-bold uppercase tracking-widest text-sm ${noShow ? 'text-red-500' : 'text-white'}`}>Did Not Show Up</div>
                   </div>
                   <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${noShow ? 'bg-red-500' : 'bg-white/10'}`}>
-                    <div className={`w-4 h-4 rounded-full bg-white shadow-md transform transition ${noShow ? 'translate-x-6' : 'translate-x-0'}`} />
+                    <div className={`w-4 h-4 rounded-full bg-white/5 shadow-md transform transition ${noShow ? 'translate-x-6' : 'translate-x-0'}`} />
                   </div>
                 </div>
               </>
@@ -239,7 +239,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
                       <div className={`font-bold uppercase tracking-widest text-sm ${cleanSheet ? 'text-blue-400' : 'text-white'}`}>Clean Sheet</div>
                     </div>
                     <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${cleanSheet ? 'bg-blue-500' : 'bg-white/10'}`}>
-                      <div className={`w-4 h-4 rounded-full bg-white shadow-md transform transition ${cleanSheet ? 'translate-x-6' : 'translate-x-0'}`} />
+                      <div className={`w-4 h-4 rounded-full bg-white/5 shadow-md transform transition ${cleanSheet ? 'translate-x-6' : 'translate-x-0'}`} />
                     </div>
                   </div>
                 )}
@@ -264,7 +264,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
                         <div className={`font-bold uppercase tracking-widest text-sm ${cleanSheet ? 'text-blue-400' : 'text-white'}`}>Clean Sheet</div>
                       </div>
                       <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${cleanSheet ? 'bg-blue-500' : 'bg-white/10'}`}>
-                        <div className={`w-4 h-4 rounded-full bg-white shadow-md transform transition ${cleanSheet ? 'translate-x-6' : 'translate-x-0'}`} />
+                        <div className={`w-4 h-4 rounded-full bg-white/5 shadow-md transform transition ${cleanSheet ? 'translate-x-6' : 'translate-x-0'}`} />
                       </div>
                     </div>
                   </>
@@ -319,7 +319,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full mt-4 h-12 shrink-0 rounded-2xl bg-white text-black font-display tracking-[0.2em] uppercase font-bold transition duration-200 hover:bg-gray-200 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full mt-4 h-12 shrink-0 rounded-2xl bg-white/5 text-white font-display tracking-[0.2em] uppercase font-bold transition duration-200 hover:bg-white/10 disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 size={18} className="animate-spin" /> : "SUBMIT STATS"}
           </button>

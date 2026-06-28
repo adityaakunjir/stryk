@@ -193,12 +193,12 @@ export default function InvitesPage() {
                   <button
                     onClick={() => handleRespond(invite, "accept")}
                     disabled={actionLoadingId !== null}
-                    className="h-10 rounded-2xl bg-[#C6FF00] text-black text-xs font-display tracking-widest font-bold uppercase hover:bg-[#b0e600] cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-[0_10px_20px_-5px_rgba(198,255,0,0.3)]"
+                    className="h-10 rounded-2xl bg-[#C6FF00] text-white text-xs font-display tracking-widest font-bold uppercase hover:bg-[#b0e600] cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-[0_10px_20px_-5px_rgba(198,255,0,0.3)]"
                     type="button"
                   >
                     {actionLoadingId === invite.id ? (
                       <>
-                        <Loader2 className="size-3.5 animate-spin text-black" />
+                        <Loader2 className="size-3.5 animate-spin text-white" />
                         JOINING...
                       </>
                     ) : (

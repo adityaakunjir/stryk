@@ -298,7 +298,7 @@ export default function MatchesPage() {
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        style={{ backgroundImage: "url('/create_card_bg.webp')" }}
+        
       />
 
       <div className="relative h-full flex flex-col px-6 pt-6 pb-8 max-w-md mx-auto z-10 w-full overflow-y-auto">

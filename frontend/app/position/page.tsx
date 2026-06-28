@@ -69,12 +69,12 @@ const smartSecondary: Record<string, string[]> = {
 
 function Stepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-[#151515]/80">
-      <div className="flex items-center gap-1.5 text-[#151515]/60">
-        IDENTITY <Check size={12} className="text-[#151515]/60" strokeWidth={3} />
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-white/80">
+      <div className="flex items-center gap-1.5 text-white/60">
+        IDENTITY <Check size={12} className="text-white/60" strokeWidth={3} />
       </div>
       <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
-      <div className="text-[#151515] font-black flex items-center gap-1.5 drop-shadow-sm">
+      <div className="text-white font-black flex items-center gap-1.5 drop-shadow-sm">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         POSITION
       </div>
@@ -157,7 +157,7 @@ export default function PositionPage() {
   const suggestedSecondaries = smartSecondary[selectedPosition] || [];
 
   return (
-    <main className="stryk-mobile-shell text-[#151515] relative overflow-hidden min-h-[100dvh] flex flex-col">
+    <main className="stryk-mobile-shell text-white relative overflow-hidden min-h-[100dvh] flex flex-col">
       {/* Premium Marble Background */}
       <img src="/create_card_bg.webp" className="absolute inset-0 z-0 h-full w-full object-cover opacity-90" alt="" />
 
@@ -169,7 +169,7 @@ export default function PositionPage() {
             className="fixed top-safe inset-x-4 z-50 flex justify-center pointer-events-none"
           >
             <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3 pr-5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl">
-              <div className="w-8 h-8 rounded-full bg-[#C6FF00] flex items-center justify-center text-black">
+              <div className="w-8 h-8 rounded-full bg-[#C6FF00] flex items-center justify-center text-white">
                 <Check size={16} strokeWidth={3} />
               </div>
               <div>
@@ -188,13 +188,13 @@ export default function PositionPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="icon" aria-label="Back to Identity" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to Identity" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10">
             <Link href="/identity">
               <ArrowLeft size={18} strokeWidth={2} />
             </Link>
           </Button>
           <div className="hidden sm:block"><Stepper /></div>
-          <Button variant="ghost" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-black/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-[#151515]/40 hover:text-[#151515]">
+          <Button variant="ghost" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-white/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/40 hover:text-white">
             Skip
           </Button>
         </motion.header>
@@ -210,25 +210,25 @@ export default function PositionPage() {
               WHERE DO<br/>
               <span className="text-[#A28B52]">YOU PLAY?</span>
             </h2>
-            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#151515]/60 uppercase tracking-[0.2em]">
+            <p className="mt-4 text-[13px] sm:text-sm font-medium text-white/60 uppercase tracking-[0.2em]">
               Pick your primary position
             </p>
           </motion.div>
 
           {/* Live Mini Card Continuity */}
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.2 }} className="mt-6 flex items-center justify-center pointer-events-none">
-            <div className="flex items-center gap-4 rounded-full border border-black/10 bg-black/5 p-2 pr-6 shadow-sm backdrop-blur-md">
+            <div className="flex items-center gap-4 rounded-full border border-white/10 bg-white/5 p-2 pr-6 shadow-sm backdrop-blur-md">
               {playerData?.avatar ? (
-                <img src={playerData.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover border border-black/10" />
+                <img src={playerData.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover border border-white/10" />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-black/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                   <div className="w-5 h-5 rounded-full bg-black/20" />
                 </div>
               )}
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#151515]">{playerData?.fullName || "Player Name"}</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-white">{playerData?.fullName || "Player Name"}</span>
                 <div className="flex items-center gap-2 mt-0.5 text-[9px] font-bold tracking-[0.1em] text-[#B08332]">
-                  {selectedPosition} <span className="text-[#151515]/30">•</span> {strongFoot} Foot
+                  {selectedPosition} <span className="text-white/30">•</span> {strongFoot} Foot
                 </div>
               </div>
             </div>
@@ -263,7 +263,7 @@ export default function PositionPage() {
                         onMouseLeave={() => setHoveredNode(null)}
                         className={cn(
                           "flex items-center justify-center rounded-full font-display text-[9px] tracking-wider cursor-pointer sm:text-xs transition-colors",
-                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-[#151515]" : "w-7 h-7 sm:w-9 sm:h-9 bg-[#151515] border border-[#2A2A2A] text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8]"
+                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-white" : "w-7 h-7 sm:w-9 sm:h-9 bg-[#151515] border border-[#2A2A2A] text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8]"
                         )}
                         layout
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -415,7 +415,7 @@ export default function PositionPage() {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={isSubmitting || isSuccess}
-                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-[#151515] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
+                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-white font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
                 type="submit"
               >
                 
@@ -456,7 +456,7 @@ export default function PositionPage() {
               <p className="text-sm text-white/50 mt-2 mb-6">Position helps other players discover you and is crucial for your STRYK card rating calculations.</p>
               <div className="flex gap-3">
                 <button onClick={() => setShowSkipModal(false)} className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-bold uppercase tracking-wider transition cursor-pointer">Cancel</button>
-                <button onClick={handleSkip} className="flex-1 py-3 rounded-xl bg-white text-black hover:bg-white/90 text-xs font-bold uppercase tracking-wider transition cursor-pointer">Skip for now</button>
+                <button onClick={handleSkip} className="flex-1 py-3 rounded-xl bg-white/5 text-white hover:bg-white/90 text-xs font-bold uppercase tracking-wider transition cursor-pointer">Skip for now</button>
               </div>
             </motion.div>
           </motion.div>
