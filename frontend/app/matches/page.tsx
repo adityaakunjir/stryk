@@ -294,7 +294,7 @@ export default function MatchesPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell glass-panel min-h-[100dvh] text-white">
+    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -586,7 +586,7 @@ export default function MatchesPage() {
 
       {/* Organize Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center glass-panel  px-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md  px-5">
           <div className="relative w-full max-w-sm rounded-[2rem] border border-[#A28B52]/20 bg-gradient-to-b from-[#151515] to-[#151515] p-7 shadow-[0_24px_60px_rgba(162,139,82,0.15)] flex flex-col max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => { setShowCreateModal(false); setCreateError(""); }}

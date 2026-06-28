@@ -22,7 +22,7 @@ export default function SubmitPage() {
 
   if (!isLoaded) {
     return (
-      <main className="relative min-h-screen overflow-hidden glass-panel text-white flex items-center justify-center">
+      <main className="relative min-h-screen overflow-hidden bg-[#151515] text-white flex items-center justify-center">
         <Loader2 className="size-10 text-[#C6FF00] animate-spin" />
       </main>
     );
@@ -68,7 +68,7 @@ export default function SubmitPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell text-white glass-panel">
+    <main className="stryk-mobile-shell text-white bg-[#151515]">
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">

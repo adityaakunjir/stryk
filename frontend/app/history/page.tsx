@@ -89,7 +89,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell glass-panel text-white overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#151515] text-white overflow-hidden">
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <header className="pb-4 flex items-center gap-3 shrink-0 mb-2 relative z-20">

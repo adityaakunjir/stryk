@@ -16,7 +16,7 @@ export default function CardPage() {
 
   if (!isLoaded) {
     return (
-      <main className="relative min-h-screen overflow-hidden glass-panel text-white flex items-center justify-center">
+      <main className="relative min-h-screen overflow-hidden bg-[#151515] text-white flex items-center justify-center">
         <Loader2 className="size-10 text-[#C6FF00] animate-spin" />
       </main>
     );
@@ -62,7 +62,7 @@ export default function CardPage() {
   const lossPercent = totalMatches > 0 ? (losses / totalMatches) * 100 : 0;
 
   return (
-    <main className="stryk-mobile-shell text-white glass-panel">
+    <main className="stryk-mobile-shell text-white bg-[#151515]">
       {/* Figma Ambient bg */}
       <div
         className="absolute inset-0"

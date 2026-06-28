@@ -548,7 +548,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <main className="relative min-h-screen overflow-hidden glass-panel flex flex-col items-center justify-center">
+      <main className="relative min-h-screen overflow-hidden bg-[#151515] flex flex-col items-center justify-center">
         <Loader2 className="size-10 text-white animate-spin mb-4" />
         <h2 className="text-xl font-display font-black text-white tracking-widest uppercase italic animate-pulse">Loading Match...</h2>
       </main>
@@ -557,7 +557,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   if (!match) {
     return (
-      <main className="stryk-mobile-shell text-white glass-panel min-h-screen flex flex-col justify-center items-center px-6 text-center">
+      <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen flex flex-col justify-center items-center px-6 text-center">
         <h1 className="text-2xl font-display font-black italic tracking-widest text-white uppercase">Match Not Found</h1>
         <p className="text-sm text-white/60 mt-2 font-semibold">This match may have been cancelled or deleted.</p>
         <button 
@@ -606,7 +606,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none glass-panel  bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-white">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#151515]  bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-white">
       <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.22),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.62),transparent)]" />
 
       <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full overflow-y-auto">

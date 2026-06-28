@@ -132,7 +132,7 @@ export default function NotificationsPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell glass-panel min-h-[100dvh] text-white">
+    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"

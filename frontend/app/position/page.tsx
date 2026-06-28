@@ -157,7 +157,7 @@ export default function PositionPage() {
   const suggestedSecondaries = smartSecondary[selectedPosition] || [];
 
   return (
-    <main className="stryk-mobile-shell glass-panel text-white relative overflow-hidden min-h-[100dvh] flex flex-col">
+    <main className="stryk-mobile-shell bg-[#151515] text-white relative overflow-hidden min-h-[100dvh] flex flex-col">
       {/* Custom Animated Success Toast */}
       <AnimatePresence>
         {showToast && (

@@ -49,7 +49,7 @@ export default async function MatchHistoryPage({ params }: Props) {
   }
 
   return (
-    <main className="stryk-mobile-shell glass-panel text-white min-h-screen relative overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#151515] text-white min-h-screen relative overflow-hidden">
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-20"
         
