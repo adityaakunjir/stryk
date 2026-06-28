@@ -387,7 +387,7 @@ export default function HomeLobbyPage() {
       {/* Squad Modal (Empty State Upgraded) */}
       <AnimatePresence>
         {showSquadModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center glass-panel  px-5">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md px-5">
             <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="relative w-full max-w-sm rounded-[2rem] border border-[#A28B52]/20 glass-panel p-6 shadow-[0_24px_60px_rgba(162,139,82,0.15)] flex flex-col max-h-[85vh]">
               <button onClick={() => setShowSquadModal(false)} className="absolute right-4 top-4 grid size-8 place-items-center rounded-full glass-panel text-[#888888] hover:text-[#A28B52] hover:bg-[#2A2824] transition duration-200 cursor-pointer">
                 <X size={14} strokeWidth={1.5} />
