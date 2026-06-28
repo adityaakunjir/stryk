@@ -100,6 +100,87 @@ function JourneyStepper() {
   );
 }
 
+function PlayStyleGraphic({ active = false, color = "#C6FF00", styleName = "Speedster" }: { active?: boolean, color?: string, styleName?: PlayStyleType }) {
+  return (
+    <div className="absolute inset-x-0 top-10 h-48 pointer-events-none flex items-center justify-center">
+      {styleName === "Speedster" && (
+        <motion.div 
+          className="relative size-32 flex items-center justify-center"
+          animate={{ x: active ? [0, 10, 0] : 0, skewX: active ? [-10, -20, -10] : -10 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          {/* Speed Chevrons */}
+          <div className="absolute w-24 h-2 bg-gradient-to-r from-transparent to-white rounded-r-full" style={{ top: "30%", boxShadow: active ? `0 0 20px ${color}` : "none", opacity: active ? 0.9 : 0.3 }} />
+          <div className="absolute w-32 h-3 bg-gradient-to-r from-transparent to-white rounded-r-full" style={{ top: "50%", boxShadow: active ? `0 0 30px ${color}` : "none", backgroundColor: color, opacity: active ? 1 : 0.4 }} />
+          <div className="absolute w-20 h-2 bg-gradient-to-r from-transparent to-white rounded-r-full" style={{ top: "70%", boxShadow: active ? `0 0 20px ${color}` : "none", opacity: active ? 0.8 : 0.2 }} />
+        </motion.div>
+      )}
+
+      {styleName === "Playmaker" && (
+        <motion.div className="relative size-32 flex items-center justify-center">
+          {/* Concentric Vision Rings */}
+          <motion.div 
+            className="absolute size-32 rounded-full border-[3px] border-dashed"
+            style={{ borderColor: `${color}60` }}
+            animate={{ rotate: active ? 360 : 0, scale: active ? [1, 1.05, 1] : 1 }}
+            transition={{ rotate: { duration: 10, repeat: Infinity, ease: "linear" }, scale: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
+          />
+          <motion.div 
+            className="absolute size-20 rounded-full border-2"
+            style={{ borderColor: `${color}40` }}
+            animate={{ rotate: active ? -360 : 0 }}
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          />
+          <motion.div 
+            className="absolute size-10 rounded-full bg-white shadow-[0_0_30px_rgba(255,255,255,1)]"
+            style={{ backgroundColor: color, boxShadow: active ? `0 0 40px ${color}, inset 0 0 10px white` : "none", opacity: active ? 1 : 0.5 }}
+            animate={{ scale: active ? [1, 1.2, 1] : 1 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </motion.div>
+      )}
+
+      {styleName === "Poacher" && (
+        <div className="relative size-32 flex items-center justify-center">
+          {/* Precision Target Diamond */}
+          <motion.div 
+            className="absolute size-24 border-4 rounded-xl"
+            style={{ borderColor: `${color}30`, rotate: 45 }}
+            animate={{ scale: active ? [1, 0.9, 1] : 1, opacity: active ? [0.5, 1, 0.5] : 0.3 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div 
+            className="absolute size-16 border-2 rounded-lg bg-black/40 backdrop-blur-sm"
+            style={{ borderColor: `${color}60`, rotate: 45 }}
+          />
+          <motion.div 
+            className="absolute size-4 rounded-full bg-white"
+            style={{ backgroundColor: color, boxShadow: active ? `0 0 30px ${color}` : "none", opacity: active ? 1 : 0.4 }}
+            animate={{ scale: active ? [1, 1.5, 1] : 1 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "backOut" }}
+          />
+        </div>
+      )}
+
+      {styleName === "Box-to-Box" && (
+        <div className="relative size-32 flex flex-col items-center justify-between py-2">
+          {/* Zones and Engine Pulse */}
+          <div className="w-24 h-4 border-2 rounded-full" style={{ borderColor: `${color}50` }} />
+          
+          <motion.div 
+            className="w-1.5 rounded-full bg-gradient-to-b from-transparent via-white to-transparent"
+            style={{ backgroundColor: color, filter: active ? `drop-shadow(0 0 15px ${color})` : "none" }}
+            animate={{ height: active ? ["20%", "80%", "20%"] : "40%", opacity: active ? 1 : 0.4 }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          />
+          
+          <div className="w-24 h-4 border-2 rounded-full" style={{ borderColor: `${color}50` }} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function PlayStylePage() {
   const router = useRouter();
   const { playerData, updatePlayerData } = usePlayer();
@@ -318,18 +399,7 @@ export default function PlayStylePage() {
                     >
                       <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_50%_22%,var(--tw-gradient-from),transparent_50%)]", style.tone)} />
                       
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none pb-20">
-                        <motion.div
-                          animate={{
-                            scale: isActive ? [1, 1.05, 1] : 1,
-                            opacity: isActive ? 1 : 0.2,
-                            filter: isActive ? `drop-shadow(0 0 30px ${style.color})` : "none"
-                          }}
-                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        >
-                          <Icon className="w-32 h-32" style={{ color: style.color }} strokeWidth={1} />
-                        </motion.div>
-                      </div>
+                      <PlayStyleGraphic active={isActive} color={style.color} styleName={style.title as PlayStyleType} />
                       
                       <div className="absolute bottom-0 left-0 right-0 p-6 text-center z-10 bg-gradient-to-t from-[#151515] via-[#151515]/80 to-transparent pt-12">
                         <motion.div
