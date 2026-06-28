@@ -86,7 +86,7 @@ export default function SearchPage() {
   const activeFiltersCount = [query, position, playStyle].filter(Boolean).length;
 
   return (
-    <main className="stryk-mobile-shell bg-[#05070B] min-h-[100dvh] text-white">
+    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"

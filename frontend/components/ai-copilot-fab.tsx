@@ -26,7 +26,7 @@ export function AiCopilotFab() {
       <div
         className={cn(
           "fixed inset-x-0 bottom-0 z-50 h-[60dvh] max-w-md mx-auto rounded-t-3xl",
-          "bg-[#05070B]/95 backdrop-blur-xl border-t border-x border-white/10 shadow-2xl flex flex-col",
+          "bg-[#151515]/95 backdrop-blur-xl border-t border-x border-white/10 shadow-2xl flex flex-col",
           "transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
           isOpen ? "translate-y-0" : "translate-y-full"
         )}

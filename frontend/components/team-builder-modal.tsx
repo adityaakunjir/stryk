@@ -402,10 +402,10 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="w-full max-w-4xl h-[95vh] bg-[#05070B] border border-[#151515]/10 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden relative"
+            className="w-full max-w-4xl h-[95vh] bg-[#151515] border border-[#151515]/10 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden relative"
           >
             {/* Header */}
-            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between p-4 sm:p-5 border-b border-[#151515]/10 shrink-0 bg-[#05070B] z-20 gap-3">
+            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between p-4 sm:p-5 border-b border-[#151515]/10 shrink-0 bg-[#151515] z-20 gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#151515] flex items-center justify-center shadow-md">
                   <Users className="text-[#E5DCC5]" size={20} />

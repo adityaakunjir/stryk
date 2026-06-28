@@ -191,7 +191,7 @@ function DraggablePlayerToken({
         {...attributes}
         className={`relative flex flex-col items-center justify-center shrink-0 group touch-none transition-transform ${compactWrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing hover:scale-105' : 'cursor-default'}`}
       >
-        <div className={`relative mx-auto overflow-hidden rounded-full border-[2px] border-white/10 bg-[#05070B] shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:border-[#D4F829]/50 transition-colors pointer-events-none ${compactAvatarClass}`}>
+        <div className={`relative mx-auto overflow-hidden rounded-full border-[2px] border-white/10 bg-[#151515] shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:border-[#D4F829]/50 transition-colors pointer-events-none ${compactAvatarClass}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
@@ -266,7 +266,7 @@ function DraggablePlayerToken({
         </div>
         
         {/* Avatar */}
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-white/5" : "border-[#D4F829]/40 bg-[#05070B]"}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-white/5" : "border-[#D4F829]/40 bg-[#151515]"}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
@@ -364,7 +364,7 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
            </span>
         </div>
         
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/60 bg-[#05070B] shadow-sm ${avatarClass}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/60 bg-[#151515] shadow-sm ${avatarClass}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
           ) : (

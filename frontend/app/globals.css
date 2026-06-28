@@ -2,13 +2,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #05070B;
+  --background: #151515;
   --foreground: #F5F7FA;
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-display: "Bebas Neue", "Inter", sans-serif;
 
   /* STRYK palette */
-  --stryk-bg: #05070B;
+  --stryk-bg: #151515;
   --stryk-surface: #0B1020;
   --stryk-elevated: #10182B;
   --stryk-border: rgba(255, 255, 255, 0.08);

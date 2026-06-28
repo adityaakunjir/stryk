@@ -60,7 +60,7 @@ export default function LeaderboardsPage() {
 
   if (loading) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white flex items-center justify-center">
+      <main className="relative min-h-screen overflow-hidden bg-[#151515] text-white flex items-center justify-center">
         <Loader2 className="size-10 text-[#C6FF00] animate-spin" />
       </main>
     );
@@ -68,7 +68,7 @@ export default function LeaderboardsPage() {
 
   if (error || !data) {
     return (
-      <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen flex items-center justify-center">
+      <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center text-center px-6">
           <Trophy size={32} className="text-white/20 mb-4" />
           <div className="text-sm font-bold uppercase tracking-wider text-white/70">Failed to load leaderboards</div>
@@ -101,7 +101,7 @@ export default function LeaderboardsPage() {
   ];
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
+    <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen">
       {/* Ambient backgrounds */}
       <div
         className="absolute inset-0"
@@ -310,7 +310,7 @@ function PodiumSlot({
         />
         
         <div
-          className={`relative size-14 rounded-full overflow-hidden border bg-[#05070B] flex items-center justify-center ${color} ${
+          className={`relative size-14 rounded-full overflow-hidden border bg-[#151515] flex items-center justify-center ${color} ${
             pulse ? "animate-[pulse_2s_infinite]" : ""
           } ${currentUser ? "shadow-[0_0_15px_rgba(198,255,0,0.2)]" : ""}`}
         >

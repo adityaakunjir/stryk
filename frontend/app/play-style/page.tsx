@@ -319,7 +319,7 @@ export default function PlayStylePage() {
 
   // --- NORMAL PAGE RENDER ---
   return (
-    <main className="stryk-mobile-shell bg-[#05070B] overflow-hidden text-white">
+    <main className="stryk-mobile-shell bg-[#151515] overflow-hidden text-white">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"

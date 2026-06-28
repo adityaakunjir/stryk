@@ -89,7 +89,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#05070B] text-white overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#151515] text-white overflow-hidden">
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <header className="pb-4 flex items-center gap-3 shrink-0 mb-2 relative z-20">
@@ -155,7 +155,7 @@ export default function HistoryPage() {
                   className="relative pl-12 pr-1"
                 >
                   {/* Timeline Node */}
-                  <div className={`absolute left-[13px] top-6 w-[14px] h-[14px] rounded-full border-[3px] bg-[#05070B] z-10 ${getOutcomeBorderColor(match.outcome)}`} />
+                  <div className={`absolute left-[13px] top-6 w-[14px] h-[14px] rounded-full border-[3px] bg-[#151515] z-10 ${getOutcomeBorderColor(match.outcome)}`} />
 
                   {/* Match Card */}
                   <div className="rounded-[1.5rem] bg-white/[0.03] border border-white/5 overflow-hidden backdrop-blur-sm relative">

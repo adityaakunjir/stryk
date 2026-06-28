@@ -124,7 +124,7 @@ export function FIFAPlayerCard({
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className={`absolute top-2 left-2 z-20 bg-[#05070B] rounded-lg px-2 py-1 border border-[#C6FF00]/50 ${config.text} font-bold text-[#C6FF00]`}
+        className={`absolute top-2 left-2 z-20 bg-[#151515] rounded-lg px-2 py-1 border border-[#C6FF00]/50 ${config.text} font-bold text-[#C6FF00]`}
       >
         {position}
       </motion.div>

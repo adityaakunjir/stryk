@@ -74,7 +74,7 @@ export function ChemistryBadge({ score, showLabel = true, size = "md", tooltip }
       <motion.div
         initial={{ opacity: 0, y: -5 }}
         whileHover={{ opacity: 1, y: 0 }}
-        className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-[#05070B] text-white px-2 py-1 rounded text-xs whitespace-nowrap pointer-events-none z-50 border border-[#C6FF00]/30"
+        className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-[#151515] text-white px-2 py-1 rounded text-xs whitespace-nowrap pointer-events-none z-50 border border-[#C6FF00]/30"
       >
         <div className="font-bold">{getLabel(level)}</div>
         <div className={colors.text}>{score}% compatibility</div>

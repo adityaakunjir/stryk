@@ -109,7 +109,7 @@ export default function LobbiesPage() {
   });
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B]">
+    <main className="stryk-mobile-shell text-white bg-[#151515]">
       {/* Background gradients */}
       <div
         className="absolute inset-x-0 top-0 h-60 opacity-60 pointer-events-none"

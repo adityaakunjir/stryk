@@ -111,7 +111,7 @@ export function DraftInterface({
         </motion.div>
 
         {/* Progress bar */}
-        <div className="w-full bg-[#05070B] rounded-full h-2 overflow-hidden">
+        <div className="w-full bg-[#151515] rounded-full h-2 overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${(selectedTeamCount / maxPlayers) * 100}%` }}
@@ -180,7 +180,7 @@ export function DraftInterface({
                       className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${
                         positionFilter === "all"
                           ? "bg-[#C6FF00] text-[#05070B]"
-                          : "bg-[#05070B] border border-[#C6FF00]/30 text-[#C6FF00] hover:border-[#C6FF00]/50"
+                          : "bg-[#151515] border border-[#C6FF00]/30 text-[#C6FF00] hover:border-[#C6FF00]/50"
                       }`}
                     >
                       All
@@ -194,7 +194,7 @@ export function DraftInterface({
                         className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${
                           positionFilter === pos
                             ? "bg-[#C6FF00] text-[#05070B]"
-                            : "bg-[#05070B] border border-[#C6FF00]/30 text-[#C6FF00] hover:border-[#C6FF00]/50"
+                            : "bg-[#151515] border border-[#C6FF00]/30 text-[#C6FF00] hover:border-[#C6FF00]/50"
                         }`}
                       >
                         {pos}
@@ -219,7 +219,7 @@ export function DraftInterface({
                         className={`px-3 py-1 rounded text-xs font-semibold transition-colors capitalize ${
                           sortBy === option
                             ? "bg-[#C6FF00] text-[#05070B]"
-                            : "bg-[#05070B] border border-[#C6FF00]/30 text-[#C6FF00] hover:border-[#C6FF00]/50"
+                            : "bg-[#151515] border border-[#C6FF00]/30 text-[#C6FF00] hover:border-[#C6FF00]/50"
                         }`}
                       >
                         {option}

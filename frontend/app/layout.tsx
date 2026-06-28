@@ -7,7 +7,7 @@ import { DraftProvider } from "@/lib/draft-context";
 import { AiCopilotFab } from "@/components/ai-copilot-fab";
 
 export const viewport: Viewport = {
-  themeColor: "#05070B",
+  themeColor: "#151515",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,

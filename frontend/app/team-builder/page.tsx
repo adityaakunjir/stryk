@@ -241,7 +241,7 @@ export default function TeamBuilderPage() {
 
   if (loading) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#05070B] text-white flex items-center justify-center">
+      <main className="relative min-h-screen overflow-hidden bg-[#151515] text-white flex items-center justify-center">
         <Loader2 className="size-10 text-[#C6FF00] animate-spin" />
       </main>
     );
@@ -250,7 +250,7 @@ export default function TeamBuilderPage() {
   // If no team, show create team UI
   if (!team) {
     return (
-      <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
+      <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(198,255,0,0.1),transparent_50%)]" />
         <div className="relative h-full flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10 w-full">
           <div className="flex items-center justify-between mb-8">
@@ -305,7 +305,7 @@ export default function TeamBuilderPage() {
   const players = members.filter((m: any) => m.role !== "captain");
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
+    <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(198,255,0,0.1),transparent_50%)]" />
       <div className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 w-full overflow-y-auto">
         {/* Header */}

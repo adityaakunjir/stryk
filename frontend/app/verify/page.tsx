@@ -32,7 +32,7 @@ export default function VerifyPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B]">
+    <main className="stryk-mobile-shell text-white bg-[#151515]">
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">

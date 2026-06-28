@@ -108,7 +108,7 @@ export default function InvitesPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen">
+    <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen">
       {/* Ambient background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(198,255,0,0.08),transparent_50%)]" />
       

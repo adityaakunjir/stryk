@@ -137,7 +137,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-[#05070B] pointer-events-none"
+            className="absolute inset-0 z-50 bg-[#151515] pointer-events-none"
           />
         )}
       </AnimatePresence>
