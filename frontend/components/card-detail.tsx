@@ -31,7 +31,7 @@ export function CardDetail({ player, onClose }: Props) {
       <div className="relative z-10 flex items-center justify-between px-6 pt-6">
         <button
           onClick={onClose}
-          className="w-11 h-11 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-white cursor-pointer"
+          className="w-11 h-11 rounded-full flex items-center justify-center glass-panel0 border border-white/10 text-white cursor-pointer"
         >
           <ArrowLeft size={18} />
         </button>
@@ -63,7 +63,7 @@ export function CardDetail({ player, onClose }: Props) {
               console.error("Share failed:", err);
             }
           }}
-          className="w-11 h-11 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-white cursor-pointer"
+          className="w-11 h-11 rounded-full flex items-center justify-center glass-panel0 border border-white/10 text-white cursor-pointer"
         >
           <Share2 size={18} />
         </button>

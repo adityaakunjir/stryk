@@ -17,7 +17,7 @@ export default function Home() {
 
   return (
     <main 
-      className="relative h-dvh w-dvw overflow-hidden bg-[#151515] text-white flex flex-col justify-between"
+      className="relative h-dvh w-dvw overflow-hidden glass-panel text-white flex flex-col justify-between"
       style={{
         paddingTop: "env(safe-area-inset-top)",
         paddingBottom: "env(safe-area-inset-bottom)",
@@ -103,9 +103,9 @@ export default function Home() {
 
               {/* Divider */}
               <div className="flex items-center gap-4 my-2">
-                <div className="h-[1px] flex-1 bg-white/10"></div>
+                <div className="h-[1px] flex-1 glass-panel0"></div>
                 <div className="text-[9px] tracking-[0.1em] text-[#69542E] font-medium">ALREADY HAVE AN ACCOUNT?</div>
-                <div className="h-[1px] flex-1 bg-white/10"></div>
+                <div className="h-[1px] flex-1 glass-panel0"></div>
               </div>
 
               {/* LOG IN Button */}
@@ -137,7 +137,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-[#151515] pointer-events-none"
+            className="absolute inset-0 z-50 glass-panel pointer-events-none"
           />
         )}
       </AnimatePresence>

@@ -143,7 +143,7 @@ function DraftPageContent() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-40 border-b border-[#C6FF00]/20 bg-[#151515]/95 backdrop-blur-sm"
+        className="sticky top-0 z-40 border-b border-[#C6FF00]/20 glass-panel "
       >
         <div className="w-full px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">

@@ -46,7 +46,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] text-white min-h-screen relative overflow-hidden">
+    <main className="stryk-mobile-shell glass-panel text-white min-h-screen relative overflow-hidden">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -58,7 +58,7 @@ export default function SettingsPage() {
         <header className="flex items-center justify-between mb-3 shrink-0">
           <button
             onClick={() => router.push("/home")}
-            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10"
             aria-label="Back to home"
             type="button"
           >
@@ -78,7 +78,7 @@ export default function SettingsPage() {
         <div className="w-full bg-gradient-to-br from-[#151515] to-[#151515] rounded-[1.8rem] p-4 border border-white/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_20px_40px_rgba(0,0,0,0.6)] flex items-center gap-3.5 mb-5 relative overflow-hidden text-white shrink-0">
           {/* Avatar Container with rating badge */}
           <div className="relative size-12 shrink-0 z-10 ml-1">
-            <div className="w-full h-full rounded-full border border-[#A28B52] overflow-hidden bg-[#151515] flex items-center justify-center shadow-inner">
+            <div className="w-full h-full rounded-full border border-[#A28B52] overflow-hidden glass-panel flex items-center justify-center shadow-inner">
               {playerData.avatar ? (
                 <img src={playerData.avatar} alt={playerData.fullName} className="w-full h-full object-cover" />
               ) : (
@@ -127,7 +127,7 @@ export default function SettingsPage() {
               type="button"
             >
               {/* Icon Wrapper */}
-              <div className="w-10 h-10 rounded-[0.8rem] bg-[#151515] border border-white/5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 group-hover:border-white/10 transition-colors">
+              <div className="w-10 h-10 rounded-[0.8rem] glass-panel shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 group-hover:border-white/10 transition-colors">
                 <item.icon size={16} strokeWidth={1.5} className="text-[#C3DF1B]" />
               </div>
               

@@ -14,8 +14,8 @@ export function AiCopilotFab() {
         onClick={() => setIsOpen(true)}
         className={cn(
           "fixed bottom-24 right-4 z-50 flex items-center justify-center w-12 h-12 rounded-full",
-          "bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_4px_24px_rgba(195,223,27,0.15)]",
-          "hover:bg-white/10 transition-all duration-300 group",
+          "glass-panel  border border-white/10 shadow-[0_4px_24px_rgba(195,223,27,0.15)]",
+          "hover:glass-panel0 transition-all duration-300 group",
           isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"
         )}
       >
@@ -26,7 +26,7 @@ export function AiCopilotFab() {
       <div
         className={cn(
           "fixed inset-x-0 bottom-0 z-50 h-[60dvh] max-w-md mx-auto rounded-t-3xl",
-          "bg-[#151515]/95 backdrop-blur-xl border-t border-x border-white/10 shadow-2xl flex flex-col",
+          "glass-panel  border-t border-x border-white/10 shadow-2xl flex flex-col",
           "transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
           isOpen ? "translate-y-0" : "translate-y-full"
         )}
@@ -42,7 +42,7 @@ export function AiCopilotFab() {
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-full transition-colors"
+            className="p-2 text-gray-400 hover:text-white hover:glass-panel rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -50,7 +50,7 @@ export function AiCopilotFab() {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center justify-center text-center">
-          <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-full glass-panel flex items-center justify-center mb-4">
             <Cpu className="w-8 h-8 text-gray-400" />
           </div>
           <p className="text-sm text-gray-400 font-mono mb-2">INITIALIZING RAG SEQUENCE...</p>
@@ -61,7 +61,7 @@ export function AiCopilotFab() {
       {/* Backdrop */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 z-40 bg-black/40  transition-opacity"
           onClick={() => setIsOpen(false)}
         />
       )}

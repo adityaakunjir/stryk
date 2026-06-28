@@ -132,7 +132,7 @@ export default function NotificationsPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
+    <main className="stryk-mobile-shell glass-panel min-h-[100dvh] text-white">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -144,7 +144,7 @@ export default function NotificationsPage() {
         <header className="flex items-center justify-between mb-6 relative">
           <button
             onClick={() => router.push("/home")}
-            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10"
             aria-label="Back to home"
             type="button"
           >
@@ -199,7 +199,7 @@ export default function NotificationsPage() {
             {notifications.map((n) => (
               <div
                 key={n.id}
-                className="p-5 rounded-[2rem] border border-[#D8A53B]/20 bg-[#151515] flex flex-col gap-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
+                className="p-5 rounded-[2rem] border border-[#D8A53B]/20 glass-panel flex flex-col gap-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
               >
                 <div className="flex items-center gap-4">
                   <div className="relative size-14 rounded-[1.25rem] overflow-hidden border border-[#D8A53B]/30 bg-[#050505] flex items-center justify-center shrink-0 shadow-[inset_0_0_15px_rgba(216,165,59,0.05)]">
@@ -224,7 +224,7 @@ export default function NotificationsPage() {
                   <button
                     onClick={() => handleRespond(n.id, n.type, "decline")}
                     disabled={actionLoadingId !== null}
-                    className="h-11 rounded-[1.25rem] border border-white/10 bg-[#151515] text-[13px] font-bold tracking-widest text-white/70 uppercase hover:bg-white/5 hover:text-white cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="h-11 rounded-[1.25rem] border border-white/10 glass-panel text-[13px] font-bold tracking-widest text-white/70 uppercase hover:glass-panel hover:text-white cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2"
                     type="button"
                   >
                     {actionLoadingId === n.id ? (

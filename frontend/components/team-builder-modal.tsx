@@ -103,18 +103,18 @@ function SortablePlayerCard({ player, zoneId }: { player: Player; zoneId: string
         </div>
 
         {/* Avatar */}
-        <div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden mt-1 md:mt-1.5 border border-white/40 bg-white/10 relative">
+        <div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden mt-1 md:mt-1.5 border border-white/40 glass-panel0 relative">
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover" sizes="40px" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-white/40 font-bold text-sm bg-white/50">
+            <div className="w-full h-full flex items-center justify-center text-white/40 font-bold text-sm glass-panel0">
               {player.username.charAt(0).toUpperCase()}
             </div>
           )}
         </div>
 
         {/* Separator line */}
-        <div className="w-3/4 h-[1px] bg-white/10 my-0.5 md:my-1" />
+        <div className="w-3/4 h-[1px] glass-panel0 my-0.5 md:my-1" />
 
         {/* Name */}
         <div className="text-[6.5px] md:text-[7.5px] font-black uppercase text-center px-1 leading-none tracking-tighter truncate w-full">
@@ -141,17 +141,17 @@ function PlayerCardOverlay({ player, zoneId }: { player: Player; zoneId: string 
           )}
         </div>
 
-        <div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden mt-1 md:mt-1.5 border border-white/40 bg-white/10 relative">
+        <div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden mt-1 md:mt-1.5 border border-white/40 glass-panel0 relative">
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover" sizes="40px" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-white/40 font-bold text-sm bg-white/50">
+            <div className="w-full h-full flex items-center justify-center text-white/40 font-bold text-sm glass-panel0">
               {player.username.charAt(0).toUpperCase()}
             </div>
           )}
         </div>
 
-        <div className="w-3/4 h-[1px] bg-white/10 my-0.5 md:my-1" />
+        <div className="w-3/4 h-[1px] glass-panel0 my-0.5 md:my-1" />
 
         <div className="text-[6.5px] md:text-[7.5px] font-black uppercase text-center px-1 leading-none tracking-tighter truncate w-full">
           {player.fullName?.split(' ')[0] || player.username}
@@ -396,18 +396,18 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-6 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-6 bg-black/60 "
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="w-full max-w-4xl h-[95vh] bg-[#151515] border border-[#151515]/10 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden relative"
+            className="w-full max-w-4xl h-[95vh] glass-panel border border-[#151515]/10 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden relative"
           >
             {/* Header */}
-            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between p-4 sm:p-5 border-b border-[#151515]/10 shrink-0 bg-[#151515] z-20 gap-3">
+            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between p-4 sm:p-5 border-b border-[#151515]/10 shrink-0 glass-panel z-20 gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#151515] flex items-center justify-center shadow-md">
+                <div className="w-10 h-10 rounded-xl glass-panel flex items-center justify-center shadow-md">
                   <Users className="text-[#E5DCC5]" size={20} />
                 </div>
                 <div>
@@ -419,13 +419,13 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
               <div className="flex items-center gap-2 sm:gap-4 ml-auto">
                 <button
                   onClick={handleAutoBalance}
-                  className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] uppercase font-bold tracking-widest bg-[#151515]/5 hover:bg-[#151515]/10 border border-[#151515]/10 text-white rounded-xl transition-all"
+                  className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] uppercase font-bold tracking-widest glass-panel border border-[#151515]/10 text-white rounded-xl transition-all"
                 >
                   <RefreshCw size={14} />
                   <span className="hidden sm:inline">AUTO-BALANCE</span>
                   <span className="sm:hidden">AUTO</span>
                 </button>
-                <button onClick={onClose} className="p-2 sm:p-2.5 text-white/50 hover:text-white hover:bg-[#151515]/5 rounded-full transition-colors">
+                <button onClick={onClose} className="p-2 sm:p-2.5 text-white/50 hover:text-white hover:glass-panel rounded-full transition-colors">
                   <X size={20} />
                 </button>
               </div>
@@ -470,13 +470,13 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
                   </div>
                   
                   <div className="absolute top-1/2 left-4 -translate-y-1/2 flex flex-col items-center gap-1 z-20 pointer-events-none hidden sm:flex">
-                    <div className="bg-[#151515] px-3 py-1.5 rounded-lg border border-white/10 shadow-xl flex flex-col items-center">
+                    <div className="glass-panel px-3 py-1.5 rounded-lg border border-white/10 shadow-xl flex flex-col items-center">
                       <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5] font-bold">OVR</span>
                       <span className="text-sm text-white font-black">{statsA.avgOvr}</span>
                     </div>
                   </div>
                   <div className="absolute top-1/2 right-4 -translate-y-1/2 flex flex-col items-center gap-1 z-20 pointer-events-none hidden sm:flex">
-                    <div className="bg-[#151515] px-3 py-1.5 rounded-lg border border-white/10 shadow-xl flex flex-col items-center">
+                    <div className="glass-panel px-3 py-1.5 rounded-lg border border-white/10 shadow-xl flex flex-col items-center">
                       <span className="text-[9px] uppercase tracking-widest text-[#E5DCC5] font-bold">OVR</span>
                       <span className="text-sm text-white font-black">{statsB.avgOvr}</span>
                     </div>
@@ -492,7 +492,7 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
 
                 {/* Bench Area */}
                 <div className="h-32 sm:h-36 bg-[#111] border-t border-white/10 shrink-0 flex flex-col z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
-                  <div className="px-4 py-1.5 bg-[#151515] border-b border-white/5 flex justify-between items-center">
+                  <div className="px-4 py-1.5 glass-panel border-b border-white/5 flex justify-between items-center">
                     <span className="text-[10px] uppercase font-bold tracking-widest text-[#E5DCC5]">Match Draft Pool (Bench)</span>
                     <span className="text-[10px] uppercase font-bold text-white/40">{items.unassigned.length} Available</span>
                   </div>
@@ -522,7 +522,7 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
             </DndContext>
 
             {/* Footer */}
-            <div className="p-4 sm:p-5 border-t border-[#151515]/10 bg-white/5 flex justify-between items-center shrink-0 z-30">
+            <div className="p-4 sm:p-5 border-t border-[#151515]/10 glass-panel flex justify-between items-center shrink-0 z-30">
               <div className="hidden sm:flex gap-6">
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-white/50 font-bold mb-0.5">Team A</div>
@@ -536,7 +536,7 @@ export function TeamBuilderModal({ isOpen, onClose, participants, onSaveTeams }:
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-[#151515] hover:bg-[#2A2824] text-[#E5DCC5] rounded-2xl font-bold tracking-[0.2em] uppercase text-[11px] transition-all shadow-lg disabled:opacity-50 ml-auto"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 glass-panel hover:bg-[#2A2824] text-[#E5DCC5] rounded-2xl font-bold tracking-[0.2em] uppercase text-[11px] transition-all shadow-lg disabled:opacity-50 ml-auto"
               >
                 {isSaving ? <Loader2 className="animate-spin text-[#E5DCC5]" size={16} /> : <Save size={16} />}
                 SAVE SQUAD

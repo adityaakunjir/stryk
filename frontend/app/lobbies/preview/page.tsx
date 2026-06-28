@@ -99,7 +99,7 @@ function PreviewPageContent() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-40 border-b border-[#C6FF00]/20 bg-[#151515]/95 backdrop-blur-sm"
+        className="sticky top-0 z-40 border-b border-[#C6FF00]/20 glass-panel "
       >
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -162,7 +162,7 @@ function PreviewPageContent() {
                   <span className="text-gray-300">Overall Rating</span>
                   <span className="text-2xl font-bold text-blue-400">{teamAStats.averageRating}</span>
                 </div>
-                <div className="w-full bg-[#151515] rounded-full h-3 overflow-hidden">
+                <div className="w-full glass-panel rounded-full h-3 overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(teamAStats.averageRating / 99) * 100}%` }}
@@ -225,7 +225,7 @@ function PreviewPageContent() {
                   <span className="text-gray-300">Overall Rating</span>
                   <span className="text-2xl font-bold text-red-400">{teamBStats.averageRating}</span>
                 </div>
-                <div className="w-full bg-[#151515] rounded-full h-3 overflow-hidden">
+                <div className="w-full glass-panel rounded-full h-3 overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(teamBStats.averageRating / 99) * 100}%` }}

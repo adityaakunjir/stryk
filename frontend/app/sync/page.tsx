@@ -41,7 +41,7 @@ export default function SyncPage() {
   }, [isLoaded, isSignedIn, router]);
 
   return (
-    <main className="relative h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center bg-[#151515]">
+    <main className="relative h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center glass-panel">
       {/* Premium Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"

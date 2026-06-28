@@ -56,14 +56,14 @@ export default function SentryTestPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen relative overflow-hidden flex flex-col justify-between">
+    <main className="stryk-mobile-shell text-white glass-panel min-h-screen relative overflow-hidden flex flex-col justify-between">
       {/* Background radial gradients */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(198,255,0,0.06)_0%,transparent_60%),radial-gradient(ellipse_60%_40%_at_50%_110%,rgba(239,68,68,0.05)_0%,transparent_55%),#05070B]" />
 
       <div className="relative z-10 flex-1 flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto w-full">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <Button asChild variant="ghost" size="icon" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
+          <Button asChild variant="ghost" size="icon" className="w-9 h-9 rounded-full glass-panel hover:glass-panel0 cursor-pointer">
             <Link href="/">
               <ArrowLeft size={16} />
             </Link>

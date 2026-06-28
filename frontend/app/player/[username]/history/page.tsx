@@ -49,7 +49,7 @@ export default async function MatchHistoryPage({ params }: Props) {
   }
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] text-white min-h-screen relative overflow-hidden">
+    <main className="stryk-mobile-shell glass-panel text-white min-h-screen relative overflow-hidden">
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-20"
         
@@ -60,7 +60,7 @@ export default async function MatchHistoryPage({ params }: Props) {
         
         {/* Header */}
         <div className="flex items-center justify-between mb-8 z-30 shrink-0">
-          <button className="w-10 h-10 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition backdrop-blur-md shadow-sm">
+          <button className="w-10 h-10 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0 transition  shadow-sm">
              <Link href={`/player/${username}`} className="flex items-center justify-center w-full h-full">
                <ArrowLeft size={18} />
              </Link>
@@ -101,7 +101,7 @@ export default async function MatchHistoryPage({ params }: Props) {
                     {/* Timeline Node */}
                     <div className={`absolute left-[-21px] top-4 w-4 h-4 rounded-full border-2 bg-[#0a0a0a] z-20 ${isWin ? 'border-[#C6FF00] shadow-[0_0_10px_#C6FF00]' : isLoss ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'border-white/50'}`} />
 
-                    <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-5 shadow-2xl relative overflow-hidden backdrop-blur-sm">
+                    <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-5 shadow-2xl relative overflow-hidden ">
                       {/* Subtle outcome gradient glow */}
                       <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-[50px] opacity-20 pointer-events-none translate-x-1/2 -translate-y-1/2 ${isWin ? 'bg-[#C6FF00]' : isLoss ? 'bg-red-500' : 'bg-white'}`} />
                       
@@ -130,19 +130,19 @@ export default async function MatchHistoryPage({ params }: Props) {
 
                       {/* Stats Grid */}
                       <div className="grid grid-cols-4 gap-2 mb-4">
-                        <div className="bg-white/5 rounded-xl p-2 flex flex-col items-center justify-center">
+                        <div className="glass-panel rounded-xl p-2 flex flex-col items-center justify-center">
                           <span className="text-lg font-display text-white">{match.stats.goals}</span>
                           <span className="text-[8px] text-white/40 uppercase font-bold tracking-widest mt-0.5">GLS</span>
                         </div>
-                        <div className="bg-white/5 rounded-xl p-2 flex flex-col items-center justify-center">
+                        <div className="glass-panel rounded-xl p-2 flex flex-col items-center justify-center">
                           <span className="text-lg font-display text-white">{match.stats.assists}</span>
                           <span className="text-[8px] text-white/40 uppercase font-bold tracking-widest mt-0.5">AST</span>
                         </div>
-                        <div className="bg-white/5 rounded-xl p-2 flex flex-col items-center justify-center">
+                        <div className="glass-panel rounded-xl p-2 flex flex-col items-center justify-center">
                           <span className="text-lg font-display text-white">{match.stats.tackles}</span>
                           <span className="text-[8px] text-white/40 uppercase font-bold tracking-widest mt-0.5">TKL</span>
                         </div>
-                        <div className="bg-white/5 rounded-xl p-2 flex flex-col items-center justify-center">
+                        <div className="glass-panel rounded-xl p-2 flex flex-col items-center justify-center">
                           <span className="text-lg font-display text-white">{match.stats.saves}</span>
                           <span className="text-[8px] text-white/40 uppercase font-bold tracking-widest mt-0.5">SAV</span>
                         </div>

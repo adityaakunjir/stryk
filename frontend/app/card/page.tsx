@@ -16,7 +16,7 @@ export default function CardPage() {
 
   if (!isLoaded) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#151515] text-white flex items-center justify-center">
+      <main className="relative min-h-screen overflow-hidden glass-panel text-white flex items-center justify-center">
         <Loader2 className="size-10 text-[#C6FF00] animate-spin" />
       </main>
     );
@@ -62,7 +62,7 @@ export default function CardPage() {
   const lossPercent = totalMatches > 0 ? (losses / totalMatches) * 100 : 0;
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#151515]">
+    <main className="stryk-mobile-shell text-white glass-panel">
       {/* Figma Ambient bg */}
       <div
         className="absolute inset-0"
@@ -84,7 +84,7 @@ export default function CardPage() {
         {/* Share Toast */}
         <AnimatePresence>
           {copied && (
-            <div className="absolute top-18 left-1/2 -translate-x-1/2 bg-[#151515]/90 border border-white/10 px-4 py-2 rounded-full text-xs font-semibold tracking-wider text-[#C6FF00] shadow-lg backdrop-blur-md">
+            <div className="absolute top-18 left-1/2 -translate-x-1/2 glass-panel px-4 py-2 rounded-full text-xs font-semibold tracking-wider text-[#C6FF00] shadow-lg ">
               LINK COPIED!
             </div>
           )}
@@ -177,7 +177,7 @@ export default function CardPage() {
               </div>
               
               {/* Segmented record bar */}
-              <div className="w-full h-2 rounded-full bg-white/5 overflow-hidden flex">
+              <div className="w-full h-2 rounded-full glass-panel overflow-hidden flex">
                 <div 
                   style={{ width: `${winPercent}%` }} 
                   className="h-full bg-[#C6FF00] shadow-[0_0_8px_rgba(198,255,0,0.4)]" 
@@ -215,7 +215,7 @@ export default function CardPage() {
 
 function Btn({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) {
   return (
-    <button onClick={onClick} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition">
+    <button onClick={onClick} className="w-9 h-9 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0 transition">
       {children}
     </button>
   );

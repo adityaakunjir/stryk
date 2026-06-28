@@ -241,7 +241,7 @@ export default function TeamBuilderPage() {
 
   if (loading) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#151515] text-white flex items-center justify-center">
+      <main className="relative min-h-screen overflow-hidden glass-panel text-white flex items-center justify-center">
         <Loader2 className="size-10 text-[#C6FF00] animate-spin" />
       </main>
     );
@@ -250,11 +250,11 @@ export default function TeamBuilderPage() {
   // If no team, show create team UI
   if (!team) {
     return (
-      <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen">
+      <main className="stryk-mobile-shell text-white glass-panel min-h-screen">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(198,255,0,0.1),transparent_50%)]" />
         <div className="relative h-full flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10 w-full">
           <div className="flex items-center justify-between mb-8">
-            <button onClick={() => router.push("/home")} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10">
+            <button onClick={() => router.push("/home")} className="w-9 h-9 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0">
               <ArrowLeft size={16} />
             </button>
             <div className="text-[10px] tracking-[0.3em] uppercase text-white/45 font-bold">Team Builder</div>
@@ -262,7 +262,7 @@ export default function TeamBuilderPage() {
           </div>
 
           <div className="flex-1 flex flex-col items-center justify-center -mt-20">
-            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
+            <div className="w-16 h-16 rounded-2xl glass-panel flex items-center justify-center mb-6">
               <ShieldCheck size={32} className="text-[#C6FF00]" />
             </div>
             <h1 className="font-display text-3xl uppercase tracking-wide text-center">Start a Club</h1>
@@ -305,12 +305,12 @@ export default function TeamBuilderPage() {
   const players = members.filter((m: any) => m.role !== "captain");
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen">
+    <main className="stryk-mobile-shell text-white glass-panel min-h-screen">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(198,255,0,0.1),transparent_50%)]" />
       <div className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 w-full overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <button onClick={() => router.push("/home")} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10">
+          <button onClick={() => router.push("/home")} className="w-9 h-9 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0">
             <ArrowLeft size={16} />
           </button>
           <div className="text-[10px] tracking-[0.3em] uppercase text-[#C6FF00] font-bold">Your Squad</div>
@@ -318,7 +318,7 @@ export default function TeamBuilderPage() {
             {userRole === "captain" && (
               <button 
                 onClick={openSettings}
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10"
+                className="w-9 h-9 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0"
                 title="Team Settings"
               >
                 <Settings size={16} />
@@ -326,7 +326,7 @@ export default function TeamBuilderPage() {
             )}
             <button 
               onClick={() => setShowInviteModal(true)}
-              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10"
+              className="w-9 h-9 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0"
               title="Invite Player"
             >
               <Plus size={16} />
@@ -349,10 +349,10 @@ export default function TeamBuilderPage() {
           </div>
           <h1 className="font-display text-4xl uppercase tracking-wider text-center">{team.name}</h1>
           <div className="mt-2 flex items-center gap-3">
-             <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] uppercase tracking-widest text-white/60">
+             <span className="px-3 py-1 rounded-full glass-panel text-[10px] uppercase tracking-widest text-white/60">
                {members.length} Members
              </span>
-             <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] uppercase tracking-widest text-white/60">
+             <span className="px-3 py-1 rounded-full glass-panel text-[10px] uppercase tracking-widest text-white/60">
                EST. 2026
              </span>
           </div>
@@ -365,7 +365,7 @@ export default function TeamBuilderPage() {
             <div>
               <h2 className="text-[10px] tracking-[0.25em] uppercase text-white/40 font-bold mb-3 pl-1">Captain</h2>
               <div className="p-3 rounded-2xl border border-[#C6FF00]/30 bg-[#C6FF00]/5 flex items-center gap-4">
-                 <div className="relative size-12 rounded-full overflow-hidden border border-[#C6FF00]/50 bg-[#151515] shrink-0 flex items-center justify-center">
+                 <div className="relative size-12 rounded-full overflow-hidden border border-[#C6FF00]/50 glass-panel shrink-0 flex items-center justify-center">
                     {captain.user.avatarUrl ? (
                        
                       <img src={captain.user.avatarUrl} alt={captain.user.fullName || captain.user.username} className="w-full h-full object-cover" />
@@ -396,7 +396,7 @@ export default function TeamBuilderPage() {
               ) : (
                 players.map((m: any) => (
                   <div key={m.id} className="p-3 rounded-2xl border border-white/10 bg-white/[0.03] flex items-center gap-4">
-                     <div className="relative size-10 rounded-full overflow-hidden border border-white/10 bg-[#151515] shrink-0 flex items-center justify-center">
+                     <div className="relative size-10 rounded-full overflow-hidden border border-white/10 glass-panel shrink-0 flex items-center justify-center">
                         {m.user.avatarUrl ? (
                            
                           <img src={m.user.avatarUrl} alt={m.user.fullName || m.user.username} className="w-full h-full object-cover" />
@@ -433,7 +433,7 @@ export default function TeamBuilderPage() {
 
       {/* Invite Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80  px-5">
           <div className="relative w-full max-w-sm rounded-[2rem] border border-[#C6FF00]/30 bg-[#050a0d] p-6 shadow-[0_34px_100px_rgba(0,0,0,0.8)] flex flex-col">
             <button 
               onClick={() => { setShowInviteModal(false); setInviteUsername(""); }}
@@ -486,7 +486,7 @@ export default function TeamBuilderPage() {
 
       {/* Settings Modal */}
       {showSettingsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-5 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80  px-5 overflow-y-auto">
           <div className="relative w-full max-w-sm rounded-[2rem] border border-white/10 bg-[#050a0d] p-6 shadow-[0_34px_100px_rgba(0,0,0,0.8)] flex flex-col my-8 max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => setShowSettingsModal(false)}
@@ -543,7 +543,7 @@ export default function TeamBuilderPage() {
                       <button
                         type="button"
                         onClick={() => logoFileInputRef.current?.click()}
-                        className="h-8 px-3 rounded-lg border border-white/10 bg-white/5 text-[10px] uppercase font-bold tracking-widest hover:bg-white/10 transition w-full"
+                        className="h-8 px-3 rounded-lg border border-white/10 glass-panel text-[10px] uppercase font-bold tracking-widest hover:glass-panel0 transition w-full"
                       >
                         Upload Image
                       </button>

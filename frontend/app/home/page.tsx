@@ -106,13 +106,13 @@ export default function HomeLobbyPage() {
 
             {/* Profile & Notifications */}
             <div className="flex items-center gap-3">
-              <button onClick={() => router.push("/notifications")} className="relative w-10 h-10 rounded-full bg-[#151515]/5 backdrop-blur-md border border-[#151515]/10 flex items-center justify-center shadow-sm hover:bg-[#151515]/10 transition">
+              <button onClick={() => router.push("/notifications")} className="relative w-10 h-10 rounded-full glass-panel  border border-[#151515]/10 flex items-center justify-center shadow-sm hover:glass-panel transition">
                 <Bell size={18} className="text-[#151515]" />
                 {incomingRequests.length > 0 && (
                   <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#C3DF1B] rounded-full border-2 border-white" />
                 )}
               </button>
-              <button onClick={() => router.push("/settings")} className="flex items-center gap-2 p-1 pr-2 rounded-full bg-[#151515]/5 backdrop-blur-md border border-[#151515]/10 shadow-sm hover:bg-[#151515]/10 transition">
+              <button onClick={() => router.push("/settings")} className="flex items-center gap-2 p-1 pr-2 rounded-full glass-panel  border border-[#151515]/10 shadow-sm hover:glass-panel transition">
                 <img src={playerData.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(rawName)}`} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
                 <ChevronRight size={14} className="text-[#151515]/60 rotate-90" />
               </button>
@@ -134,7 +134,7 @@ export default function HomeLobbyPage() {
 
             {/* Streak Badge (Only visible if they've played matches) */}
             {playerData.matchesPlayed && playerData.matchesPlayed > 0 ? (
-              <div className="flex flex-col items-center justify-center bg-[#151515] text-[#E8D196] rounded-xl px-4 py-2 shadow-xl border border-[#8E793E]/30 min-w-[70px]">
+              <div className="flex flex-col items-center justify-center glass-panel text-[#E8D196] rounded-xl px-4 py-2 shadow-xl border border-[#8E793E]/30 min-w-[70px]">
                 <div className="flex items-center gap-1 font-display text-2xl leading-none">
                   <span>🔥</span>
                   <span>1</span>
@@ -328,7 +328,7 @@ export default function HomeLobbyPage() {
       </div>
 
       {/* Bottom Sheet Navigation */}
-      <div className="relative mt-auto w-full z-30 bg-[#151515] rounded-t-[2rem] px-5 pt-5 pb-[85px] shadow-[0_-20px_50px_rgba(0,0,0,0.6)] border-t border-[#8E793E]/30 text-white">
+      <div className="relative mt-auto w-full z-30 glass-panel rounded-t-[2rem] px-5 pt-5 pb-[85px] shadow-[0_-20px_50px_rgba(0,0,0,0.6)] border-t border-[#8E793E]/30 text-white">
         <div className="w-full">
             
             {/* Level & XP */}
@@ -340,7 +340,7 @@ export default function HomeLobbyPage() {
               <span className="text-[10px] font-bold text-white/50 tracking-wider">XP {xpCurrent}/{xpTotal}</span>
             </div>
             {/* Progress Bar */}
-            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-4">
+            <div className="w-full h-1 glass-panel0 rounded-full overflow-hidden mb-4">
               <motion.div 
                 className="h-full bg-[#C3DF1B] rounded-full shadow-[0_0_10px_rgba(195,223,27,0.4)]"
                 initial={{ width: 0 }} animate={{ width: `${(xpCurrent/xpTotal)*100}%` }} transition={{ duration: 1.5, delay: 0.5, type: "spring" }}
@@ -348,7 +348,7 @@ export default function HomeLobbyPage() {
             </div>
 
             {/* Next Objective Card */}
-            <div className="bg-[#151515] rounded-[1.5rem] p-4 border border-[#2A2A2A] flex items-center justify-between mb-4 shadow-sm group hover:border-[#A28B52]/50 transition cursor-pointer">
+            <div className="glass-panel rounded-[1.5rem] p-4 border border-[#2A2A2A] flex items-center justify-between mb-4 shadow-sm group hover:border-[#A28B52]/50 transition cursor-pointer">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#C3DF1B] shrink-0 group-hover:bg-[#C3DF1B]/10 group-hover:border-[#C3DF1B]/30 transition">
                   <Target size={16} />
@@ -372,7 +372,7 @@ export default function HomeLobbyPage() {
         </div>
       {/* Bottom Navigation Tab Bar */}
       {/* Premium Glassmorphism Bottom Navigation */}
-      <div className="fixed bottom-0 w-full max-w-md h-[80px] bg-black/70 backdrop-blur-2xl border-t border-[#C3DF1B]/20 z-40 px-8 flex items-center justify-between shadow-[0_-15px_40px_rgba(0,0,0,0.8)] pb-safe">
+      <div className="fixed bottom-0 w-full max-w-md h-[80px] bg-black/70  border-t border-[#C3DF1B]/20 z-40 px-8 flex items-center justify-between shadow-[0_-15px_40px_rgba(0,0,0,0.8)] pb-safe">
         <NavTab icon={<Home size={22} />} label="HOME" active={true} onClick={() => router.push("/home")} />
         <NavTab icon={<Globe size={22} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
         <NavTab icon={<Users size={22} />} label="SQUAD" active={false} onClick={() => setShowSquadModal(true)} />
@@ -387,9 +387,9 @@ export default function HomeLobbyPage() {
       {/* Squad Modal (Empty State Upgraded) */}
       <AnimatePresence>
         {showSquadModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-[#151515]/80 backdrop-blur-md px-5">
-            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="relative w-full max-w-sm rounded-[2rem] border border-[#A28B52]/20 bg-[#151515] p-6 shadow-[0_24px_60px_rgba(162,139,82,0.15)] flex flex-col max-h-[85vh]">
-              <button onClick={() => setShowSquadModal(false)} className="absolute right-4 top-4 grid size-8 place-items-center rounded-full bg-[#151515] border border-[#A28B52]/10 text-[#888888] hover:text-[#A28B52] hover:bg-[#2A2824] transition duration-200 cursor-pointer">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center glass-panel  px-5">
+            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="relative w-full max-w-sm rounded-[2rem] border border-[#A28B52]/20 glass-panel p-6 shadow-[0_24px_60px_rgba(162,139,82,0.15)] flex flex-col max-h-[85vh]">
+              <button onClick={() => setShowSquadModal(false)} className="absolute right-4 top-4 grid size-8 place-items-center rounded-full glass-panel text-[#888888] hover:text-[#A28B52] hover:bg-[#2A2824] transition duration-200 cursor-pointer">
                 <X size={14} strokeWidth={1.5} />
               </button>
               
@@ -399,14 +399,14 @@ export default function HomeLobbyPage() {
               <div className="mt-6 flex-1 overflow-y-auto pr-1 space-y-3">
                 {friends.length === 0 ? (
                   <div className="flex flex-col items-center">
-                    <div className="text-center py-6 px-4 bg-[#151515] border border-dashed border-[#A28B52]/20 rounded-[1.25rem] shadow-inner w-full flex flex-col items-center justify-center min-h-[140px]">
+                    <div className="text-center py-6 px-4 glass-panel border border-dashed border-[#A28B52]/20 rounded-[1.25rem] shadow-inner w-full flex flex-col items-center justify-center min-h-[140px]">
                       <p className="text-xs text-[#E5DCC5]/70 font-medium">No active teammates found.</p>
                       <p className="text-[10px] uppercase font-bold text-[#A28B52]/60 tracking-widest mt-2">Build your squad to play together</p>
                     </div>
                   </div>
                 ) : (
                   friends.map((f, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-[1.25rem] bg-[#151515] border border-[#A28B52]/10 shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] hover:border-[#A28B52]/30 transition">
+                    <div key={i} className="flex items-center justify-between p-3 rounded-[1.25rem] glass-panel shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] hover:border-[#A28B52]/30 transition">
                       <div className="flex items-center gap-3">
                         <img src={f.avatar} alt={f.name} className="w-10 h-10 rounded-full border border-[#A28B52]/20 shadow-sm" />
                         <div>
@@ -435,14 +435,14 @@ export default function HomeLobbyPage() {
       <AnimatePresence>
         {showOvrModal && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowOvrModal(false)} className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm" />
-            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed inset-x-0 bottom-0 z-50 rounded-t-[2rem] border-t border-white/10 bg-[#151515] p-6 shadow-[0_-20px_50px_rgba(0,0,0,0.8)] pb-12 max-h-[80vh] overflow-y-auto">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowOvrModal(false)} className="fixed inset-0 z-40 bg-black/80 " />
+            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed inset-x-0 bottom-0 z-50 rounded-t-[2rem] border-t border-white/10 glass-panel p-6 shadow-[0_-20px_50px_rgba(0,0,0,0.8)] pb-12 max-h-[80vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <h3 className="font-display text-3xl uppercase italic text-white leading-none">Overall <span className="text-[#C6FF00]">{playerData.rating}</span></h3>
                   <p className="text-xs text-white/50 mt-1 font-medium">How your rating is calculated.</p>
                 </div>
-                <button onClick={() => setShowOvrModal(false)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 cursor-pointer">
+                <button onClick={() => setShowOvrModal(false)} className="w-8 h-8 rounded-full glass-panel flex items-center justify-center hover:glass-panel0 cursor-pointer">
                   <X size={16} className="text-white/60" />
                 </button>
               </div>
@@ -481,7 +481,7 @@ export default function HomeLobbyPage() {
 
 function ActionButton({ icon, label, subtext, onClick, isPrimary }: { icon: React.ReactNode; label: string; subtext: string; onClick?: () => void; isPrimary?: boolean }) {
   return (
-    <button onClick={onClick} className={`flex flex-col items-center justify-center p-3 rounded-[1.2rem] text-center cursor-pointer transition h-full shadow-sm group ${isPrimary ? 'bg-[#D4F829] border border-[#D4F829] hover:bg-[#cbf026] shadow-[0_8px_16px_rgba(212,248,41,0.25)]' : 'bg-[#151515] border border-[#2A2A2A] hover:bg-[#202020] hover:border-[#A28B52]/50'}`}>
+    <button onClick={onClick} className={`flex flex-col items-center justify-center p-3 rounded-[1.2rem] text-center cursor-pointer transition h-full shadow-sm group ${isPrimary ? 'bg-[#D4F829] border border-[#D4F829] hover:bg-[#cbf026] shadow-[0_8px_16px_rgba(212,248,41,0.25)]' : 'glass-panel border border-[#2A2A2A] hover:bg-[#202020] hover:border-[#A28B52]/50'}`}>
       <div className={`mb-2 transition-transform group-hover:scale-110 drop-shadow-sm ${isPrimary ? 'text-[#151515]' : 'text-[#C3DF1B]'}`}>{icon}</div>
       <div className={`text-[9px] font-bold tracking-widest uppercase leading-tight mb-1 ${isPrimary ? 'text-[#151515]' : 'text-[#E8E8E8]'}`}>{label}</div>
       <div className={`text-[8px] tracking-wide leading-tight hidden sm:block ${isPrimary ? 'text-[#151515]/70' : 'text-[#808080]'}`}>{subtext}</div>

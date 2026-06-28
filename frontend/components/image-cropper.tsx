@@ -44,15 +44,15 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl px-4 sm:px-5">
-      <div className="relative w-full max-w-sm rounded-[2rem] border border-white/10 bg-[#0F0D0A]/80 backdrop-blur-2xl p-6 shadow-[0_0_80px_rgba(212,248,41,0.05)] flex flex-col items-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85  px-4 sm:px-5">
+      <div className="relative w-full max-w-sm rounded-[2rem] border border-white/10 bg-[#0F0D0A]/80  p-6 shadow-[0_0_80px_rgba(212,248,41,0.05)] flex flex-col items-center">
         
         <div className="absolute inset-0 bg-gradient-to-b from-[#D4F829]/5 to-transparent rounded-[2rem] pointer-events-none" />
 
         <button 
           onClick={onCancel}
           type="button"
-          className="absolute right-5 top-5 grid size-8 place-items-center rounded-full border border-white/10 bg-black/40 text-[#808080] hover:text-[#D4F829] hover:border-[#D4F829]/50 hover:bg-[#D4F829]/10 cursor-pointer z-20 transition-all backdrop-blur-md"
+          className="absolute right-5 top-5 grid size-8 place-items-center rounded-full border border-white/10 bg-black/40 text-[#808080] hover:text-[#D4F829] hover:border-[#D4F829]/50 hover:bg-[#D4F829]/10 cursor-pointer z-20 transition-all "
         >
           <X className="size-4" />
         </button>
@@ -134,7 +134,7 @@ export function ImageCropper({ src, onCropComplete, onCancel }: ImageCropperProp
           <button
             onClick={onCancel}
             type="button"
-            className="h-[52px] rounded-full border border-white/5 bg-black/40 backdrop-blur-md text-[13px] font-display font-black tracking-[0.05em] text-[#E8E8E8] uppercase hover:bg-black/60 hover:border-white/10 cursor-pointer transition-all shadow-sm"
+            className="h-[52px] rounded-full border border-white/5 bg-black/40  text-[13px] font-display font-black tracking-[0.05em] text-[#E8E8E8] uppercase hover:bg-black/60 hover:border-white/10 cursor-pointer transition-all shadow-sm"
           >
             CANCEL
           </button>

@@ -548,7 +548,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#151515] flex flex-col items-center justify-center">
+      <main className="relative min-h-screen overflow-hidden glass-panel flex flex-col items-center justify-center">
         <Loader2 className="size-10 text-white animate-spin mb-4" />
         <h2 className="text-xl font-display font-black text-white tracking-widest uppercase italic animate-pulse">Loading Match...</h2>
       </main>
@@ -557,12 +557,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   if (!match) {
     return (
-      <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen flex flex-col justify-center items-center px-6 text-center">
+      <main className="stryk-mobile-shell text-white glass-panel min-h-screen flex flex-col justify-center items-center px-6 text-center">
         <h1 className="text-2xl font-display font-black italic tracking-widest text-white uppercase">Match Not Found</h1>
         <p className="text-sm text-white/60 mt-2 font-semibold">This match may have been cancelled or deleted.</p>
         <button 
           onClick={() => router.push("/matches")}
-          className="mt-8 px-6 py-3 rounded-2xl bg-white/5 text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-lg hover:bg-[#2A2824] transition-all"
+          className="mt-8 px-6 py-3 rounded-2xl glass-panel text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-lg hover:bg-[#2A2824] transition-all"
         >
           Back to Matches
         </button>
@@ -606,17 +606,17 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#151515]  bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-white">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none glass-panel  bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-white">
       <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.22),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.62),transparent)]" />
 
       <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full overflow-y-auto">
         {/* Top Header Section */}
-        <header className="shrink-0 relative mb-4 overflow-hidden rounded-[2rem] border border-[#151515]/10 bg-white/35 p-4 shadow-[0_18px_50px_rgba(79,60,25,0.12)] backdrop-blur-md">
+        <header className="shrink-0 relative mb-4 overflow-hidden rounded-[2rem] border border-[#151515]/10 bg-white/35 p-4 shadow-[0_18px_50px_rgba(79,60,25,0.12)] ">
           <div className="pointer-events-none absolute -right-12 -top-20 size-52 rounded-full bg-[#D4F829]/22 blur-3xl" />
           <div className="flex items-center justify-between relative z-10">
             <button 
               onClick={() => router.push("/matches")} 
-              className="w-10 h-10 rounded-full bg-[#151515] border border-white/10 flex items-center justify-center cursor-pointer hover:scale-105 transition shadow-[0_8px_20px_rgba(0,0,0,0.22)]"
+              className="w-10 h-10 rounded-full glass-panel flex items-center justify-center cursor-pointer hover:scale-105 transition shadow-[0_8px_20px_rgba(0,0,0,0.22)]"
               type="button"
               aria-label="Back to matches"
             >
@@ -630,7 +630,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           
           <div className="mt-2 flex flex-col items-center text-center">
             <div className="mb-2 flex items-center gap-2 rounded-full bg-[#D4F829] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-white shadow-[0_10px_24px_rgba(212,248,41,0.24),inset_0_1px_0_rgba(255,255,255,0.45)]">
-              <span className="size-1.5 rounded-full bg-[#151515]" />
+              <span className="size-1.5 rounded-full glass-panel" />
               {statusLabel}
             </div>
             <h1 className="font-display font-black italic uppercase text-[38px] leading-[0.9] tracking-tight text-white drop-shadow-sm px-2">
@@ -662,7 +662,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <button 
                 onClick={handleJoinMatch}
                 disabled={playerFill >= 100}
-                className="flex-1 h-12 rounded-[1.25rem] bg-[#151515] text-[#D4F829] text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(0,0,0,0.15)] disabled:opacity-50 disabled:cursor-not-allowed transition hover:-translate-y-0.5 active:translate-y-0"
+                className="flex-1 h-12 rounded-[1.25rem] glass-panel text-[#D4F829] text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(0,0,0,0.15)] disabled:opacity-50 disabled:cursor-not-allowed transition hover:-translate-y-0.5 active:translate-y-0"
               >
                 Join Match
               </button>
@@ -670,7 +670,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <button 
                 onClick={handleLeaveMatch}
                 disabled={match.status !== "open"}
-                className="flex-1 h-12 rounded-[1.25rem] border-2 border-[#151515] text-white bg-transparent text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-[#151515]/5"
+                className="flex-1 h-12 rounded-[1.25rem] border-2 border-[#151515] text-white bg-transparent text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition hover:glass-panel"
               >
                 Leave Match
               </button>
@@ -695,7 +695,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 });
               }
             }}
-            className="w-12 h-12 shrink-0 rounded-[1.25rem] border-2 border-[#151515] text-white flex items-center justify-center hover:bg-[#151515] hover:text-[#E5DCC5] transition shadow-sm"
+            className="w-12 h-12 shrink-0 rounded-[1.25rem] border-2 border-[#151515] text-white flex items-center justify-center hover:glass-panel hover:text-[#E5DCC5] transition shadow-sm"
           >
             <Share2 size={16} />
           </button>
@@ -709,7 +709,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
         {/* Inline Squad Builder - REPLACES old lists */}
         {match && (
-          <div className="shrink-0 mt-1 w-full rounded-[2rem] border border-[#151515]/10 bg-[#151515] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
+          <div className="shrink-0 mt-1 w-full rounded-[2rem] border border-[#151515]/10 glass-panel p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
             <InlineTeamBuilder
               participants={match.participants}
               onSaveTeams={handleSaveTeams}
@@ -768,9 +768,9 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 
                 <div className="flex flex-col gap-3">
                   {pendingVerifications.map((v) => (
-                    <div key={v.id} className="p-4 rounded-[1.5rem] bg-[#151515] border border-white/5 flex flex-col gap-4 shadow-xl">
+                    <div key={v.id} className="p-4 rounded-[1.5rem] glass-panel flex flex-col gap-4 shadow-xl">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-white/10 overflow-hidden relative">
+                        <div className="w-10 h-10 rounded-full glass-panel0 overflow-hidden relative">
                           {v.avatarUrl ? (
                             <img src={v.avatarUrl} alt={v.username} className="w-full h-full object-cover" />
                           ) : (
@@ -807,13 +807,13 @@ export default function MatchDetailsPage({ params }: PageProps) {
                       <div className="grid grid-cols-2 gap-2 mt-1">
                         <button
                           onClick={() => handleVerifyStats(v.userId, true)}
-                          className="h-10 rounded-xl bg-white/10 hover:bg-[#D4F829] hover:text-white text-white text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 flex items-center justify-center"
+                          className="h-10 rounded-xl glass-panel0 hover:bg-[#D4F829] hover:text-white text-white text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 flex items-center justify-center"
                         >
                           Verify
                         </button>
                         <button
                           onClick={() => handleVerifyStats(v.userId, false)}
-                          className="h-10 rounded-xl bg-white/5 hover:bg-red-500/20 border border-transparent hover:border-red-500/20 text-white/50 hover:text-red-500 text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 flex items-center justify-center"
+                          className="h-10 rounded-xl glass-panel hover:bg-red-500/20 border border-transparent hover:border-red-500/20 text-white/50 hover:text-red-500 text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 flex items-center justify-center"
                         >
                           Dispute
                         </button>
@@ -844,7 +844,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     )}
                   </p>
                 </div>
-                <div className={`rounded-full border px-3 py-1.5 text-[9px] font-black uppercase tracking-widest ${isCheckedIn ? "bg-[#D4F829]/10 border-[#D4F829]/30 text-[#D4F829]" : "bg-white/5 border-white/10 text-white/40"}`}>
+                <div className={`rounded-full border px-3 py-1.5 text-[9px] font-black uppercase tracking-widest ${isCheckedIn ? "bg-[#D4F829]/10 border-[#D4F829]/30 text-[#D4F829]" : "glass-panel border-white/10 text-white/40"}`}>
                   {isCheckedIn ? "Ready" : "Pending"}
                 </div>
               </div>
@@ -946,18 +946,18 @@ export default function MatchDetailsPage({ params }: PageProps) {
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }} 
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 "
               onClick={() => setShowInviteModal(false)}
             />
             <motion.div 
               initial={{ opacity: 0, y: 100, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 100, scale: 0.95 }}
-              className="relative w-full max-w-md bg-[#151515] border border-[#151515]/10 rounded-3xl p-6 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+              className="relative w-full max-w-md glass-panel border border-[#151515]/10 rounded-3xl p-6 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
             >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-display text-xl uppercase italic tracking-wide text-white">Invite Friends</h3>
-                <button onClick={() => setShowInviteModal(false)} className="p-2 rounded-full hover:bg-[#151515]/5 text-white/50 hover:text-white transition">
+                <button onClick={() => setShowInviteModal(false)} className="p-2 rounded-full hover:glass-panel text-white/50 hover:text-white transition">
                   <X size={18} />
                 </button>
               </div>
@@ -1025,7 +1025,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
 function MatchMetric({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
-    <div className="min-w-0 rounded-[1.1rem] border border-[#151515]/10 bg-[#151515]/6 px-3 py-3 text-left shadow-sm backdrop-blur-sm">
+    <div className="min-w-0 rounded-[1.1rem] border border-[#151515]/10 glass-panel px-3 py-3 text-left shadow-sm ">
       <div className="mb-1.5 flex items-center gap-1.5 text-[#A28B52]">
         {icon}
         <span className="truncate text-[8px] font-black uppercase tracking-[0.2em]">{label}</span>
@@ -1040,7 +1040,7 @@ function MatchMetric({ icon, label, value }: { icon: ReactNode; label: string; v
 export function TeamChip({ label, value, tone }: { label: string; value: number; tone: "lime" | "gold" }) {
   const active = tone === "lime";
   return (
-    <div className="rounded-[1rem] border border-[#151515]/10 bg-[#151515] px-3 py-2 shadow-[0_12px_28px_rgba(0,0,0,0.22)]">
+    <div className="rounded-[1rem] border border-[#151515]/10 glass-panel px-3 py-2 shadow-[0_12px_28px_rgba(0,0,0,0.22)]">
       <div className={`text-[8px] font-black uppercase tracking-[0.2em] ${active ? "text-[#D4F829]" : "text-[#A28B52]"}`}>
         {label}
       </div>

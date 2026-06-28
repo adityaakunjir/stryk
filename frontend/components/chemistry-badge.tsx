@@ -66,7 +66,7 @@ export function ChemistryBadge({ score, showLabel = true, size = "md", tooltip }
       className="relative group"
       title={tooltip}
     >
-      <div className={`${config.badge} rounded-full border-2 ${colors.border} ${colors.bg}/20 flex items-center justify-center backdrop-blur-sm`}>
+      <div className={`${config.badge} rounded-full border-2 ${colors.border} ${colors.bg}/20 flex items-center justify-center `}>
         <Icon className={`w-${config.iconSize} h-${config.iconSize} ${colors.icon}`} />
       </div>
 
@@ -74,7 +74,7 @@ export function ChemistryBadge({ score, showLabel = true, size = "md", tooltip }
       <motion.div
         initial={{ opacity: 0, y: -5 }}
         whileHover={{ opacity: 1, y: 0 }}
-        className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-[#151515] text-white px-2 py-1 rounded text-xs whitespace-nowrap pointer-events-none z-50 border border-[#C6FF00]/30"
+        className="absolute -top-10 left-1/2 transform -translate-x-1/2 glass-panel text-white px-2 py-1 rounded text-xs whitespace-nowrap pointer-events-none z-50 border border-[#C6FF00]/30"
       >
         <div className="font-bold">{getLabel(level)}</div>
         <div className={colors.text}>{score}% compatibility</div>

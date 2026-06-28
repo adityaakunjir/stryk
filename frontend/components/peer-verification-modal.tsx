@@ -130,7 +130,7 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/60 backdrop-blur-md"
+          className="absolute inset-0 bg-black/60 "
           onClick={onClose}
         />
         <motion.div
@@ -144,7 +144,7 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
               <h3 className="font-display text-2xl uppercase italic tracking-wide text-white">Peer Verification</h3>
               <p className="text-xs text-white/40 mt-1">Review your teammates&apos; claims</p>
             </div>
-            <button onClick={onClose} className="p-2 rounded-full hover:bg-white/10 text-white/50 hover:text-white transition">
+            <button onClick={onClose} className="p-2 rounded-full hover:glass-panel0 text-white/50 hover:text-white transition">
               <X size={20} />
             </button>
           </div>
@@ -156,7 +156,7 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
             </div>
           ) : pending.length === 0 ? (
             <div className="flex flex-col items-center py-12">
-              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-full glass-panel flex items-center justify-center mb-4">
                 <Check className="text-[#C6FF00]" size={32} />
               </div>
               <p className="text-white text-lg font-display uppercase italic">All Caught Up!</p>
@@ -165,7 +165,7 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
               </p>
               <button
                 onClick={onClose}
-                className="mt-8 px-8 h-12 rounded-2xl bg-white/10 text-white hover:bg-white/20 transition font-bold text-sm tracking-widest uppercase"
+                className="mt-8 px-8 h-12 rounded-2xl glass-panel0 text-white hover:bg-white/20 transition font-bold text-sm tracking-widest uppercase"
               >
                 Close
               </button>
@@ -173,7 +173,7 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
           ) : currentStat ? (
             <div className="flex flex-col">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center overflow-hidden border border-white/20">
+                <div className="w-12 h-12 rounded-full glass-panel0 flex items-center justify-center overflow-hidden border border-white/20">
                   {currentStat.avatarUrl ? (
                     <img src={currentStat.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
@@ -216,7 +216,7 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
                   { label: "Red", value: currentStat.redCards },
                   { label: "Own Goals", value: currentStat.ownGoals }
                 ].filter(s => s.value > 0).map(s => (
-                  <div key={s.label} className="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col items-center">
+                  <div key={s.label} className="glass-panel rounded-xl p-3 flex flex-col items-center">
                     <span className="text-2xl font-display text-white">{s.value}</span>
                     <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest text-center">{s.label}</span>
                   </div>
@@ -261,12 +261,12 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
                     onChange={(e) => setDisputeReason(e.target.value)}
                     placeholder="Briefly explain why this is inaccurate (max 100 chars)..."
                     maxLength={100}
-                    className="w-full bg-white/5 border border-red-500/30 rounded-xl p-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-red-500 resize-none h-24"
+                    className="w-full glass-panel border border-red-500/30 rounded-xl p-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-red-500 resize-none h-24"
                   />
                   <div className="flex gap-2">
                     <button
                       onClick={() => setDisputing(false)}
-                      className="flex-1 h-12 rounded-xl bg-white/10 text-white font-bold text-xs tracking-widest uppercase hover:bg-white/20 transition"
+                      className="flex-1 h-12 rounded-xl glass-panel0 text-white font-bold text-xs tracking-widest uppercase hover:bg-white/20 transition"
                     >
                       Cancel
                     </button>
@@ -283,7 +283,7 @@ export function PeerVerificationModal({ isOpen, onClose, matchId }: PeerVerifica
                 <div className="flex gap-3">
                   <button
                     onClick={() => setDisputing(true)}
-                    className="flex-1 h-14 rounded-2xl bg-white/5 border border-white/10 text-white/70 font-bold text-sm tracking-widest uppercase hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition flex items-center justify-center gap-2"
+                    className="flex-1 h-14 rounded-2xl glass-panel text-white/70 font-bold text-sm tracking-widest uppercase hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition flex items-center justify-center gap-2"
                   >
                     <X size={18} /> Dispute
                   </button>

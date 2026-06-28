@@ -4,6 +4,7 @@ import { AuthProvider } from "@/components/auth-provider";
 import { PlayerProvider } from "@/components/player-context";
 import { RealtimeProvider } from "@/components/realtime-provider";
 import { DraftProvider } from "@/lib/draft-context";
+import { AuroraBackground } from "@/components/aurora-background";
 
 export const viewport: Viewport = {
   themeColor: "#151515",
@@ -43,6 +44,7 @@ export default function RootLayout({
         <AuthProvider>
           <PlayerProvider>
             <DraftProvider>
+              <AuroraBackground />
               {children}
               <RealtimeProvider />
               <Toaster theme="dark" position="top-center" richColors />

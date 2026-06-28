@@ -74,8 +74,8 @@ export default function HistoryPage() {
     switch (outcome) {
       case "Win": return "text-[#D4F829] border-[#D4F829]/30 bg-[#D4F829]/10";
       case "Loss": return "text-red-400 border-red-400/30 bg-red-400/10";
-      case "Draw": return "text-white/60 border-white/20 bg-white/5";
-      default: return "text-white/40 border-white/10 bg-white/5";
+      case "Draw": return "text-white/60 border-white/20 glass-panel";
+      default: return "text-white/40 border-white/10 glass-panel";
     }
   };
 
@@ -89,13 +89,13 @@ export default function HistoryPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] text-white overflow-hidden">
+    <main className="stryk-mobile-shell glass-panel text-white overflow-hidden">
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <header className="pb-4 flex items-center gap-3 shrink-0 mb-2 relative z-20">
           <button
             onClick={() => router.push("/profile")}
-            className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-white/70 hover:bg-white/10 hover:text-white transition cursor-pointer backdrop-blur-md"
+            className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-white/70 hover:glass-panel0 hover:text-white transition cursor-pointer "
           >
             <ArrowLeft size={18} />
           </button>
@@ -112,7 +112,7 @@ export default function HistoryPage() {
         ) : history.length === 0 ? (
           /* Empty State Body */
           <div className="flex-1 flex flex-col items-center justify-center relative">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-white/5 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] glass-panel blur-[100px] rounded-full pointer-events-none" />
 
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -155,10 +155,10 @@ export default function HistoryPage() {
                   className="relative pl-12 pr-1"
                 >
                   {/* Timeline Node */}
-                  <div className={`absolute left-[13px] top-6 w-[14px] h-[14px] rounded-full border-[3px] bg-[#151515] z-10 ${getOutcomeBorderColor(match.outcome)}`} />
+                  <div className={`absolute left-[13px] top-6 w-[14px] h-[14px] rounded-full border-[3px] glass-panel z-10 ${getOutcomeBorderColor(match.outcome)}`} />
 
                   {/* Match Card */}
-                  <div className="rounded-[1.5rem] bg-white/[0.03] border border-white/5 overflow-hidden backdrop-blur-sm relative">
+                  <div className="rounded-[1.5rem] bg-white/[0.03] border border-white/5 overflow-hidden  relative">
                     
                     {/* Header Row */}
                     <div className="p-4 border-b border-white/5 flex items-start justify-between relative overflow-hidden">
@@ -204,41 +204,41 @@ export default function HistoryPage() {
                         
                         <div className="text-right">
                           <span className="text-[10px] font-bold text-white/40 uppercase tracking-wider block mb-0.5">Played For</span>
-                          <span className="text-[11px] font-bold text-white/80 bg-white/10 px-2 py-0.5 rounded-md">Team {match.team}</span>
+                          <span className="text-[11px] font-bold text-white/80 glass-panel0 px-2 py-0.5 rounded-md">Team {match.team}</span>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-4 gap-2">
                         {match.stats.goals > 0 && (
-                          <div className="flex flex-col items-center justify-center bg-white/5 rounded-xl p-2 border border-white/5">
+                          <div className="flex flex-col items-center justify-center glass-panel rounded-xl p-2 border border-white/5">
                             <Target size={14} className="text-white/40 mb-1" />
                             <span className="text-base font-display">{match.stats.goals}</span>
                             <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">Goals</span>
                           </div>
                         )}
                         {match.stats.assists > 0 && (
-                          <div className="flex flex-col items-center justify-center bg-white/5 rounded-xl p-2 border border-white/5">
+                          <div className="flex flex-col items-center justify-center glass-panel rounded-xl p-2 border border-white/5">
                             <Flame size={14} className="text-white/40 mb-1" />
                             <span className="text-base font-display">{match.stats.assists}</span>
                             <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">Assists</span>
                           </div>
                         )}
                         {match.stats.tackles > 0 && (
-                          <div className="flex flex-col items-center justify-center bg-white/5 rounded-xl p-2 border border-white/5">
+                          <div className="flex flex-col items-center justify-center glass-panel rounded-xl p-2 border border-white/5">
                             <Shield size={14} className="text-white/40 mb-1" />
                             <span className="text-base font-display">{match.stats.tackles}</span>
                             <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">Tackles</span>
                           </div>
                         )}
                         {match.stats.saves > 0 && (
-                          <div className="flex flex-col items-center justify-center bg-white/5 rounded-xl p-2 border border-white/5">
+                          <div className="flex flex-col items-center justify-center glass-panel rounded-xl p-2 border border-white/5">
                             <Hand size={14} className="text-white/40 mb-1" />
                             <span className="text-base font-display">{match.stats.saves}</span>
                             <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">Saves</span>
                           </div>
                         )}
                         {match.stats.cleanSheet && (
-                          <div className="flex flex-col items-center justify-center bg-white/5 rounded-xl p-2 border border-white/5">
+                          <div className="flex flex-col items-center justify-center glass-panel rounded-xl p-2 border border-white/5">
                             <Lock size={14} className="text-white/40 mb-1" />
                             <span className="text-base font-display">1</span>
                             <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">Clean</span>

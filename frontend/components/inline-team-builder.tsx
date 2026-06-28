@@ -60,7 +60,7 @@ interface InlineTeamBuilderProps {
 function TeamChip({ label, value, tone }: { label: string; value: number; tone: "lime" | "gold" }) {
   const active = tone === "lime";
   return (
-    <div className="rounded-[1.25rem] border border-white/5 bg-[#151515] px-3 py-2 shadow-inner">
+    <div className="rounded-[1.25rem] border border-white/5 glass-panel px-3 py-2 shadow-inner">
       <div className={`text-[9px] font-black uppercase tracking-widest truncate ${active ? "text-[#D4F829]" : "text-[#8A6A28]"}`}>
         {label}
       </div>
@@ -191,7 +191,7 @@ function DraggablePlayerToken({
         {...attributes}
         className={`relative flex flex-col items-center justify-center shrink-0 group touch-none transition-transform ${compactWrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing hover:scale-105' : 'cursor-default'}`}
       >
-        <div className={`relative mx-auto overflow-hidden rounded-full border-[2px] border-white/10 bg-[#151515] shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:border-[#D4F829]/50 transition-colors pointer-events-none ${compactAvatarClass}`}>
+        <div className={`relative mx-auto overflow-hidden rounded-full border-[2px] border-white/10 glass-panel shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:border-[#D4F829]/50 transition-colors pointer-events-none ${compactAvatarClass}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
@@ -266,7 +266,7 @@ function DraggablePlayerToken({
         </div>
         
         {/* Avatar */}
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-white/5" : "border-[#D4F829]/40 bg-[#151515]"}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 glass-panel" : "border-[#D4F829]/40 glass-panel"}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
@@ -364,7 +364,7 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
            </span>
         </div>
         
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/60 bg-[#151515] shadow-sm ${avatarClass}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/60 glass-panel shadow-sm ${avatarClass}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
           ) : (
@@ -843,7 +843,7 @@ export function InlineTeamBuilder({
                     onChange={(e) => setLocalTeamBName(e.target.value)}
                     onBlur={() => handleSaveTeamName("B")}
                     onKeyDown={(e) => e.key === "Enter" && handleSaveTeamName("B")}
-                    className="bg-white/50 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
+                    className="glass-panel0 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
                   />
                 ) : (
                   <span 
@@ -877,7 +877,7 @@ export function InlineTeamBuilder({
                     onChange={(e) => setLocalTeamAName(e.target.value)}
                     onBlur={() => handleSaveTeamName("A")}
                     onKeyDown={(e) => e.key === "Enter" && handleSaveTeamName("A")}
-                    className="bg-white/50 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
+                    className="glass-panel0 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
                   />
                 ) : (
                   <span 
@@ -998,8 +998,8 @@ export function InlineTeamBuilder({
 
       {/* Label Edit Modal */}
       {editingLabelId && (
-        <div className="absolute inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#151515] border border-white/10 rounded-2xl p-5 w-full max-w-[250px] shadow-2xl flex flex-col items-center">
+        <div className="absolute inset-0 z-[200] bg-black/80  flex items-center justify-center p-4">
+          <div className="glass-panel rounded-2xl p-5 w-full max-w-[250px] shadow-2xl flex flex-col items-center">
             <Crown size={18} className="mb-2 text-[#A28B52]" />
             <h3 className="text-white text-[10px] font-bold uppercase tracking-widest mb-3">Edit Position Label</h3>
             <input 

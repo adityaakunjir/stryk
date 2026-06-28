@@ -68,7 +68,7 @@ export function FriendActionButton({ targetUserId, initialStatus, requestId }: F
 
   if (status === "pending_sent") {
     return (
-      <button disabled className="w-full h-12 rounded-2xl border border-white/10 bg-white/5 text-white/50 font-display tracking-[0.15em] text-xs uppercase flex items-center justify-center gap-2">
+      <button disabled className="w-full h-12 rounded-2xl border border-white/10 glass-panel text-white/50 font-display tracking-[0.15em] text-xs uppercase flex items-center justify-center gap-2">
         <Clock size={16} />
         REQUEST SENT
       </button>

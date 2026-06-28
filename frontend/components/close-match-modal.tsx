@@ -60,7 +60,7 @@ export function CloseMatchModal({ isOpen, onClose, matchId, teamAName = "Team A"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/60 backdrop-blur-md"
+          className="absolute inset-0 bg-black/60 "
           onClick={onClose}
         />
         <motion.div
@@ -74,7 +74,7 @@ export function CloseMatchModal({ isOpen, onClose, matchId, teamAName = "Team A"
               <h3 className="font-display text-2xl uppercase italic tracking-wide text-white">Close Match</h3>
               <p className="text-xs text-white/40 mt-1">Optional: Enter the final scoreline</p>
             </div>
-            <button onClick={onClose} className="p-2 rounded-full hover:bg-white/10 text-white/50 hover:text-white transition">
+            <button onClick={onClose} className="p-2 rounded-full hover:glass-panel0 text-white/50 hover:text-white transition">
               <X size={20} />
             </button>
           </div>

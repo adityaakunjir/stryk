@@ -60,7 +60,7 @@ export default function LeaderboardsPage() {
 
   if (loading) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#151515] text-white flex items-center justify-center">
+      <main className="relative min-h-screen overflow-hidden glass-panel text-white flex items-center justify-center">
         <Loader2 className="size-10 text-[#C6FF00] animate-spin" />
       </main>
     );
@@ -68,7 +68,7 @@ export default function LeaderboardsPage() {
 
   if (error || !data) {
     return (
-      <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen flex items-center justify-center">
+      <main className="stryk-mobile-shell text-white glass-panel min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center text-center px-6">
           <Trophy size={32} className="text-white/20 mb-4" />
           <div className="text-sm font-bold uppercase tracking-wider text-white/70">Failed to load leaderboards</div>
@@ -101,7 +101,7 @@ export default function LeaderboardsPage() {
   ];
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen">
+    <main className="stryk-mobile-shell text-white glass-panel min-h-screen">
       {/* Ambient backgrounds */}
       <div
         className="absolute inset-0"
@@ -113,7 +113,7 @@ export default function LeaderboardsPage() {
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <Link href="/home" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition">
+          <Link href="/home" className="w-9 h-9 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0 transition">
             <ArrowLeft size={16} />
           </Link>
           <div className="text-[10px] tracking-[0.35em] uppercase text-white/50 font-bold">Leaderboards</div>
@@ -139,7 +139,7 @@ export default function LeaderboardsPage() {
               className={`py-2 rounded-lg text-[10px] uppercase font-bold tracking-wider transition-all duration-200 cursor-pointer ${
                 activeTab === tab.id
                   ? "bg-[#C6FF00] text-white shadow-[0_0_15px_rgba(198,255,0,0.3)]"
-                  : "text-white/60 hover:text-white hover:bg-white/5"
+                  : "text-white/60 hover:text-white hover:glass-panel"
               }`}
             >
               {tab.id === "GK" ? "GK" : tab.id}
@@ -148,7 +148,7 @@ export default function LeaderboardsPage() {
         </div>
 
         {/* Podium Area */}
-        <div className="mt-6 rounded-3xl border border-white/5 bg-[#151515]/25 p-5 relative overflow-hidden">
+        <div className="mt-6 rounded-3xl border border-white/5 glass-panel p-5 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-[#C6FF00]/[0.02] to-transparent pointer-events-none" />
           <div className="flex items-end justify-center gap-3 h-52 pb-2 relative z-10">
             {/* RANK 2 (Left) */}
@@ -219,7 +219,7 @@ export default function LeaderboardsPage() {
                   <span className="w-5 text-center font-display text-xs text-white/40 font-bold">#{rank}</span>
 
                   {/* Avatar / Logo */}
-                  <div className="relative size-9 rounded-full overflow-hidden border border-white/10 bg-[#151515] shrink-0 flex items-center justify-center">
+                  <div className="relative size-9 rounded-full overflow-hidden border border-white/10 glass-panel shrink-0 flex items-center justify-center">
                     {isTeam ? (
                       (item as LeaderboardTeam).logoUrl ? (
                         <img src={(item as LeaderboardTeam).logoUrl} alt={(item as LeaderboardTeam).name} className="w-full h-full object-cover" />
@@ -310,7 +310,7 @@ function PodiumSlot({
         />
         
         <div
-          className={`relative size-14 rounded-full overflow-hidden border bg-[#151515] flex items-center justify-center ${color} ${
+          className={`relative size-14 rounded-full overflow-hidden border glass-panel flex items-center justify-center ${color} ${
             pulse ? "animate-[pulse_2s_infinite]" : ""
           } ${currentUser ? "shadow-[0_0_15px_rgba(198,255,0,0.2)]" : ""}`}
         >

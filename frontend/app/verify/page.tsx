@@ -32,7 +32,7 @@ export default function VerifyPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#151515]">
+    <main className="stryk-mobile-shell text-white glass-panel">
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -81,7 +81,7 @@ export default function VerifyPage() {
 
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {r.stats.map((s) => (
-                  <span key={s.k} className="text-[9px] tracking-wider uppercase px-2.5 py-1 rounded-full border border-white/8 bg-white/5 font-semibold">
+                  <span key={s.k} className="text-[9px] tracking-wider uppercase px-2.5 py-1 rounded-full border border-white/8 glass-panel font-semibold">
                     {s.k} · <span className="text-[#C6FF00]">{s.v}</span>
                   </span>
                 ))}
@@ -90,7 +90,7 @@ export default function VerifyPage() {
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <button 
                   onClick={() => handleAction(r.id, false)}
-                  className="rounded-xl py-2 flex items-center justify-center gap-1.5 border border-white/10 text-[10px] tracking-wider uppercase text-white/70 font-display cursor-pointer hover:bg-white/5 hover:border-white/20 transition"
+                  className="rounded-xl py-2 flex items-center justify-center gap-1.5 border border-white/10 text-[10px] tracking-wider uppercase text-white/70 font-display cursor-pointer hover:glass-panel hover:border-white/20 transition"
                 >
                   <X size={12} /> Reject
                 </button>
@@ -118,5 +118,5 @@ export default function VerifyPage() {
 }
 
 function Btn({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) {
-  return <button onClick={onClick} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10">{children}</button>;
+  return <button onClick={onClick} className="w-9 h-9 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0">{children}</button>;
 }

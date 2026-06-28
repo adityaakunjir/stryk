@@ -294,7 +294,7 @@ export default function MatchesPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
+    <main className="stryk-mobile-shell glass-panel min-h-[100dvh] text-white">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -306,7 +306,7 @@ export default function MatchesPage() {
         <header className="flex items-center justify-between mb-5 relative">
           <button 
             onClick={() => router.push("/home")} 
-            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10"
             aria-label="Back"
             type="button"
           >
@@ -318,14 +318,14 @@ export default function MatchesPage() {
           <div className="flex items-center gap-3 relative z-10">
             <button 
               onClick={() => setShowJoinModal(true)}
-              className="w-12 h-12 rounded-full bg-[#151515] shadow-md border border-[#A28B52]/40 flex items-center justify-center cursor-pointer hover:bg-black transition"
+              className="w-12 h-12 rounded-full glass-panel shadow-md border border-[#A28B52]/40 flex items-center justify-center cursor-pointer hover:bg-black transition"
               title="Join via Code"
             >
               <Key size={20} strokeWidth={2} className="text-[#A28B52]" />
             </button>
             <button 
               onClick={() => setShowCreateModal(true)}
-              className="w-12 h-12 rounded-full bg-[#151515] shadow-md border border-[#A28B52]/40 flex items-center justify-center cursor-pointer hover:bg-black transition"
+              className="w-12 h-12 rounded-full glass-panel shadow-md border border-[#A28B52]/40 flex items-center justify-center cursor-pointer hover:bg-black transition"
               title="Create Match"
             >
               <Plus size={22} strokeWidth={2} className="text-[#D4F829]" />
@@ -344,7 +344,7 @@ export default function MatchesPage() {
         </div>
 
         {/* Search Bar */}
-        <div className="relative w-full h-[50px] rounded-full bg-[#151515] shadow-[0_8px_24px_rgba(0,0,0,0.15)] flex items-center px-5 mb-5 border border-[#A28B52]/10 focus-within:ring-1 focus-within:ring-[#D4F829]/50 focus-within:border-[#D4F829]/50 transition duration-300">
+        <div className="relative w-full h-[50px] rounded-full glass-panel shadow-[0_8px_24px_rgba(0,0,0,0.15)] flex items-center px-5 mb-5 border border-[#A28B52]/10 focus-within:ring-1 focus-within:ring-[#D4F829]/50 focus-within:border-[#D4F829]/50 transition duration-300">
           <Search size={18} className="text-[#A28B52]/70 shrink-0" />
           <input
             type="text"
@@ -372,7 +372,7 @@ export default function MatchesPage() {
               className={`h-[38px] px-6 rounded-full text-[11px] uppercase tracking-widest font-bold transition duration-300 shrink-0 cursor-pointer relative overflow-hidden ${
                 filter === t
                   ? "bg-gradient-to-b from-[#E5C16C] to-[#C09A45] text-white font-black shadow-[0_4px_12px_rgba(162,139,82,0.3)]"
-                  : "bg-[#151515] text-[#EFE8D6] hover:bg-[#2A2824] shadow-[0_4px_10px_rgba(0,0,0,0.15)] border border-[#A28B52]/5"
+                  : "glass-panel text-[#EFE8D6] hover:bg-[#2A2824] shadow-[0_4px_10px_rgba(0,0,0,0.15)] border border-[#A28B52]/5"
               }`}
             >
               {t === "all" ? "All Lobbies" : t === "open" ? "Open" : t === "upcoming" ? "Upcoming" : "Nearby"}
@@ -436,7 +436,7 @@ export default function MatchesPage() {
               return (
                 <div 
                   key={match.id}
-                  className="p-5 rounded-[2rem] border border-[#A28B52]/20 bg-[#151515] flex flex-col shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-[#A28B52]/50 transition duration-300 relative overflow-hidden group/card"
+                  className="p-5 rounded-[2rem] border border-[#A28B52]/20 glass-panel flex flex-col shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-[#A28B52]/50 transition duration-300 relative overflow-hidden group/card"
                 >
                   {/* Status Badge */}
                   <div className="absolute top-5 right-5 flex items-center gap-1.5">
@@ -472,7 +472,7 @@ export default function MatchesPage() {
                     </div>
 
                     {/* Date, Time & Players Row */}
-                    <div className="grid grid-cols-2 gap-3 p-4 rounded-[1.25rem] bg-[#151515] border border-[#A28B52]/10 mb-5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)]">
+                    <div className="grid grid-cols-2 gap-3 p-4 rounded-[1.25rem] glass-panel mb-5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)]">
                       <div className="flex flex-col">
                         <span className="text-[9px] uppercase tracking-widest text-[#A28B52] mb-1.5 font-bold">Schedule</span>
                         <div className="flex items-center gap-2 text-[12px] text-[#E5DCC5] font-semibold leading-none">
@@ -493,7 +493,7 @@ export default function MatchesPage() {
 
                   {/* Spots indicator */}
                   <div className="mb-5 px-1">
-                    <div className="h-2 w-full bg-[#151515] rounded-full overflow-hidden shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)] border border-[#A28B52]/10">
+                    <div className="h-2 w-full glass-panel rounded-full overflow-hidden shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)] border border-[#A28B52]/10">
                       <div 
                         className={`h-full rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(162,139,82,0.5)] ${
                           isFull ? "bg-red-500/80 shadow-red-500/50" : "bg-gradient-to-r from-[#A28B52] to-[#FDE69F]"
@@ -523,7 +523,7 @@ export default function MatchesPage() {
                         <button
                           onClick={() => handleLeaveMatch(match.id)}
                           disabled={joiningId !== null}
-                          className="flex-1 h-12 rounded-[1.25rem] border border-red-500/30 bg-[#151515] text-red-500 text-[11px] uppercase font-bold tracking-[0.15em] hover:bg-red-500/10 transition duration-200 cursor-pointer flex items-center justify-center gap-2"
+                          className="flex-1 h-12 rounded-[1.25rem] border border-red-500/30 glass-panel text-red-500 text-[11px] uppercase font-bold tracking-[0.15em] hover:bg-red-500/10 transition duration-200 cursor-pointer flex items-center justify-center gap-2"
                           type="button"
                         >
                           {joiningId === match.id ? (
@@ -536,7 +536,7 @@ export default function MatchesPage() {
                     ) : isFull ? (
                       <button
                         disabled
-                        className="w-full h-12 rounded-[1.25rem] border border-white/5 bg-[#151515] text-white/30 text-[11px] uppercase font-bold tracking-[0.15em] shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"
+                        className="w-full h-12 rounded-[1.25rem] border border-white/5 glass-panel text-white/30 text-[11px] uppercase font-bold tracking-[0.15em] shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"
                         type="button"
                       >
                         MATCH FULL
@@ -586,11 +586,11 @@ export default function MatchesPage() {
 
       {/* Organize Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#151515]/80 backdrop-blur-md px-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center glass-panel  px-5">
           <div className="relative w-full max-w-sm rounded-[2rem] border border-[#A28B52]/20 bg-gradient-to-b from-[#151515] to-[#151515] p-7 shadow-[0_24px_60px_rgba(162,139,82,0.15)] flex flex-col max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => { setShowCreateModal(false); setCreateError(""); }}
-              className="absolute right-5 top-5 grid size-10 place-items-center rounded-full bg-[#151515] border border-[#A28B52]/10 text-[#888888] hover:text-[#A28B52] hover:bg-[#2A2824] transition duration-200 cursor-pointer"
+              className="absolute right-5 top-5 grid size-10 place-items-center rounded-full glass-panel text-[#888888] hover:text-[#A28B52] hover:bg-[#2A2824] transition duration-200 cursor-pointer"
               type="button"
             >
               <X className="size-5" strokeWidth={1.5} />
@@ -614,7 +614,7 @@ export default function MatchesPage() {
                   placeholder="Sunday Turf Match"
                   value={createTitle}
                   onChange={(e) => setCreateTitle(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
                   required
                 />
               </div>
@@ -628,7 +628,7 @@ export default function MatchesPage() {
                   placeholder="Phoenix Turf"
                   value={createTurf}
                   onChange={(e) => setCreateTurf(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
                   required
                 />
               </div>
@@ -642,7 +642,7 @@ export default function MatchesPage() {
                   placeholder="Phoenix, AZ"
                   value={createLocation}
                   onChange={(e) => setCreateLocation(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
                   required
                 />
               </div>
@@ -655,7 +655,7 @@ export default function MatchesPage() {
                   <select
                     value={createFormat}
                     onChange={(e) => setCreateFormat(e.target.value)}
-                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner appearance-none cursor-pointer"
+                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner appearance-none cursor-pointer"
                     required
                   >
                     <option value="" disabled>Select Format</option>
@@ -681,7 +681,7 @@ export default function MatchesPage() {
                   type="datetime-local"
                   value={createDateTime}
                   onChange={(e) => setCreateDateTime(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 block font-medium shadow-inner"
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 block font-medium shadow-inner"
                   required
                 />
               </div>
@@ -694,7 +694,7 @@ export default function MatchesPage() {
                   <select
                     value={createPrivacy}
                     onChange={(e) => setCreatePrivacy(e.target.value)}
-                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner appearance-none cursor-pointer"
+                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner appearance-none cursor-pointer"
                   >
                     <option value="Public">Public</option>
                     <option value="Private">Private</option>
@@ -715,7 +715,7 @@ export default function MatchesPage() {
                     placeholder="Enter a secret password"
                     value={createPassword}
                     onChange={(e) => setCreatePassword(e.target.value)}
-                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
                     required
                   />
                 </div>
@@ -748,16 +748,16 @@ export default function MatchesPage() {
 
       {/* Join Match Modal */}
       {showJoinModal && (
-        <div className="absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-6">
+        <div className="absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60  p-0 sm:p-6">
           <div className="w-full max-w-md bg-[#111] sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl border border-white/10 overflow-hidden flex flex-col max-h-[90dvh] animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-10 duration-300 relative">
             
-            <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#111]/80 backdrop-blur-md z-10">
+            <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#111]/80  z-10">
               <h2 className="text-white font-black tracking-widest uppercase text-lg italic">
                 JOIN LOBBY
               </h2>
               <button 
                 onClick={() => setShowJoinModal(false)}
-                className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition text-white/70"
+                className="w-8 h-8 rounded-full glass-panel flex items-center justify-center hover:glass-panel0 transition text-white/70"
               >
                 <X size={18} />
               </button>
@@ -773,7 +773,7 @@ export default function MatchesPage() {
                   placeholder="e.g. A9F2K1"
                   value={joinCode}
                   onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 uppercase font-medium shadow-inner"
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 uppercase font-medium shadow-inner"
                   required
                   maxLength={10}
                 />
@@ -788,7 +788,7 @@ export default function MatchesPage() {
                   placeholder="Leave blank if public"
                   value={joinPassword}
                   onChange={(e) => setJoinPassword(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
                 />
               </div>
 
@@ -820,11 +820,11 @@ export default function MatchesPage() {
       {/* Private Join Modal */}
       {showPrivateJoinModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-5 animate-in fade-in duration-200">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setShowPrivateJoinModal(false)} />
+          <div className="absolute inset-0 bg-black/60 " onClick={() => setShowPrivateJoinModal(false)} />
           <div className="relative w-full max-w-sm rounded-[2rem] bg-[#101010] border border-[#A28B52]/20 shadow-2xl p-6 overflow-hidden">
             <button
               onClick={() => setShowPrivateJoinModal(false)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition z-10"
+              className="absolute top-5 right-5 w-8 h-8 rounded-full glass-panel flex items-center justify-center text-white/50 hover:text-white hover:glass-panel0 transition z-10"
               type="button"
             >
               <X size={16} />
@@ -854,7 +854,7 @@ export default function MatchesPage() {
                   placeholder="Enter match password"
                   value={privateJoinPassword}
                   onChange={(e) => setPrivateJoinPassword(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 bg-[#151515] text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
                 />
               </div>
 

@@ -109,7 +109,7 @@ export default function LobbiesPage() {
   });
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#151515]">
+    <main className="stryk-mobile-shell text-white glass-panel">
       {/* Background gradients */}
       <div
         className="absolute inset-x-0 top-0 h-60 opacity-60 pointer-events-none"
@@ -122,7 +122,7 @@ export default function LobbiesPage() {
           <div className="flex items-center gap-3">
             <button 
               onClick={() => router.push("/home")}
-              className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center cursor-pointer hover:bg-white/10"
+              className="w-9 h-9 rounded-full glass-panel flex items-center justify-center cursor-pointer hover:glass-panel0"
             >
               <ArrowLeft size={16} />
             </button>
@@ -218,7 +218,7 @@ export default function LobbiesPage() {
                       <div className="text-xs text-white/70">
                         <span className="text-white font-bold">{l.going}</span>/{l.total} going
                       </div>
-                      <div className="ml-2 h-1.5 w-16 rounded-full bg-white/10 overflow-hidden">
+                      <div className="ml-2 h-1.5 w-16 rounded-full glass-panel0 overflow-hidden">
                         <div className="h-full bg-[#C6FF00]" style={{ width: `${(l.going/l.total)*100}%` }} />
                       </div>
                     </div>
@@ -249,7 +249,7 @@ export default function LobbiesPage() {
 
       {/* Create Lobby Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80  px-5">
           <form onSubmit={handleCreateLobby} className="relative w-full max-w-sm rounded-[2rem] border border-[#C6FF00]/30 bg-[#050a0d] p-6 shadow-[0_34px_100px_rgba(0,0,0,0.8)]">
             <button 
               type="button"

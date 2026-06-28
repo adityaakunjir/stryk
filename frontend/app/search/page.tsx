@@ -86,7 +86,7 @@ export default function SearchPage() {
   const activeFiltersCount = [query, position, playStyle].filter(Boolean).length;
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
+    <main className="stryk-mobile-shell glass-panel min-h-[100dvh] text-white">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -99,7 +99,7 @@ export default function SearchPage() {
         <div className="flex items-center justify-between mb-1 relative z-20">
           <button 
             onClick={() => router.push("/home")} 
-            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10"
             aria-label="Back"
             type="button"
           >
@@ -123,7 +123,7 @@ export default function SearchPage() {
               placeholder="Search by name or @username..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full h-[52px] pl-12 pr-5 rounded-full border border-[#151515]/10 bg-[#151515] text-sm text-white placeholder:text-white/40 outline-none focus:border-[#A28B52] focus:ring-1 focus:ring-[#A28B52]/50 transition duration-300 shadow-inner"
+              className="w-full h-[52px] pl-12 pr-5 rounded-full border border-[#151515]/10 glass-panel text-sm text-white placeholder:text-white/40 outline-none focus:border-[#A28B52] focus:ring-1 focus:ring-[#A28B52]/50 transition duration-300 shadow-inner"
             />
           </div>
 
@@ -136,7 +136,7 @@ export default function SearchPage() {
               <select
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
-                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#151515]/10 bg-[#151515] text-[11px] font-bold tracking-wider text-white uppercase appearance-none outline-none focus:border-[#A28B52] transition"
+                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#151515]/10 glass-panel text-[11px] font-bold tracking-wider text-white uppercase appearance-none outline-none focus:border-[#A28B52] transition"
               >
                 <option value="">ANY POSITION</option>
                 <option value="ST">STRIKER (ST)</option>
@@ -164,7 +164,7 @@ export default function SearchPage() {
               <select
                 value={playStyle}
                 onChange={(e) => setPlayStyle(e.target.value)}
-                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#151515]/10 bg-[#151515] text-[11px] font-bold tracking-wider text-white uppercase appearance-none outline-none focus:border-[#A28B52] transition"
+                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#151515]/10 glass-panel text-[11px] font-bold tracking-wider text-white uppercase appearance-none outline-none focus:border-[#A28B52] transition"
               >
                 <option value="">ANY STYLE</option>
                 <option value="Speedster">SPEEDSTER</option>
@@ -245,7 +245,7 @@ export default function SearchPage() {
                 <Link
                   key={player.id}
                   href={`/player/${player.username}`}
-                  className="block p-4 rounded-[1.5rem] border border-white/5 bg-[#151515] shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:border-[#D4F829]/40 hover:bg-[#1A1A1A] transition duration-300 relative overflow-hidden group"
+                  className="block p-4 rounded-[1.5rem] border border-white/5 glass-panel shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:border-[#D4F829]/40 hover:bg-[#1A1A1A] transition duration-300 relative overflow-hidden group"
                 >
                   {/* Subtle highlight gradient on hover */}
                   <div className="absolute inset-0 bg-gradient-to-r from-[#D4F829]/0 via-[#D4F829]/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />

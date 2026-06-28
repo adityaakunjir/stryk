@@ -33,7 +33,7 @@ export function LobbyPanel({ icon, label, title, meta, accent, onClick }: Props)
       <div className="relative flex items-start gap-3">
         <div
           className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-            accent ? "bg-[#C6FF00] text-white font-bold" : "bg-white/5 text-white"
+            accent ? "bg-[#C6FF00] text-white font-bold" : "glass-panel text-white"
           }`}
         >
           {icon}

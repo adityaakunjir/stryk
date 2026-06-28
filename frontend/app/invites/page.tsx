@@ -108,7 +108,7 @@ export default function InvitesPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#151515] min-h-screen">
+    <main className="stryk-mobile-shell text-white glass-panel min-h-screen">
       {/* Ambient background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(198,255,0,0.08),transparent_50%)]" />
       
@@ -117,7 +117,7 @@ export default function InvitesPage() {
         <header className="flex items-center justify-between mb-8">
           <button 
             onClick={() => router.push("/home")} 
-            className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 transition"
+            className="w-9 h-9 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0 transition"
             type="button"
           >
             <ArrowLeft size={16} />
@@ -138,7 +138,7 @@ export default function InvitesPage() {
           </div>
         ) : invites.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20 border border-white/5 rounded-3xl bg-white/[0.01] px-6">
-            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-white/30">
+            <div className="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center mb-4 text-white/30">
               <Mail size={22} />
             </div>
             <div className="text-sm font-bold uppercase tracking-wider text-white/70 text-center">All caught up!</div>
@@ -151,7 +151,7 @@ export default function InvitesPage() {
             {invites.map((invite) => (
               <div 
                 key={invite.id} 
-                className="p-4 rounded-3xl border border-white/8 bg-[#151515]/30 backdrop-blur-xl flex flex-col gap-4 shadow-lg shadow-black/30 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                className="p-4 rounded-3xl border border-white/8 glass-panel  flex flex-col gap-4 shadow-lg shadow-black/30 animate-in fade-in slide-in-from-bottom-2 duration-300"
               >
                 <div className="flex items-center gap-3.5">
                   <div className="relative size-12 rounded-2xl overflow-hidden border border-[#C6FF00]/20 bg-[#0A0E17] flex items-center justify-center shrink-0">
@@ -176,7 +176,7 @@ export default function InvitesPage() {
                   <button
                     onClick={() => handleRespond(invite, "decline")}
                     disabled={actionLoadingId !== null}
-                    className="h-10 rounded-2xl border border-white/10 bg-white/5 text-xs font-display tracking-widest text-white/80 uppercase hover:bg-white/10 hover:text-white cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-1.5"
+                    className="h-10 rounded-2xl border border-white/10 glass-panel text-xs font-display tracking-widest text-white/80 uppercase hover:glass-panel0 hover:text-white cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-1.5"
                     type="button"
                   >
                     {actionLoadingId === invite.id ? (

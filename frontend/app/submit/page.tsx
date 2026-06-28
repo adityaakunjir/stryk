@@ -22,7 +22,7 @@ export default function SubmitPage() {
 
   if (!isLoaded) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#151515] text-white flex items-center justify-center">
+      <main className="relative min-h-screen overflow-hidden glass-panel text-white flex items-center justify-center">
         <Loader2 className="size-10 text-[#C6FF00] animate-spin" />
       </main>
     );
@@ -68,7 +68,7 @@ export default function SubmitPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell text-white bg-[#151515]">
+    <main className="stryk-mobile-shell text-white glass-panel">
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-4 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -99,7 +99,7 @@ export default function SubmitPage() {
             const Icon = statIcons[key as keyof typeof stats];
             return (
               <div key={key} className="flex items-center gap-3 rounded-2xl px-4 py-3 border border-white/8 bg-white/[0.02]">
-                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[#C6FF00]">
+                <div className="w-8 h-8 rounded-lg glass-panel flex items-center justify-center text-[#C6FF00]">
                   <Icon size={14} />
                 </div>
                 <div className="flex-1 text-sm font-semibold text-white/80">{key}</div>
@@ -143,7 +143,7 @@ export default function SubmitPage() {
 }
 
 function Btn({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) {
-  return <button onClick={onClick} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer hover:bg-white/10">{children}</button>;
+  return <button onClick={onClick} className="w-9 h-9 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0">{children}</button>;
 }
 
 function StepBtn({ children, accent, onClick }: { children: React.ReactNode; accent?: boolean; onClick?: () => void }) {

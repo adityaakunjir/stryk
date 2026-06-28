@@ -14,7 +14,7 @@ export default function LoginPage() {
   }, [router]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#151515] text-white flex items-center justify-center">
+    <main className="relative min-h-screen overflow-hidden glass-panel text-white flex items-center justify-center">
       <Loader2 className="size-8 text-[#C6FF00] animate-spin" />
     </main>
   );

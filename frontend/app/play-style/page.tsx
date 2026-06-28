@@ -87,11 +87,11 @@ function JourneyStepper() {
       <div className="flex items-center gap-1.5 text-white/60">
         IDENTITY <Check size={12} className="text-white/60" strokeWidth={3} />
       </div>
-      <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
+      <div className="w-4 sm:w-6 h-[2px] glass-panel" />
       <div className="flex items-center gap-1.5 text-white/60">
         POSITION <Check size={12} className="text-white/60" strokeWidth={3} />
       </div>
-      <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
+      <div className="w-4 sm:w-6 h-[2px] glass-panel" />
       <div className="text-white font-black flex items-center gap-1.5 drop-shadow-sm">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         STYLE
@@ -321,7 +321,7 @@ export default function PlayStylePage() {
             initial={{ scale: 0.8, opacity: 0, rotateY: 90 }} 
             animate={{ scale: 1, opacity: 1, rotateY: 0 }} 
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="relative z-10 w-full max-w-sm aspect-[0.7] rounded-[2rem] border-2 bg-[#151515]/90 p-8 shadow-[0_0_80px_rgba(0,0,0,0.8)] backdrop-blur-xl flex flex-col items-center justify-center overflow-hidden"
+            className="relative z-10 w-full max-w-sm aspect-[0.7] rounded-[2rem] border-2 glass-panel p-8 shadow-[0_0_80px_rgba(0,0,0,0.8)]  flex flex-col items-center justify-center overflow-hidden"
             style={{ borderColor: `${activeStyleConfig.color}50`, boxShadow: `0 0 100px ${activeStyleConfig.color}30` }}
           >
             <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_0_28%,rgba(255,255,255,0.05)_28%_29%,transparent_29%_100%)] pointer-events-none" />
@@ -332,7 +332,7 @@ export default function PlayStylePage() {
                 {playerData?.avatar ? (
                   <img src={playerData.avatar} alt="Avatar" className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-[0_0_40px_rgba(255,255,255,0.3)]" />
                 ) : (
-                  <div className="w-32 h-32 rounded-full bg-white/10 flex items-center justify-center border-4 border-white/20">
+                  <div className="w-32 h-32 rounded-full glass-panel0 flex items-center justify-center border-4 border-white/20">
                     <div className="w-12 h-12 rounded-full bg-white/30" />
                   </div>
                 )}
@@ -348,7 +348,7 @@ export default function PlayStylePage() {
               )}
               {/* Position */}
               {revealStep >= 2 && (
-                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-block px-4 py-1.5 rounded-full border border-white/20 bg-white/10 text-xl font-bold uppercase text-white mb-3 shadow-lg">
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-block px-4 py-1.5 rounded-full border border-white/20 glass-panel0 text-xl font-bold uppercase text-white mb-3 shadow-lg">
                   {playerData?.position || "CAM"}
                 </motion.div>
               )}
@@ -368,7 +368,7 @@ export default function PlayStylePage() {
 
   // --- NORMAL PAGE RENDER ---
   return (
-    <main className="stryk-mobile-shell bg-[#151515] overflow-hidden text-white">
+    <main className="stryk-mobile-shell glass-panel overflow-hidden text-white">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -382,13 +382,13 @@ export default function PlayStylePage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="icon" aria-label="Back to position" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to position" className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10">
             <Link href="/position">
               <ArrowLeft size={18} strokeWidth={2} />
             </Link>
           </Button>
           <div className="hidden sm:block"><JourneyStepper /></div>
-          <Button variant="ghost" onClick={() => setShowInfoModal(true)} className="w-10 h-10 rounded-full bg-transparent border border-[#151515]/20 hover:bg-[#151515]/5 cursor-pointer p-0 text-white">
+          <Button variant="ghost" onClick={() => setShowInfoModal(true)} className="w-10 h-10 rounded-full bg-transparent border border-[#151515]/20 hover:glass-panel cursor-pointer p-0 text-white">
             <Info size={20} />
           </Button>
         </motion.header>
@@ -406,7 +406,7 @@ export default function PlayStylePage() {
             </p>
           </motion.div>
 
-          <form onSubmit={handleSubmit} className="mt-8 w-full max-w-4xl mx-auto space-y-6 bg-[#151515] text-[#E8E8E8] p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
+          <form onSubmit={handleSubmit} className="mt-8 w-full max-w-4xl mx-auto space-y-6 glass-panel text-[#E8E8E8] p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
             <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="relative">
               
               {/* Carousel container */}
@@ -422,7 +422,7 @@ export default function PlayStylePage() {
                         updatePlayerData({ playStyle: style.title });
                         if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(10);
                       }}
-                      className="snap-center relative h-[26rem] min-w-[16rem] sm:min-w-[18rem] rounded-2xl border bg-[#151515] p-5 cursor-pointer select-none overflow-hidden"
+                      className="snap-center relative h-[26rem] min-w-[16rem] sm:min-w-[18rem] rounded-2xl border glass-panel p-5 cursor-pointer select-none overflow-hidden"
                       animate={{
                         scale: isActive ? 1.03 : 0.92,
                         y: isActive ? -8 : 0,
@@ -477,7 +477,7 @@ export default function PlayStylePage() {
                     onClick={() => { setSelectedStyle(style.title); updatePlayerData({ playStyle: style.title }); scrollToCard(styles.findIndex(s => s.title === style.title)); }}
                     className={cn(
                       "size-8 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer border",
-                      selectedStyle === style.title ? "bg-[#151515] border-[#2A2A2A] scale-110" : "bg-[#151515] border-[#2A2A2A] opacity-50 hover:opacity-100 hover:bg-[#151515]"
+                      selectedStyle === style.title ? "glass-panel border-[#2A2A2A] scale-110" : "glass-panel border-[#2A2A2A] opacity-50 hover:opacity-100 hover:glass-panel"
                     )}
                     style={{ color: selectedStyle === style.title ? style.color : "#808080", boxShadow: selectedStyle === style.title ? `0 0 15px ${style.color}20` : "none" }}
                   >
@@ -488,7 +488,7 @@ export default function PlayStylePage() {
             </motion.section>
 
             {/* Smart Bio Section */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="rounded-2xl border border-[#2A2A2A] bg-[#151515] p-5 group">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="rounded-2xl glass-panel p-5 group">
               <div className="flex items-end justify-between gap-4">
                 <div>
                   <h2 className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] mb-1">Player Bio</h2>
@@ -499,7 +499,7 @@ export default function PlayStylePage() {
                     {bio.length} / 120
                   </span>
                   {/* Visual Progress Bar */}
-                  <div className="w-full h-1 bg-[#151515] border border-[#2A2A2A] rounded-full overflow-hidden">
+                  <div className="w-full h-1 glass-panel border border-[#2A2A2A] rounded-full overflow-hidden">
                     <motion.div 
                       className="h-full rounded-full" 
                       style={{ backgroundColor: bio.length >= 120 ? "#f87171" : activeStyleConfig.color }}
@@ -512,7 +512,7 @@ export default function PlayStylePage() {
               
               <div className="relative mt-4">
                 <textarea
-                  className="min-h-[100px] w-full resize-none rounded-xl border border-[#2A2A2A] bg-[#151515] px-4 py-4 pr-10 text-sm font-medium text-[#E8E8E8] shadow-inner outline-none transition-all placeholder:text-transparent focus:border-[#D4F829]/50"
+                  className="min-h-[100px] w-full resize-none rounded-xl glass-panel px-4 py-4 pr-10 text-sm font-medium text-[#E8E8E8] shadow-inner outline-none transition-all placeholder:text-transparent focus:border-[#D4F829]/50"
                   maxLength={120}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
@@ -537,7 +537,7 @@ export default function PlayStylePage() {
                 </div>
                 <div className="flex flex-col gap-1.5 mt-2">
                   {suggestions.map((sug, i) => (
-                    <button key={i} type="button" onClick={() => setBio(sug)} className="text-left text-[11px] text-[#808080] hover:text-[#E8E8E8] bg-[#151515] hover:bg-[#2A2A2A]/50 border border-[#2A2A2A] rounded-lg px-3 py-2 transition truncate cursor-pointer">
+                    <button key={i} type="button" onClick={() => setBio(sug)} className="text-left text-[11px] text-[#808080] hover:text-[#E8E8E8] glass-panel hover:bg-[#2A2A2A]/50 border border-[#2A2A2A] rounded-lg px-3 py-2 transition truncate cursor-pointer">
                       &ldquo;{sug}&rdquo;
                     </button>
                   ))}
@@ -547,14 +547,14 @@ export default function PlayStylePage() {
 
             {/* Live Preview Strip */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.55 }} className="flex justify-center mb-2 pointer-events-none">
-              <div className="flex items-center gap-4 rounded-2xl border border-[#2A2A2A] bg-[#151515] p-2 pr-6 shadow-xl relative overflow-hidden">
+              <div className="flex items-center gap-4 rounded-2xl glass-panel p-2 pr-6 shadow-xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-2 opacity-5">
                   <activeStyleConfig.icon size={48} className="text-[#E8E8E8]" />
                 </div>
                 {playerData?.avatar ? (
                   <img src={playerData.avatar} alt="Avatar" className="w-10 h-10 rounded-xl object-cover border border-[#2A2A2A]" />
                 ) : (
-                  <div className="w-10 h-10 rounded-xl bg-[#151515] flex items-center justify-center border border-[#2A2A2A]">
+                  <div className="w-10 h-10 rounded-xl glass-panel flex items-center justify-center border border-[#2A2A2A]">
                     <div className="w-5 h-5 rounded-full bg-[#2A2A2A]" />
                   </div>
                 )}
@@ -578,7 +578,7 @@ export default function PlayStylePage() {
                 disabled={launchStep > 0}
                 className={cn(
                   "relative w-full h-[60px] rounded-full font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-3 transition-all duration-300 overflow-hidden cursor-pointer text-[15px]",
-                  launchStep > 0 ? "bg-[#151515] border border-[#2A2A2A] text-[#808080]" : "bg-[#D4F829] text-white hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
+                  launchStep > 0 ? "glass-panel border border-[#2A2A2A] text-[#808080]" : "bg-[#D4F829] text-white hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
                 )}
                 type="submit"
               >
@@ -617,25 +617,25 @@ export default function PlayStylePage() {
       <AnimatePresence>
         {showInfoModal && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowInfoModal(false)} className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowInfoModal(false)} className="fixed inset-0 z-40 bg-black/80 " />
             <motion.div 
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 z-50 rounded-t-[2rem] border-t border-[#8E793E]/30 bg-[#151515] p-6 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] pb-12"
+              className="fixed inset-x-0 bottom-0 z-50 rounded-t-[2rem] border-t border-[#8E793E]/30 glass-panel p-6 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] pb-12"
             >
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <h3 className="font-display text-2xl uppercase italic text-[#E8E8E8]">Play Styles</h3>
                   <p className="text-xs text-[#808080]">Understand your role on the pitch.</p>
                 </div>
-                <button onClick={() => setShowInfoModal(false)} className="w-8 h-8 rounded-full bg-[#151515] border border-[#2A2A2A] flex items-center justify-center hover:bg-[#2A2A2A] cursor-pointer">
+                <button onClick={() => setShowInfoModal(false)} className="w-8 h-8 rounded-full glass-panel border border-[#2A2A2A] flex items-center justify-center hover:bg-[#2A2A2A] cursor-pointer">
                   <X size={16} className="text-[#808080]" />
                 </button>
               </div>
               
               <div className="space-y-4">
                 {styles.map(s => (
-                  <div key={s.title} className="flex gap-4 items-start p-4 rounded-2xl bg-[#151515] border border-[#2A2A2A]">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border border-[#2A2A2A]/50 bg-[#151515]" style={{ color: s.color }}>
+                  <div key={s.title} className="flex gap-4 items-start p-4 rounded-2xl glass-panel border border-[#2A2A2A]">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border border-[#2A2A2A]/50 glass-panel" style={{ color: s.color }}>
                       <s.icon size={24} />
                     </div>
                     <div>

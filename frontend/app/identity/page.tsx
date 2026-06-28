@@ -34,9 +34,9 @@ function Stepper() {
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         Identity
       </div>
-      <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
+      <div className="w-4 sm:w-6 h-[2px] glass-panel" />
       <div>Position</div>
-      <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
+      <div className="w-4 sm:w-6 h-[2px] glass-panel" />
       <div>Style</div>
     </div>
   );
@@ -240,7 +240,7 @@ export default function IdentityPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] overflow-hidden text-white">
+    <main className="stryk-mobile-shell glass-panel overflow-hidden text-white">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -254,7 +254,7 @@ export default function IdentityPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10">
             <Link href="/">
               <ArrowLeft size={18} strokeWidth={2} />
             </Link>
@@ -284,7 +284,7 @@ export default function IdentityPage() {
             </p>
           </motion.div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full rounded-[2rem] border border-[#8E793E]/30 bg-[#151515] p-5 shadow-[0_28px_50px_rgba(0,0,0,0.5)] sm:p-8 relative">
+          <form onSubmit={handleNext} className="mt-8 w-full rounded-[2rem] border border-[#8E793E]/30 glass-panel p-5 shadow-[0_28px_50px_rgba(0,0,0,0.5)] sm:p-8 relative">
             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
 
             <div className="grid gap-8 md:grid-cols-[1fr_17rem] md:items-start">
@@ -304,7 +304,7 @@ export default function IdentityPage() {
                   <p className="text-[11px] text-[#808080] mb-4 mt-0.5">Upload or generate a front-facing photo.</p>
                   
                   {avatar ? (
-                    <div className="relative group rounded-2xl border border-[#2A2A2A] bg-[#151515] p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
+                    <div className="relative group rounded-2xl glass-panel p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
                       <div className="flex items-center gap-4 min-w-0">
                         <img src={avatar} alt="Avatar" className="w-14 h-14 shrink-0 rounded-full object-cover border border-[#A28B52]" />
                         <div className="min-w-0">
@@ -322,7 +322,7 @@ export default function IdentityPage() {
                       whileHover={{ scale: 0.98, backgroundColor: "rgba(212,248,41,0.05)" }}
                       whileTap={{ scale: 0.95 }}
                       onClick={triggerFileUpload}
-                      className="flex min-h-24 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] bg-[#151515] p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-[#E8E8E8] cursor-pointer"
+                      className="flex min-h-24 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] glass-panel p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-[#E8E8E8] cursor-pointer"
                       type="button"
                     >
                       <ImageUp size={24} className="text-[#D4F829]" />

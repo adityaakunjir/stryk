@@ -124,7 +124,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
       <div className="flex items-center gap-4">
         <button 
           onClick={() => handleDecrement(setter, value)}
-          className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition"
+          className="w-8 h-8 rounded-full glass-panel flex items-center justify-center hover:glass-panel0 transition"
         >
           <Minus size={14} className="text-white/60" />
         </button>
@@ -146,7 +146,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/60 backdrop-blur-md"
+          className="absolute inset-0 bg-black/60 "
           onClick={onClose}
         />
         <motion.div
@@ -159,7 +159,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
             <div>
               <h3 className="font-display text-2xl uppercase italic tracking-wide text-white">Match Stats</h3>
             </div>
-            <button onClick={onClose} className="p-2 rounded-full hover:bg-white/10 text-white/50 hover:text-white transition">
+            <button onClick={onClose} className="p-2 rounded-full hover:glass-panel0 text-white/50 hover:text-white transition">
               <X size={20} />
             </button>
           </div>
@@ -170,7 +170,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab as any)}
-                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest whitespace-nowrap transition ${activeTab === tab ? "bg-white/5 text-white" : "bg-white/5 text-white/50 hover:bg-white/10"}`}
+                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest whitespace-nowrap transition ${activeTab === tab ? "glass-panel text-white" : "glass-panel text-white/50 hover:glass-panel0"}`}
               >
                 {tab}
               </button>
@@ -191,8 +191,8 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
                     <Award size={16} className={motm ? "text-[#A28B52]" : "text-white/40"} />
                     <div className={`font-bold uppercase tracking-widest text-sm ${motm ? 'text-[#A28B52]' : 'text-white'}`}>Man of the Match</div>
                   </div>
-                  <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${motm ? 'bg-[#A28B52]' : 'bg-white/10'}`}>
-                    <div className={`w-4 h-4 rounded-full bg-white/5 shadow-md transform transition ${motm ? 'translate-x-6' : 'translate-x-0'}`} />
+                  <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${motm ? 'bg-[#A28B52]' : 'glass-panel0'}`}>
+                    <div className={`w-4 h-4 rounded-full glass-panel shadow-md transform transition ${motm ? 'translate-x-6' : 'translate-x-0'}`} />
                   </div>
                 </div>
 
@@ -204,8 +204,8 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
                     <AlertOctagon size={16} className={noShow ? "text-red-500" : "text-white/40"} />
                     <div className={`font-bold uppercase tracking-widest text-sm ${noShow ? 'text-red-500' : 'text-white'}`}>Did Not Show Up</div>
                   </div>
-                  <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${noShow ? 'bg-red-500' : 'bg-white/10'}`}>
-                    <div className={`w-4 h-4 rounded-full bg-white/5 shadow-md transform transition ${noShow ? 'translate-x-6' : 'translate-x-0'}`} />
+                  <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${noShow ? 'bg-red-500' : 'glass-panel0'}`}>
+                    <div className={`w-4 h-4 rounded-full glass-panel shadow-md transform transition ${noShow ? 'translate-x-6' : 'translate-x-0'}`} />
                   </div>
                 </div>
               </>
@@ -238,8 +238,8 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
                       <Shield size={16} className={cleanSheet ? "text-blue-400" : "text-white/40"} />
                       <div className={`font-bold uppercase tracking-widest text-sm ${cleanSheet ? 'text-blue-400' : 'text-white'}`}>Clean Sheet</div>
                     </div>
-                    <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${cleanSheet ? 'bg-blue-500' : 'bg-white/10'}`}>
-                      <div className={`w-4 h-4 rounded-full bg-white/5 shadow-md transform transition ${cleanSheet ? 'translate-x-6' : 'translate-x-0'}`} />
+                    <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${cleanSheet ? 'bg-blue-500' : 'glass-panel0'}`}>
+                      <div className={`w-4 h-4 rounded-full glass-panel shadow-md transform transition ${cleanSheet ? 'translate-x-6' : 'translate-x-0'}`} />
                     </div>
                   </div>
                 )}
@@ -263,8 +263,8 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
                         <Shield size={16} className={cleanSheet ? "text-blue-400" : "text-white/40"} />
                         <div className={`font-bold uppercase tracking-widest text-sm ${cleanSheet ? 'text-blue-400' : 'text-white'}`}>Clean Sheet</div>
                       </div>
-                      <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${cleanSheet ? 'bg-blue-500' : 'bg-white/10'}`}>
-                        <div className={`w-4 h-4 rounded-full bg-white/5 shadow-md transform transition ${cleanSheet ? 'translate-x-6' : 'translate-x-0'}`} />
+                      <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${cleanSheet ? 'bg-blue-500' : 'glass-panel0'}`}>
+                        <div className={`w-4 h-4 rounded-full glass-panel shadow-md transform transition ${cleanSheet ? 'translate-x-6' : 'translate-x-0'}`} />
                       </div>
                     </div>
                   </>
@@ -284,7 +284,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
                     <div className="font-bold text-yellow-400 uppercase tracking-widest text-sm">Yellow Cards</div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <button onClick={() => handleDecrement(setYellowCards, yellowCards)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+                    <button onClick={() => handleDecrement(setYellowCards, yellowCards)} className="w-8 h-8 rounded-full glass-panel flex items-center justify-center hover:glass-panel0 transition">
                       <Minus size={14} className="text-white/60" />
                     </button>
                     <div className="w-6 text-center font-display text-xl text-white">{yellowCards}</div>
@@ -300,7 +300,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
                     <div className="font-bold text-red-500 uppercase tracking-widest text-sm">Red Cards</div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <button onClick={() => handleDecrement(setRedCards, redCards)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+                    <button onClick={() => handleDecrement(setRedCards, redCards)} className="w-8 h-8 rounded-full glass-panel flex items-center justify-center hover:glass-panel0 transition">
                       <Minus size={14} className="text-white/60" />
                     </button>
                     <div className="w-6 text-center font-display text-xl text-white">{redCards}</div>
@@ -319,7 +319,7 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full mt-4 h-12 shrink-0 rounded-2xl bg-white/5 text-white font-display tracking-[0.2em] uppercase font-bold transition duration-200 hover:bg-white/10 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full mt-4 h-12 shrink-0 rounded-2xl glass-panel text-white font-display tracking-[0.2em] uppercase font-bold transition duration-200 hover:glass-panel0 disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 size={18} className="animate-spin" /> : "SUBMIT STATS"}
           </button>

@@ -73,12 +73,12 @@ function Stepper() {
       <div className="flex items-center gap-1.5 text-white/60">
         IDENTITY <Check size={12} className="text-white/60" strokeWidth={3} />
       </div>
-      <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
+      <div className="w-4 sm:w-6 h-[2px] glass-panel" />
       <div className="text-white font-black flex items-center gap-1.5 drop-shadow-sm">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         POSITION
       </div>
-      <div className="w-4 sm:w-6 h-[2px] bg-[#151515]/20" />
+      <div className="w-4 sm:w-6 h-[2px] glass-panel" />
       <div>STYLE <div className="inline-block w-1.5 h-1.5 rounded-full border border-[#151515]/40 ml-1.5" /></div>
     </div>
   );
@@ -157,7 +157,7 @@ export default function PositionPage() {
   const suggestedSecondaries = smartSecondary[selectedPosition] || [];
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] text-white relative overflow-hidden min-h-[100dvh] flex flex-col">
+    <main className="stryk-mobile-shell glass-panel text-white relative overflow-hidden min-h-[100dvh] flex flex-col">
       {/* Custom Animated Success Toast */}
       <AnimatePresence>
         {showToast && (
@@ -165,7 +165,7 @@ export default function PositionPage() {
             initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 10 }} exit={{ opacity: 0, y: -50, filter: "blur(10px)" }}
             className="fixed top-safe inset-x-4 z-50 flex justify-center pointer-events-none"
           >
-            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3 pr-5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+            <div className="flex items-center gap-3 rounded-2xl border border-white/10 glass-panel p-3 pr-5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] ">
               <div className="w-8 h-8 rounded-full bg-[#C6FF00] flex items-center justify-center text-white">
                 <Check size={16} strokeWidth={3} />
               </div>
@@ -185,13 +185,13 @@ export default function PositionPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="icon" aria-label="Back to Identity" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to Identity" className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10">
             <Link href="/identity">
               <ArrowLeft size={18} strokeWidth={2} />
             </Link>
           </Button>
           <div className="hidden sm:block"><Stepper /></div>
-          <Button variant="ghost" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-white/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/40 hover:text-white">
+          <Button variant="ghost" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:glass-panel cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/40 hover:text-white">
             Skip
           </Button>
         </motion.header>
@@ -214,11 +214,11 @@ export default function PositionPage() {
 
           {/* Live Mini Card Continuity */}
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.2 }} className="mt-6 flex items-center justify-center pointer-events-none">
-            <div className="flex items-center gap-4 rounded-full border border-white/10 bg-white/5 p-2 pr-6 shadow-sm backdrop-blur-md">
+            <div className="flex items-center gap-4 rounded-full border border-white/10 glass-panel p-2 pr-6 shadow-sm ">
               {playerData?.avatar ? (
                 <img src={playerData.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover border border-white/10" />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full glass-panel0 flex items-center justify-center">
                   <div className="w-5 h-5 rounded-full bg-black/20" />
                 </div>
               )}
@@ -231,13 +231,13 @@ export default function PositionPage() {
             </div>
           </motion.div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-6 bg-[#151515] text-white p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
+          <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-6 glass-panel text-white p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
             
             {/* Tactical Pitch Selector */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-2xl border border-[#2A2A2A] bg-[#151515] p-5">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-2xl glass-panel p-5">
               
               {/* Pitch layout */}
-              <div className="relative aspect-[1.3] w-full overflow-visible rounded-xl border border-[#2A2A2A] bg-[#151515] sm:aspect-[1.8]">
+              <div className="relative aspect-[1.3] w-full overflow-visible rounded-xl glass-panel sm:aspect-[1.8]">
                 <div className="absolute inset-3 border border-[#2A2A2A] rounded" />
                 <div className="absolute left-3 right-3 top-1/2 h-px bg-[#2A2A2A]" />
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-[#2A2A2A]" />
@@ -260,7 +260,7 @@ export default function PositionPage() {
                         onMouseLeave={() => setHoveredNode(null)}
                         className={cn(
                           "flex items-center justify-center rounded-full font-display text-[9px] tracking-wider cursor-pointer sm:text-xs transition-colors",
-                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-white" : "w-7 h-7 sm:w-9 sm:h-9 bg-[#151515] border border-[#2A2A2A] text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8]"
+                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-white" : "w-7 h-7 sm:w-9 sm:h-9 glass-panel border border-[#2A2A2A] text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8]"
                         )}
                         layout
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -285,11 +285,11 @@ export default function PositionPage() {
                             exit={{ opacity: 0, y: 0, scale: 0.9 }}
                             className="absolute left-1/2 -translate-x-1/2 w-max max-w-[140px] pointer-events-none z-20"
                           >
-                            <div className="bg-[#151515] border border-[#2A2A2A] rounded-lg p-2 text-center shadow-xl">
+                            <div className="glass-panel border border-[#2A2A2A] rounded-lg p-2 text-center shadow-xl">
                               <div className="text-[9px] font-bold text-[#D4F829] uppercase tracking-wider">{positionRoles[displayCode]?.role}</div>
                               {isActive && <div className="text-[8px] text-[#808080] mt-0.5 leading-tight">{positionRoles[displayCode]?.desc}</div>}
                             </div>
-                            <div className="w-2 h-2 bg-[#151515] border-b border-r border-[#2A2A2A] rotate-45 mx-auto -mt-1" />
+                            <div className="w-2 h-2 glass-panel border-b border-r border-[#2A2A2A] rotate-45 mx-auto -mt-1" />
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -303,7 +303,7 @@ export default function PositionPage() {
             <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               
               {/* PRIMARY ROLE CARD */}
-              <div className="rounded-2xl border border-[#2A2A2A] bg-[#151515] p-5 relative overflow-hidden">
+              <div className="rounded-2xl glass-panel p-5 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-5">
                   <Target size={64} className="text-[#E8E8E8]" />
                 </div>
@@ -316,7 +316,7 @@ export default function PositionPage() {
               </div>
 
               {/* SECONDARY ROLE CARD */}
-              <div className="rounded-2xl border border-[#2A2A2A] bg-[#151515] p-5 flex flex-col justify-between">
+              <div className="rounded-2xl glass-panel p-5 flex flex-col justify-between">
                 <div>
                   <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] mb-1">
                     SECONDARY (OPTIONAL)
@@ -339,7 +339,7 @@ export default function PositionPage() {
                   {suggestedSecondaries.length > 0 && !secondaryPosition && (
                     <div className="flex flex-wrap gap-2 mb-3">
                       {suggestedSecondaries.map(pos => (
-                        <button key={pos} type="button" onClick={() => { setSecondaryPosition(pos); updatePlayerData({ secondaryPosition: pos }); }} className="px-3 py-1.5 rounded-lg border border-[#2A2A2A] bg-[#151515] text-[10px] font-bold text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8] uppercase tracking-wider transition cursor-pointer">
+                        <button key={pos} type="button" onClick={() => { setSecondaryPosition(pos); updatePlayerData({ secondaryPosition: pos }); }} className="px-3 py-1.5 rounded-lg glass-panel text-[10px] font-bold text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8] uppercase tracking-wider transition cursor-pointer">
                           + {pos}
                         </button>
                       ))}
@@ -347,12 +347,12 @@ export default function PositionPage() {
                   )}
                   
                   <div className="relative">
-                    <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="h-10 w-full flex items-center justify-between rounded-xl border border-[#2A2A2A] bg-[#151515] px-4 text-xs font-bold text-[#808080] hover:text-[#E8E8E8] transition cursor-pointer">
+                    <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="h-10 w-full flex items-center justify-between rounded-xl glass-panel px-4 text-xs font-bold text-[#808080] hover:text-[#E8E8E8] transition cursor-pointer">
                       Select other position... <ChevronDown size={14} />
                     </button>
                     <AnimatePresence>
                       {isDropdownOpen && (
-                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute bottom-full mb-2 w-full max-h-48 overflow-y-auto rounded-xl border border-white/10 bg-[#151515] p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
+                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute bottom-full mb-2 w-full max-h-48 overflow-y-auto rounded-xl border border-white/10 glass-panel p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50">
                           {positions.filter(p => p.code.split("_")[0] !== selectedPosition).reduce((acc, current) => {
                             const code = current.code.split("_")[0];
                             if (!acc.find(item => item.code.split("_")[0] === code)) acc.push(current);
@@ -374,7 +374,7 @@ export default function PositionPage() {
             </motion.section>
 
             {/* Strong Foot */}
-            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-2xl border border-[#2A2A2A] bg-[#151515] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="rounded-2xl glass-panel p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52]">Strong Foot</div>
                 <p className="mt-0.5 text-[11px] text-[#808080]">Which foot do you trust the most?</p>
@@ -384,7 +384,7 @@ export default function PositionPage() {
                   onClick={() => { setStrongFoot("Left"); updatePlayerData({ strongFoot: "Left" }); }}
                   className={cn(
                     "flex h-[52px] items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer",
-                    strongFoot === "Left" ? "border border-[#D4F829] bg-[#D4F829]/10 text-[#D4F829]" : "border border-[#2A2A2A] bg-[#151515] text-[#808080] hover:border-[#404040] hover:text-[#E8E8E8]"
+                    strongFoot === "Left" ? "border border-[#D4F829] bg-[#D4F829]/10 text-[#D4F829]" : "glass-panel text-[#808080] hover:border-[#404040] hover:text-[#E8E8E8]"
                   )}
                   type="button"
                 >
@@ -395,7 +395,7 @@ export default function PositionPage() {
                   onClick={() => { setStrongFoot("Right"); updatePlayerData({ strongFoot: "Right" }); }}
                   className={cn(
                     "flex h-[52px] items-center justify-center gap-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer",
-                    strongFoot === "Right" ? "border border-[#D4F829] bg-[#D4F829]/10 text-[#D4F829]" : "border border-[#2A2A2A] bg-[#151515] text-[#808080] hover:border-[#404040] hover:text-[#E8E8E8]"
+                    strongFoot === "Right" ? "border border-[#D4F829] bg-[#D4F829]/10 text-[#D4F829]" : "glass-panel text-[#808080] hover:border-[#404040] hover:text-[#E8E8E8]"
                   )}
                   type="button"
                 >
@@ -440,20 +440,20 @@ export default function PositionPage() {
         {showSkipModal && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60  p-4"
           >
             <motion.div 
               initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-              className="bg-[#151515] border border-white/10 rounded-3xl p-6 w-full max-w-sm shadow-2xl"
+              className="glass-panel rounded-3xl p-6 w-full max-w-sm shadow-2xl"
             >
-              <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-full glass-panel flex items-center justify-center mb-4">
                 <AlertTriangle className="text-yellow-500" />
               </div>
               <h3 className="text-lg font-display uppercase tracking-wider text-white">Are you sure?</h3>
               <p className="text-sm text-white/50 mt-2 mb-6">Position helps other players discover you and is crucial for your STRYK card rating calculations.</p>
               <div className="flex gap-3">
-                <button onClick={() => setShowSkipModal(false)} className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-bold uppercase tracking-wider transition cursor-pointer">Cancel</button>
-                <button onClick={handleSkip} className="flex-1 py-3 rounded-xl bg-white/5 text-white hover:bg-white/90 text-xs font-bold uppercase tracking-wider transition cursor-pointer">Skip for now</button>
+                <button onClick={() => setShowSkipModal(false)} className="flex-1 py-3 rounded-xl glass-panel0 text-white text-xs font-bold uppercase tracking-wider transition cursor-pointer">Cancel</button>
+                <button onClick={handleSkip} className="flex-1 py-3 rounded-xl glass-panel text-white hover:bg-white/90 text-xs font-bold uppercase tracking-wider transition cursor-pointer">Skip for now</button>
               </div>
             </motion.div>
           </motion.div>

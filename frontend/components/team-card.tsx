@@ -119,7 +119,7 @@ export function TeamCard({
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 + idx * 0.1 }}
-              className="flex items-center justify-between p-2 rounded-lg bg-[#151515]/50 border border-[#C6FF00]/20 hover:border-[#C6FF00]/50 transition-colors"
+              className="flex items-center justify-between p-2 rounded-lg glass-panel border border-[#C6FF00]/20 hover:border-[#C6FF00]/50 transition-colors"
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 {player.avatar || player.avatarUrl ? (
