@@ -29,8 +29,8 @@ import * as Sentry from "@sentry/nextjs";
 
 function Stepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-[#151515]/80">
-      <div className="text-[#151515] font-black flex items-center gap-1.5 drop-shadow-sm">
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-white/80">
+      <div className="text-white font-black flex items-center gap-1.5 drop-shadow-sm">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         Identity
       </div>
@@ -240,7 +240,7 @@ export default function IdentityPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] overflow-hidden text-[#151515]">
+    <main className="stryk-mobile-shell bg-[#05070B] overflow-hidden text-white">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -254,7 +254,7 @@ export default function IdentityPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10">
             <Link href="/">
               <ArrowLeft size={18} strokeWidth={2} />
             </Link>
@@ -279,7 +279,7 @@ export default function IdentityPage() {
               BUILD YOUR<br/>
               <span className="text-[#A28B52]">ATHLETE IDENTITY</span>
             </h2>
-            <p className="mt-4 text-[13px] sm:text-sm font-medium text-[#151515]/60">
+            <p className="mt-4 text-[13px] sm:text-sm font-medium text-white/60">
               Start with the basics for your player card.
             </p>
           </motion.div>
@@ -413,7 +413,7 @@ export default function IdentityPage() {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={isSubmitting || isSuccess || usernameStatus !== "available" || !fullName}
-                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-[#151515] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
+                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-white font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
                 type="submit"
               >
                 {!isSubmitting && !isSuccess && (

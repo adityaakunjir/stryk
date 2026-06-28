@@ -266,7 +266,7 @@ function DraggablePlayerToken({
         </div>
         
         {/* Avatar */}
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-white" : "border-[#D4F829]/40 bg-[#05070B]"}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-white/5" : "border-[#D4F829]/40 bg-[#05070B]"}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
@@ -307,7 +307,7 @@ function DraggablePlayerToken({
                 ? "bg-slate-100 border-slate-300 hover:bg-[#D4F829] hover:border-[#D4F829]" 
                 : "bg-black border-white/20 hover:bg-[#D4F829] hover:border-[#D4F829]"
             }`}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={state.team === "A" ? "text-slate-600 group-hover/swap:text-black" : "text-white/80 group-hover/swap:text-black"}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={state.team === "A" ? "text-slate-600 group-hover/swap:text-white" : "text-white/80 group-hover/swap:text-white"}>
                 <path d="M8 3 4 7l4 4"/>
                 <path d="M4 7h16"/>
                 <path d="m16 21 4-4-4-4"/>
@@ -843,7 +843,7 @@ export function InlineTeamBuilder({
                     onChange={(e) => setLocalTeamBName(e.target.value)}
                     onBlur={() => handleSaveTeamName("B")}
                     onKeyDown={(e) => e.key === "Enter" && handleSaveTeamName("B")}
-                    className="bg-black/50 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
+                    className="bg-white/50 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
                   />
                 ) : (
                   <span 
@@ -877,7 +877,7 @@ export function InlineTeamBuilder({
                     onChange={(e) => setLocalTeamAName(e.target.value)}
                     onBlur={() => handleSaveTeamName("A")}
                     onKeyDown={(e) => e.key === "Enter" && handleSaveTeamName("A")}
-                    className="bg-black/50 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
+                    className="bg-white/50 border border-[#D4F829]/50 text-[9px] font-black uppercase tracking-widest text-[#E5DCC5] rounded px-1 w-24 outline-none"
                   />
                 ) : (
                   <span 
@@ -955,7 +955,7 @@ export function InlineTeamBuilder({
               <span className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.22em] text-white">
                 <Users size={13} className="text-[#D4F829]" />
                 Free Pool
-                <span className="rounded-full bg-[#D4F829] px-2 py-0.5 text-[8px] text-black">{benchPlayers.length}</span>
+                <span className="rounded-full bg-[#D4F829] px-2 py-0.5 text-[8px] text-white">{benchPlayers.length}</span>
               </span>
               <span className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-white/35">
                 Drag onto pitch
@@ -1029,7 +1029,7 @@ export function InlineTeamBuilder({
               </button>
               <button 
                 onClick={saveLabelEdit}
-                className="flex-1 py-2 bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] rounded-xl text-[10px] font-bold uppercase tracking-widest transition shadow-lg flex items-center justify-center gap-1"
+                className="flex-1 py-2 bg-[#D4F829] hover:bg-[#c3e626] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest transition shadow-lg flex items-center justify-center gap-1"
               >
                 <Check size={12} /> Save
               </button>

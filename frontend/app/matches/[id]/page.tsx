@@ -548,21 +548,21 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#E5DCC5] flex flex-col items-center justify-center">
-        <Loader2 className="size-10 text-[#151515] animate-spin mb-4" />
-        <h2 className="text-xl font-display font-black text-[#151515] tracking-widest uppercase italic animate-pulse">Loading Match...</h2>
+      <main className="relative min-h-screen overflow-hidden bg-[#05070B] flex flex-col items-center justify-center">
+        <Loader2 className="size-10 text-white animate-spin mb-4" />
+        <h2 className="text-xl font-display font-black text-white tracking-widest uppercase italic animate-pulse">Loading Match...</h2>
       </main>
     );
   }
 
   if (!match) {
     return (
-      <main className="stryk-mobile-shell text-[#151515] bg-[#E5DCC5] min-h-screen flex flex-col justify-center items-center px-6 text-center">
-        <h1 className="text-2xl font-display font-black italic tracking-widest text-[#151515] uppercase">Match Not Found</h1>
-        <p className="text-sm text-[#151515]/60 mt-2 font-semibold">This match may have been cancelled or deleted.</p>
+      <main className="stryk-mobile-shell text-white bg-[#05070B] min-h-screen flex flex-col justify-center items-center px-6 text-center">
+        <h1 className="text-2xl font-display font-black italic tracking-widest text-white uppercase">Match Not Found</h1>
+        <p className="text-sm text-white/60 mt-2 font-semibold">This match may have been cancelled or deleted.</p>
         <button 
           onClick={() => router.push("/matches")}
-          className="mt-8 px-6 py-3 rounded-2xl bg-[#151515] text-[#E5DCC5] text-[11px] font-black uppercase tracking-[0.2em] shadow-lg hover:bg-[#2A2824] transition-all"
+          className="mt-8 px-6 py-3 rounded-2xl bg-white text-black text-[11px] font-black uppercase tracking-[0.2em] shadow-lg hover:bg-[#2A2824] transition-all"
         >
           Back to Matches
         </button>
@@ -606,7 +606,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#E5DCC5] bg-[url('/create_card_bg.webp')] bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-[#151515]">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#05070B] bg-[url('/create_card_bg.webp')] bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-white">
       <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.22),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.62),transparent)]" />
 
       <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full overflow-y-auto">
@@ -623,26 +623,26 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <ArrowLeft size={18} color="#E5DCC5" />
             </button>
             {/* Placeholder for layout balance if needed, or just let justify-between handle it */}
-            <div className="rounded-full border border-[#151515]/10 bg-white/40 px-3 py-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-[#151515]/65">
+            <div className="rounded-full border border-[#151515]/10 bg-white/40 px-3 py-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-white/65">
               {match.format}
             </div>
           </div>
           
           <div className="mt-2 flex flex-col items-center text-center">
-            <div className="mb-2 flex items-center gap-2 rounded-full bg-[#D4F829] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-[#151515] shadow-[0_10px_24px_rgba(212,248,41,0.24),inset_0_1px_0_rgba(255,255,255,0.45)]">
+            <div className="mb-2 flex items-center gap-2 rounded-full bg-[#D4F829] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-white shadow-[0_10px_24px_rgba(212,248,41,0.24),inset_0_1px_0_rgba(255,255,255,0.45)]">
               <span className="size-1.5 rounded-full bg-[#151515]" />
               {statusLabel}
             </div>
-            <h1 className="font-display font-black italic uppercase text-[38px] leading-[0.9] tracking-tight text-[#151515] drop-shadow-sm px-2">
+            <h1 className="font-display font-black italic uppercase text-[38px] leading-[0.9] tracking-tight text-white drop-shadow-sm px-2">
               {match.title}
             </h1>
             
             <div className="mt-4 flex max-w-[340px] flex-col items-center gap-2">
-              <div className="flex items-center gap-1.5 text-[13px] font-extrabold text-[#151515]/82">
+              <div className="flex items-center gap-1.5 text-[13px] font-extrabold text-white/82">
                 <MapPin size={13} className="text-[#A28B52]" />
                 <span>{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
               </div>
-              <div className="flex items-center gap-2 text-[11px] font-bold text-[#151515]/60">
+              <div className="flex items-center gap-2 text-[11px] font-bold text-white/60">
                 <span>{formatDateTime(match.matchDate)}</span>
               </div>
             </div>
@@ -670,7 +670,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <button 
                 onClick={handleLeaveMatch}
                 disabled={match.status !== "open"}
-                className="flex-1 h-12 rounded-[1.25rem] border-2 border-[#151515] text-[#151515] bg-transparent text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-[#151515]/5"
+                className="flex-1 h-12 rounded-[1.25rem] border-2 border-[#151515] text-white bg-transparent text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-[#151515]/5"
               >
                 Leave Match
               </button>
@@ -678,7 +678,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
             {isHost && match.status === "open" && (
               <button 
                 onClick={handleCloseMatch}
-                className="flex-1 h-12 rounded-[1.25rem] bg-[#D4F829] text-[#151515] border border-[#151515]/10 text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.25)] transition hover:-translate-y-0.5 active:translate-y-0"
+                className="flex-1 h-12 rounded-[1.25rem] bg-[#D4F829] text-white border border-[#151515]/10 text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.25)] transition hover:-translate-y-0.5 active:translate-y-0"
               >
                 Lock Squads
               </button>
@@ -695,7 +695,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 });
               }
             }}
-            className="w-12 h-12 shrink-0 rounded-[1.25rem] border-2 border-[#151515] text-[#151515] flex items-center justify-center hover:bg-[#151515] hover:text-[#E5DCC5] transition shadow-sm"
+            className="w-12 h-12 shrink-0 rounded-[1.25rem] border-2 border-[#151515] text-white flex items-center justify-center hover:bg-[#151515] hover:text-[#E5DCC5] transition shadow-sm"
           >
             <Share2 size={16} />
           </button>
@@ -748,7 +748,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   <p className="text-white/50 text-xs">You haven't submitted your match stats yet.</p>
                   <button
                     onClick={() => setShowStatSubmission(true)}
-                    className="w-full h-12 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center shadow-lg"
+                    className="w-full h-12 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-white text-[11px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center shadow-lg"
                   >
                     Submit My Stats
                   </button>
@@ -761,7 +761,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <div>
                 <h3 className="text-white text-xs font-bold mb-3 uppercase tracking-widest text-white/50 flex items-center justify-between">
                   Pending Peer Reviews
-                  <span className="bg-[#D4F829] text-[#151515] px-2 py-0.5 rounded-full text-[9px] font-black">
+                  <span className="bg-[#D4F829] text-white px-2 py-0.5 rounded-full text-[9px] font-black">
                     {pendingVerifications.length}
                   </span>
                 </h3>
@@ -807,7 +807,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                       <div className="grid grid-cols-2 gap-2 mt-1">
                         <button
                           onClick={() => handleVerifyStats(v.userId, true)}
-                          className="h-10 rounded-xl bg-white/10 hover:bg-[#D4F829] hover:text-[#151515] text-white text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 flex items-center justify-center"
+                          className="h-10 rounded-xl bg-white/10 hover:bg-[#D4F829] hover:text-white text-white text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 flex items-center justify-center"
                         >
                           Verify
                         </button>
@@ -854,10 +854,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   <button
                     onClick={handleCheckIn}
                     disabled={actionLoading}
-                    className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.2),inset_0_1px_0_rgba(255,255,255,0.6)] disabled:opacity-50"
+                    className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-white text-[11px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.2),inset_0_1px_0_rgba(255,255,255,0.6)] disabled:opacity-50"
                   >
                     {actionLoading ? (
-                      <Loader2 className="size-4 animate-spin text-[#151515]" />
+                      <Loader2 className="size-4 animate-spin text-white" />
                     ) : (
                       <>
                         <CheckCircle2 size={16} strokeWidth={2.5} />
@@ -880,7 +880,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     <button
                       onClick={handleCloseMatch}
                       disabled={actionLoading}
-                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-white text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
                     >
                       <Lock size={13} strokeWidth={2.5} />
                       Lock Squads & Open Stat Submission
@@ -893,7 +893,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     <button
                       onClick={handleCompleteMatch}
                       disabled={actionLoading}
-                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-[0_0_20px_rgba(212,248,41,0.4)]"
+                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-white text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-[0_0_20px_rgba(212,248,41,0.4)]"
                     >
                       <Trophy size={13} strokeWidth={2.5} />
                       Complete Match & Record Stats
@@ -923,10 +923,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <button
                 onClick={handleJoinMatch}
                 disabled={actionLoading || participants.length >= match.maxPlayers}
-                className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[12px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.6)]"
+                className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-white text-[12px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.6)]"
               >
                 {actionLoading ? (
-                  <Loader2 className="size-5 animate-spin text-[#151515]" />
+                  <Loader2 className="size-5 animate-spin text-white" />
                 ) : (
                   <>
                     <UserPlus size={16} strokeWidth={2.5} />
@@ -953,11 +953,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
               initial={{ opacity: 0, y: 100, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 100, scale: 0.95 }}
-              className="relative w-full max-w-md bg-[#E5DCC5] border border-[#151515]/10 rounded-3xl p-6 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+              className="relative w-full max-w-md bg-[#05070B] border border-[#151515]/10 rounded-3xl p-6 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
             >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-display text-xl uppercase italic tracking-wide text-[#151515]">Invite Friends</h3>
-                <button onClick={() => setShowInviteModal(false)} className="p-2 rounded-full hover:bg-[#151515]/5 text-[#151515]/50 hover:text-[#151515] transition">
+                <h3 className="font-display text-xl uppercase italic tracking-wide text-white">Invite Friends</h3>
+                <button onClick={() => setShowInviteModal(false)} className="p-2 rounded-full hover:bg-[#151515]/5 text-white/50 hover:text-white transition">
                   <X size={18} />
                 </button>
               </div>
@@ -966,21 +966,21 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 {friendsLoading ? (
                   <div className="flex justify-center py-10"><Loader2 className="animate-spin text-[#A28B52]" /></div>
                 ) : friends.length === 0 ? (
-                  <div className="text-center py-10 text-[#151515]/40 text-sm">No friends found. Add some friends first!</div>
+                  <div className="text-center py-10 text-white/40 text-sm">No friends found. Add some friends first!</div>
                 ) : (
                   friends.map((friend) => (
                     <div key={friend.id} className="flex items-center justify-between p-3 rounded-2xl bg-white/40 border border-[#151515]/5 shadow-sm">
                       <div className="flex items-center gap-3">
                         <img src={friend.avatar} alt={friend.name} className="w-10 h-10 rounded-full object-cover border border-[#151515]/10" />
                         <div>
-                          <div className="text-sm font-bold text-[#151515]">{friend.name}</div>
-                          <div className="text-[10px] text-[#151515]/50">@{friend.handle}</div>
+                          <div className="text-sm font-bold text-white">{friend.name}</div>
+                          <div className="text-[10px] text-white/50">@{friend.handle}</div>
                         </div>
                       </div>
                       <button
                         onClick={() => handleInviteFriend(friend.id)}
                         disabled={invitingFriendId === friend.id}
-                        className="px-4 py-2 rounded-xl bg-[#D4F829] text-[#151515] hover:bg-[#c3e626] text-[10px] font-bold uppercase tracking-widest transition disabled:opacity-50 flex items-center gap-2 shadow-sm"
+                        className="px-4 py-2 rounded-xl bg-[#D4F829] text-white hover:bg-[#c3e626] text-[10px] font-bold uppercase tracking-widest transition disabled:opacity-50 flex items-center gap-2 shadow-sm"
                       >
                         {invitingFriendId === friend.id ? <Loader2 size={12} className="animate-spin" /> : <Mail size={12} />}
                         {invitingFriendId === friend.id ? "SENDING" : "INVITE"}
@@ -1030,7 +1030,7 @@ function MatchMetric({ icon, label, value }: { icon: ReactNode; label: string; v
         {icon}
         <span className="truncate text-[8px] font-black uppercase tracking-[0.2em]">{label}</span>
       </div>
-      <div className="truncate font-display text-[21px] font-black uppercase italic leading-none tracking-wide text-[#151515]">
+      <div className="truncate font-display text-[21px] font-black uppercase italic leading-none tracking-wide text-white">
         {value}
       </div>
     </div>

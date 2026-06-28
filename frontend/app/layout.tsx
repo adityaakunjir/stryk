@@ -4,6 +4,7 @@ import { AuthProvider } from "@/components/auth-provider";
 import { PlayerProvider } from "@/components/player-context";
 import { RealtimeProvider } from "@/components/realtime-provider";
 import { DraftProvider } from "@/lib/draft-context";
+import { AiCopilotFab } from "@/components/ai-copilot-fab";
 
 export const viewport: Viewport = {
   themeColor: "#05070B",
@@ -45,6 +46,7 @@ export default function RootLayout({
             <DraftProvider>
               {children}
               <RealtimeProvider />
+              <AiCopilotFab />
               <Toaster theme="dark" position="top-center" richColors />
             </DraftProvider>
           </PlayerProvider>

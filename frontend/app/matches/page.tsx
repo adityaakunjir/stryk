@@ -294,7 +294,7 @@ export default function MatchesPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] min-h-[100dvh] text-[#151515]">
+    <main className="stryk-mobile-shell bg-[#05070B] min-h-[100dvh] text-white">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -306,7 +306,7 @@ export default function MatchesPage() {
         <header className="flex items-center justify-between mb-5 relative">
           <button 
             onClick={() => router.push("/home")} 
-            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
             aria-label="Back"
             type="button"
           >
@@ -338,7 +338,7 @@ export default function MatchesPage() {
           <div className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#A28B52] mb-1">
             DISCOVER LOBBIES
           </div>
-          <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none whitespace-nowrap">
+          <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-white drop-shadow-sm leading-none whitespace-nowrap">
             LOBBIES &amp; MATCHES
           </h1>
         </div>
@@ -371,7 +371,7 @@ export default function MatchesPage() {
               onClick={() => setFilter(t)}
               className={`h-[38px] px-6 rounded-full text-[11px] uppercase tracking-widest font-bold transition duration-300 shrink-0 cursor-pointer relative overflow-hidden ${
                 filter === t
-                  ? "bg-gradient-to-b from-[#E5C16C] to-[#C09A45] text-[#151515] font-black shadow-[0_4px_12px_rgba(162,139,82,0.3)]"
+                  ? "bg-gradient-to-b from-[#E5C16C] to-[#C09A45] text-white font-black shadow-[0_4px_12px_rgba(162,139,82,0.3)]"
                   : "bg-[#151515] text-[#EFE8D6] hover:bg-[#2A2824] shadow-[0_4px_10px_rgba(0,0,0,0.15)] border border-[#A28B52]/5"
               }`}
             >
@@ -406,18 +406,18 @@ export default function MatchesPage() {
 
             <div className="relative z-10 flex flex-col items-center">
               <div className="text-[22px] font-display uppercase tracking-tight text-center drop-shadow-sm">
-                <span className="text-[#151515] font-black">NO MATCHES </span>
+                <span className="text-white font-black">NO MATCHES </span>
                 <span className="text-[#A28B52] font-black italic">FOUND</span>
               </div>
             </div>
             
-            <p className="relative z-10 text-[13px] text-[#151515]/70 font-medium text-center mt-2 max-w-[220px] leading-relaxed mb-6">
+            <p className="relative z-10 text-[13px] text-white/70 font-medium text-center mt-2 max-w-[220px] leading-relaxed mb-6">
               Be the first to organize a lobby at your local turf!
             </p>
             
             <button
               onClick={() => setShowCreateModal(true)}
-              className="relative z-10 h-[46px] px-8 rounded-full bg-[#D4F829] text-[#151515] text-[12px] uppercase font-black tracking-[0.15em] hover:bg-[#cbf026] transition shadow-[0_4px_14px_rgba(212,248,41,0.4)]"
+              className="relative z-10 h-[46px] px-8 rounded-full bg-[#D4F829] text-white text-[12px] uppercase font-black tracking-[0.15em] hover:bg-[#cbf026] transition shadow-[0_4px_14px_rgba(212,248,41,0.4)]"
             >
               Organize Match
             </button>
@@ -515,7 +515,7 @@ export default function MatchesPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => router.push(`/matches/${match.id}`)}
-                          className="flex-[2] h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[11px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
+                          className="flex-[2] h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-white text-[11px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
                           type="button"
                         >
                           ENTER LOBBY
@@ -552,12 +552,12 @@ export default function MatchesPage() {
                           }
                         }}
                         disabled={joiningId !== null}
-                        className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
+                        className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-white text-[13px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
                         type="button"
                       >
                         {joiningId === match.id ? (
                           <>
-                            <Loader2 className="size-4 animate-spin text-[#151515]" />
+                            <Loader2 className="size-4 animate-spin text-white" />
                             JOINING...
                           </>
                         ) : (
@@ -730,7 +730,7 @@ export default function MatchesPage() {
               <button
                 type="submit"
                 disabled={createLoading || !createTitle.trim() || !createLocation.trim() || !createDateTime}
-                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+                className="w-full h-[54px] rounded-full bg-[#D4F829] text-white font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
               >
                 {createLoading ? (
                   <>
@@ -801,7 +801,7 @@ export default function MatchesPage() {
               <button
                 type="submit"
                 disabled={joinCodeLoading || !joinCode.trim()}
-                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+                className="w-full h-[54px] rounded-full bg-[#D4F829] text-white font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
               >
                 {joinCodeLoading ? (
                   <>
@@ -861,7 +861,7 @@ export default function MatchesPage() {
               <button
                 type="submit"
                 disabled={joiningId !== null || !privateJoinPassword.trim()}
-                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+                className="w-full h-[54px] rounded-full bg-[#D4F829] text-white font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
               >
                 {joiningId ? (
                   <>

@@ -133,7 +133,7 @@ export default function HistoryPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => router.push("/matches")}
-                className="w-full h-14 rounded-2xl bg-[#D4F829] text-black font-display text-[14px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_30px_-5px_rgba(212,248,41,0.4)]"
+                className="w-full h-14 rounded-2xl bg-[#D4F829] text-white font-display text-[14px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_30px_-5px_rgba(212,248,41,0.4)]"
               >
                 <Play size={16} fill="currentColor" /> FIND MATCH
               </motion.button>

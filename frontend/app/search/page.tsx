@@ -86,7 +86,7 @@ export default function SearchPage() {
   const activeFiltersCount = [query, position, playStyle].filter(Boolean).length;
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] min-h-[100dvh] text-[#151515]">
+    <main className="stryk-mobile-shell bg-[#05070B] min-h-[100dvh] text-white">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -99,7 +99,7 @@ export default function SearchPage() {
         <div className="flex items-center justify-between mb-1 relative z-20">
           <button 
             onClick={() => router.push("/home")} 
-            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
             aria-label="Back"
             type="button"
           >
@@ -108,7 +108,7 @@ export default function SearchPage() {
         </div>
 
         {/* Title */}
-        <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none text-center mb-4 mt-2 relative z-10">
+        <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-white drop-shadow-sm leading-none text-center mb-4 mt-2 relative z-10">
           PLAYER SEARCH
         </h1>
 
@@ -198,13 +198,13 @@ export default function SearchPage() {
         <div className="flex-1 flex flex-col">
           {isSearching ? (
             <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent relative overflow-hidden">
-              <Loader2 className="size-12 text-[#151515] animate-spin mb-6" />
-              <div className="text-xs text-[#151515]/70 uppercase tracking-widest font-bold">Searching Database...</div>
+              <Loader2 className="size-12 text-white animate-spin mb-6" />
+              <div className="text-xs text-white/70 uppercase tracking-widest font-bold">Searching Database...</div>
             </div>
           ) : searchError ? (
             <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent relative overflow-hidden">
               <div className="text-lg text-red-600 mb-2 font-display italic font-black uppercase">Search failed</div>
-              <div className="text-xs text-[#151515]/70 text-center font-medium">Check your connection and try again</div>
+              <div className="text-xs text-white/70 text-center font-medium">Check your connection and try again</div>
             </div>
           ) : hasSearched && results.length === 0 ? (
             /* EMPTY STATE - EXACTLY MATCHING REFERENCE */
@@ -226,10 +226,10 @@ export default function SearchPage() {
                 <Search size={40} className="text-[#A28B52] relative z-10" strokeWidth={1.5} />
               </div>
 
-              <h2 className="font-display italic font-black text-2xl text-[#151515] uppercase tracking-wide mb-3 text-center">
+              <h2 className="font-display italic font-black text-2xl text-white uppercase tracking-wide mb-3 text-center">
                 NO PLAYERS FOUND
               </h2>
-              <p className="text-xs text-[#151515]/70 text-center max-w-[200px] leading-relaxed font-medium">
+              <p className="text-xs text-white/70 text-center max-w-[200px] leading-relaxed font-medium">
                 Try adjusting your search or filters to find players.
               </p>
             </div>
@@ -237,7 +237,7 @@ export default function SearchPage() {
             /* Initial Empty State */
             <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent border border-[#151515]/10 relative overflow-hidden">
                <Search size={32} className="text-[#A28B52] mb-4" strokeWidth={1.5} />
-               <div className="text-sm text-[#151515]/70 font-medium text-center">Search for players to build your squad</div>
+               <div className="text-sm text-white/70 font-medium text-center">Search for players to build your squad</div>
             </div>
           ) : (
             <div className="space-y-4 pb-8">

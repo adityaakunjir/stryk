@@ -46,7 +46,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] text-[#151515] min-h-screen relative overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#05070B] text-white min-h-screen relative overflow-hidden">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
@@ -58,7 +58,7 @@ export default function SettingsPage() {
         <header className="flex items-center justify-between mb-3 shrink-0">
           <button
             onClick={() => router.push("/home")}
-            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-[#151515] flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:bg-[#151515]/10 transition backdrop-blur-md shadow-sm relative z-10"
             aria-label="Back to home"
             type="button"
           >
@@ -68,7 +68,7 @@ export default function SettingsPage() {
 
         {/* Title */}
         <div className="text-center mt-4 mb-5 shrink-0">
-          <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none">
+          <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-white drop-shadow-sm leading-none">
             SETTINGS
           </h1>
           <div className="w-8 h-[2px] bg-[#A28B52] mx-auto mt-3" />
@@ -87,7 +87,7 @@ export default function SettingsPage() {
             </div>
             {/* Hexagon Rating Badge */}
             <div 
-              className="absolute -bottom-1 -right-1 bg-gradient-to-br from-[#F4E3B5] via-[#C89B3C] to-[#826021] text-[#151515] font-display font-extrabold text-[10px] w-[22px] h-[22px] flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.8)] z-20"
+              className="absolute -bottom-1 -right-1 bg-gradient-to-br from-[#F4E3B5] via-[#C89B3C] to-[#826021] text-white font-display font-extrabold text-[10px] w-[22px] h-[22px] flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.8)] z-20"
               style={{
                 clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
               }}
@@ -152,13 +152,13 @@ export default function SettingsPage() {
           <button 
             onClick={handleSignOut}
             disabled={isSigningOut}
-            className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center gap-2 transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)] disabled:opacity-50"
+            className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-white text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center gap-2 transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)] disabled:opacity-50"
             type="button"
           >
             {isSigningOut ? (
-              <Loader2 className="animate-spin text-[#151515]" size={18} />
+              <Loader2 className="animate-spin text-white" size={18} />
             ) : (
-              <LogOut size={18} className="text-[#151515]" />
+              <LogOut size={18} className="text-white" />
             )}
             SIGN OUT
           </button>
