@@ -100,75 +100,6 @@ function JourneyStepper() {
   );
 }
 
-function FootballerArt({ active = false, color = "#C6FF00", styleName = "Speedster" }: { active?: boolean, color?: string, styleName?: PlayStyleType }) {
-  // Base / Default coordinates
-  let torso = "-translate-x-1/2 -rotate-6";
-  let leftArm = "left-[18%] top-24 -rotate-[28deg]";
-  let rightArm = "right-[17%] top-16 rotate-[24deg]";
-  let leftLeg = "bottom-2 left-[27%] rotate-[20deg]";
-  let rightLeg = "bottom-0 right-[31%] -rotate-[18deg]";
-  let ball = "bottom-3 left-[16%] size-12";
-
-  if (styleName === "Speedster") {
-    // Leaning forward, running hard
-    torso = "-translate-x-1/2 rotate-[15deg]";
-    leftArm = "left-[10%] top-20 -rotate-[45deg]"; // driving back
-    rightArm = "right-[20%] top-12 rotate-[45deg]"; // driving forward
-    leftLeg = "bottom-6 left-[20%] -rotate-[30deg]"; // knee up
-    rightLeg = "bottom-0 right-[25%] rotate-[30deg]"; // planted
-    ball = "bottom-2 right-[10%] size-12"; // pushed ahead
-  } else if (styleName === "Playmaker") {
-    // Upright, passing vision
-    torso = "-translate-x-1/2 rotate-0";
-    leftArm = "left-[5%] top-16 -rotate-[10deg]"; // pointing/balancing
-    rightArm = "right-[5%] top-16 rotate-[10deg]";
-    leftLeg = "bottom-2 left-[25%] rotate-[15deg]";
-    rightLeg = "bottom-0 right-[25%] -rotate-[15deg]";
-    ball = "bottom-2 left-[35%] size-12"; // at feet
-  } else if (styleName === "Poacher") {
-    // Winding up for a shot
-    torso = "-translate-x-1/2 -rotate-[10deg]";
-    leftArm = "left-[15%] top-20 -rotate-[30deg]";
-    rightArm = "right-[15%] top-16 rotate-[40deg]";
-    leftLeg = "bottom-0 left-[25%] -rotate-[10deg]"; // planted
-    rightLeg = "bottom-6 right-[15%] rotate-[60deg]"; // leg cocked back
-    ball = "bottom-2 left-[15%] size-12"; // ready to strike
-  } else if (styleName === "Box-to-Box") {
-    // Wide stance, shielding/tackling
-    torso = "-translate-x-1/2 rotate-[5deg]";
-    leftArm = "left-[5%] top-20 -rotate-[45deg]";
-    rightArm = "right-[5%] top-20 rotate-[45deg]";
-    leftLeg = "bottom-0 left-[15%] rotate-[40deg]";
-    rightLeg = "bottom-0 right-[15%] -rotate-[40deg]";
-    ball = "bottom-0 left-[40%] size-12";
-  }
-
-  return (
-    <motion.div 
-      className="absolute inset-x-5 top-7 h-44 pointer-events-none"
-      animate={{ y: active ? [0, -8, 0] : 0 }}
-      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-    >
-      <div
-        className="absolute left-1/2 top-1 size-16 -translate-x-1/2 rounded-full bg-gradient-to-br from-zinc-200 via-zinc-700 to-black transition-shadow duration-500"
-        style={{ boxShadow: active ? `0 0 0 5px ${color}25` : "none" }}
-      />
-      <div 
-        className={cn("absolute left-1/2 top-14 h-24 w-20 rounded-t-[2.5rem] bg-gradient-to-br from-[#151515] via-[#151515] transition-all duration-500", torso)} 
-        style={{ boxShadow: `inset 0 0 0 1px ${color}20`, backgroundColor: `${color}10` }}
-      />
-      <div className={cn("absolute h-4 w-28 rounded-full transition-all duration-500", leftArm)} style={{ backgroundColor: active ? `${color}70` : `${color}40` }} />
-      <div className={cn("absolute h-4 w-28 rounded-full transition-all duration-500", rightArm)} style={{ backgroundColor: active ? `${color}50` : `${color}30` }} />
-      <div className={cn("absolute h-20 w-5 rounded-full bg-zinc-900 transition-all duration-500", leftLeg)} />
-      <div className={cn("absolute h-24 w-5 rounded-full bg-zinc-900 transition-all duration-500", rightLeg)} />
-      <div 
-        className={cn("absolute rounded-full border-4 border-white/20 bg-black transition-all duration-500", ball)} 
-        style={{ boxShadow: active ? `0 0 24px ${color}40` : "none" }}
-      />
-    </motion.div>
-  );
-}
-
 export default function PlayStylePage() {
   const router = useRouter();
   const { playerData, updatePlayerData } = usePlayer();
@@ -387,7 +318,18 @@ export default function PlayStylePage() {
                     >
                       <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_50%_22%,var(--tw-gradient-from),transparent_50%)]", style.tone)} />
                       
-                      <FootballerArt active={isActive} color={style.color} styleName={style.title} />
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none pb-20">
+                        <motion.div
+                          animate={{
+                            scale: isActive ? [1, 1.05, 1] : 1,
+                            opacity: isActive ? 1 : 0.2,
+                            filter: isActive ? `drop-shadow(0 0 30px ${style.color})` : "none"
+                          }}
+                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        >
+                          <Icon className="w-32 h-32" style={{ color: style.color }} strokeWidth={1} />
+                        </motion.div>
+                      </div>
                       
                       <div className="absolute bottom-0 left-0 right-0 p-6 text-center z-10 bg-gradient-to-t from-[#151515] via-[#151515]/80 to-transparent pt-12">
                         <motion.div

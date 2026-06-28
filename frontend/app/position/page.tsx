@@ -157,10 +157,7 @@ export default function PositionPage() {
   const suggestedSecondaries = smartSecondary[selectedPosition] || [];
 
   return (
-    <main className="stryk-mobile-shell text-white relative overflow-hidden min-h-[100dvh] flex flex-col">
-      {/* Premium Marble Background */}
-      <img src="/create_card_bg.webp" className="absolute inset-0 z-0 h-full w-full object-cover opacity-90" alt="" />
-
+    <main className="stryk-mobile-shell bg-[#151515] text-white relative overflow-hidden min-h-[100dvh] flex flex-col">
       {/* Custom Animated Success Toast */}
       <AnimatePresence>
         {showToast && (
