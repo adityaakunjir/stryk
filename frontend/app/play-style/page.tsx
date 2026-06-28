@@ -368,14 +368,14 @@ export default function PlayStylePage() {
 
   // --- NORMAL PAGE RENDER ---
   return (
-    <main className="stryk-mobile-shell bg-[#151515] overflow-hidden text-white">
+    <main className="bg-[#151515] text-white relative min-h-[100dvh] flex flex-col">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
         
       />
 
-      <section data-scroll-panel className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col px-5 pb-8 pt-6 sm:px-8 lg:px-10 overflow-y-auto min-h-0"
+      <section className="relative z-10 mx-auto flex w-full max-w-5xl flex-col px-5 pb-8 pt-6 sm:px-8 lg:px-10 flex-1"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <motion.header 

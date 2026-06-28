@@ -157,7 +157,7 @@ export default function PositionPage() {
   const suggestedSecondaries = smartSecondary[selectedPosition] || [];
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] text-white relative overflow-hidden min-h-[100dvh] flex flex-col">
+    <main className="bg-[#151515] text-white relative min-h-[100dvh] flex flex-col">
       {/* Custom Animated Success Toast */}
       <AnimatePresence>
         {showToast && (
@@ -178,7 +178,7 @@ export default function PositionPage() {
         )}
       </AnimatePresence>
 
-      <section data-scroll-panel className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col px-5 pb-4 pt-6 sm:px-8 lg:px-10 overflow-y-auto min-h-0"
+      <section className="relative z-10 mx-auto flex w-full max-w-5xl flex-col px-5 pb-4 pt-6 sm:px-8 lg:px-10 flex-1"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <motion.header 
