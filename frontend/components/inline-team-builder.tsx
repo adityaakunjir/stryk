@@ -238,7 +238,7 @@ function DraggablePlayerToken({
       {/* Outer Border Layer */}
       <div 
         className={`absolute inset-0 opacity-90 group-hover:opacity-100 transition-opacity ${
-          state.team === "A" ? "bg-gradient-to-br from-[#F8FAFC] via-[#CBD5E1] to-[#E2E8F0]" 
+          state.team === "A" ? "bg-gradient-to-br from-[#FFFFFF] via-[#94A3B8] to-[#475569]" 
                              : "bg-gradient-to-br from-[#EAF7AF] via-[#A28B52] to-[#D4F829]"
         }`}
         style={{ clipPath: clipPathShape }}
@@ -247,38 +247,38 @@ function DraggablePlayerToken({
       {/* Inner Background Layer */}
       <div 
         className={`absolute inset-[1.5px] ${
-          state.team === "A" ? "bg-gradient-to-b from-[#FFFFFF] to-[#F1F5F9]" 
+          state.team === "A" ? "bg-gradient-to-b from-[#1C222C] to-[#0D1015]" 
                              : "bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
         }`}
         style={{ clipPath: clipPathShape }}
       />
-
+      
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center w-full h-full pt-1.5 md:pt-2">
         {/* Top Left Stats */}
         <div className="absolute top-1 md:top-1.5 left-1 md:left-1.5 flex flex-col items-center justify-center">
-           <span className={`font-black text-[11px] md:text-[13px] leading-none drop-shadow-md tracking-tighter ${state.team === "A" ? "text-slate-800" : "text-white"}`}>
+           <span className="font-black text-[11px] md:text-[13px] leading-none drop-shadow-md tracking-tighter text-white">
               {player.overall}
            </span>
-           <span className={`font-black uppercase text-[6px] md:text-[7px] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"} ${state.team === "A" ? "text-slate-500" : "text-[#D4F829]"}`}>
+           <span className={`font-black uppercase text-[6px] md:text-[7px] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"} ${state.team === "A" ? "text-slate-300" : "text-[#D4F829]"}`}>
               {label}
            </span>
         </div>
         
         {/* Avatar */}
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 glass-panel" : "border-[#D4F829]/40 glass-panel"}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-400/50 glass-panel" : "border-[#D4F829]/40 glass-panel"}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
-            <div className={`flex h-full w-full items-center justify-center text-sm font-bold ${state.team === "A" ? "text-slate-400" : "text-white/50"}`}>
+            <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
               {player.username.charAt(0).toUpperCase()}
             </div>
           )}
-          <div className={`absolute inset-x-0 bottom-0 h-1/2 ${state.team === "A" ? "bg-gradient-to-t from-slate-200/80 to-transparent" : "bg-gradient-to-t from-black/80 to-transparent"}`} />
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
         </div>
         
         {/* Separator */}
-        <div className={`w-[70%] h-[1px] mt-1.5 md:mt-2 ${state.team === "A" ? "bg-gradient-to-r from-transparent via-slate-300 to-transparent" : "bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent"}`} />
+        <div className={`w-[70%] h-[1px] mt-1.5 md:mt-2 ${state.team === "A" ? "bg-gradient-to-r from-transparent via-slate-500/50 to-transparent" : "bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent"}`} />
         
         {/* Name */}
         <div
@@ -288,7 +288,7 @@ function DraggablePlayerToken({
             onLabelClick(player);
           }}
         >
-          <span className={`truncate text-center font-black tracking-tight transition-colors drop-shadow-md ${nameClass} ${state.team === "A" ? "text-slate-700 group-hover:text-slate-900" : "text-white/90 group-hover:text-white"}`}>
+          <span className={`truncate text-center font-black tracking-tight transition-colors drop-shadow-md text-white/90 group-hover:text-white ${nameClass}`}>
             {player.username}
           </span>
         </div>

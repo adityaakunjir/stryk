@@ -661,27 +661,71 @@ export default function MatchDetailsPage({ params }: PageProps) {
             {!isJoined ? (
               <button 
                 onClick={handleJoinMatch}
-                disabled={playerFill >= 100}
-                className="flex-1 h-12 rounded-[1.25rem] glass-panel text-[#D4F829] text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(0,0,0,0.15)] disabled:opacity-50 disabled:cursor-not-allowed transition hover:-translate-y-0.5 active:translate-y-0"
+                disabled={actionLoading || playerFill >= 100}
+                className={`flex-1 h-12 rounded-[1.25rem] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 transition duration-200 text-[11px] ${
+                  actionLoading || playerFill >= 100
+                    ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                    : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
+                }`}
               >
                 Join Match
               </button>
             ) : (
-              <button 
-                onClick={handleLeaveMatch}
-                disabled={match.status !== "open"}
-                className="flex-1 h-12 rounded-[1.25rem] border-2 border-[#151515] text-white bg-transparent text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition hover:glass-panel"
-              >
-                Leave Match
-              </button>
-            )}
-            {isHost && match.status === "open" && (
-              <button 
-                onClick={handleCloseMatch}
-                className="flex-1 h-12 rounded-[1.25rem] bg-[#D4F829] text-[#151515] border border-[#151515]/10 text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.25)] transition hover:-translate-y-0.5 active:translate-y-0"
-              >
-                Lock Squads
-              </button>
+              <>
+                {/* Host specific actions */}
+                {isHost ? (
+                  <>
+                    {match.status === "open" && (
+                      <button 
+                        onClick={handleCloseMatch}
+                        disabled={actionLoading}
+                        className={`flex-[2] h-12 rounded-[1.25rem] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 transition duration-200 text-[11px] ${
+                          actionLoading
+                            ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                            : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
+                        }`}
+                      >
+                        Lock Squads
+                      </button>
+                    )}
+                    {match.status === "closed" && (
+                      <button 
+                        onClick={handleCompleteMatch}
+                        disabled={actionLoading}
+                        className={`flex-[2] h-12 rounded-[1.25rem] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 transition duration-200 text-[11px] ${
+                          actionLoading
+                            ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                            : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
+                        }`}
+                      >
+                        Complete Match
+                      </button>
+                    )}
+                    
+                    <button 
+                      onClick={handleLeaveMatch}
+                      disabled={actionLoading}
+                      title="Leave Match"
+                      className="w-12 h-12 shrink-0 rounded-[1.25rem] border border-white/10 bg-white/5 text-white hover:bg-white/10 hover:border-white/20 transition flex items-center justify-center cursor-pointer"
+                    >
+                      <LogOut size={16} className="text-red-400" />
+                    </button>
+                  </>
+                ) : (
+                  /* Participant leave button */
+                  <button 
+                    onClick={handleLeaveMatch}
+                    disabled={actionLoading || match.status !== "open"}
+                    className={`flex-1 h-12 rounded-[1.25rem] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 transition duration-200 text-[11px] ${
+                      actionLoading || match.status !== "open"
+                        ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                        : "border border-white/10 bg-white/5 text-white hover:bg-white/10 hover:border-white/20 cursor-pointer"
+                    }`}
+                  >
+                    Leave Match
+                  </button>
+                )}
+              </>
             )}
           </div>
           
@@ -690,12 +734,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
               if (navigator.share) {
                 navigator.share({
                   title: `Join ${match.title}`,
-                  text: `Join this 5v5 match at ${match.location}!`,
+                  text: `Join this ${match.format} match at ${match.location}!`,
                   url: window.location.href,
                 });
               }
             }}
-            className="w-12 h-12 shrink-0 rounded-[1.25rem] border-2 border-[#151515] text-white flex items-center justify-center hover:glass-panel hover:text-[#E5DCC5] transition shadow-sm"
+            className="w-12 h-12 shrink-0 rounded-[1.25rem] border border-white/10 bg-white/5 text-white flex items-center justify-center hover:bg-white/10 hover:border-white/20 hover:text-white transition cursor-pointer"
           >
             <Share2 size={16} />
           </button>
