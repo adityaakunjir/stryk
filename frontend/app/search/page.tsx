@@ -118,7 +118,7 @@ export default function SearchPage() {
   const activeFiltersCount = [query, position, playStyle].filter(Boolean).length;
 
   return (
-    <main className="stryk-mobile-shell bg-[#0a0a0a] min-h-[100dvh] text-white">
+    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
 
       <div className="relative h-full flex flex-col px-5 pt-3 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         

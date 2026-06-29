@@ -48,7 +48,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <main className="stryk-mobile-shell bg-[#0a0a0a] text-white min-h-screen relative overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#151515] text-white min-h-screen relative overflow-hidden">
       {/* Background grain/texture if needed, kept dark to match design */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-40"

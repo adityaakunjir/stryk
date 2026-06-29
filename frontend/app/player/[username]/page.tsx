@@ -152,7 +152,7 @@ export default async function PublicPlayerPage({ params }: Props) {
   }
 
   return (
-    <main className="stryk-mobile-shell bg-[#0a0a0a] text-white min-h-screen relative overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#151515] text-white min-h-screen relative overflow-hidden">
 
       <div className="relative h-full flex flex-col px-6 pt-8 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
