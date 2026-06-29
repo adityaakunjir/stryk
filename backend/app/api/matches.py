@@ -914,6 +914,7 @@ async def save_teams(
     }
 
 class UpdatePositionRequest(BaseModel):
+    userId: Optional[str] = None
     x: Optional[float] = None
     y: Optional[float] = None
     team: Optional[str] = None
@@ -925,23 +926,34 @@ async def update_position(
     user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_session)
 ):
-    """Allow any participant to update their own position on the pitch."""
+    """Allow any participant to update their own position on the pitch, and host to update anyone's."""
     clerk_id = user.get("sub")
     db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
     db_user = db_user_result.scalars().first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Find the user's MatchPlayer record
+    target_user_id = payload.userId or db_user.id
+    
+    match_result = await session.execute(select(Match).where(Match.id == match_id))
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+        
+    is_host = (match.hostId == db_user.id)
+    if not is_host and target_user_id != db_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to update another player's position")
+
+    # Find the target user's MatchPlayer record
     player_result = await session.execute(
         select(MatchPlayer).where(
             MatchPlayer.matchId == match_id,
-            MatchPlayer.userId == db_user.id
+            MatchPlayer.userId == target_user_id
         )
     )
     player = player_result.scalars().first()
     if not player:
-        raise HTTPException(status_code=404, detail="You are not a participant in this match")
+        raise HTTPException(status_code=404, detail="Participant not found")
 
     # Normalize team value
     if payload.team in ("Team A", "A"):

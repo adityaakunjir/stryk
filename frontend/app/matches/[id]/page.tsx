@@ -411,13 +411,13 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
-  const handleUpdatePosition = async (x: number | null, y: number | null, team: "Team A" | "Team B" | null) => {
+  const handleUpdatePosition = async (userId: string, x: number | null, y: number | null, team: "Team A" | "Team B" | null) => {
     try {
       const teamCode = team === "Team A" ? "A" : team === "Team B" ? "B" : null;
       await fetch(`/api/matches/${matchId}/update-position`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ x, y, team: teamCode })
+        body: JSON.stringify({ userId, x, y, team: teamCode })
       });
     } catch (err) {
       console.error("Failed to update position:", err);

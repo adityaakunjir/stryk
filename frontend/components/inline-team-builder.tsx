@@ -48,7 +48,7 @@ interface InlineTeamBuilderProps {
   isHost: boolean;
   currentUserId: string | null;
   onJoinTeam: (team: "Team A" | "Team B" | null) => Promise<void>;
-  onUpdatePosition?: (x: number | null, y: number | null, team: "Team A" | "Team B" | null) => Promise<void>;
+  onUpdatePosition?: (userId: string, x: number | null, y: number | null, team: "Team A" | "Team B" | null) => Promise<void>;
   onUpdateTeamNames?: (teamAName?: string, teamBName?: string) => Promise<void>;
   teamAName?: string;
   teamBName?: string;
@@ -257,16 +257,16 @@ function DraggablePlayerToken({
       <div className="relative z-10 flex flex-col items-center w-full h-full pt-1.5 md:pt-2">
         {/* Top Left Stats */}
         <div className="absolute top-1 md:top-1.5 left-1 md:left-1.5 flex flex-col items-center justify-center">
-           <span className="font-black text-[11px] md:text-[13px] leading-none drop-shadow-md tracking-tighter text-white">
+           <span className={`font-black text-[11px] md:text-[13px] leading-none tracking-tighter ${state.team === "A" ? "text-slate-900 drop-shadow-none" : "text-white drop-shadow-md"}`}>
               {player.overall}
            </span>
-           <span className={`font-black uppercase text-[6px] md:text-[7px] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"} ${state.team === "A" ? "text-white/60" : "text-[#D4F829]"}`}>
+           <span className={`font-black uppercase text-[6px] md:text-[7px] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"} ${state.team === "A" ? "text-slate-700 drop-shadow-none" : "text-[#D4F829]"}`}>
               {label}
            </span>
         </div>
         
         {/* Avatar */}
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-white/20 bg-white/5" : "border-[#D4F829]/40 glass-panel"}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-black/5" : "border-[#D4F829]/40 glass-panel"}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
@@ -288,7 +288,7 @@ function DraggablePlayerToken({
             onLabelClick(player);
           }}
         >
-          <span className={`truncate text-center font-black tracking-tight transition-colors drop-shadow-md text-white/90 group-hover:text-white ${nameClass}`}>
+          <span className={`truncate text-center font-black tracking-tight transition-colors ${state.team === "A" ? "text-slate-800 drop-shadow-none group-hover:text-black" : "text-white/90 drop-shadow-md group-hover:text-white"} ${nameClass}`}>
             {player.username}
           </span>
         </div>
@@ -356,15 +356,15 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
 
       <div className="relative z-10 flex flex-col items-center w-full h-full pt-1.5 md:pt-2">
         <div className="absolute top-1 md:top-1.5 left-1 md:left-1.5 flex flex-col items-center justify-center">
-           <span className="font-black text-[11px] md:text-[13px] leading-none text-white drop-shadow-md tracking-tighter">
+           <span className={`font-black text-[11px] md:text-[13px] leading-none tracking-tighter ${state.team === "A" ? "text-slate-900 drop-shadow-none" : "text-white drop-shadow-md"}`}>
               {player.overall}
            </span>
-           <span className={`font-black uppercase text-[6px] md:text-[7px] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"} ${state.team === "A" ? "text-white/60" : "text-[#D4F829]"}`}>
+           <span className={`font-black uppercase text-[6px] md:text-[7px] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"} ${state.team === "A" ? "text-slate-700 drop-shadow-none" : "text-[#D4F829]"}`}>
               {label}
            </span>
         </div>
         
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm ${avatarClass} ${state.team === "A" ? "border-white/20 bg-white/5" : "border-[#D4F829]/40 glass-panel"}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-black/5" : "border-[#D4F829]/40 glass-panel"}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
           ) : (
@@ -378,7 +378,7 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
         <div className={`w-[70%] h-[1px] mt-1.5 md:mt-2 ${state.team === "A" ? "bg-gradient-to-r from-transparent via-white/20 to-transparent" : "bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent"}`} />
         
         <div className="relative mt-1 flex flex-col items-center px-0.5 w-full">
-          <span className={`truncate text-center font-black tracking-tight text-white drop-shadow-md ${nameClass}`}>
+          <span className={`truncate text-center font-black tracking-tight ${state.team === "A" ? "text-slate-800 drop-shadow-none" : "text-white drop-shadow-md"} ${nameClass}`}>
             {player.username}
           </span>
         </div>
@@ -639,7 +639,7 @@ export function InlineTeamBuilder({
         handleJoinAction(newTeam === "A" ? "Team A" : "Team B", pId);
       }
       if (!isHost && pId === currentUserId && onUpdatePosition) {
-        onUpdatePosition(percentX, percentY, newTeam === "A" ? "Team A" : "Team B");
+        onUpdatePosition(pId, percentX, percentY, newTeam === "A" ? "Team A" : "Team B");
       }
     } else {
       nextState = {
@@ -651,7 +651,7 @@ export function InlineTeamBuilder({
          handleJoinAction(null, pId);
       }
       if (!isHost && pId === currentUserId && onUpdatePosition) {
-        onUpdatePosition(null, null, null);
+        onUpdatePosition(pId, null, null, null);
       }
     }
 
@@ -944,7 +944,7 @@ export function InlineTeamBuilder({
                         },
                       };
                       if (isHost && onUpdatePosition) {
-                        onUpdatePosition(existing.x ?? 50, newY, newTeam === "A" ? "Team A" : "Team B");
+                        onUpdatePosition(player.id, existing.x ?? 50, newY, newTeam === "A" ? "Team A" : "Team B");
                       }
                       return next;
                     });
