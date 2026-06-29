@@ -578,7 +578,7 @@ export default function PlayStylePage() {
                 disabled={launchStep > 0}
                 className={cn(
                   "relative w-full h-[60px] rounded-full font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-3 transition-all duration-300 overflow-hidden cursor-pointer text-[15px]",
-                  launchStep > 0 ? "glass-panel border border-[#2A2A2A] text-[#808080]" : "bg-[#D4F829] text-white hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
+                  launchStep > 0 ? "glass-panel border border-[#2A2A2A] text-[#808080]" : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
                 )}
                 type="submit"
               >

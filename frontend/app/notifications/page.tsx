@@ -253,7 +253,7 @@ export default function NotificationsPage() {
                     type="button"
                   >
                     {actionLoadingId === n.id ? (
-                      <Loader2 className="size-4 animate-spin text-white" />
+                      <Loader2 className="size-4 animate-spin text-[#151515]" />
                     ) : (
                       <>
                         <Check size={15} strokeWidth={3} /> ACCEPT

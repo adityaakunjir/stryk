@@ -260,7 +260,7 @@ export default function PositionPage() {
                         onMouseLeave={() => setHoveredNode(null)}
                         className={cn(
                           "flex items-center justify-center rounded-full font-display text-[9px] tracking-wider cursor-pointer sm:text-xs transition-colors",
-                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-white" : "w-7 h-7 sm:w-9 sm:h-9 glass-panel border border-[#2A2A2A] text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8]"
+                          isActive ? "w-9 h-9 sm:w-11 sm:h-11 bg-[#D4F829] text-[#151515]" : "w-7 h-7 sm:w-9 sm:h-9 glass-panel border border-[#2A2A2A] text-[#808080] hover:border-[#D4F829]/50 hover:text-[#E8E8E8]"
                         )}
                         layout
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -412,7 +412,7 @@ export default function PositionPage() {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={isSubmitting || isSuccess}
-                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-white font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
+                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-[#151515] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
                 type="submit"
               >
                 

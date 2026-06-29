@@ -413,7 +413,7 @@ export default function MatchesPage() {
             
             <button
               onClick={() => setShowCreateModal(true)}
-              className="relative z-10 h-[46px] px-8 rounded-full bg-[#D4F829] text-white text-[12px] uppercase font-black tracking-[0.15em] hover:bg-[#cbf026] transition shadow-[0_4px_14px_rgba(212,248,41,0.4)]"
+              className="relative z-10 h-[46px] px-8 rounded-full bg-[#D4F829] text-[#151515] text-[12px] uppercase font-black tracking-[0.15em] hover:bg-[#cbf026] transition shadow-[0_4px_14px_rgba(212,248,41,0.4)]"
             >
               Organize Match
             </button>
@@ -511,7 +511,7 @@ export default function MatchesPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => router.push(`/matches/${match.id}`)}
-                          className="flex-[2] h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-white text-[11px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
+                          className="flex-[2] h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[11px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
                           type="button"
                         >
                           ENTER LOBBY
@@ -548,12 +548,12 @@ export default function MatchesPage() {
                           }
                         }}
                         disabled={joiningId !== null}
-                        className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-white text-[13px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
+                        className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(212,248,41,0.2)]"
                         type="button"
                       >
                         {joiningId === match.id ? (
                           <>
-                            <Loader2 className="size-4 animate-spin text-white" />
+                            <Loader2 className="size-4 animate-spin text-[#151515]" />
                             JOINING...
                           </>
                         ) : (
@@ -726,7 +726,7 @@ export default function MatchesPage() {
               <button
                 type="submit"
                 disabled={createLoading || !createTitle.trim() || !createLocation.trim() || !createDateTime}
-                className="w-full h-[54px] rounded-full bg-[#D4F829] text-white font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
               >
                 {createLoading ? (
                   <>
@@ -797,7 +797,7 @@ export default function MatchesPage() {
               <button
                 type="submit"
                 disabled={joinCodeLoading || !joinCode.trim()}
-                className="w-full h-[54px] rounded-full bg-[#D4F829] text-white font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
               >
                 {joinCodeLoading ? (
                   <>
@@ -857,7 +857,7 @@ export default function MatchesPage() {
               <button
                 type="submit"
                 disabled={joiningId !== null || !privateJoinPassword.trim()}
-                className="w-full h-[54px] rounded-full bg-[#D4F829] text-white font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
               >
                 {joiningId ? (
                   <>

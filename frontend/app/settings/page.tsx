@@ -152,7 +152,7 @@ export default function SettingsPage() {
           <button 
             onClick={handleSignOut}
             disabled={isSigningOut}
-            className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-white text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center gap-2 transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)] disabled:opacity-50"
+            className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center gap-2 transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)] disabled:opacity-50"
             type="button"
           >
             {isSigningOut ? (

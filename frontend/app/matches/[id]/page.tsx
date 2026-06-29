@@ -629,7 +629,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           </div>
           
           <div className="mt-2 flex flex-col items-center text-center">
-            <div className="mb-2 flex items-center gap-2 rounded-full bg-[#D4F829] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-white shadow-[0_10px_24px_rgba(212,248,41,0.24),inset_0_1px_0_rgba(255,255,255,0.45)]">
+            <div className="mb-2 flex items-center gap-2 rounded-full bg-[#D4F829] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-[#151515] shadow-[0_10px_24px_rgba(212,248,41,0.24),inset_0_1px_0_rgba(255,255,255,0.45)]">
               <span className="size-1.5 rounded-full glass-panel" />
               {statusLabel}
             </div>
@@ -678,7 +678,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
             {isHost && match.status === "open" && (
               <button 
                 onClick={handleCloseMatch}
-                className="flex-1 h-12 rounded-[1.25rem] bg-[#D4F829] text-white border border-[#151515]/10 text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.25)] transition hover:-translate-y-0.5 active:translate-y-0"
+                className="flex-1 h-12 rounded-[1.25rem] bg-[#D4F829] text-[#151515] border border-[#151515]/10 text-[11px] font-black tracking-[0.15em] uppercase flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.25)] transition hover:-translate-y-0.5 active:translate-y-0"
               >
                 Lock Squads
               </button>
@@ -748,7 +748,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   <p className="text-white/50 text-xs">You haven't submitted your match stats yet.</p>
                   <button
                     onClick={() => setShowStatSubmission(true)}
-                    className="w-full h-12 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-white text-[11px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center shadow-lg"
+                    className="w-full h-12 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center shadow-lg"
                   >
                     Submit My Stats
                   </button>
@@ -761,7 +761,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <div>
                 <h3 className="text-white text-xs font-bold mb-3 uppercase tracking-widest text-white/50 flex items-center justify-between">
                   Pending Peer Reviews
-                  <span className="bg-[#D4F829] text-white px-2 py-0.5 rounded-full text-[9px] font-black">
+                  <span className="bg-[#D4F829] text-[#151515] px-2 py-0.5 rounded-full text-[9px] font-black">
                     {pendingVerifications.length}
                   </span>
                 </h3>
@@ -807,7 +807,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                       <div className="grid grid-cols-2 gap-2 mt-1">
                         <button
                           onClick={() => handleVerifyStats(v.userId, true)}
-                          className="h-10 rounded-xl glass-panel0 hover:bg-[#D4F829] hover:text-white text-white text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 flex items-center justify-center"
+                          className="h-10 rounded-xl glass-panel0 hover:bg-[#D4F829] hover:text-[#151515] text-white text-[10px] font-bold tracking-[0.1em] uppercase transition duration-200 flex items-center justify-center"
                         >
                           Verify
                         </button>
@@ -854,10 +854,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   <button
                     onClick={handleCheckIn}
                     disabled={actionLoading}
-                    className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-white text-[11px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.2),inset_0_1px_0_rgba(255,255,255,0.6)] disabled:opacity-50"
+                    className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.2),inset_0_1px_0_rgba(255,255,255,0.6)] disabled:opacity-50"
                   >
                     {actionLoading ? (
-                      <Loader2 className="size-4 animate-spin text-white" />
+                      <Loader2 className="size-4 animate-spin text-[#151515]" />
                     ) : (
                       <>
                         <CheckCircle2 size={16} strokeWidth={2.5} />
@@ -880,7 +880,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     <button
                       onClick={handleCloseMatch}
                       disabled={actionLoading}
-                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-white text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
                     >
                       <Lock size={13} strokeWidth={2.5} />
                       Lock Squads & Open Stat Submission
@@ -893,7 +893,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     <button
                       onClick={handleCompleteMatch}
                       disabled={actionLoading}
-                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-white text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-[0_0_20px_rgba(212,248,41,0.4)]"
+                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-[0_0_20px_rgba(212,248,41,0.4)]"
                     >
                       <Trophy size={13} strokeWidth={2.5} />
                       Complete Match & Record Stats
@@ -923,10 +923,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <button
                 onClick={handleJoinMatch}
                 disabled={actionLoading || participants.length >= match.maxPlayers}
-                className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-white text-[12px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.6)]"
+                className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[12px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.6)]"
               >
                 {actionLoading ? (
-                  <Loader2 className="size-5 animate-spin text-white" />
+                  <Loader2 className="size-5 animate-spin text-[#151515]" />
                 ) : (
                   <>
                     <UserPlus size={16} strokeWidth={2.5} />
@@ -980,7 +980,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                       <button
                         onClick={() => handleInviteFriend(friend.id)}
                         disabled={invitingFriendId === friend.id}
-                        className="px-4 py-2 rounded-xl bg-[#D4F829] text-white hover:bg-[#c3e626] text-[10px] font-bold uppercase tracking-widest transition disabled:opacity-50 flex items-center gap-2 shadow-sm"
+                        className="px-4 py-2 rounded-xl bg-[#D4F829] text-[#151515] hover:bg-[#c3e626] text-[10px] font-bold uppercase tracking-widest transition disabled:opacity-50 flex items-center gap-2 shadow-sm"
                       >
                         {invitingFriendId === friend.id ? <Loader2 size={12} className="animate-spin" /> : <Mail size={12} />}
                         {invitingFriendId === friend.id ? "SENDING" : "INVITE"}

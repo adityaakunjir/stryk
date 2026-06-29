@@ -79,7 +79,7 @@ export default function Home() {
           {isLoaded && isSignedIn ? (
             <button 
               onClick={() => { setIsTransitioning(true); router.push("/sync"); }}
-              className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-white text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center relative transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
+              className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center relative transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
             >
               GO TO DASHBOARD
               <svg className="absolute right-5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +92,7 @@ export default function Home() {
               <SignUpButton mode="modal" forceRedirectUrl="/sync" fallbackRedirectUrl="/sync">
                 <button 
                   onClick={handleJoinTap}
-                  className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-white text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center relative transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
+                  className="w-full h-[54px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[13px] uppercase font-black tracking-[0.15em] flex items-center justify-center relative transition duration-300 shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
                 >
                   JOIN STRYK
                   <svg className="absolute right-5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
