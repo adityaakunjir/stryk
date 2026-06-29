@@ -33,12 +33,14 @@ export default function SettingsPage() {
           icon: User,
           label: "Edit Profile",
           meta: "Manage your personal information",
+          iconColor: "text-[#D4F829]",
           onClick: () => router.push("/identity")
         },
         {
           icon: Bell,
           label: "Notifications",
           meta: "Manage alerts and updates",
+          iconColor: "text-white",
           onClick: () => router.push("/notifications")
         },
       ]
@@ -127,7 +129,7 @@ export default function SettingsPage() {
               type="button"
             >
               {/* Icon */}
-              <item.icon size={18} strokeWidth={2} className="text-[#D4F829] shrink-0" />
+              <item.icon size={18} strokeWidth={2} className={`${item.iconColor} shrink-0`} />
               
               {/* Text Meta */}
               <div className="flex-1 min-w-0">
@@ -150,13 +152,13 @@ export default function SettingsPage() {
           <button 
             onClick={handleSignOut}
             disabled={isSigningOut}
-            className="w-full h-[58px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-white text-[15px] uppercase font-black tracking-[0.15em] flex items-center justify-center gap-2 transition duration-300 shadow-[0_0_40px_rgba(212,248,41,0.15)] disabled:opacity-50"
+            className="w-full h-[58px] rounded-full bg-[#D4F829] hover:bg-[#cbf026] text-[#151515] text-[15px] uppercase font-black tracking-[0.15em] flex items-center justify-center gap-2 transition duration-300 shadow-[0_0_40px_rgba(212,248,41,0.15)] disabled:opacity-50"
             type="button"
           >
             {isSigningOut ? (
-              <Loader2 className="animate-spin text-white" size={18} />
+              <Loader2 className="animate-spin text-[#151515]" size={18} />
             ) : (
-              <LogOut size={18} className="text-white" strokeWidth={2.5} />
+              <LogOut size={18} className="text-[#151515]" strokeWidth={2.5} />
             )}
             SIGN OUT
           </button>
