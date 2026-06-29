@@ -79,6 +79,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [pendingVerifications, setPendingVerifications] = useState<any[]>([]);
   const [showStatSubmission, setShowStatSubmission] = useState(false);
   const [hasSubmittedStats, setHasSubmittedStats] = useState(false);
+  const [viewMode, setViewMode] = useState<"roster" | "tactical">("roster");
 
   const addNotification = useCallback((message: string, type: "info" | "success" | "warning" = "info") => {
     if (type === "success") {
@@ -610,50 +611,53 @@ export default function MatchDetailsPage({ params }: PageProps) {
       <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.22),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.62),transparent)]" />
 
       <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full overflow-y-auto">
-        {/* Top Header Section */}
-        <header className="shrink-0 relative mb-4 overflow-hidden rounded-[2rem] border border-[#151515]/10 bg-white/35 p-4 shadow-[0_18px_50px_rgba(79,60,25,0.12)] ">
-          <div className="pointer-events-none absolute -right-12 -top-20 size-52 rounded-full bg-[#D4F829]/22 blur-3xl" />
-          <div className="flex items-center justify-between relative z-10">
-            <button 
-              onClick={() => router.push("/matches")} 
-              className="w-10 h-10 rounded-full glass-panel flex items-center justify-center cursor-pointer hover:scale-105 transition shadow-[0_8px_20px_rgba(0,0,0,0.22)]"
-              type="button"
-              aria-label="Back to matches"
-            >
-              <ArrowLeft size={18} color="#E5DCC5" />
-            </button>
-            {/* Placeholder for layout balance if needed, or just let justify-between handle it */}
-            <div className="rounded-full border border-[#151515]/10 bg-white/40 px-3 py-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-white/65">
-              {match.format}
-            </div>
-          </div>
+        {/* Top Header */}
+        <div className="flex items-center justify-between mb-4 z-10 shrink-0">
+          <button 
+            onClick={() => router.push("/matches")} 
+            className="w-10 h-10 rounded-full glass-panel flex items-center justify-center cursor-pointer transition hover:scale-105"
+            type="button"
+            aria-label="Back"
+          >
+            <ArrowLeft size={18} className="text-white" />
+          </button>
           
-          <div className="mt-2 flex flex-col items-center text-center">
-            <div className="mb-2 flex items-center gap-2 rounded-full bg-[#D4F829] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-[#151515] shadow-[0_10px_24px_rgba(212,248,41,0.24),inset_0_1px_0_rgba(255,255,255,0.45)]">
-              <span className="size-1.5 rounded-full glass-panel" />
-              {statusLabel}
-            </div>
-            <h1 className="font-display font-black italic uppercase text-[38px] leading-[0.9] tracking-tight text-white drop-shadow-sm px-2">
-              {match.title}
-            </h1>
-            
-            <div className="mt-4 flex max-w-[340px] flex-col items-center gap-2">
-              <div className="flex items-center gap-1.5 text-[13px] font-extrabold text-white/82">
-                <MapPin size={13} className="text-[#A28B52]" />
-                <span>{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
-              </div>
-              <div className="flex items-center gap-2 text-[11px] font-bold text-white/60">
-                <span>{formatDateTime(match.matchDate)}</span>
-              </div>
-            </div>
+          <h1 className="font-display uppercase tracking-tight text-[22px] italic font-black text-white">
+            MATCH <span className="text-[#A28B52]">LOBBY</span>
+          </h1>
 
-            <div className="mt-4 grid w-full grid-cols-3 gap-2">
-              <MatchMetric icon={<Users size={13} />} label="Players" value={`${participants.length}/${match.maxPlayers}`} />
-              <MatchMetric icon={<CheckCircle2 size={13} />} label="Checked" value={`${checkedInCount}`} />
-              <MatchMetric icon={<Crown size={13} />} label="Host" value={hostName.split(" ")[0] || "Host"} />
+          <div className="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-[10px] font-black text-[#A28B52]">
+            {match.format}
+          </div>
+        </div>
+
+        {/* Match Summary Card */}
+        <div className="relative overflow-hidden rounded-[2rem] border border-white/5 bg-[#1A1A1A]/40 backdrop-blur-md p-5 shadow-[0_8px_32px_rgba(0,0,0,0.2)] mb-4 shrink-0">
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <span className="text-[10px] font-black tracking-widest text-[#D4F829] bg-[#D4F829]/10 px-3 py-1 rounded-full uppercase flex items-center gap-1.5 border border-[#D4F829]/10">
+              <span className="size-1.5 rounded-full bg-[#D4F829] animate-pulse" />
+              {statusLabel}
+            </span>
+            <span className="text-[10px] font-black tracking-widest text-[#A28B52] bg-[#A28B52]/10 px-3 py-1 rounded-full uppercase border border-[#A28B52]/10">
+              {participants.length}/{match.maxPlayers} players
+            </span>
+          </div>
+
+          <h2 className="font-display font-black italic uppercase text-[30px] leading-tight text-white mb-3">
+            {match.title}
+          </h2>
+
+          <div className="space-y-2 text-[12px] text-white/70 font-medium">
+            <div className="flex items-center gap-2">
+              <MapPin size={13} className="text-[#A28B52] shrink-0" />
+              <span className="truncate">{match.turf ? `${match.turf} (${match.location})` : match.location}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar size={13} className="text-[#A28B52] shrink-0" />
+              <span>{formatDateTime(match.matchDate)}</span>
             </div>
           </div>
-        </header>
+        </div>
 
         {/* Action Bar (Join/Leave, Share) */}
         <div className="shrink-0 flex items-center gap-2 mb-4">
@@ -745,30 +749,179 @@ export default function MatchDetailsPage({ params }: PageProps) {
           </button>
         </div>
 
+        {/* Roster / Tactics Toggle */}
+        <div className="grid grid-cols-2 gap-2 p-1.5 rounded-full bg-[#111] border border-white/5 mb-4 shrink-0">
+          <button
+            onClick={() => setViewMode("roster")}
+            className={`py-2 rounded-full text-[10px] font-black tracking-wider uppercase transition cursor-pointer ${
+              viewMode === "roster"
+                ? "bg-[#A28B52] text-[#151515] shadow-lg"
+                : "text-white/60 hover:text-white"
+            }`}
+          >
+            ROSTER LIST
+          </button>
+          <button
+            onClick={() => setViewMode("tactical")}
+            className={`py-2 rounded-full text-[10px] font-black tracking-wider uppercase transition cursor-pointer ${
+              viewMode === "tactical"
+                ? "bg-[#A28B52] text-[#151515] shadow-lg"
+                : "text-white/60 hover:text-white"
+            }`}
+          >
+            TACTICS BOARD
+          </button>
+        </div>
 
+        {/* Roster List / Tactics Board View Selection */}
+        {viewMode === "roster" ? (
+          <div className="shrink-0 flex flex-col gap-3 w-full mb-4">
+            <div className="grid grid-cols-2 gap-3">
+              {/* Team A Column */}
+              <div className="rounded-[1.75rem] border border-white/5 bg-[#1A1A1A]/20 backdrop-blur-md p-4 flex flex-col min-h-[220px]">
+                <div className="flex items-center justify-between pb-2 mb-3 border-b border-white/5">
+                  <span className="text-[10px] font-black tracking-wider text-white uppercase truncate">
+                    {match.teamAName || "TEAM A"}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400">
+                    {teamAPlayers.length}
+                  </span>
+                </div>
+                
+                {/* Player Slots */}
+                <div className="space-y-2 flex-1">
+                  {teamAPlayers.map(p => (
+                    <div key={p.user.id} className="flex items-center justify-between p-2 rounded-xl bg-white/[0.02] border border-white/5 group hover:border-[#D4F829]/20 transition">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="relative size-6 rounded-full overflow-hidden border border-slate-700/50 bg-[#222]">
+                          {p.user.avatarUrl ? (
+                            <img src={p.user.avatarUrl} alt={p.user.username} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="text-[9px] font-black text-white/40 flex items-center justify-center h-full w-full">
+                              {p.user.username.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <span className="text-[10px] font-bold text-white/90 truncate max-w-[80px]">
+                          {p.user.username}
+                        </span>
+                      </div>
+                      <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">
+                        {p.user.overall || 60}
+                      </span>
+                    </div>
+                  ))}
+                  
+                  {/* Empty Slots */}
+                  {Array.from({ length: Math.max(0, (match.maxPlayers / 2) - teamAPlayers.length) }).map((_, i) => (
+                    <button
+                      key={`empty-a-${i}`}
+                      onClick={() => handleAssignTeam("Team A")}
+                      disabled={actionLoading || !isJoined || match.status === "closed"}
+                      className="w-full py-2 rounded-xl border border-dashed border-white/10 hover:border-[#D4F829]/30 text-white/30 hover:text-[#D4F829] text-[9px] font-black tracking-widest uppercase transition flex items-center justify-center gap-1 cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                    >
+                      + JOIN
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-        {/* Verification Alert - Removed (now integrated below) */}
+              {/* Team B Column */}
+              <div className="rounded-[1.75rem] border border-white/5 bg-[#1A1A1A]/20 backdrop-blur-md p-4 flex flex-col min-h-[220px]">
+                <div className="flex items-center justify-between pb-2 mb-3 border-b border-white/5">
+                  <span className="text-[10px] font-black tracking-wider text-white uppercase truncate">
+                    {match.teamBName || "TEAM B"}
+                  </span>
+                  <span className="text-[10px] font-bold text-[#D4F829]">
+                    {teamBPlayers.length}
+                  </span>
+                </div>
+                
+                {/* Player Slots */}
+                <div className="space-y-2 flex-1">
+                  {teamBPlayers.map(p => (
+                    <div key={p.user.id} className="flex items-center justify-between p-2 rounded-xl bg-white/[0.02] border border-white/5 group hover:border-[#D4F829]/20 transition">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="relative size-6 rounded-full overflow-hidden border border-[#D4F829]/20 bg-[#222]">
+                          {p.user.avatarUrl ? (
+                            <img src={p.user.avatarUrl} alt={p.user.username} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="text-[9px] font-black text-white/40 flex items-center justify-center h-full w-full">
+                              {p.user.username.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <span className="text-[10px] font-bold text-white/90 truncate max-w-[80px]">
+                          {p.user.username}
+                        </span>
+                      </div>
+                      <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-[#D4F829]/10 text-[#D4F829]">
+                        {p.user.overall || 60}
+                      </span>
+                    </div>
+                  ))}
+                  
+                  {/* Empty Slots */}
+                  {Array.from({ length: Math.max(0, (match.maxPlayers / 2) - teamBPlayers.length) }).map((_, i) => (
+                    <button
+                      key={`empty-b-${i}`}
+                      onClick={() => handleAssignTeam("Team B")}
+                      disabled={actionLoading || !isJoined || match.status === "closed"}
+                      className="w-full py-2 rounded-xl border border-dashed border-white/10 hover:border-[#D4F829]/30 text-white/30 hover:text-[#D4F829] text-[9px] font-black tracking-widest uppercase transition flex items-center justify-center gap-1 cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                    >
+                      + JOIN
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-
-
-        {/* Inline Squad Builder - REPLACES old lists */}
-        {match && (
-          <div className="shrink-0 mt-1 w-full rounded-[2rem] border border-[#151515]/10 glass-panel p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
-            <InlineTeamBuilder
-              participants={match.participants}
-              onSaveTeams={handleSaveTeams}
-              isHost={currentUserId === match.hostId}
-              currentUserId={currentUserId}
-              onJoinTeam={handleAssignTeam}
-              onUpdatePosition={handleUpdatePosition}
-              onUpdateTeamNames={handleUpdateTeamNames}
-              teamAName={match.teamAName}
-              teamBName={match.teamBName}
-              matchFormat={match.format}
-              externalPositionUpdate={externalPositionUpdate}
-              isLocked={match.status === "closed"}
-            />
+            {/* Free Pool Roster */}
+            {unassignedPlayers.length > 0 && (
+              <div className="rounded-[1.5rem] border border-white/5 bg-[#111]/40 p-4">
+                <div className="text-[9px] font-black tracking-widest text-white/40 uppercase mb-2">
+                  FREE POOL ({unassignedPlayers.length})
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {unassignedPlayers.map(p => (
+                    <div key={p.user.id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/5">
+                      <div className="relative size-4 rounded-full overflow-hidden border border-white/10">
+                        {p.user.avatarUrl ? (
+                          <img src={p.user.avatarUrl} alt={p.user.username} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="text-[8px] font-black text-white/40 flex items-center justify-center h-full w-full">
+                            {p.user.username.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-[10px] font-bold text-white/70">{p.user.username}</span>
+                      <span className="text-[9px] font-black text-[#A28B52] ml-0.5">{p.user.overall || 60}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+        ) : (
+          /* Tactical Pitch Board View */
+          match && (
+            <div className="shrink-0 mt-1 w-full rounded-[2rem] border border-[#151515]/10 glass-panel p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)] mb-4">
+              <InlineTeamBuilder
+                participants={match.participants}
+                onSaveTeams={handleSaveTeams}
+                isHost={currentUserId === match.hostId}
+                currentUserId={currentUserId}
+                onJoinTeam={handleAssignTeam}
+                onUpdatePosition={handleUpdatePosition}
+                onUpdateTeamNames={handleUpdateTeamNames}
+                teamAName={match.teamAName}
+                teamBName={match.teamBName}
+                matchFormat={match.format}
+                externalPositionUpdate={externalPositionUpdate}
+                isLocked={match.status === "closed"}
+              />
+            </div>
+          )
         )}
 
         {/* Stats & Verifications Section */}
