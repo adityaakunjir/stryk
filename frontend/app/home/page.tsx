@@ -23,6 +23,10 @@ export default function HomeLobbyPage() {
   const [showCardDossier, setShowCardDossier] = useState(false);
   const [showSquadModal, setShowSquadModal] = useState(false);
   const [showOvrModal, setShowOvrModal] = useState(false);
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
+  const [shineX, setShineX] = useState(50);
+  const [shineY, setShineY] = useState(50);
 
   const [friends, setFriends] = useState<any[]>([]);
   const [incomingRequests, setIncomingRequests] = useState<any[]>([]);
@@ -106,22 +110,22 @@ export default function HomeLobbyPage() {
 
             {/* Profile & Notifications */}
             <div className="flex items-center gap-3">
-              <button onClick={() => router.push("/notifications")} className="relative w-10 h-10 rounded-full glass-panel  border border-[#151515]/10 flex items-center justify-center shadow-sm hover:glass-panel transition">
-                <Bell size={18} className="text-[#151515]" />
+              <button onClick={() => router.push("/notifications")} className="relative w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition cursor-pointer">
+                <Bell size={18} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" />
                 {incomingRequests.length > 0 && (
-                  <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#C3DF1B] rounded-full border-2 border-white" />
+                  <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#C3DF1B] rounded-full border-2 border-white animate-pulse" />
                 )}
               </button>
-              <button onClick={() => router.push("/settings")} className="flex items-center gap-2 p-1 pr-2 rounded-full glass-panel  border border-[#151515]/10 shadow-sm hover:glass-panel transition">
-                <img src={playerData.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(rawName)}`} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
-                <ChevronRight size={14} className="text-[#151515]/60 rotate-90" />
+              <button onClick={() => router.push("/settings")} className="flex items-center gap-2 p-1 pr-2 rounded-full bg-white/5 border border-white/10 shadow-lg backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition cursor-pointer">
+                <img src={playerData.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(rawName)}`} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-white/10" />
+                <ChevronRight size={14} className="text-white/60 rotate-90" />
               </button>
             </div>
           </div>
 
         <div className="flex justify-between items-start mt-2">
           <div className="flex flex-col">
-            <div className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none flex items-center gap-2">
+            <div className="font-display text-[2.5rem] font-black italic uppercase tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#B0925A] via-[#F4E3B5] to-[#B0925A] drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] leading-none flex items-center gap-2">
               HEY, {firstName}
             </div>
             <div className="text-[10px] font-bold tracking-[0.2em] text-[#A28B52] uppercase mt-2 mb-0.5">
@@ -154,7 +158,28 @@ export default function HomeLobbyPage() {
           <motion.div 
             className="absolute inset-0 pointer-events-auto cursor-pointer"
             onClick={() => setShowCardDossier(true)}
-            whileHover={{ scale: 1.04, transition: { duration: 0.4, ease: "easeOut" } }}
+            onMouseMove={(e) => {
+              const card = e.currentTarget;
+              const rect = card.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              const centerX = rect.width / 2;
+              const centerY = rect.height / 2;
+              const rX = ((y - centerY) / centerY) * -12; // Max tilt -12 to 12 deg
+              const rY = ((x - centerX) / centerX) * 12;
+              setRotateX(rX);
+              setRotateY(rY);
+              setShineX((x / rect.width) * 100);
+              setShineY((y / rect.height) * 100);
+            }}
+            onMouseLeave={() => {
+              setRotateX(0);
+              setRotateY(0);
+              setShineX(50);
+              setShineY(50);
+            }}
+            animate={{ rotateX, rotateY, scale: rotateX !== 0 ? 1.04 : 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             {/* Main Card Container */}
             
@@ -226,7 +251,7 @@ export default function HomeLobbyPage() {
             <motion.div
               className="absolute inset-0 z-[35] pointer-events-none"
               style={{
-                background: "linear-gradient(105deg, transparent 20%, rgba(255, 215, 0, 0.1) 30%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 215, 0, 0.1) 70%, transparent 80%)",
+                background: "linear-gradient(105deg, transparent 20%, rgba(255, 215, 0, 0.1) 30%, rgba(255, 255, 255, 0.35) 50%, rgba(255, 215, 0, 0.1) 70%, transparent 80%)",
                 backgroundSize: "200% 200%",
                 backgroundRepeat: "no-repeat",
                 WebkitMaskImage: "url('/player_card.webp')",
@@ -239,7 +264,23 @@ export default function HomeLobbyPage() {
                 maskPosition: "center",
               }}
               animate={{ backgroundPosition: ["200% 0%", "-100% 0%", "-100% 0%"] }}
-              transition={{ duration: 10, repeat: Infinity, times: [0, 0.1, 1], ease: ["linear", "linear"] }}
+              transition={{ duration: 8, repeat: Infinity, times: [0, 0.12, 1], ease: ["linear", "linear"] }}
+            />
+
+            {/* Dynamic Reflective Glass Shine Layer */}
+            <div
+              className="absolute inset-0 z-[36] pointer-events-none opacity-45 mix-blend-overlay transition-opacity duration-300"
+              style={{
+                background: `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255, 255, 255, 0.5) 0%, transparent 60%)`,
+                WebkitMaskImage: "url('/player_card.webp')",
+                WebkitMaskSize: "contain",
+                WebkitMaskRepeat: "no-repeat",
+                WebkitMaskPosition: "center",
+                maskImage: "url('/player_card.webp')",
+                maskSize: "contain",
+                maskRepeat: "no-repeat",
+                maskPosition: "center",
+              }}
             />
             
             {/* 6. Text + Stats (Top Layer) */}
@@ -328,30 +369,33 @@ export default function HomeLobbyPage() {
       </div>
 
       {/* Bottom Sheet Navigation */}
-      <div className="relative mt-auto w-full z-30 bg-[#151515] rounded-t-[2rem] px-5 pt-5 pb-[85px] shadow-[0_-20px_50px_rgba(0,0,0,0.6)] border-t border-[#8E793E]/30 text-white">
+      <div className="relative mt-auto w-full z-30 bg-gradient-to-b from-[#151515] to-[#0A0A0A] rounded-t-[2rem] px-5 pt-5 pb-[85px] shadow-[0_-20px_50px_rgba(0,0,0,0.6)] border-t border-[#A28B52]/20 text-white">
         <div className="w-full">
             
             {/* Level & XP */}
             <div className="flex justify-between items-end mb-1.5">
-              <div className="flex gap-2 items-baseline">
+              <div className="flex gap-2 items-center">
+                <div className="flex items-center justify-center w-5 h-5 rounded-md bg-[#C3DF1B]/20 border border-[#C3DF1B]/40 shadow-[0_0_8px_rgba(195,223,27,0.3)]">
+                  <Star size={10} className="text-[#C3DF1B] fill-[#C3DF1B]" />
+                </div>
                 <span className="text-[11px] font-bold tracking-[0.2em] text-[#C3DF1B] uppercase">LEVEL 1</span>
-                <span className="text-[11px] font-bold tracking-[0.1em] text-[#C3DF1B] uppercase">ROOKIE</span>
+                <span className="text-[11px] font-bold tracking-[0.1em] text-[#A28B52] uppercase">ROOKIE</span>
               </div>
               <span className="text-[10px] font-bold text-white/50 tracking-wider">XP {xpCurrent}/{xpTotal}</span>
             </div>
             {/* Progress Bar */}
-            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-4">
+            <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden mb-4 border border-white/5">
               <motion.div 
-                className="h-full bg-[#C3DF1B] rounded-full shadow-[0_0_10px_rgba(195,223,27,0.4)]"
+                className="h-full bg-gradient-to-r from-[#8E793E] to-[#C3DF1B] rounded-full shadow-[0_0_10px_rgba(195,223,27,0.6)]"
                 initial={{ width: 0 }} animate={{ width: `${(xpCurrent/xpTotal)*100}%` }} transition={{ duration: 1.5, delay: 0.5, type: "spring" }}
               />
             </div>
 
             {/* Next Objective Card */}
-            <div className="bg-[#151515] rounded-[1.5rem] p-4 border border-[#2A2A2A] flex items-center justify-between mb-4 shadow-sm group hover:border-[#A28B52]/50 transition cursor-pointer">
+            <div className="bg-[#1C1C1C] rounded-[1.5rem] p-4 border border-white/5 flex items-center justify-between mb-4 shadow-sm group hover:border-[#A28B52]/40 transition cursor-pointer">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#C3DF1B] shrink-0 group-hover:bg-[#C3DF1B]/10 group-hover:border-[#C3DF1B]/30 transition">
-                  <Target size={16} />
+                <div className="w-9 h-9 rounded-full border border-white/10 bg-black/40 flex items-center justify-center text-[#C3DF1B] shrink-0 group-hover:bg-[#C3DF1B]/15 group-hover:border-[#C3DF1B]/35 transition shadow-[0_0_10px_rgba(195,223,27,0.1)]">
+                  <Target size={16} className="text-[#C3DF1B] drop-shadow-[0_0_5px_rgba(195,223,27,0.5)]" />
                 </div>
                 <div>
                   <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#A28B52]">NEXT OBJECTIVE</div>
@@ -359,7 +403,7 @@ export default function HomeLobbyPage() {
                   <div className="text-[9px] text-white/40 font-medium mt-0.5">Jump into a match and start your journey.</div>
                 </div>
               </div>
-              <div className="text-[10px] font-bold text-[#C3DF1B] ml-2 drop-shadow-sm">0/1</div>
+              <div className="text-[10px] font-bold text-[#C3DF1B] bg-[#C3DF1B]/10 border border-[#C3DF1B]/20 px-2 py-0.5 rounded-full shadow-[0_0_8px_rgba(195,223,27,0.15)] ml-2 shrink-0">0/1</div>
             </div>
 
             {/* Action Grid (1 button for now) */}
@@ -372,7 +416,7 @@ export default function HomeLobbyPage() {
         </div>
       {/* Bottom Navigation Tab Bar */}
       {/* Premium Glassmorphism Bottom Navigation */}
-      <div className="fixed bottom-0 w-full max-w-md h-[80px] bg-black/70  border-t border-[#C3DF1B]/20 z-40 px-8 flex items-center justify-between shadow-[0_-15px_40px_rgba(0,0,0,0.8)] pb-safe">
+      <div className="fixed bottom-0 w-full max-w-md h-[80px] bg-black/40 backdrop-blur-xl border-t border-white/10 z-40 px-8 flex items-center justify-between shadow-[0_-15px_40px_rgba(0,0,0,0.8)] pb-safe">
         <NavTab icon={<Home size={22} />} label="HOME" active={true} onClick={() => router.push("/home")} />
         <NavTab icon={<Globe size={22} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
         <NavTab icon={<Users size={22} />} label="SQUAD" active={false} onClick={() => setShowSquadModal(true)} />
@@ -481,10 +525,23 @@ export default function HomeLobbyPage() {
 
 function ActionButton({ icon, label, subtext, onClick, isPrimary }: { icon: React.ReactNode; label: string; subtext: string; onClick?: () => void; isPrimary?: boolean }) {
   return (
-    <button onClick={onClick} className={`flex flex-col items-center justify-center p-3 rounded-[1.2rem] text-center cursor-pointer transition h-full shadow-sm group ${isPrimary ? 'bg-[#D4F829] border border-[#D4F829] hover:bg-[#cbf026] shadow-[0_8px_16px_rgba(212,248,41,0.25)]' : 'glass-panel border border-[#2A2A2A] hover:bg-[#202020] hover:border-[#A28B52]/50'}`}>
-      <div className={`mb-2 transition-transform group-hover:scale-110 drop-shadow-sm ${isPrimary ? 'text-[#151515]' : 'text-[#C3DF1B]'}`}>{icon}</div>
-      <div className={`text-[9px] font-bold tracking-widest uppercase leading-tight mb-1 ${isPrimary ? 'text-[#151515]' : 'text-[#E8E8E8]'}`}>{label}</div>
-      <div className={`text-[8px] tracking-wide leading-tight hidden sm:block ${isPrimary ? 'text-[#151515]/70' : 'text-[#808080]'}`}>{subtext}</div>
+    <button 
+      onClick={onClick} 
+      className={`relative overflow-hidden flex flex-col items-center justify-center p-3 rounded-[1.2rem] text-center cursor-pointer transition h-full shadow-lg group ${
+        isPrimary 
+          ? 'bg-gradient-to-r from-[#D4F829] to-[#C3DF1B] border border-[#D4F829]/30 hover:shadow-[0_8px_25px_rgba(212,248,41,0.4)] hover:scale-[1.01] active:scale-[0.99] text-[#151515]' 
+          : 'glass-panel border border-white/5 hover:bg-[#202020]/80 hover:border-white/15'
+      }`}
+    >
+      {isPrimary && (
+        <div 
+          className="absolute inset-0 pointer-events-none z-0 bg-[linear-gradient(110deg,rgba(255,255,255,0)_30%,rgba(255,255,255,0.4)_45%,rgba(255,255,255,0.6)_50%,rgba(255,255,255,0.4)_55%,rgba(255,255,255,0)_70%)] bg-[length:200%_100%] animate-shimmer"
+          style={{ mixBlendMode: "overlay" }}
+        />
+      )}
+      <div className={`relative z-10 mb-1.5 transition-transform group-hover:scale-110 drop-shadow-sm ${isPrimary ? 'text-[#151515]' : 'text-[#C3DF1B]'}`}>{icon}</div>
+      <div className={`relative z-10 text-[9px] font-bold tracking-widest uppercase leading-tight mb-0.5 ${isPrimary ? 'text-[#151515]' : 'text-[#E8E8E8]'}`}>{label}</div>
+      <div className={`relative z-10 text-[8px] tracking-wide leading-tight hidden sm:block ${isPrimary ? 'text-[#151515]/70' : 'text-[#808080]'}`}>{subtext}</div>
     </button>
   );
 }

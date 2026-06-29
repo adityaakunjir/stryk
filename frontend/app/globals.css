@@ -122,6 +122,19 @@ a {
   }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: 150% 0%;
+  }
+  100% {
+    background-position: -150% 0%;
+  }
+}
+
+@utility animate-shimmer {
+  animation: shimmer 6s infinite linear;
+}
+
 .peer:checked ~ .stryk-card-spin,
 .peer:checked ~ * .stryk-card-spin {
   animation: stryk-card-spin 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
