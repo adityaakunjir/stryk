@@ -92,7 +92,7 @@ export default function HomeLobbyPage() {
         <div
           className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-no-repeat pointer-events-none"
           style={{
-            backgroundImage: "linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 38%), url('/home_page_bg.webp')",
+            backgroundImage: "url('/home_page_bg.webp')",
             backgroundSize: "109% auto",
             backgroundPosition: "top center",
           }}
@@ -125,22 +125,13 @@ export default function HomeLobbyPage() {
 
         <div className="flex justify-between items-start mt-2">
           <div className="flex flex-col">
-            <div 
-              className="font-display text-[2.5rem] font-black italic uppercase tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#8E793E] via-[#F5E6C4] to-[#8E793E] leading-none flex items-center gap-2"
-              style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.85)) drop-shadow(0 4px 16px rgba(0,0,0,0.65))" }}
-            >
+            <div className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none flex items-center gap-2">
               HEY, {firstName}
             </div>
-            <div 
-              className="text-[10px] font-bold tracking-[0.2em] text-[#C3DF1B] uppercase mt-2 mb-0.5"
-              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.6))" }}
-            >
+            <div className="text-[10px] font-bold tracking-[0.2em] text-[#A28B52] uppercase mt-2 mb-0.5">
               READY FOR TODAY&apos;S MATCH?
             </div>
-            <div 
-              className="text-[10px] text-white/70 font-medium"
-              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.5))" }}
-            >
+            <div className="text-[10px] text-[#151515]/70 font-medium">
               Level up, compete, and build your legacy.
             </div>
           </div>
