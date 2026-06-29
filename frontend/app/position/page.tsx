@@ -190,14 +190,11 @@ export default function PositionPage() {
               <ArrowLeft size={18} strokeWidth={2} />
             </Link>
           </Button>
-          <div className="hidden sm:block"><Stepper /></div>
-          <Button variant="ghost" onClick={() => setShowSkipModal(true)} className="h-8 rounded-full bg-transparent hover:bg-white/5 cursor-pointer px-3 text-[10px] uppercase font-bold tracking-wider text-white/40 hover:text-white">
-            Skip
-          </Button>
+          <Stepper />
+          <div className="w-10 h-10" />
         </motion.header>
 
         <div className="mx-auto mt-6 flex w-full max-w-[56rem] flex-col items-center pb-8">
-          <div className="sm:hidden mb-6"><Stepper /></div>
 
           <motion.div 
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
@@ -224,7 +221,7 @@ export default function PositionPage() {
               )}
               <div className="flex flex-col">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-white">{playerData?.fullName || "Player Name"}</span>
-                <div className="flex items-center gap-2 mt-0.5 text-[9px] font-bold tracking-[0.1em] text-[#B08332]">
+                <div className="flex items-center gap-2 mt-0.5 text-[9px] font-bold tracking-[0.1em] text-[#A28B52]">
                   {selectedPosition} <span className="text-white/30">•</span> {strongFoot} Foot
                 </div>
               </div>
