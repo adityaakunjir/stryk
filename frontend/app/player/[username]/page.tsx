@@ -9,6 +9,8 @@ import { FriendActionButton } from "@/components/friend-action-button";
 import { UpgradeOverlay } from "@/components/upgrade-overlay";
 import { ClientBackButton } from "@/components/client-back-button";
 
+export const dynamic = "force-dynamic";
+
 const BASE_URL_RAW = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 const API_BASE_URL = (!BASE_URL_RAW.endsWith("/api/v1") && !BASE_URL_RAW.endsWith("/api/v1/")) 
   ? BASE_URL_RAW.replace(/\/$/, "") + "/api/v1"
@@ -151,11 +153,6 @@ export default async function PublicPlayerPage({ params }: Props) {
 
   return (
     <main className="stryk-mobile-shell bg-[#151515] text-white min-h-screen relative overflow-hidden">
-      {/* Full Screen Background Image */}
-      <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-30 mix-blend-overlay"
-        style={{ backgroundImage: "url('/register_bg.webp')" }}
-      />
 
       <div className="relative h-full flex flex-col px-6 pt-8 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
