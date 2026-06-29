@@ -923,40 +923,6 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   Invite Friends
                 </button>
                 
-                {currentUserId === match.hostId && match.status !== "closed" && (
-                  <div className="pt-1">
-                    <button
-                      onClick={handleCloseMatch}
-                      disabled={actionLoading}
-                      className={`w-full h-11 rounded-[1rem] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
-                        actionLoading
-                          ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
-                          : "bg-[#D4F829] text-[#151515] hover:bg-[#c3e626]"
-                      }`}
-                    >
-                      <Lock size={13} strokeWidth={2.5} />
-                      Lock Squads & Open Stat Submission
-                    </button>
-                  </div>
-                )}
-
-                {currentUserId === match.hostId && match.status === "closed" && (
-                  <div className="pt-1">
-                    <button
-                      onClick={handleCompleteMatch}
-                      disabled={actionLoading}
-                      className={`w-full h-11 rounded-[1rem] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
-                        actionLoading
-                          ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
-                          : "bg-[#D4F829] text-[#151515] hover:bg-[#c3e626] shadow-[0_0_20px_rgba(212,248,41,0.4)]"
-                      }`}
-                    >
-                      <Trophy size={13} strokeWidth={2.5} />
-                      Complete Match & Record Stats
-                    </button>
-                  </div>
-                )}
-                
                 <button
                   onClick={handleLeaveMatch}
                   disabled={actionLoading}
