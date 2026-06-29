@@ -649,10 +649,6 @@ export default function MatchDetailsPage({ params }: PageProps) {
             </span>
           </div>
 
-          <h2 className="font-display font-black italic uppercase text-[30px] leading-tight text-white mb-3">
-            {match.title}
-          </h2>
-
           <div className="space-y-2 text-[12px] text-white/70 font-medium">
             <div className="flex items-center gap-2">
               <MapPin size={13} className="text-[#A28B52] shrink-0" />
@@ -1036,7 +1032,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               
               <div className="flex items-start justify-between gap-4 relative z-10 mb-4">
                 <div>
-                  <h3 className="text-[10px] tracking-[0.25em] uppercase text-white/40 font-bold">
+                  <h3 className="text-[10px] tracking-[0.2em] font-black uppercase text-[#A28B52]">
                     Action Center
                   </h3>
                   <p className="mt-1.5 text-[12px] font-medium text-white/90">
