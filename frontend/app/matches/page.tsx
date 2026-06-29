@@ -306,7 +306,7 @@ export default function MatchesPage() {
         <header className="flex items-center justify-between mb-5 relative">
           <button 
             onClick={() => router.push("/home")} 
-            className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full glass-panel border border-white/10 text-white flex items-center justify-center cursor-pointer hover:border-white/20 transition shadow-lg relative z-10"
             aria-label="Back"
             type="button"
           >
@@ -318,17 +318,17 @@ export default function MatchesPage() {
           <div className="flex items-center gap-3 relative z-10">
             <button 
               onClick={() => setShowJoinModal(true)}
-              className="w-12 h-12 rounded-full glass-panel shadow-md border border-[#A28B52]/40 flex items-center justify-center cursor-pointer hover:bg-black transition"
+              className="w-10 h-10 rounded-full glass-panel border border-white/10 text-white flex items-center justify-center cursor-pointer hover:border-white/20 transition shadow-lg relative z-10"
               title="Join via Code"
             >
-              <Key size={20} strokeWidth={2} className="text-[#A28B52]" />
+              <Key size={18} strokeWidth={2} className="text-[#A28B52]" />
             </button>
             <button 
               onClick={() => setShowCreateModal(true)}
-              className="w-12 h-12 rounded-full glass-panel shadow-md border border-[#A28B52]/40 flex items-center justify-center cursor-pointer hover:bg-black transition"
+              className="w-10 h-10 rounded-full glass-panel border border-white/10 text-white flex items-center justify-center cursor-pointer hover:border-white/20 transition shadow-lg relative z-10"
               title="Create Match"
             >
-              <Plus size={22} strokeWidth={2} className="text-[#D4F829]" />
+              <Plus size={18} strokeWidth={2.5} className="text-[#C3DF1B]" />
             </button>
           </div>
         </header>
@@ -369,17 +369,13 @@ export default function MatchesPage() {
             <button
               key={t}
               onClick={() => setFilter(t)}
-              className={`h-[38px] px-6 rounded-full text-[11px] uppercase tracking-widest font-bold transition duration-300 shrink-0 cursor-pointer relative overflow-hidden ${
+              className={`h-[38px] px-5 rounded-full text-[10px] uppercase tracking-widest font-bold transition duration-300 shrink-0 cursor-pointer relative overflow-hidden ${
                 filter === t
-                  ? "bg-gradient-to-b from-[#E5C16C] to-[#C09A45] text-white font-black shadow-[0_4px_12px_rgba(162,139,82,0.3)]"
-                  : "glass-panel text-[#EFE8D6] hover:bg-[#2A2824] shadow-[0_4px_10px_rgba(0,0,0,0.15)] border border-[#A28B52]/5"
+                  ? "bg-[#A28B52] text-[#151515] font-black shadow-[0_4px_12px_rgba(162,139,82,0.25)]"
+                  : "glass-panel text-[#E5DCC5]/70 hover:bg-white/5 border border-white/5"
               }`}
             >
               {t === "all" ? "All Lobbies" : t === "open" ? "Open" : t === "upcoming" ? "Upcoming" : "Nearby"}
-              {/* Refined Neon Green Bottom Glow */}
-              {filter === t && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[3px] bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)] rounded-t-full" />
-              )}
             </button>
           ))}
         </div>
@@ -586,7 +582,7 @@ export default function MatchesPage() {
 
       {/* Organize Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md  px-5">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md px-5">
           <div className="relative w-full max-w-sm rounded-[2rem] border border-[#A28B52]/20 bg-gradient-to-b from-[#151515] to-[#151515] p-7 shadow-[0_24px_60px_rgba(162,139,82,0.15)] flex flex-col max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => { setShowCreateModal(false); setCreateError(""); }}
@@ -597,8 +593,8 @@ export default function MatchesPage() {
             </button>
 
             <h3 className="font-display uppercase tracking-[-0.05em] text-[26px] italic font-black text-center mt-3 mb-2 drop-shadow-sm">
-              <span className="text-[#EFE8D6]">ORGANIZE </span>
-              <span className="bg-gradient-to-b from-[#E8C878] to-[#8A6A28] text-transparent bg-clip-text pr-2">MATCH</span>
+              <span className="text-white">ORGANIZE </span>
+              <span className="text-[#A28B52] pr-2">MATCH</span>
             </h3>
             <p className="text-[12px] text-[#A0A0A0] text-center mb-8 font-medium">
               Create a match lobby and invite local players.
@@ -819,7 +815,7 @@ export default function MatchesPage() {
 
       {/* Private Join Modal */}
       {showPrivateJoinModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-5 animate-in fade-in duration-200">
+        <div className="absolute inset-0 z-50 flex items-center justify-center p-5 animate-in fade-in duration-200">
           <div className="absolute inset-0 bg-black/60 " onClick={() => setShowPrivateJoinModal(false)} />
           <div className="relative w-full max-w-sm rounded-[2rem] bg-[#101010] border border-[#A28B52]/20 shadow-2xl p-6 overflow-hidden">
             <button
