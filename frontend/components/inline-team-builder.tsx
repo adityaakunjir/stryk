@@ -247,7 +247,7 @@ function DraggablePlayerToken({
       {/* Inner Background Layer */}
       <div 
         className={`absolute inset-[1.5px] ${
-          state.team === "A" ? "bg-gradient-to-b from-white/[0.12] to-white/[0.04] backdrop-blur-md" 
+          state.team === "A" ? "bg-gradient-to-b from-white/60 to-white/20 backdrop-blur-md" 
                              : "bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
         }`}
         style={{ clipPath: clipPathShape }}
@@ -348,7 +348,7 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
       />
       <div 
         className={`absolute inset-[1.5px] ${
-          state.team === "A" ? "bg-gradient-to-b from-white/[0.12] to-white/[0.04] backdrop-blur-md" 
+          state.team === "A" ? "bg-gradient-to-b from-white/60 to-white/20 backdrop-blur-md" 
                              : "bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
         }`}
         style={{ clipPath: clipPathShape }}
@@ -924,7 +924,7 @@ export function InlineTeamBuilder({
                     
                     const newTeam: "A" | "B" = currentTeam === "A" ? "B" : "A";
                     const currentY = playerStates[player.id]?.y ?? 50;
-                    const newY = 100 - currentY;
+                    const newY = currentY;
                     setPlayers((prev) =>
                       prev.map((mapP) => {
                         if (mapP.id === player.id) return { ...mapP, team: newTeam === "A" ? "Team A" : "Team B" };
