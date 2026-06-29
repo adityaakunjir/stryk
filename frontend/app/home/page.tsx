@@ -92,7 +92,7 @@ export default function HomeLobbyPage() {
         <div
           className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-no-repeat pointer-events-none"
           style={{
-            backgroundImage: "url('/home_page_bg.webp')",
+            backgroundImage: "linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 38%), url('/home_page_bg.webp')",
             backgroundSize: "109% auto",
             backgroundPosition: "top center",
           }}
@@ -132,14 +132,14 @@ export default function HomeLobbyPage() {
               HEY, {firstName}
             </div>
             <div 
-              className="text-[10px] font-bold tracking-[0.2em] text-[#A28B52] uppercase mt-2 mb-0.5"
-              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.5))" }}
+              className="text-[10px] font-bold tracking-[0.2em] text-[#C3DF1B] uppercase mt-2 mb-0.5"
+              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.6))" }}
             >
               READY FOR TODAY&apos;S MATCH?
             </div>
             <div 
-              className="text-[10px] text-[#151515]/80 font-medium"
-              style={{ filter: "drop-shadow(0 1px 2px rgba(255,255,255,0.4))" }}
+              className="text-[10px] text-white/70 font-medium"
+              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.5))" }}
             >
               Level up, compete, and build your legacy.
             </div>
