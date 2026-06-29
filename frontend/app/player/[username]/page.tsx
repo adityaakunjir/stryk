@@ -150,17 +150,17 @@ export default async function PublicPlayerPage({ params }: Props) {
   }
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] text-white min-h-screen relative overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#0a0a0a] text-white min-h-screen relative overflow-hidden">
       {/* Full Screen Background Image */}
       <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-        
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-30 mix-blend-overlay"
+        style={{ backgroundImage: "url('/register_bg.webp')" }}
       />
 
       <div className="relative h-full flex flex-col px-6 pt-8 pb-5 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
         {/* Header */}
         <div className="flex items-center justify-between mb-2 z-30 shrink-0">
-          <ClientBackButton fallbackRoute="/search" className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm" iconSize={18} />
+          <ClientBackButton fallbackRoute="/search" className="w-10 h-10 rounded-full bg-[#151515] border border-white/5 text-white flex items-center justify-center cursor-pointer hover:bg-[#202020] transition shadow-sm" iconSize={18} />
           <div className="text-[10px] tracking-[0.35em] uppercase text-white/50 font-bold drop-shadow-md">STRYK PROFILE</div>
           <div className="w-10 h-10" /> {/* Placeholder for balance */}
         </div>
@@ -182,7 +182,7 @@ export default async function PublicPlayerPage({ params }: Props) {
 
         <div className="mt-6 text-center px-4 relative z-30 flex flex-col items-center max-w-sm mx-auto w-full shrink-0">
             {/* Premium Stats Box (Refined and slightly smaller) */}
-            <div className="w-full glass-panel rounded-[1.5rem] p-5 border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col text-left relative overflow-hidden text-white">
+            <div className="w-full bg-[#151515] rounded-[1.5rem] p-5 border border-white/5 shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col text-left relative overflow-hidden text-white">
                {/* Subtle top shine */}
                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                
@@ -191,11 +191,11 @@ export default async function PublicPlayerPage({ params }: Props) {
                  <span className="mx-2 text-[#E8D196] opacity-30">•</span> 
                  <span className="text-white/90">{playerData.playStyle}</span> 
                  <span className="mx-2 text-[#E8D196] opacity-30">•</span> 
-                 <span className="text-[#C3DF1B] font-bold drop-shadow-[0_0_8px_rgba(195,223,27,0.3)]">{playerData.rating} OVR</span>
+                 <span className="text-[#D4F829] font-bold drop-shadow-[0_0_8px_rgba(212,248,41,0.3)]">{playerData.rating} OVR</span>
                </div>
                
                {/* Match History Widget */}
-               <Link href={`/player/${username}/history`} className="mt-3 block group hover:glass-panel transition rounded-xl p-2 -mx-2 cursor-pointer">
+               <Link href={`/player/${username}/history`} className="mt-3 block group hover:bg-[#202020]/35 transition rounded-xl p-2 -mx-2 cursor-pointer">
                  <div className="flex justify-between text-[8px] uppercase tracking-[0.2em] text-white/40 font-bold mb-1.5 group-hover:text-white/60 transition">
                    <span>Match History</span>
                    <span className="text-[#E8D196]/80">{totalMatches} Matches</span>
@@ -204,17 +204,17 @@ export default async function PublicPlayerPage({ params }: Props) {
                  <div className="flex items-center gap-3 mt-2">
                    <div className="flex-1">
                      <div className="flex justify-between text-[9px] font-bold uppercase tracking-wider mb-1.5">
-                       <span className="text-[#C3DF1B] drop-shadow-sm">{wins} W</span>
+                       <span className="text-[#D4F829] drop-shadow-sm">{wins} W</span>
                        <span className="text-white/60">{draws} D</span>
                        <span className="text-red-400 drop-shadow-sm">{losses} L</span>
                      </div>
                      <div className="w-full h-1.5 rounded-full bg-black border border-white/5 overflow-hidden flex shadow-inner">
-                       <div style={{ width: `${winPercent}%` }} className="h-full bg-[#C3DF1B] shadow-[0_0_10px_rgba(195,223,27,0.4)]" />
+                       <div style={{ width: `${winPercent}%` }} className="h-full bg-[#D4F829] shadow-[0_0_10px_rgba(212,248,41,0.4)]" />
                        <div style={{ width: `${drawPercent}%` }} className="h-full bg-white/20" />
                        <div style={{ width: `${lossPercent}%` }} className="h-full bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.4)]" />
                      </div>
                    </div>
-                   <div className="shrink-0 text-center glass-panel rounded-xl px-2 py-1.5 min-w-[3.5rem] shadow-lg group-hover:bg-[#1a1a1a] transition">
+                   <div className="shrink-0 text-center bg-[#0c0c0c] border border-white/5 rounded-xl px-2 py-1.5 min-w-[3.5rem] shadow-lg group-hover:bg-[#151515] transition">
                      <div className="text-[6px] uppercase tracking-widest text-[#E8D196]/50 font-bold">Win Rate</div>
                      <div className="font-display text-xs text-white font-extrabold mt-0.5">{winRate}%</div>
                    </div>
@@ -229,7 +229,7 @@ export default async function PublicPlayerPage({ params }: Props) {
           ) : !viewerUserId ? (
             <Link
               href="/identity"
-              className="w-full flex items-center justify-center rounded-xl py-3 bg-[#C3DF1B] text-white font-display tracking-[0.2em] font-bold cursor-pointer hover:bg-[#b0c918] transition duration-200 text-[10px] shadow-[0_10px_20px_-5px_rgba(195,223,27,0.4),inset_0_1px_0_rgba(255,255,255,0.5)] active:scale-95"
+              className="w-full flex items-center justify-center rounded-xl py-3 bg-[#D4F829] text-[#151515] font-display tracking-[0.2em] font-bold cursor-pointer hover:bg-[#c5e625] transition duration-200 text-[10px] shadow-[0_10px_20px_-5px_rgba(212,248,41,0.4),inset_0_1px_0_rgba(255,255,255,0.5)] active:scale-95"
             >
               CREATE YOUR OWN CARD
             </Link>
