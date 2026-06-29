@@ -368,7 +368,7 @@ export default function PlayStylePage() {
 
   // --- NORMAL PAGE RENDER ---
   return (
-    <main className="bg-[#151515] text-white relative min-h-[100dvh] flex flex-col">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden bg-[#151515] text-white flex flex-col">
       {/* Full Screen Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"

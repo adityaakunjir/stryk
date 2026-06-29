@@ -157,7 +157,7 @@ export default function PositionPage() {
   const suggestedSecondaries = smartSecondary[selectedPosition] || [];
 
   return (
-    <main className="bg-[#151515] text-white relative min-h-[100dvh] flex flex-col">
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden bg-[#151515] text-white flex flex-col">
       {/* Custom Animated Success Toast */}
       <AnimatePresence>
         {showToast && (
