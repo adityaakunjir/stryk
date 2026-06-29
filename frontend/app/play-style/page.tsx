@@ -29,6 +29,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { usePlayer, PlayStyleType } from "@/components/player-context";
+import { PlayerCard } from "@/components/player-card";
 import { cn } from "@/lib/utils";
 
 const styles = [
@@ -297,6 +298,18 @@ export default function PlayStylePage() {
 
   // --- RENDER REVEAL SCREEN ---
   if (launchStep === 4) {
+    const revealPlayer = {
+      fullName: revealStep >= 1 ? (playerData?.fullName || "YOUR NAME") : "???",
+      username: playerData?.username || "username",
+      avatar: revealStep >= 4 ? (playerData?.avatar || "") : "",
+      position: revealStep >= 2 ? (playerData?.position || "CAM") : "???",
+      secondaryPosition: playerData?.secondaryPosition || "",
+      strongFoot: playerData?.strongFoot || ("Left" as const),
+      playStyle: revealStep >= 3 ? (playerData?.playStyle || "PLAYMAKER") : "???",
+      bio: playerData?.bio || "",
+      rating: playerData?.rating || 60,
+    };
+
     return (
       <main className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center overflow-hidden">
         {/* Dynamic Background */}
@@ -318,48 +331,32 @@ export default function PlayStylePage() {
 
         {revealStep > 0 && (
           <motion.div 
-            initial={{ scale: 0.8, opacity: 0, rotateY: 90 }} 
+            initial={{ scale: 0.7, opacity: 0, rotateY: 180 }} 
             animate={{ scale: 1, opacity: 1, rotateY: 0 }} 
-            transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="relative z-10 w-full max-w-sm aspect-[0.7] rounded-[2rem] border-2 bg-[#0c0c0c] p-8 shadow-[0_0_80px_rgba(0,0,0,0.9)] flex flex-col items-center justify-center overflow-hidden"
-            style={{ borderColor: `${activeStyleConfig.color}50`, boxShadow: `0 0 100px ${activeStyleConfig.color}20` }}
+            transition={{ type: "spring", stiffness: 80, damping: 15 }}
+            className="relative z-10 w-[280px] sm:w-[320px] aspect-[1417/1878]"
           >
-            <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_0_35%,rgba(255,255,255,0.08)_35%_35.5%,transparent_35.5%_100%)] pointer-events-none" />
-            
-            {/* Avatar */}
-            {revealStep >= 4 && (
-              <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", bounce: 0.5 }} className="absolute top-12">
-                {playerData?.avatar ? (
-                  <img src={playerData.avatar} alt="Avatar" className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-[0_0_40px_rgba(255,255,255,0.3)]" />
-                ) : (
-                  <div className="w-32 h-32 rounded-full bg-[#151515] flex items-center justify-center border-4 border-white/20">
-                    <div className="w-12 h-12 rounded-full bg-white/30" />
-                  </div>
-                )}
-              </motion.div>
-            )}
+            {/* Bright spotlight/glow behind the card */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#D4F829]/25 via-[#A28B52]/10 to-transparent blur-3xl rounded-full scale-125 z-0 pointer-events-none" />
 
-            <div className="absolute bottom-16 text-center w-full px-6">
-              {/* Name */}
-              {revealStep >= 1 && (
-                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="font-display text-4xl uppercase tracking-wider text-white mb-2 truncate">
-                  {playerData?.fullName || "YOUR NAME"}
-                </motion.div>
-              )}
-              {/* Position */}
-              {revealStep >= 2 && (
-                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-block px-5 py-1 rounded-full border border-white/5 bg-[#151515] text-xl font-bold uppercase text-white mb-3 shadow-lg font-display tracking-widest">
-                  {playerData?.position || "CAM"}
-                </motion.div>
-              )}
-              {/* Style */}
-              {revealStep >= 3 && (
-                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="flex flex-col items-center">
-                  <activeStyleConfig.icon className="size-8 mb-2" style={{ color: activeStyleConfig.color }} />
-                  <div className="text-xl font-display uppercase italic tracking-widest" style={{ color: activeStyleConfig.color }}>{activeStyleConfig.title}</div>
-                </motion.div>
-              )}
+            <div className="relative z-10 w-full h-full">
+              <PlayerCard player={revealPlayer} size="lg" disableAnimation={false} />
             </div>
+
+            {/* Floating indicator/subtitle below the card */}
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              key={revealStep}
+              className="absolute -bottom-16 left-0 right-0 text-center"
+            >
+              <div className="text-[10px] font-bold tracking-[0.35em] text-[#A28B52] uppercase drop-shadow-md">
+                {revealStep === 1 && "Identity Compiled"}
+                {revealStep === 2 && "Tactical Role Set"}
+                {revealStep === 3 && "Signature Play Style"}
+                {revealStep === 4 && "Athlete Card Ready"}
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </main>
