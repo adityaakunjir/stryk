@@ -854,7 +854,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
                   <button
                     onClick={handleCheckIn}
                     disabled={actionLoading}
-                    className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(212,248,41,0.2),inset_0_1px_0_rgba(255,255,255,0.6)] disabled:opacity-50"
+                    className={`w-full h-12 rounded-[1.25rem] text-[11px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 ${
+                      actionLoading
+                        ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                        : "bg-[#D4F829] text-[#151515] hover:bg-[#c3e626] shadow-[0_8px_20px_rgba(212,248,41,0.2),inset_0_1px_0_rgba(255,255,255,0.6)]"
+                    }`}
                   >
                     {actionLoading ? (
                       <Loader2 className="size-4 animate-spin text-[#151515]" />
@@ -880,7 +884,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     <button
                       onClick={handleCloseMatch}
                       disabled={actionLoading}
-                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                      className={`w-full h-11 rounded-[1rem] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
+                        actionLoading
+                          ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                          : "bg-[#D4F829] text-[#151515] hover:bg-[#c3e626]"
+                      }`}
                     >
                       <Lock size={13} strokeWidth={2.5} />
                       Lock Squads & Open Stat Submission
@@ -893,7 +901,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     <button
                       onClick={handleCompleteMatch}
                       disabled={actionLoading}
-                      className="w-full h-11 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-[0_0_20px_rgba(212,248,41,0.4)]"
+                      className={`w-full h-11 rounded-[1rem] text-[10px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
+                        actionLoading
+                          ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                          : "bg-[#D4F829] text-[#151515] hover:bg-[#c3e626] shadow-[0_0_20px_rgba(212,248,41,0.4)]"
+                      }`}
                     >
                       <Trophy size={13} strokeWidth={2.5} />
                       Complete Match & Record Stats
@@ -923,7 +935,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
               <button
                 onClick={handleJoinMatch}
                 disabled={actionLoading || participants.length >= match.maxPlayers}
-                className="w-full h-12 rounded-[1.25rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[12px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.6)]"
+                className={`w-full h-12 rounded-[1.25rem] text-[12px] font-black tracking-[0.15em] uppercase transition duration-200 cursor-pointer flex items-center justify-center gap-2 ${
+                  actionLoading || participants.length >= match.maxPlayers
+                    ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                    : "bg-[#D4F829] text-[#151515] hover:bg-[#c3e626] shadow-[0_12px_32px_rgba(212,248,41,0.28),inset_0_1px_0_rgba(255,255,255,0.6)]"
+                }`}
               >
                 {actionLoading ? (
                   <Loader2 className="size-5 animate-spin text-[#151515]" />

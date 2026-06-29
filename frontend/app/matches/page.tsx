@@ -583,26 +583,26 @@ export default function MatchesPage() {
       {/* Organize Modal */}
       {showCreateModal && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md px-5">
-          <div className="relative w-full max-w-sm rounded-[2rem] border border-[#A28B52]/20 bg-gradient-to-b from-[#151515] to-[#151515] p-7 shadow-[0_24px_60px_rgba(162,139,82,0.15)] flex flex-col max-h-[90vh] overflow-y-auto">
-            <button 
-              onClick={() => { setShowCreateModal(false); setCreateError(""); }}
-              className="absolute right-5 top-5 grid size-10 place-items-center rounded-full glass-panel text-[#888888] hover:text-[#A28B52] hover:bg-[#2A2824] transition duration-200 cursor-pointer"
-              type="button"
-            >
-              <X className="size-5" strokeWidth={1.5} />
-            </button>
+          <div className="relative w-full max-w-sm rounded-[2rem] border border-white/10 bg-[#111] shadow-[0_24px_60px_rgba(0,0,0,0.5)] flex flex-col max-h-[85vh] overflow-hidden">
+            
+            {/* Sticky Header */}
+            <div className="px-6 py-4.5 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#111]/90 backdrop-blur-md z-10">
+              <h3 className="font-display uppercase tracking-widest text-lg italic font-black text-white">
+                ORGANIZE <span className="text-[#A28B52]">MATCH</span>
+              </h3>
+              <button 
+                onClick={() => { setShowCreateModal(false); setCreateError(""); }}
+                className="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-white/70 hover:text-white transition cursor-pointer"
+                type="button"
+              >
+                <X size={16} />
+              </button>
+            </div>
 
-            <h3 className="font-display uppercase tracking-[-0.05em] text-[26px] italic font-black text-center mt-3 mb-2 drop-shadow-sm">
-              <span className="text-white">ORGANIZE </span>
-              <span className="text-[#A28B52] pr-2">MATCH</span>
-            </h3>
-            <p className="text-[12px] text-[#A0A0A0] text-center mb-8 font-medium">
-              Create a match lobby and invite local players.
-            </p>
-
-            <form onSubmit={handleCreateMatch} className="space-y-5">
+            {/* Scrollable Form Body */}
+            <form onSubmit={handleCreateMatch} className="p-6 overflow-y-auto space-y-4 relative min-h-0">
               <div>
-                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-1.5 pl-2 drop-shadow-sm">
                   Match Title
                 </label>
                 <input
@@ -610,100 +610,106 @@ export default function MatchesPage() {
                   placeholder="Sunday Turf Match"
                   value={createTitle}
                   onChange={(e) => setCreateTitle(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                  className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[14px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium"
                   required
                 />
               </div>
 
-              <div>
-                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
-                  Turf Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="Phoenix Turf"
-                  value={createTurf}
-                  onChange={(e) => setCreateTurf(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
-                  Location / City
-                </label>
-                <input
-                  type="text"
-                  placeholder="Phoenix, AZ"
-                  value={createLocation}
-                  onChange={(e) => setCreateLocation(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
-                  Match Format
-                </label>
-                <div className="relative">
-                  <select
-                    value={createFormat}
-                    onChange={(e) => setCreateFormat(e.target.value)}
-                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner appearance-none cursor-pointer"
+              {/* Group Turf & Location */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-1.5 pl-2 drop-shadow-sm">
+                    Turf Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Phoenix Turf"
+                    value={createTurf}
+                    onChange={(e) => setCreateTurf(e.target.value)}
+                    className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[14px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium"
                     required
-                  >
-                    <option value="" disabled>Select Format</option>
-                    <option value="3v3">3v3 (6 Players)</option>
-                    <option value="5v5">5v5 (10 Players)</option>
-                    <option value="6v6">6v6 (12 Players)</option>
-                    <option value="7v7">7v7 (14 Players)</option>
-                    <option value="8v8">8v8 (16 Players)</option>
-                    <option value="9v9">9v9 (18 Players)</option>
-                    <option value="11v11">11v11 (22 Players)</option>
-                  </select>
-                  <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-[#A28B52]/70">
-                    <ChevronDown size={18} />
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-1.5 pl-2 drop-shadow-sm">
+                    Location / City
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Phoenix, AZ"
+                    value={createLocation}
+                    onChange={(e) => setCreateLocation(e.target.value)}
+                    className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[14px] text-[#EFE8D6] placeholder:text-[#666666] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Group Format & Privacy */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-1.5 pl-2 drop-shadow-sm">
+                    Match Format
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={createFormat}
+                      onChange={(e) => setCreateFormat(e.target.value)}
+                      className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[14px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium appearance-none cursor-pointer"
+                      required
+                    >
+                      <option value="" disabled>Format</option>
+                      <option value="3v3">3v3 (6P)</option>
+                      <option value="5v5">5v5 (10P)</option>
+                      <option value="6v6">6v6 (12P)</option>
+                      <option value="7v7">7v7 (14P)</option>
+                      <option value="8v8">8v8 (16P)</option>
+                      <option value="9v9">9v9 (18P)</option>
+                      <option value="11v11">11v11 (22P)</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-[#A28B52]/70">
+                      <ChevronDown size={16} />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-1.5 pl-2 drop-shadow-sm">
+                    Privacy
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={createPrivacy}
+                      onChange={(e) => setCreatePrivacy(e.target.value)}
+                      className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[14px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium appearance-none cursor-pointer"
+                    >
+                      <option value="Public">Public</option>
+                      <option value="Private">Private</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-[#A28B52]/70">
+                      <ChevronDown size={16} />
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-1.5 pl-2 drop-shadow-sm">
                   Date &amp; Time
                 </label>
                 <input
                   type="datetime-local"
                   value={createDateTime}
                   onChange={(e) => setCreateDateTime(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 block font-medium shadow-inner"
+                  className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[14px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 block font-medium"
                   required
                 />
               </div>
 
-              <div>
-                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
-                  Privacy
-                </label>
-                <div className="relative">
-                  <select
-                    value={createPrivacy}
-                    onChange={(e) => setCreatePrivacy(e.target.value)}
-                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner appearance-none cursor-pointer"
-                  >
-                    <option value="Public">Public</option>
-                    <option value="Private">Private</option>
-                  </select>
-                  <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-[#A28B52]/70">
-                    <ChevronDown size={18} />
-                  </div>
-                </div>
-              </div>
-
               {createPrivacy === "Private" && (
                 <div>
-                  <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                  <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-1.5 pl-2 drop-shadow-sm">
                     Match Password
                   </label>
                   <input
@@ -711,7 +717,7 @@ export default function MatchesPage() {
                     placeholder="Enter a secret password"
                     value={createPassword}
                     onChange={(e) => setCreatePassword(e.target.value)}
-                    className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                    className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[14px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium"
                     required
                   />
                 </div>
@@ -723,10 +729,15 @@ export default function MatchesPage() {
                 </div>
               )}
 
+              {/* dynamic premium disabled classes */}
               <button
                 type="submit"
                 disabled={createLoading || !createTitle.trim() || !createLocation.trim() || !createDateTime}
-                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+                className={`w-full h-12 rounded-[1.25rem] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 text-[13px] mt-6 uppercase ${
+                  createLoading || !createTitle.trim() || !createLocation.trim() || !createDateTime
+                    ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                    : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
+                }`}
               >
                 {createLoading ? (
                   <>
@@ -744,24 +755,24 @@ export default function MatchesPage() {
 
       {/* Join Match Modal */}
       {showJoinModal && (
-        <div className="absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60  p-0 sm:p-6">
+        <div className="absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-6 animate-in fade-in duration-200">
           <div className="w-full max-w-md bg-[#111] sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl border border-white/10 overflow-hidden flex flex-col max-h-[90dvh] animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-10 duration-300 relative">
             
-            <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#111]/80  z-10">
-              <h2 className="text-white font-black tracking-widest uppercase text-lg italic">
-                JOIN LOBBY
+            <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#111]/80 backdrop-blur-md z-10">
+              <h2 className="text-white font-black tracking-widest uppercase text-lg italic font-display">
+                JOIN <span className="text-[#A28B52]">LOBBY</span>
               </h2>
               <button 
                 onClick={() => setShowJoinModal(false)}
-                className="w-8 h-8 rounded-full glass-panel flex items-center justify-center hover:glass-panel0 transition text-white/70"
+                className="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-white/70 hover:text-white transition cursor-pointer"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
 
             <form onSubmit={handleJoinByCode} className="p-6 overflow-y-auto space-y-5 relative">
               <div>
-                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
                   Invite Code (6 Characters)
                 </label>
                 <input
@@ -769,14 +780,14 @@ export default function MatchesPage() {
                   placeholder="e.g. A9F2K1"
                   value={joinCode}
                   onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 uppercase font-medium shadow-inner"
+                  className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 uppercase font-medium"
                   required
                   maxLength={10}
                 />
               </div>
 
               <div>
-                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
                   Password (Optional)
                 </label>
                 <input
@@ -784,7 +795,7 @@ export default function MatchesPage() {
                   placeholder="Leave blank if public"
                   value={joinPassword}
                   onChange={(e) => setJoinPassword(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                  className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium"
                 />
               </div>
 
@@ -797,11 +808,15 @@ export default function MatchesPage() {
               <button
                 type="submit"
                 disabled={joinCodeLoading || !joinCode.trim()}
-                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+                className={`w-full h-12 rounded-[1.25rem] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 text-[13px] mt-6 uppercase ${
+                  joinCodeLoading || !joinCode.trim()
+                    ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                    : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
+                }`}
               >
                 {joinCodeLoading ? (
                   <>
-                    <Loader2 className="size-5 animate-spin" />
+                    <Loader2 className="size-4 animate-spin text-[#151515]" />
                     JOINING...
                   </>
                 ) : (
@@ -817,10 +832,10 @@ export default function MatchesPage() {
       {showPrivateJoinModal && (
         <div className="absolute inset-0 z-50 flex items-center justify-center p-5 animate-in fade-in duration-200">
           <div className="absolute inset-0 bg-black/60 " onClick={() => setShowPrivateJoinModal(false)} />
-          <div className="relative w-full max-w-sm rounded-[2rem] bg-[#101010] border border-[#A28B52]/20 shadow-2xl p-6 overflow-hidden">
+          <div className="relative w-full max-w-sm rounded-[2rem] bg-[#111] border border-[#A28B52]/20 shadow-2xl p-6 overflow-hidden">
             <button
               onClick={() => setShowPrivateJoinModal(false)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full glass-panel flex items-center justify-center text-white/50 hover:text-white hover:glass-panel0 transition z-10"
+              className="absolute top-5 right-5 w-8 h-8 rounded-full glass-panel flex items-center justify-center text-white/50 hover:text-white transition z-10 cursor-pointer"
               type="button"
             >
               <X size={16} />
@@ -841,7 +856,7 @@ export default function MatchesPage() {
               className="space-y-4"
             >
               <div>
-                <label className="text-[11px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
                   Password
                 </label>
                 <input
@@ -850,18 +865,22 @@ export default function MatchesPage() {
                   placeholder="Enter match password"
                   value={privateJoinPassword}
                   onChange={(e) => setPrivateJoinPassword(e.target.value)}
-                  className="w-full h-14 px-5 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium shadow-inner"
+                  className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={joiningId !== null || !privateJoinPassword.trim()}
-                className="w-full h-[54px] rounded-full bg-[#D4F829] text-[#151515] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 hover:bg-[#cbf026] disabled:opacity-50 text-[13px] mt-6 shadow-[0_8px_20px_rgba(212,248,41,0.25)] uppercase"
+                className={`w-full h-12 rounded-[1.25rem] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 text-[13px] mt-6 uppercase ${
+                  joiningId !== null || !privateJoinPassword.trim()
+                    ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                    : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
+                }`}
               >
                 {joiningId ? (
                   <>
-                    <Loader2 className="size-5 animate-spin" />
+                    <Loader2 className="size-4 animate-spin text-[#151515]" />
                     JOINING...
                   </>
                 ) : (
