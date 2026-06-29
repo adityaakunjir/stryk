@@ -26,7 +26,7 @@ PLAYSTYLE_MODIFIERS = {
 }
 
 def get_initial_stats(position: str, play_style: str) -> dict:
-    """Get the initial starting stats based on position and play style."""
+    """Get the dynamic initial starting stats based on position and play style, normalized to EXACTLY 60 OVR."""
     pos = position.upper() if position else "DEFAULT"
     if pos not in STARTER_STATS:
         pos = "DEFAULT"
@@ -38,6 +38,17 @@ def get_initial_stats(position: str, play_style: str) -> dict:
             if stat in base:
                 base[stat] += val
                 
+    # Calculate the raw exact OVR of this modified profile
+    weights = OVR_WEIGHTS.get(pos, OVR_WEIGHTS["DEFAULT"])
+    raw_ovr = sum(base.get(stat_name, 60.0) * weight for stat_name, weight in weights.items())
+    
+    # Normalize all stats so the final OVR is exactly 60.0
+    if raw_ovr > 0:
+        multiplier = 60.0 / raw_ovr
+        for stat in base:
+            # Rounding to 2 decimal places ensures database accuracy without losing OVR precision
+            base[stat] = round(base[stat] * multiplier, 2)
+            
     return base
 
 # OVR Weights per position (Extrapolated for missing ones)
