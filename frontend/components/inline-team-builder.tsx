@@ -166,7 +166,7 @@ function DraggablePlayerToken({
       position: 'absolute',
       left: `${state.x}%`,
       top: `${state.y}%`,
-      transform: transform ? CSS.Translate.toString(transform) : 'translate(-50%, -50%)',
+      transform: transform ? `${CSS.Translate.toString(transform)} translate(-50%, -50%)` : 'translate(-50%, -50%)',
     } : {
       position: 'relative',
       transform: transform ? CSS.Translate.toString(transform) : undefined,
@@ -238,8 +238,8 @@ function DraggablePlayerToken({
       {/* Outer Border Layer */}
       <div 
         className={`absolute inset-0 opacity-90 group-hover:opacity-100 transition-opacity ${
-          state.team === "A" ? "bg-gradient-to-br from-[#FFFFFF] via-[#94A3B8] to-[#475569]" 
-                             : "bg-gradient-to-br from-[#EAF7AF] via-[#A28B52] to-[#D4F829]"
+          state.team === "A" ? "bg-gradient-to-br from-white/40 via-white/15 to-white/5" 
+                             : "bg-gradient-to-br from-[#EAF7AF]/40 via-[#A28B52]/25 to-[#D4F829]/30"
         }`}
         style={{ clipPath: clipPathShape }}
       />
@@ -247,7 +247,7 @@ function DraggablePlayerToken({
       {/* Inner Background Layer */}
       <div 
         className={`absolute inset-[1.5px] ${
-          state.team === "A" ? "bg-gradient-to-b from-[#1C222C] to-[#0D1015]" 
+          state.team === "A" ? "bg-gradient-to-b from-white/[0.12] to-white/[0.04] backdrop-blur-md" 
                              : "bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
         }`}
         style={{ clipPath: clipPathShape }}
@@ -260,13 +260,13 @@ function DraggablePlayerToken({
            <span className="font-black text-[11px] md:text-[13px] leading-none drop-shadow-md tracking-tighter text-white">
               {player.overall}
            </span>
-           <span className={`font-black uppercase text-[6px] md:text-[7px] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"} ${state.team === "A" ? "text-slate-300" : "text-[#D4F829]"}`}>
+           <span className={`font-black uppercase text-[6px] md:text-[7px] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"} ${state.team === "A" ? "text-white/60" : "text-[#D4F829]"}`}>
               {label}
            </span>
         </div>
         
         {/* Avatar */}
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-400/50 glass-panel" : "border-[#D4F829]/40 glass-panel"}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-white/20 bg-white/5" : "border-[#D4F829]/40 glass-panel"}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
@@ -278,7 +278,7 @@ function DraggablePlayerToken({
         </div>
         
         {/* Separator */}
-        <div className={`w-[70%] h-[1px] mt-1.5 md:mt-2 ${state.team === "A" ? "bg-gradient-to-r from-transparent via-slate-500/50 to-transparent" : "bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent"}`} />
+        <div className={`w-[70%] h-[1px] mt-1.5 md:mt-2 ${state.team === "A" ? "bg-gradient-to-r from-transparent via-white/20 to-transparent" : "bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent"}`} />
         
         {/* Name */}
         <div
@@ -341,14 +341,14 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
     >
       <div 
         className={`absolute inset-0 opacity-90 transition-opacity ${
-          state.team === "A" ? "bg-gradient-to-br from-[#F8FAFC] via-[#CBD5E1] to-[#E2E8F0]" 
-                             : "bg-gradient-to-br from-[#EAF7AF] via-[#A28B52] to-[#D4F829]"
+          state.team === "A" ? "bg-gradient-to-br from-white/40 via-white/15 to-white/5" 
+                             : "bg-gradient-to-br from-[#EAF7AF]/40 via-[#A28B52]/25 to-[#D4F829]/30"
         }`}
         style={{ clipPath: clipPathShape }}
       />
       <div 
         className={`absolute inset-[1.5px] ${
-          state.team === "A" ? "bg-gradient-to-b from-[#FFFFFF] to-[#F1F5F9]" 
+          state.team === "A" ? "bg-gradient-to-b from-white/[0.12] to-white/[0.04] backdrop-blur-md" 
                              : "bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
         }`}
         style={{ clipPath: clipPathShape }}
@@ -359,12 +359,12 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
            <span className="font-black text-[11px] md:text-[13px] leading-none text-white drop-shadow-md tracking-tighter">
               {player.overall}
            </span>
-           <span className={`font-black uppercase text-[6px] md:text-[7px] text-[#D4F829] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"}`}>
+           <span className={`font-black uppercase text-[6px] md:text-[7px] leading-none mt-[1px] ${state.x !== null ? "block" : "hidden"} ${state.team === "A" ? "text-white/60" : "text-[#D4F829]"}`}>
               {label}
            </span>
         </div>
         
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border border-[#D4F829]/60 glass-panel shadow-sm ${avatarClass}`}>
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm ${avatarClass} ${state.team === "A" ? "border-white/20 bg-white/5" : "border-[#D4F829]/40 glass-panel"}`}>
           {player.avatarUrl ? (
             <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
           ) : (
@@ -375,7 +375,7 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
         </div>
         
-        <div className="w-[70%] h-[1px] bg-gradient-to-r from-transparent via-[#D4F829]/80 to-transparent mt-1.5 md:mt-2" />
+        <div className={`w-[70%] h-[1px] mt-1.5 md:mt-2 ${state.team === "A" ? "bg-gradient-to-r from-transparent via-white/20 to-transparent" : "bg-gradient-to-r from-transparent via-[#D4F829]/50 to-transparent"}`} />
         
         <div className="relative mt-1 flex flex-col items-center px-0.5 w-full">
           <span className={`truncate text-center font-black tracking-tight text-white drop-shadow-md ${nameClass}`}>
@@ -922,23 +922,32 @@ export function InlineTeamBuilder({
                     const currentTeam = playerStates[player.id]?.team;
                     if (!currentTeam) return;
                     
-                    const newTeam = currentTeam === "A" ? "B" : "A";
+                    const newTeam: "A" | "B" = currentTeam === "A" ? "B" : "A";
+                    const currentY = playerStates[player.id]?.y ?? 50;
+                    const newY = 100 - currentY;
                     setPlayers((prev) =>
                       prev.map((mapP) => {
                         if (mapP.id === player.id) return { ...mapP, team: newTeam === "A" ? "Team A" : "Team B" };
                         return mapP;
                       })
                     );
-                    setPlayerStates((prev) => ({
-                      ...prev,
-                      [player.id]: {
-                        ...prev[player.id],
-                        team: newTeam,
-                      },
-                    }));
-                    if (isHost && onUpdatePosition) {
-                      onUpdatePosition(state.x, state.y, newTeam === "A" ? "Team A" : "Team B");
-                    }
+                    setPlayerStates((prev) => {
+                      const existing = prev[player.id];
+                      if (!existing) return prev;
+                      const next: Record<string, PlayerState> = {
+                        ...prev,
+                        [player.id]: {
+                          ...existing,
+                          team: newTeam,
+                          y: newY,
+                          customLabel: getAutoPosition(existing.x ?? 50, newY, newTeam),
+                        },
+                      };
+                      if (isHost && onUpdatePosition) {
+                        onUpdatePosition(existing.x ?? 50, newY, newTeam === "A" ? "Team A" : "Team B");
+                      }
+                      return next;
+                    });
                   }}
                   isLargeSquad={isLargeSquad}
                 />
