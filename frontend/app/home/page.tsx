@@ -125,13 +125,22 @@ export default function HomeLobbyPage() {
 
         <div className="flex justify-between items-start mt-2">
           <div className="flex flex-col">
-            <div className="font-display text-[2.5rem] font-black italic uppercase tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#B0925A] via-[#F4E3B5] to-[#B0925A] drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] leading-none flex items-center gap-2">
+            <div 
+              className="font-display text-[2.5rem] font-black italic uppercase tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#8E793E] via-[#F5E6C4] to-[#8E793E] leading-none flex items-center gap-2"
+              style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.85)) drop-shadow(0 4px 16px rgba(0,0,0,0.65))" }}
+            >
               HEY, {firstName}
             </div>
-            <div className="text-[10px] font-bold tracking-[0.2em] text-[#A28B52] uppercase mt-2 mb-0.5">
+            <div 
+              className="text-[10px] font-bold tracking-[0.2em] text-[#A28B52] uppercase mt-2 mb-0.5"
+              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.5))" }}
+            >
               READY FOR TODAY&apos;S MATCH?
             </div>
-            <div className="text-[10px] text-[#151515]/70 font-medium">
+            <div 
+              className="text-[10px] text-[#151515]/80 font-medium"
+              style={{ filter: "drop-shadow(0 1px 2px rgba(255,255,255,0.4))" }}
+            >
               Level up, compete, and build your legacy.
             </div>
           </div>
@@ -527,7 +536,7 @@ function ActionButton({ icon, label, subtext, onClick, isPrimary }: { icon: Reac
   return (
     <button 
       onClick={onClick} 
-      className={`relative overflow-hidden flex flex-col items-center justify-center p-3 rounded-[1.2rem] text-center cursor-pointer transition h-full shadow-lg group ${
+      className={`relative overflow-hidden flex ${isPrimary ? 'flex-row gap-2 h-[52px]' : 'flex-col'} items-center justify-center p-3 rounded-[1.2rem] text-center cursor-pointer transition h-full shadow-lg group ${
         isPrimary 
           ? 'bg-gradient-to-r from-[#D4F829] to-[#C3DF1B] border border-[#D4F829]/30 hover:shadow-[0_8px_25px_rgba(212,248,41,0.4)] hover:scale-[1.01] active:scale-[0.99] text-[#151515]' 
           : 'glass-panel border border-white/5 hover:bg-[#202020]/80 hover:border-white/15'
@@ -539,8 +548,8 @@ function ActionButton({ icon, label, subtext, onClick, isPrimary }: { icon: Reac
           style={{ mixBlendMode: "overlay" }}
         />
       )}
-      <div className={`relative z-10 mb-1.5 transition-transform group-hover:scale-110 drop-shadow-sm ${isPrimary ? 'text-[#151515]' : 'text-[#C3DF1B]'}`}>{icon}</div>
-      <div className={`relative z-10 text-[9px] font-bold tracking-widest uppercase leading-tight mb-0.5 ${isPrimary ? 'text-[#151515]' : 'text-[#E8E8E8]'}`}>{label}</div>
+      <div className={`relative z-10 ${isPrimary ? '' : 'mb-1.5'} transition-transform group-hover:scale-110 drop-shadow-sm ${isPrimary ? 'text-[#151515]' : 'text-[#C3DF1B]'}`}>{icon}</div>
+      <div className={`relative z-10 text-[9px] font-bold tracking-widest uppercase leading-tight ${isPrimary ? '' : 'mb-0.5'} ${isPrimary ? 'text-[#151515]' : 'text-[#E8E8E8]'}`}>{label}</div>
       <div className={`relative z-10 text-[8px] tracking-wide leading-tight hidden sm:block ${isPrimary ? 'text-[#151515]/70' : 'text-[#808080]'}`}>{subtext}</div>
     </button>
   );
