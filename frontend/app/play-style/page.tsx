@@ -321,10 +321,10 @@ export default function PlayStylePage() {
             initial={{ scale: 0.8, opacity: 0, rotateY: 90 }} 
             animate={{ scale: 1, opacity: 1, rotateY: 0 }} 
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="relative z-10 w-full max-w-sm aspect-[0.7] rounded-[2rem] border-2 glass-panel p-8 shadow-[0_0_80px_rgba(0,0,0,0.8)]  flex flex-col items-center justify-center overflow-hidden"
-            style={{ borderColor: `${activeStyleConfig.color}50`, boxShadow: `0 0 100px ${activeStyleConfig.color}30` }}
+            className="relative z-10 w-full max-w-sm aspect-[0.7] rounded-[2rem] border-2 bg-[#0c0c0c] p-8 shadow-[0_0_80px_rgba(0,0,0,0.9)] flex flex-col items-center justify-center overflow-hidden"
+            style={{ borderColor: `${activeStyleConfig.color}50`, boxShadow: `0 0 100px ${activeStyleConfig.color}20` }}
           >
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_0_28%,rgba(255,255,255,0.05)_28%_29%,transparent_29%_100%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_0_35%,rgba(255,255,255,0.08)_35%_35.5%,transparent_35.5%_100%)] pointer-events-none" />
             
             {/* Avatar */}
             {revealStep >= 4 && (
@@ -332,7 +332,7 @@ export default function PlayStylePage() {
                 {playerData?.avatar ? (
                   <img src={playerData.avatar} alt="Avatar" className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-[0_0_40px_rgba(255,255,255,0.3)]" />
                 ) : (
-                  <div className="w-32 h-32 rounded-full glass-panel0 flex items-center justify-center border-4 border-white/20">
+                  <div className="w-32 h-32 rounded-full bg-[#151515] flex items-center justify-center border-4 border-white/20">
                     <div className="w-12 h-12 rounded-full bg-white/30" />
                   </div>
                 )}
@@ -348,7 +348,7 @@ export default function PlayStylePage() {
               )}
               {/* Position */}
               {revealStep >= 2 && (
-                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-block px-4 py-1.5 rounded-full border border-white/20 glass-panel0 text-xl font-bold uppercase text-white mb-3 shadow-lg">
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-block px-5 py-1 rounded-full border border-white/5 bg-[#151515] text-xl font-bold uppercase text-white mb-3 shadow-lg font-display tracking-widest">
                   {playerData?.position || "CAM"}
                 </motion.div>
               )}
