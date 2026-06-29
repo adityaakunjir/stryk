@@ -29,14 +29,14 @@ import * as Sentry from "@sentry/nextjs";
 
 function Stepper() {
   return (
-    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-white/80">
+    <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase text-white/40">
       <div className="text-white font-black flex items-center gap-1.5 drop-shadow-sm">
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         Identity
       </div>
-      <div className="w-4 sm:w-6 h-[2px] glass-panel" />
+      <div className="w-4 sm:w-6 h-[1px] bg-white/10" />
       <div>Position</div>
-      <div className="w-4 sm:w-6 h-[2px] glass-panel" />
+      <div className="w-4 sm:w-6 h-[1px] bg-white/10" />
       <div>Style</div>
     </div>
   );
@@ -254,7 +254,7 @@ export default function IdentityPage() {
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0 }}
           className="flex items-center justify-between gap-4"
         >
-          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10">
+          <Button asChild variant="ghost" size="icon" aria-label="Back to home" className="w-10 h-10 rounded-full bg-[#151515] border border-white/5 text-white flex items-center justify-center cursor-pointer hover:bg-[#202020] transition shadow-sm relative z-10">
             <Link href="/">
               <ArrowLeft size={18} strokeWidth={2} />
             </Link>
@@ -268,23 +268,25 @@ export default function IdentityPage() {
             initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.15 }}
             className="flex items-center justify-center mb-6"
           >
-            <img src="/logo.webp" alt="STRYK Logo" className="h-[42px] w-auto" />
+            <div className="text-[10px] sm:text-[11px] font-black text-[#A28B52] tracking-[0.4em] italic uppercase drop-shadow-md">
+              STRYK
+            </div>
           </motion.div>
 
           <motion.div 
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}
             className="text-center"
           >
-            <h2 className="font-display text-[2.5rem] sm:text-6xl font-black italic uppercase leading-none tracking-tight text-[#2A261D] drop-shadow-sm">
+            <h2 className="font-display text-[2.5rem] sm:text-6xl font-black italic uppercase leading-none tracking-tight text-[#3A332C] drop-shadow-sm">
               BUILD YOUR<br/>
               <span className="text-[#A28B52]">ATHLETE IDENTITY</span>
             </h2>
-            <p className="mt-4 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-[#A28B52]">
+            <p className="mt-4 text-[11px] sm:text-xs font-bold uppercase tracking-[0.1em] text-white/50">
               Start with the basics for your player card.
             </p>
           </motion.div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full rounded-[2rem] border border-[#8E793E]/30 glass-panel p-5 shadow-[0_28px_50px_rgba(0,0,0,0.5)] sm:p-8 relative">
+          <form onSubmit={handleNext} className="mt-8 w-full rounded-[2.5rem] border border-white/5 bg-[#0a0a0a] p-5 shadow-[0_28px_50px_rgba(0,0,0,0.5)] sm:p-8 relative">
             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
 
             <div className="grid gap-8 md:grid-cols-[1fr_17rem] md:items-start">
@@ -304,11 +306,11 @@ export default function IdentityPage() {
                   <p className="text-[11px] text-[#808080] mb-4 mt-0.5">Upload or generate a front-facing photo.</p>
                   
                   {avatar ? (
-                    <div className="relative group rounded-2xl glass-panel p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
+                    <div className="relative group rounded-[1.2rem] bg-[#151515] border border-white/5 p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 shadow-sm">
                       <div className="flex items-center gap-4 min-w-0">
                         <img src={avatar} alt="Avatar" className="w-14 h-14 shrink-0 rounded-full object-cover border border-[#A28B52]" />
                         <div className="min-w-0">
-                          <div className="text-sm font-bold text-[#E8E8E8] uppercase tracking-wider truncate">Photo Ready</div>
+                          <div className="text-sm font-bold text-white uppercase tracking-wider truncate">Photo Ready</div>
                           <div className="text-[11px] text-[#808080] mt-0.5 truncate">High-res uploaded</div>
                         </div>
                       </div>
@@ -322,7 +324,7 @@ export default function IdentityPage() {
                       whileHover={{ scale: 0.98, backgroundColor: "rgba(212,248,41,0.05)" }}
                       whileTap={{ scale: 0.95 }}
                       onClick={triggerFileUpload}
-                      className="flex min-h-24 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#2A2A2A] glass-panel p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-[#E8E8E8] cursor-pointer"
+                      className="flex min-h-24 w-full flex-col items-center justify-center gap-2 rounded-[1.2rem] border border-dashed border-[#2A2A2A] bg-[#151515] p-4 text-[#808080] transition hover:border-[#D4F829]/50 hover:text-white cursor-pointer"
                       type="button"
                     >
                       <ImageUp size={24} className="text-[#D4F829]" />
@@ -339,7 +341,7 @@ export default function IdentityPage() {
                       id="fullName"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
-                      className="block w-full h-[64px] px-5 pt-5 pb-1 text-[16px] font-medium text-[#E8E8E8] bg-[#1A1A1A] border border-[#A28B52]/20 rounded-2xl appearance-none focus:outline-none focus:ring-1 focus:ring-[#A28B52]/50 focus:border-[#A28B52] focus:bg-[#222222] transition-all duration-300 peer shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+                      className="block w-full h-[64px] px-5 pt-5 pb-1 text-[16px] font-medium text-white bg-[#151515] border border-white/5 rounded-[1.2rem] appearance-none focus:outline-none focus:ring-1 focus:ring-[#A28B52]/50 focus:border-[#A28B52]/50 focus:bg-[#1A1A1A] transition-all duration-300 peer shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
                       placeholder=" "
                     />
                     <label htmlFor="fullName" className="absolute text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] duration-300 transform -translate-y-3 scale-75 top-[20px] z-10 origin-[0] left-5 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#D4F829] cursor-text">
@@ -353,7 +355,7 @@ export default function IdentityPage() {
                       id="username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, "").slice(0, 20))}
-                      className="block w-full h-[64px] px-5 pt-5 pb-1 text-[16px] font-medium text-[#E8E8E8] bg-[#1A1A1A] border border-[#A28B52]/20 rounded-2xl appearance-none focus:outline-none focus:ring-1 focus:ring-[#A28B52]/50 focus:border-[#A28B52] focus:bg-[#222222] transition-all duration-300 peer shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+                      className="block w-full h-[64px] px-5 pt-5 pb-1 text-[16px] font-medium text-white bg-[#151515] border border-white/5 rounded-[1.2rem] appearance-none focus:outline-none focus:ring-1 focus:ring-[#A28B52]/50 focus:border-[#A28B52]/50 focus:bg-[#1A1A1A] transition-all duration-300 peer shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
                       placeholder=" "
                     />
                     <label htmlFor="username" className="absolute text-[10px] font-bold uppercase tracking-[0.15em] text-[#A28B52] duration-300 transform -translate-y-3 scale-75 top-[20px] z-10 origin-[0] left-5 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-[#D4F829] cursor-text">
@@ -413,7 +415,7 @@ export default function IdentityPage() {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={isSubmitting || isSuccess || usernameStatus !== "available" || !fullName}
-                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-[#151515] font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
+                className="relative w-full h-[60px] rounded-full bg-[#D4F829] text-white font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-2 cursor-pointer transition hover:bg-[#cbf026] disabled:opacity-50 overflow-hidden shadow-[0_0_0_0_rgba(212,248,41,0)] hover:shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)] text-[15px]" 
                 type="submit"
               >
                 {!isSubmitting && !isSuccess && (
