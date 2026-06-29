@@ -4,9 +4,38 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Search, Loader2, ChevronDown, User, Activity, Shirt } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { usePlayer } from "@/components/player-context";
 import { calculateOvr } from "@/lib/stat-utils";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
+
+const positionsList = [
+  { code: "", name: "ANY POSITION" },
+  { code: "ST", name: "STRIKER (ST)" },
+  { code: "LW", name: "LEFT WING (LW)" },
+  { code: "RW", name: "RIGHT WING (RW)" },
+  { code: "CAM", name: "ATTACKING MID (CAM)" },
+  { code: "CM", name: "CENTER MID (CM)" },
+  { code: "CDM", name: "DEFENSIVE MID (CDM)" },
+  { code: "LM", name: "LEFT MID (LM)" },
+  { code: "RM", name: "RIGHT MID (RM)" },
+  { code: "CB", name: "CENTER BACK (CB)" },
+  { code: "LB", name: "LEFT BACK (LB)" },
+  { code: "RB", name: "RIGHT BACK (RB)" },
+  { code: "GK", name: "GOALKEEPER (GK)" },
+];
+
+const stylesList = [
+  { code: "", name: "ANY STYLE" },
+  { code: "Speedster", name: "SPEEDSTER" },
+  { code: "Playmaker", name: "PLAYMAKER" },
+  { code: "Poacher", name: "POACHER" },
+  { code: "Box-to-Box", name: "BOX-TO-BOX" },
+  { code: "Finisher", name: "FINISHER" },
+  { code: "Destroyer", name: "DESTROYER" },
+  { code: "Target Man", name: "TARGET MAN" },
+];
 
 type SearchResult = {
   id: string;
@@ -26,6 +55,9 @@ export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [position, setPosition] = useState("");
   const [playStyle, setPlayStyle] = useState("");
+  
+  const [isPositionOpen, setIsPositionOpen] = useState(false);
+  const [isStyleOpen, setIsStyleOpen] = useState(false);
   
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -99,7 +131,7 @@ export default function SearchPage() {
         <div className="flex items-center justify-between mb-1 relative z-20">
           <button 
             onClick={() => router.push("/home")} 
-            className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full bg-[#151515] border border-white/5 text-white flex items-center justify-center cursor-pointer hover:bg-[#202020] transition shadow-sm relative z-10"
             aria-label="Back"
             type="button"
           >
@@ -123,61 +155,94 @@ export default function SearchPage() {
               placeholder="Search by name or @username..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full h-[52px] pl-12 pr-5 rounded-full border border-[#151515]/10 glass-panel text-sm text-white placeholder:text-white/40 outline-none focus:border-[#A28B52] focus:ring-1 focus:ring-[#A28B52]/50 transition duration-300 shadow-inner"
+              className="w-full h-[52px] pl-12 pr-5 rounded-full border border-white/5 bg-[#151515] text-sm text-white placeholder:text-white/40 outline-none focus:border-[#A28B52] transition duration-300 shadow-inner"
             />
           </div>
 
           {/* Filters Row */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 relative z-30">
+            {/* Position Selector */}
             <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.15)] rounded-2xl group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Activity size={16} className="text-[#A28B52] opacity-70 group-focus-within:opacity-100 transition-opacity" />
+                <Activity size={16} className="text-[#A28B52] opacity-70 transition-opacity" />
               </div>
-              <select
-                value={position}
-                onChange={(e) => setPosition(e.target.value)}
-                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#151515]/10 glass-panel text-[11px] font-bold tracking-wider text-white uppercase appearance-none outline-none focus:border-[#A28B52] transition"
+              <button
+                type="button"
+                onClick={() => { setIsPositionOpen(!isPositionOpen); setIsStyleOpen(false); }}
+                className="w-full h-11 pl-10 pr-8 rounded-2xl border border-white/5 bg-[#151515] text-[10px] font-bold tracking-wider text-white uppercase text-left flex items-center justify-between cursor-pointer focus:border-[#A28B52] transition"
               >
-                <option value="">ANY POSITION</option>
-                <option value="ST">STRIKER (ST)</option>
-                <option value="LW">LEFT WING (LW)</option>
-                <option value="RW">RIGHT WING (RW)</option>
-                <option value="CAM">ATTACKING MID (CAM)</option>
-                <option value="CM">CENTER MID (CM)</option>
-                <option value="CDM">DEFENSIVE MID (CDM)</option>
-                <option value="LM">LEFT MID (LM)</option>
-                <option value="RM">RIGHT MID (RM)</option>
-                <option value="CB">CENTER BACK (CB)</option>
-                <option value="LB">LEFT BACK (LB)</option>
-                <option value="RB">RIGHT BACK (RB)</option>
-                <option value="GK">GOALKEEPER (GK)</option>
-              </select>
+                <span className="truncate">{position ? positionsList.find(p => p.code === position)?.name : "ANY POSITION"}</span>
+              </button>
               <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-[#A28B52]/50">
-                <ChevronDown size={16} />
+                <ChevronDown size={16} className={cn("transition-transform duration-200", isPositionOpen && "rotate-180")} />
               </div>
+
+              <AnimatePresence>
+                {isPositionOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    exit={{ opacity: 0, y: -10 }} 
+                    className="absolute top-full mt-1.5 w-full max-h-52 overflow-y-auto rounded-xl border border-white/10 bg-[#151515] p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 custom-scrollbar"
+                  >
+                    {positionsList.map((p) => (
+                      <button 
+                        key={p.code} 
+                        onClick={() => { setPosition(p.code); setIsPositionOpen(false); }} 
+                        className={cn(
+                          "block w-full rounded-lg px-3 py-2 text-left text-[10px] font-bold tracking-wider uppercase cursor-pointer transition-colors",
+                          position === p.code ? "bg-[#C6FF00]/10 text-[#C6FF00]" : "text-white/70 hover:bg-white/5 hover:text-white"
+                        )}
+                        type="button"
+                      >
+                        {p.name}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
+            {/* Style Selector */}
             <div className="relative shadow-[0_8px_30px_rgba(0,0,0,0.15)] rounded-2xl group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Shirt size={16} className="text-[#A28B52] opacity-70 group-focus-within:opacity-100 transition-opacity" />
+                <Shirt size={16} className="text-[#A28B52] opacity-70 transition-opacity" />
               </div>
-              <select
-                value={playStyle}
-                onChange={(e) => setPlayStyle(e.target.value)}
-                className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#151515]/10 glass-panel text-[11px] font-bold tracking-wider text-white uppercase appearance-none outline-none focus:border-[#A28B52] transition"
+              <button
+                type="button"
+                onClick={() => { setIsStyleOpen(!isStyleOpen); setIsPositionOpen(false); }}
+                className="w-full h-11 pl-10 pr-8 rounded-2xl border border-white/5 bg-[#151515] text-[10px] font-bold tracking-wider text-white uppercase text-left flex items-center justify-between cursor-pointer focus:border-[#A28B52] transition"
               >
-                <option value="">ANY STYLE</option>
-                <option value="Speedster">SPEEDSTER</option>
-                <option value="Playmaker">PLAYMAKER</option>
-                <option value="Poacher">POACHER</option>
-                <option value="Box-to-Box">BOX-TO-BOX</option>
-                <option value="Finisher">FINISHER</option>
-                <option value="Destroyer">DESTROYER</option>
-                <option value="Target Man">TARGET MAN</option>
-              </select>
+                <span className="truncate">{playStyle ? stylesList.find(s => s.code === playStyle)?.name : "ANY STYLE"}</span>
+              </button>
               <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-[#A28B52]/50">
-                <ChevronDown size={16} />
+                <ChevronDown size={16} className={cn("transition-transform duration-200", isStyleOpen && "rotate-180")} />
               </div>
+
+              <AnimatePresence>
+                {isStyleOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    exit={{ opacity: 0, y: -10 }} 
+                    className="absolute top-full mt-1.5 w-full max-h-52 overflow-y-auto rounded-xl border border-white/10 bg-[#151515] p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 custom-scrollbar"
+                  >
+                    {stylesList.map((s) => (
+                      <button 
+                        key={s.code} 
+                        onClick={() => { setPlayStyle(s.code); setIsStyleOpen(false); }} 
+                        className={cn(
+                          "block w-full rounded-lg px-3 py-2 text-left text-[10px] font-bold tracking-wider uppercase cursor-pointer transition-colors",
+                          playStyle === s.code ? "bg-[#C6FF00]/10 text-[#C6FF00]" : "text-white/70 hover:bg-white/5 hover:text-white"
+                        )}
+                        type="button"
+                      >
+                        {s.name}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
           
@@ -208,7 +273,7 @@ export default function SearchPage() {
             </div>
           ) : hasSearched && results.length === 0 ? (
             /* EMPTY STATE - EXACTLY MATCHING REFERENCE */
-            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent border border-[#151515]/10 relative overflow-hidden group">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-[#0c0c0c] border border-white/5 relative overflow-hidden group">
               {/* Concentric Circles & Icon */}
               <div className="relative size-32 flex items-center justify-center mb-8">
                 {/* Outer faint circle */}
@@ -235,7 +300,7 @@ export default function SearchPage() {
             </div>
           ) : !hasSearched ? (
             /* Initial Empty State */
-            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent border border-[#151515]/10 relative overflow-hidden">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-[#0c0c0c] border border-white/5 relative overflow-hidden">
                <Search size={32} className="text-[#A28B52] mb-4" strokeWidth={1.5} />
                <div className="text-sm text-white/70 font-medium text-center">Search for players to build your squad</div>
             </div>
@@ -245,7 +310,7 @@ export default function SearchPage() {
                 <Link
                   key={player.id}
                   href={`/player/${player.username}`}
-                  className="block p-4 rounded-[1.5rem] border border-white/5 glass-panel shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:border-[#D4F829]/40 hover:bg-[#1A1A1A] transition duration-300 relative overflow-hidden group"
+                  className="block p-4 rounded-[1.5rem] border border-white/5 bg-[#151515] shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:border-[#D4F829]/40 hover:bg-[#1e1e1e] transition duration-300 relative overflow-hidden group"
                 >
                   {/* Subtle highlight gradient on hover */}
                   <div className="absolute inset-0 bg-gradient-to-r from-[#D4F829]/0 via-[#D4F829]/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />
