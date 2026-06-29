@@ -121,6 +121,29 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify(backendData)});
       if (res.ok) {
         setIsBackendSynced(true);
+        const result = await res.json();
+        const backendUser = result.data || result;
+        if (backendUser && backendUser.pace !== undefined) {
+          setPlayerData((prev) => {
+            const updated = {
+              ...prev,
+              pace: backendUser.pace,
+              shooting: backendUser.shooting,
+              passing: backendUser.passing,
+              dribbling: backendUser.dribbling,
+              defending: backendUser.defending,
+              physical: backendUser.physical,
+              gkDiving: backendUser.gkDiving,
+              gkHandling: backendUser.gkHandling,
+              gkKicking: backendUser.gkKicking,
+              gkReflexes: backendUser.gkReflexes,
+              gkPositioning: backendUser.gkPositioning,
+            };
+            updated.rating = backendUser.overall ?? calculateOvr(updated);
+            localStorage.setItem("stryk_player_data", JSON.stringify(updated));
+            return updated;
+          });
+        }
       }
     } catch (err) {
       console.error("Failed to push data to backend", err);
