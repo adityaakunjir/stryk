@@ -165,12 +165,6 @@ export default async function PublicPlayerPage({ params }: Props) {
         {/* Card Display Area */}
         <div className="flex flex-col items-center justify-start -mt-6 relative z-20 shrink-0">
           <div className="relative w-full flex justify-center mb-0">
-            {/* Glowing pedestal shadow under the card */}
-            <div
-              aria-hidden
-              className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[80%] h-12 rounded-[50%] blur-3xl pointer-events-none z-0"
-              style={{ background: "rgba(195,223,27,0.4)" }}
-            />
             <div className="relative z-10 origin-center transition-transform duration-300 w-full max-w-[280px] aspect-[1417/1878] shrink-0">
               <PlayerCard player={playerData as any} size="md" />
             </div>
