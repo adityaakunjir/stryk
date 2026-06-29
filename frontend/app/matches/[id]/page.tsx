@@ -607,11 +607,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#151515]  bg-cover bg-center bg-fixed bg-no-repeat flex justify-center custom-scrollbar text-white">
-      <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.22),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.62),transparent)]" />
+    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#111111] flex justify-center custom-scrollbar text-white">
+      <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.06),transparent_40%)]" />
 
       <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full overflow-y-auto">
-        {/* Top Header */}
+        {/* Top Header Navigation */}
         <div className="flex items-center justify-between mb-4 z-10 shrink-0">
           <button 
             onClick={() => router.push("/matches")} 
@@ -622,17 +622,23 @@ export default function MatchDetailsPage({ params }: PageProps) {
             <ArrowLeft size={18} className="text-white" />
           </button>
           
-          <h1 className="font-display uppercase tracking-tight text-[22px] italic font-black text-white">
-            MATCH <span className="text-[#A28B52]">LOBBY</span>
-          </h1>
-
           <div className="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-[10px] font-black text-[#A28B52]">
             {match.format}
           </div>
         </div>
 
+        {/* Left-Aligned Page Title Block */}
+        <div className="shrink-0 mb-4 pl-2 z-10">
+          <div className="text-[10px] tracking-[0.2em] font-black uppercase text-[#A28B52] mb-1">
+            MATCH LOBBY
+          </div>
+          <h1 className="font-display font-black italic uppercase text-[36px] tracking-tight text-white leading-none">
+            {match.title}
+          </h1>
+        </div>
+
         {/* Match Summary Card */}
-        <div className="relative overflow-hidden rounded-[2rem] border border-white/5 bg-[#1A1A1A]/40 backdrop-blur-md p-5 shadow-[0_8px_32px_rgba(0,0,0,0.2)] mb-4 shrink-0">
+        <div className="relative overflow-hidden rounded-[2rem] border border-white/5 bg-[#1A1A1A]/30 backdrop-blur-md p-5 shadow-[0_8px_32px_rgba(0,0,0,0.2)] mb-4 shrink-0 z-10">
           <div className="flex items-center justify-between gap-3 mb-3">
             <span className="text-[10px] font-black tracking-widest text-[#D4F829] bg-[#D4F829]/10 px-3 py-1 rounded-full uppercase flex items-center gap-1.5 border border-[#D4F829]/10">
               <span className="size-1.5 rounded-full bg-[#D4F829] animate-pulse" />
@@ -1024,7 +1030,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         )}        {/* Bottom Primary CTAs */}
         <div className="shrink-0 mt-4 w-full mb-4">
           {isJoined ? (
-            <div className="relative flex flex-col gap-0 p-5 rounded-[2rem] bg-[#0c0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
+            <div className="relative flex flex-col gap-0 p-5 rounded-[2rem] bg-[#1A1A1A]/30 backdrop-blur-md shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4F829]/40 to-transparent" />
               <div className="pointer-events-none absolute left-1/2 -top-10 -translate-x-1/2 size-24 rounded-full bg-[#D4F829]/10 blur-2xl" />
               
@@ -1093,7 +1099,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               </div>
             </div>
           ) : (
-            <div className="relative p-5 rounded-[2rem] bg-[#0c0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
+            <div className="relative p-5 rounded-[2rem] bg-[#1A1A1A]/30 backdrop-blur-md shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4F829]/40 to-transparent" />
               <button
                 onClick={handleJoinMatch}
