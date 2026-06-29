@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Bell, Check, X, Mail, Users } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Notification {
   id: string;
@@ -139,12 +140,12 @@ export default function NotificationsPage() {
         
       />
 
-      <div data-scroll-panel className="relative h-full flex flex-col px-6 pt-12 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
+      <div className="relative h-full flex flex-col px-6 pt-12 pb-8 max-w-md mx-auto z-10 w-full min-h-0">
         {/* Header */}
         <header className="flex items-center justify-between mb-6 relative">
           <button
             onClick={() => router.push("/home")}
-            className="w-10 h-10 rounded-full glass-panel border border-[#151515]/10 text-white flex items-center justify-center cursor-pointer hover:glass-panel transition  shadow-sm relative z-10"
+            className="w-10 h-10 rounded-full glass-panel border border-white/10 text-white flex items-center justify-center cursor-pointer hover:border-white/20 transition shadow-lg relative z-10"
             aria-label="Back to home"
             type="button"
           >
@@ -155,7 +156,7 @@ export default function NotificationsPage() {
         <h1 className="font-display text-[2.5rem] font-black italic uppercase tracking-tight mb-1 text-white drop-shadow-sm mt-4 leading-none">
           NOTIFICATIONS
         </h1>
-        <p className="text-[10px] font-bold text-[#8A7038] uppercase tracking-widest mb-6">
+        <p className="text-[10px] font-bold text-[#A28B52] uppercase tracking-widest mb-6">
           {notifications.length} PENDING
         </p>
 
@@ -178,19 +179,29 @@ export default function NotificationsPage() {
             <Loader2 className="size-8 text-white animate-spin" />
           </div>
         ) : notifications.length === 0 ? (
-          <div className="relative flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] bg-transparent border border-[#151515]/10 overflow-hidden mb-safe">
+          <div className="relative flex-1 flex flex-col items-center justify-center p-8 rounded-[2rem] glass-panel bg-[#1C1C1C]/40 border-white/5 overflow-hidden mb-safe">
             
             {/* Elegant Golden Badge for Icon */}
-            <div className="w-24 h-24 rounded-full border border-[#D8A53B]/40 bg-gradient-to-br from-[#D8A53B]/10 to-transparent flex items-center justify-center shadow-[inset_0_0_20px_rgba(216,165,59,0.1)] mb-6 relative">
-              <div className="absolute inset-0 rounded-full bg-[#D8A53B]/10 blur-xl" />
-              <Bell size={36} className="text-[#D8A53B] relative z-10 drop-shadow-[0_2px_8px_rgba(216,165,59,0.3)]" strokeWidth={1.5} />
+            <div className="w-24 h-24 rounded-full border border-white/10 glass-panel bg-white/5 flex items-center justify-center mb-6 relative shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
+              <div className="absolute inset-0 rounded-full bg-[#A28B52]/5 blur-xl" />
+              <motion.div
+                animate={{ rotate: [0, -8, 8, -6, 6, 0] }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  repeatDelay: 3.5,
+                  ease: "easeInOut"
+                }}
+              >
+                <Bell size={36} className="text-[#A28B52] relative z-10 drop-shadow-[0_0_15px_rgba(162,139,82,0.35)]" strokeWidth={1.5} />
+              </motion.div>
             </div>
             
             <h3 className="font-display text-2xl tracking-[0.15em] text-white font-black mb-3 text-center">
               ALL CAUGHT UP
             </h3>
             
-            <p className="text-[13px] text-white/70 text-center max-w-[240px] leading-relaxed font-medium">
+            <p className="text-[13px] text-white/50 text-center max-w-[240px] leading-relaxed font-medium">
               You&apos;re all set. Check back later for new updates and invites.
             </p>
           </div>
