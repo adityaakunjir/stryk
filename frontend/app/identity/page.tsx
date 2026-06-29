@@ -284,7 +284,7 @@ export default function IdentityPage() {
             </p>
           </motion.div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full rounded-[2rem] border border-[#8E793E]/30 glass-panel p-5 shadow-[0_28px_50px_rgba(0,0,0,0.5)] sm:p-8 relative">
+          <form onSubmit={handleNext} className="mt-8 w-full rounded-[2rem] border border-[#A28B52]/30 glass-panel p-5 shadow-[0_28px_50px_rgba(0,0,0,0.5)] sm:p-8 relative">
             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
 
             <div className="grid gap-8 md:grid-cols-[1fr_17rem] md:items-start">

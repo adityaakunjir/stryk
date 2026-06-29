@@ -61,8 +61,8 @@ const styles = [
     copy: "Covers ground. Impacts everywhere.",
     emotion: "Engine of the team. All game.",
     icon: Battery,
-    color: "#8E793E", // Darker Gold
-    tone: "from-[#8E793E]/30",
+    color: "#A28B52", // Darker Gold
+    tone: "from-[#A28B52]/30",
   },
 ];
 
@@ -406,7 +406,7 @@ export default function PlayStylePage() {
             </p>
           </motion.div>
 
-          <form onSubmit={handleSubmit} className="mt-8 w-full max-w-4xl mx-auto space-y-6 glass-panel text-[#E8E8E8] p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
+          <form onSubmit={handleSubmit} className="mt-8 w-full max-w-4xl mx-auto space-y-6 glass-panel text-[#E8E8E8] p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#A28B52]/30 relative z-10">
             <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="relative">
               
               {/* Carousel container */}
@@ -620,7 +620,7 @@ export default function PlayStylePage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowInfoModal(false)} className="fixed inset-0 z-40 bg-black/80 " />
             <motion.div 
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 z-50 rounded-t-[2rem] border-t border-[#8E793E]/30 glass-panel p-6 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] pb-12"
+              className="fixed inset-x-0 bottom-0 z-50 rounded-t-[2rem] border-t border-[#A28B52]/30 glass-panel p-6 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] pb-12"
             >
               <div className="flex justify-between items-center mb-6">
                 <div>

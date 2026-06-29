@@ -231,7 +231,7 @@ export default function PositionPage() {
             </div>
           </motion.div>
 
-          <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-6 glass-panel text-white p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#8E793E]/30 relative z-10">
+          <form onSubmit={handleNext} className="mt-8 w-full max-w-4xl mx-auto space-y-6 glass-panel text-white p-6 sm:p-8 rounded-[2rem] shadow-[0_28px_50px_rgba(0,0,0,0.5)] border border-[#A28B52]/30 relative z-10">
             
             {/* Tactical Pitch Selector */}
             <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-2xl glass-panel p-5">

@@ -211,7 +211,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
         {/* PLAYSTYLE TAG */}
         {/* ========================================= */}
         <div className="absolute top-[65.8%] left-0 right-0 flex justify-center">
-          <div className="font-display text-[clamp(9px,2vw,12px)] text-[#C89B3C] tracking-[0.2em] uppercase font-bold">
+          <div className="font-display text-[clamp(9px,2vw,12px)] text-[#A28B52] tracking-[0.2em] uppercase font-bold">
             {style || "STYLE"}
           </div>
         </div>
@@ -225,10 +225,10 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
             <div className="flex justify-between px-1">
               {statsToDisplay.slice(0,3).map(({ label, value }) => (
                 <div key={label} className="flex gap-1 items-baseline w-[32%] justify-center">
-                  <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">
+                  <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#A28B52] leading-none">
                     {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
                   </span>
-                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
+                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#A28B52]/80 leading-none">{label}</span>
                 </div>
               ))}
             </div>
@@ -236,10 +236,10 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
             <div className="flex justify-between px-1 mt-1">
               {statsToDisplay.slice(3,6).map(({ label, value }) => (
                 <div key={label} className="flex gap-1 items-baseline w-[32%] justify-center">
-                  <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">
+                  <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#A28B52] leading-none">
                     {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
                   </span>
-                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
+                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#A28B52]/80 leading-none">{label}</span>
                 </div>
               ))}
             </div>

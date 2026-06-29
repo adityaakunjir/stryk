@@ -87,7 +87,7 @@ export default function SettingsPage() {
             </div>
             {/* Hexagon Rating Badge */}
             <div 
-              className="absolute -bottom-1 -right-1 bg-gradient-to-br from-[#F4E3B5] via-[#C89B3C] to-[#826021] text-white font-display font-extrabold text-[10px] w-[22px] h-[22px] flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.8)] z-20"
+              className="absolute -bottom-1 -right-1 bg-gradient-to-br from-[#A28B52] via-[#A28B52] to-[#826021] text-white font-display font-extrabold text-[10px] w-[22px] h-[22px] flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.8)] z-20"
               style={{
                 clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
               }}

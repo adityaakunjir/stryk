@@ -188,9 +188,9 @@ export default async function PublicPlayerPage({ params }: Props) {
                
                <div className="text-center pb-3 border-b border-white/5 font-semibold text-[10px] tracking-[0.2em] uppercase text-white/60">
                  <span className="text-white drop-shadow-md font-extrabold">{playerData.position}</span> 
-                 <span className="mx-2 text-[#E8D196] opacity-30">•</span> 
+                 <span className="mx-2 text-[#A28B52] opacity-30">•</span> 
                  <span className="text-white/90">{playerData.playStyle}</span> 
-                 <span className="mx-2 text-[#E8D196] opacity-30">•</span> 
+                 <span className="mx-2 text-[#A28B52] opacity-30">•</span> 
                  <span className="text-[#C3DF1B] font-bold drop-shadow-[0_0_8px_rgba(195,223,27,0.3)]">{playerData.rating} OVR</span>
                </div>
                
@@ -198,7 +198,7 @@ export default async function PublicPlayerPage({ params }: Props) {
                <Link href={`/player/${username}/history`} className="mt-3 block group hover:glass-panel transition rounded-xl p-2 -mx-2 cursor-pointer">
                  <div className="flex justify-between text-[8px] uppercase tracking-[0.2em] text-white/40 font-bold mb-1.5 group-hover:text-white/60 transition">
                    <span>Match History</span>
-                   <span className="text-[#E8D196]/80">{totalMatches} Matches</span>
+                   <span className="text-[#A28B52]/80">{totalMatches} Matches</span>
                  </div>
                  
                  <div className="flex items-center gap-3 mt-2">
@@ -215,7 +215,7 @@ export default async function PublicPlayerPage({ params }: Props) {
                      </div>
                    </div>
                    <div className="shrink-0 text-center glass-panel rounded-xl px-2 py-1.5 min-w-[3.5rem] shadow-lg group-hover:bg-[#1a1a1a] transition">
-                     <div className="text-[6px] uppercase tracking-widest text-[#E8D196]/50 font-bold">Win Rate</div>
+                     <div className="text-[6px] uppercase tracking-widest text-[#A28B52]/50 font-bold">Win Rate</div>
                      <div className="font-display text-xs text-white font-extrabold mt-0.5">{winRate}%</div>
                    </div>
                  </div>
