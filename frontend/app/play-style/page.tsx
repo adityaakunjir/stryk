@@ -340,7 +340,7 @@ export default function PlayStylePage() {
             <div className="absolute inset-0 bg-gradient-to-b from-[#D4F829]/25 via-[#A28B52]/10 to-transparent blur-3xl rounded-full scale-125 z-0 pointer-events-none" />
 
             <div className="relative z-10 w-full h-full">
-              <PlayerCard player={revealPlayer} size="lg" disableAnimation={false} />
+              <PlayerCard player={revealPlayer as any} size="lg" disableAnimation={false} />
             </div>
 
             {/* Floating indicator/subtitle below the card */}
