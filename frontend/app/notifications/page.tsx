@@ -210,20 +210,20 @@ export default function NotificationsPage() {
             {notifications.map((n) => (
               <div
                 key={n.id}
-                className="p-5 rounded-[2rem] border border-[#A28B52]/20 glass-panel flex flex-col gap-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
+                className="p-5 rounded-[2rem] border border-[#D8A53B]/20 glass-panel flex flex-col gap-5 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
               >
                 <div className="flex items-center gap-4">
-                  <div className="relative size-14 rounded-[1.25rem] overflow-hidden border border-[#A28B52]/30 bg-[#050505] flex items-center justify-center shrink-0 shadow-[inset_0_0_15px_rgba(162,139,82,0.05)]">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#A28B52]/10 to-transparent" />
+                  <div className="relative size-14 rounded-[1.25rem] overflow-hidden border border-[#D8A53B]/30 bg-[#050505] flex items-center justify-center shrink-0 shadow-[inset_0_0_15px_rgba(216,165,59,0.05)]">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#D8A53B]/10 to-transparent" />
                     {n.type === "invite" ? (
-                      <Users size={22} className="text-[#A28B52] relative z-10 drop-shadow-sm" strokeWidth={1.5} />
+                      <Users size={22} className="text-[#D8A53B] relative z-10 drop-shadow-sm" strokeWidth={1.5} />
                     ) : (
-                      <Mail size={22} className="text-[#A28B52] relative z-10 drop-shadow-sm" strokeWidth={1.5} />
+                      <Mail size={22} className="text-[#D8A53B] relative z-10 drop-shadow-sm" strokeWidth={1.5} />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-[15px] font-medium text-[#E5DCC5] leading-snug">
-                      <span className="text-[#A28B52] font-bold">{n.type === "invite" ? n.teamName : n.userName}</span> {n.type === "invite" ? "invited you" : "sent a friend request"}
+                      <span className="text-[#D8A53B] font-bold">{n.type === "invite" ? n.teamName : n.userName}</span> {n.type === "invite" ? "invited you" : "sent a friend request"}
                     </div>
                     <div className="text-[11px] text-[#A0A0A0] uppercase tracking-wider mt-1 font-medium">
                       {n.type === "invite" ? "Squad Invitation" : "Friend Request"} • {formatTime(n.createdAt)}
@@ -249,7 +249,7 @@ export default function NotificationsPage() {
                   <button
                     onClick={() => handleRespond(n.id, n.type, "accept")}
                     disabled={actionLoadingId !== null}
-                    className="h-11 rounded-[1.25rem] bg-gradient-to-r from-[#A28B52] to-[#FDE69F] text-white text-[13px] tracking-widest font-black uppercase hover:opacity-90 cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(162,139,82,0.2)]"
+                    className="h-11 rounded-[1.25rem] bg-gradient-to-r from-[#D8A53B] to-[#FDE69F] text-white text-[13px] tracking-widest font-black uppercase hover:opacity-90 cursor-pointer transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_8px_16px_rgba(216,165,59,0.2)]"
                     type="button"
                   >
                     {actionLoadingId === n.id ? (

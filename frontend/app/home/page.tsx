@@ -138,12 +138,12 @@ export default function HomeLobbyPage() {
 
             {/* Streak Badge (Only visible if they've played matches) */}
             {playerData.matchesPlayed && playerData.matchesPlayed > 0 ? (
-              <div className="flex flex-col items-center justify-center glass-panel text-[#A28B52] rounded-xl px-4 py-2 shadow-xl border border-[#A28B52]/30 min-w-[70px]">
+              <div className="flex flex-col items-center justify-center glass-panel text-[#E8D196] rounded-xl px-4 py-2 shadow-xl border border-[#8E793E]/30 min-w-[70px]">
                 <div className="flex items-center gap-1 font-display text-2xl leading-none">
                   <span>🔥</span>
                   <span>1</span>
                 </div>
-                <div className="text-[7px] font-bold tracking-[0.15em] mt-1 text-[#A28B52]/70 uppercase">DAY STREAK</div>
+                <div className="text-[7px] font-bold tracking-[0.15em] mt-1 text-[#E8D196]/70 uppercase">DAY STREAK</div>
               </div>
             ) : null}
           </div>
@@ -293,8 +293,8 @@ export default function HomeLobbyPage() {
               <div className="absolute top-[10%] left-[5%] w-[30%] h-[35%] bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0)_70%)] z-40 pointer-events-none" />
 
               <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1 z-50">
-                <div className="font-display text-[clamp(38px,10.5vw,52px)] font-bold text-[#A28B52] leading-[0.85] tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{rating}</div>
-                <div className="font-display text-[clamp(17px,4.2vw,21px)] font-semibold text-[#A28B52] leading-none tracking-[0.1em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mt-0.5">{position}</div>
+                <div className="font-display text-[clamp(38px,10.5vw,52px)] font-bold text-[#F4E3B5] leading-[0.85] tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{rating}</div>
+                <div className="font-display text-[clamp(17px,4.2vw,21px)] font-semibold text-[#D8C18E] leading-none tracking-[0.1em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mt-0.5">{position}</div>
                 <img src="https://flagcdn.com/w40/in.png" alt="India" className="mt-2 h-[16px] w-[26px] object-cover shadow-[0_4px_8px_rgba(0,0,0,0.6)] border border-white/20" />
               </div>
 
@@ -311,7 +311,7 @@ export default function HomeLobbyPage() {
               {/* PLAYSTYLE TAG */}
               {/* ========================================= */}
               <div className="absolute top-[65.8%] left-0 right-0 flex justify-center">
-                <div className="font-display text-[clamp(9px,2vw,12px)] text-[#A28B52] tracking-[0.2em] uppercase font-bold">
+                <div className="font-display text-[clamp(9px,2vw,12px)] text-[#C89B3C] tracking-[0.2em] uppercase font-bold">
                   {playStyle}
                 </div>
               </div>
@@ -323,31 +323,31 @@ export default function HomeLobbyPage() {
                 {/* Top Row */}
                 <div className="flex justify-between px-1">
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#A28B52] leading-none">{stats.find(s => s.label === "PAC")?.value || 50}</span>
-                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#A28B52]/80 leading-none">PAC</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "PAC")?.value || 50}</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">PAC</span>
                   </div>
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#A28B52] leading-none">{stats.find(s => s.label === "SHO")?.value || 50}</span>
-                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#A28B52]/80 leading-none">SHO</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "SHO")?.value || 50}</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">SHO</span>
                   </div>
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#A28B52] leading-none">{stats.find(s => s.label === "PAS")?.value || 50}</span>
-                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#A28B52]/80 leading-none">PAS</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "PAS")?.value || 50}</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">PAS</span>
                   </div>
                 </div>
                 {/* Bottom Row */}
                 <div className="flex justify-between px-1 mt-1">
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#A28B52] leading-none">{stats.find(s => s.label === "DRI")?.value || 50}</span>
-                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#A28B52]/80 leading-none">DRI</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "DRI")?.value || 50}</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">DRI</span>
                   </div>
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#A28B52] leading-none">{stats.find(s => s.label === "DEF")?.value || 50}</span>
-                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#A28B52]/80 leading-none">DEF</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "DEF")?.value || 50}</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">DEF</span>
                   </div>
                   <div className="flex gap-1 items-baseline w-[32%] justify-center">
-                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#A28B52] leading-none">{stats.find(s => s.label === "PHY")?.value || 50}</span>
-                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#A28B52]/80 leading-none">PHY</span>
+                    <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">{stats.find(s => s.label === "PHY")?.value || 50}</span>
+                    <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">PHY</span>
                   </div>
                 </div>
               </div>
@@ -386,7 +386,7 @@ export default function HomeLobbyPage() {
             {/* Progress Bar */}
             <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden mb-4 border border-white/5">
               <motion.div 
-                className="h-full bg-gradient-to-r from-[#A28B52] to-[#C3DF1B] rounded-full shadow-[0_0_10px_rgba(195,223,27,0.6)]"
+                className="h-full bg-gradient-to-r from-[#8E793E] to-[#C3DF1B] rounded-full shadow-[0_0_10px_rgba(195,223,27,0.6)]"
                 initial={{ width: 0 }} animate={{ width: `${(xpCurrent/xpTotal)*100}%` }} transition={{ duration: 1.5, delay: 0.5, type: "spring" }}
               />
             </div>

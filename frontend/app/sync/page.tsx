@@ -77,7 +77,7 @@ export default function SyncPage() {
               width: ["30px", "80px", "30px"]
             }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute h-[2px] bg-[#FFFDF5] rounded-full blur-[0.5px] shadow-[0_0_15px_4px_rgba(162,139,82,0.9)]" 
+            className="absolute h-[2px] bg-[#FFFDF5] rounded-full blur-[0.5px] shadow-[0_0_15px_4px_rgba(216,165,59,0.9)]" 
           />
         </div>
         

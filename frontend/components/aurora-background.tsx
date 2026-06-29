@@ -18,7 +18,7 @@ export function AuroraBackground() {
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div 
-          className="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] rounded-full bg-[#A28B52]/30 mix-blend-screen"
+          className="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] rounded-full bg-[#8E793E]/30 mix-blend-screen"
           animate={{ x: [0, -40, 0], y: [0, 50, 0], scale: [1, 1.5, 1] }}
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
