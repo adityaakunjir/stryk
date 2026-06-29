@@ -275,11 +275,11 @@ export default function IdentityPage() {
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}
             className="text-center"
           >
-            <h2 className="font-display text-[40px] sm:text-6xl uppercase italic leading-[0.9] tracking-wider text-[#2A261D] drop-shadow-sm font-black">
+            <h2 className="font-display text-[2.5rem] sm:text-6xl font-black italic uppercase leading-none tracking-tight text-[#2A261D] drop-shadow-sm">
               BUILD YOUR<br/>
               <span className="text-[#A28B52]">ATHLETE IDENTITY</span>
             </h2>
-            <p className="mt-4 text-[13px] sm:text-sm font-medium text-white/60">
+            <p className="mt-4 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-[#A28B52]">
               Start with the basics for your player card.
             </p>
           </motion.div>
