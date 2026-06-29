@@ -375,7 +375,7 @@ export default function PlayStylePage() {
         
       />
 
-      <section data-scroll-panel className="relative z-10 mx-auto flex w-full max-w-md flex-col px-5 pb-8 pt-6 flex-1"
+      <section data-scroll-panel className="relative z-10 mx-auto flex h-full w-full max-w-md flex-col px-5 pb-8 pt-6 overflow-y-auto min-h-0"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <motion.header 
@@ -393,7 +393,7 @@ export default function PlayStylePage() {
           </Button>
         </motion.header>
 
-        <div className="mx-auto mt-6 flex w-full max-w-[56rem] flex-1 flex-col items-center min-h-0">
+        <div className="mx-auto mt-6 flex w-full max-w-[56rem] flex-col items-center">
           <div className="sm:hidden mb-6"><JourneyStepper /></div>
 
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="text-center mt-6">
