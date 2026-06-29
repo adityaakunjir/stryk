@@ -228,7 +228,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
                   <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">
                     {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
                   </span>
-                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
+                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-white leading-none">{label}</span>
                 </div>
               ))}
             </div>
@@ -239,7 +239,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
                   <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">
                     {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
                   </span>
-                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
+                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-white leading-none">{label}</span>
                 </div>
               ))}
             </div>
