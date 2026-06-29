@@ -1,0 +1,37 @@
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+
+let API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+if (!API_BASE_URL.endsWith("/api/v1") && !API_BASE_URL.endsWith("/api/v1/")) {
+  API_BASE_URL = API_BASE_URL.replace(/\/$/, "") + "/api/v1";
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    const { getToken } = await auth();
+    const token = await getToken();
+    const url = `/profile/fix-all-stats-secret-admin`;
+
+    const headers = new Headers(req.headers);
+    headers.set("Authorization", "Bearer ");
+    headers.delete("host");
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+      cache: "no-store",
+    });
+
+    const data = await response.text();
+    
+    return new NextResponse(data, {
+      status: response.status,
+      headers: {
+        "Content-Type": response.headers.get("Content-Type") || "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Proxy error:", error);
+    return NextResponse.json({ detail: "Internal Proxy Error" }, { status: 500 });
+  }
+}
