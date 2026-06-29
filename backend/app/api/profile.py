@@ -217,3 +217,74 @@ async def patch_my_profile(
     await session.commit()
     await session.refresh(db_user)
     return db_user
+
+@router.get("/profile/fix-all-stats-secret-admin")
+async def fix_all_stats(session: AsyncSession = Depends(get_session)):
+    """Secret endpoint to forcefully fix stats for all existing users in production DB"""
+    from app.core.stats import get_initial_stats, calculate_ovr
+    from sqlalchemy import text
+    
+    # Force inject any missing columns into production PostgreSQL just in case it crashed earlier
+    cols = [
+        'xp INTEGER NOT NULL DEFAULT 0',
+        'level INTEGER NOT NULL DEFAULT 1',
+        '""needsUpgradeAnimation"" BOOLEAN NOT NULL DEFAULT FALSE',
+        'pace FLOAT NOT NULL DEFAULT 60.0',
+        'shooting FLOAT NOT NULL DEFAULT 60.0',
+        'passing FLOAT NOT NULL DEFAULT 60.0',
+        'dribbling FLOAT NOT NULL DEFAULT 60.0',
+        'defending FLOAT NOT NULL DEFAULT 60.0',
+        'physical FLOAT NOT NULL DEFAULT 60.0',
+        '""gkDiving"" FLOAT NOT NULL DEFAULT 60.0',
+        '""gkHandling"" FLOAT NOT NULL DEFAULT 60.0',
+        '""gkKicking"" FLOAT NOT NULL DEFAULT 60.0',
+        '""gkReflexes"" FLOAT NOT NULL DEFAULT 60.0',
+        '""gkPositioning"" FLOAT NOT NULL DEFAULT 60.0',
+        '""matchesPlayed"" INTEGER NOT NULL DEFAULT 0',
+        'wins INTEGER NOT NULL DEFAULT 0',
+        'losses INTEGER NOT NULL DEFAULT 0',
+        'draws INTEGER NOT NULL DEFAULT 0',
+        'goals INTEGER NOT NULL DEFAULT 0',
+        'assists INTEGER NOT NULL DEFAULT 0',
+        'tackles INTEGER NOT NULL DEFAULT 0',
+        'saves INTEGER NOT NULL DEFAULT 0',
+        'intercepts INTEGER NOT NULL DEFAULT 0',
+        'overall FLOAT NOT NULL DEFAULT 60.0'
+    ]
+    for col in cols:
+        try:
+            await session.execute(text(f'ALTER TABLE users ADD COLUMN IF NOT EXISTS {col};'))
+        except Exception:
+            pass
+    await session.commit()
+
+    result = await session.execute(select(User))
+    users = result.scalars().all()
+    count = 0
+    for u in users:
+        new_stats = get_initial_stats(u.position, u.playStyle)
+        u.pace = new_stats.get("pace", 60.0)
+        u.shooting = new_stats.get("shooting", 60.0)
+        u.passing = new_stats.get("passing", 60.0)
+        u.dribbling = new_stats.get("dribbling", 60.0)
+        u.defending = new_stats.get("defending", 60.0)
+        u.physical = new_stats.get("physical", 60.0)
+        
+        stats_dict = {
+            "pace": u.pace,
+            "shooting": u.shooting,
+            "passing": u.passing,
+            "dribbling": u.dribbling,
+            "defending": u.defending,
+            "physical": u.physical,
+            "gkDiving": u.gkDiving,
+            "gkHandling": u.gkHandling,
+            "gkKicking": u.gkKicking,
+            "gkReflexes": u.gkReflexes,
+            "gkPositioning": u.gkPositioning
+        }
+        u.overall = calculate_ovr(u.position, stats_dict)
+        session.add(u)
+        count += 1
+    await session.commit()
+    return {"message": f"Successfully fixed stats for {count} users in the production database."}
