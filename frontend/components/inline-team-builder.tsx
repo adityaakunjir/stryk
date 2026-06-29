@@ -297,7 +297,10 @@ function DraggablePlayerToken({
         {isDraggable && onSwapClick && (
           <div 
             className="absolute top-1 md:top-1.5 right-1 md:right-1.5 pointer-events-auto cursor-pointer z-20 group/swap"
-            onPointerDown={(e) => {
+            onPointerDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
               e.stopPropagation();
               onSwapClick(player);
             }}
