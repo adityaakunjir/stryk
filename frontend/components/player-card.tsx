@@ -191,10 +191,10 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
         {/* LEFT SIDE (Rating, Position, Flag) */}
         {/* ========================================= */}
         <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1 z-50">
-          <div className="font-display text-[clamp(44px,12vw,60px)] text-[#B08332] leading-[0.82] tracking-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+          <div className="font-display text-[clamp(44px,12vw,60px)] font-bold text-[#F4E3B5] leading-[0.82] tracking-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
             {!disableAnimation ? <AnimatedCounter value={ovr} duration={2.5} /> : ovr}
           </div>
-          <div className="font-display text-[clamp(20px,5vw,26px)] text-white leading-none font-bold drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]">{position || "POS"}</div>
+          <div className="font-display text-[clamp(20px,5vw,26px)] text-[#D8C18E] leading-none font-bold drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">{position || "POS"}</div>
           <img src={`https://flagcdn.com/w40/${nation.toLowerCase() === 'ind' ? 'in' : nation.toLowerCase()}.png`} alt={nation} className="mt-2 h-[16px] w-[26px] object-cover shadow-[0_2px_8px_rgba(0,0,0,0.8)] border border-white/10" />
         </div>
 
@@ -228,7 +228,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
                   <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">
                     {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
                   </span>
-                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-white leading-none">{label}</span>
+                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
                 </div>
               ))}
             </div>
@@ -239,7 +239,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
                   <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">
                     {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
                   </span>
-                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-white leading-none">{label}</span>
+                  <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
                 </div>
               ))}
             </div>
