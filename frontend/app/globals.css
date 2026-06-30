@@ -179,9 +179,7 @@ a,
   position: absolute;
   inset: 0;
   z-index: -1;
-  /* Reduced blur radius: 16px is visually identical but 40% faster */
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  background-color: rgba(22, 22, 22, 0.95); /* Solid fallback for performance */
   pointer-events: none;
 }
 

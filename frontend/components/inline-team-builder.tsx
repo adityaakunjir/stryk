@@ -251,7 +251,7 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
       {/* Inner Background Layer */}
       <div 
         className={`absolute inset-[1.5px] ${
-          state.team === "A" ? "bg-gradient-to-b from-white/60 to-white/20 backdrop-blur-md" 
+          state.team === "A" ? "bg-gradient-to-b from-white/60 to-white/20" 
                              : "bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
         }`}
         style={{ clipPath: clipPathShape }}
@@ -674,7 +674,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
     }
   };
 
-  const handleJoinAction = async (team: "Team A" | "Team B" | null, pId: string) => {
+  const handleJoinAction = React.useCallback(async (team: "Team A" | "Team B" | null, pId: string) => {
     if (!isHost && pId === currentUserId) {
       try {
         await onJoinTeam(team);
@@ -682,14 +682,17 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         console.error(err);
       }
     }
-  };
+  }, [isHost, currentUserId, onJoinTeam]);
 
-  const handleLabelEdit = (player: Player) => {
+  const handleLabelEdit = React.useCallback((player: Player) => {
     if (isLocked) return;
-    const currentState = playerStates[player.id];
-    setEditLabelValue(currentState?.customLabel || player.position || "");
-    setEditingLabelId(player.id);
-  };
+    setPlayerStates(prev => {
+      const currentState = prev[player.id];
+      setEditLabelValue(currentState?.customLabel || player.position || "");
+      setEditingLabelId(player.id);
+      return prev;
+    });
+  }, [isLocked]);
 
   const saveLabelEdit = () => {
     if (!editingLabelId) return;
@@ -703,16 +706,16 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
     setEditingLabelId(null);
   };
 
-  const toggleTeam = () => {
-    if (!editingLabelId) return;
+  const handleSwapTeam = React.useCallback((player: Player) => {
+    if (isLocked) return;
     setPlayerStates(prev => {
-      const currentState = prev[editingLabelId];
+      const currentState = prev[player.id];
       if (!currentState) return prev;
       
       const newTeam: "A" | "B" = currentState.team === "A" ? "B" : "A";
       const nextState = {
         ...prev,
-        [editingLabelId]: {
+        [player.id]: {
           ...currentState,
           team: newTeam,
           customLabel: currentState.x !== null && currentState.y !== null 
@@ -729,11 +732,12 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
           y: s.y
         }));
         onSaveTeams(positionsPayload).catch(console.error);
+      } else if (player.id === currentUserId && onUpdatePosition) {
+        onUpdatePosition(player.id, currentState.x ?? 50, currentState.y ?? 50, newTeam === "A" ? "Team A" : "Team B");
       }
       return nextState;
     });
-    setEditingLabelId(null);
-  };
+  }, [isLocked, isHost, currentUserId, onSaveTeams, onUpdatePosition]);
 
   const getTeamStats = (team: "A" | "B") => {
     const teamPlayerIds = Object.values(playerStates).filter(s => s.team === team).map(s => s.id);
@@ -925,37 +929,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
                   state={state} 
                   isDraggable={isDraggable} 
                   onLabelClick={handleLabelEdit}
-                  onSwapClick={(player) => {
-                    const currentTeam = playerStates[player.id]?.team;
-                    if (!currentTeam) return;
-                    
-                    const newTeam: "A" | "B" = currentTeam === "A" ? "B" : "A";
-                    const currentY = playerStates[player.id]?.y ?? 50;
-                    const newY = currentY;
-                    setPlayers((prev) =>
-                      prev.map((mapP) => {
-                        if (mapP.id === player.id) return { ...mapP, team: newTeam === "A" ? "Team A" : "Team B" };
-                        return mapP;
-                      })
-                    );
-                    setPlayerStates((prev) => {
-                      const existing = prev[player.id];
-                      if (!existing) return prev;
-                      const next: Record<string, PlayerState> = {
-                        ...prev,
-                        [player.id]: {
-                          ...existing,
-                          team: newTeam,
-                          y: newY,
-                          customLabel: getAutoPosition(existing.x ?? 50, newY, newTeam),
-                        },
-                      };
-                      if (isHost && onUpdatePosition) {
-                        onUpdatePosition(player.id, existing.x ?? 50, newY, newTeam === "A" ? "Team A" : "Team B");
-                      }
-                      return next;
-                    });
-                  }}
+                  onSwapClick={isHost ? undefined : handleSwapTeam}
                   isLargeSquad={isLargeSquad}
                 />
               );
@@ -1030,7 +1004,13 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
             />
             <div className="flex gap-2 w-full mt-4">
               <button 
-                onClick={toggleTeam}
+                onClick={() => {
+                  const playerToSwap = players.find(p => p.id === editingLabelId);
+                  if (playerToSwap) {
+                    handleSwapTeam(playerToSwap);
+                    setEditingLabelId(null);
+                  }
+                }}
                 className="flex-1 py-2 bg-[#222] hover:bg-[#333] border border-white/20 rounded-xl text-white text-[9px] font-bold uppercase tracking-widest transition"
               >
                 Switch Team
