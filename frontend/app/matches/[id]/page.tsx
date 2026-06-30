@@ -735,8 +735,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#111111] text-white">
-      <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.06),transparent_40%)]" />
+    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
+      {/* Premium Marble Background */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+      />
 
       <div data-scroll-panel className="relative flex min-h-0 flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full">
         {/* Top Header Navigation */}
@@ -1350,9 +1353,13 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
 function MatchLobbyLoading({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <main className="relative min-h-[100dvh] overflow-hidden bg-[#151515] flex flex-col items-center justify-center px-6 text-center text-white">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.10),transparent_42%)]" />
-      <div className="relative flex flex-col items-center">
+    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
+      {/* Premium Marble Background */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+      />
+
+      <div className="relative flex min-h-[100dvh] flex-col items-center justify-center">
         <div className="mb-5 grid size-16 place-items-center rounded-full border border-[#D4F829]/20 bg-[#D4F829]/8 shadow-[0_0_40px_rgba(212,248,41,0.10)]">
           <Loader2 className="size-7 animate-spin text-[#D4F829]" />
         </div>
