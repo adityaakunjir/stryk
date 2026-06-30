@@ -572,21 +572,21 @@ export default function MatchDetailsPage({ params }: PageProps) {
   }
 
   // Parse participants
-  const participants = useMemo(() => match.participants || [], [match.participants]);
-  const isJoined = useMemo(() => currentUserId ? participants.some(p => p.userId === currentUserId) : false, [currentUserId, participants]);
-  const currentUserParticipant = useMemo(() => currentUserId ? participants.find(p => p.userId === currentUserId) : null, [currentUserId, participants]);
+  const participants = match.participants || [];
+  const isJoined = currentUserId && participants.some(p => p.userId === currentUserId);
+  const currentUserParticipant = currentUserId && participants.find(p => p.userId === currentUserId);
   const currentTeam = currentUserParticipant ? currentUserParticipant.team : null;
   const isCheckedIn = currentUserParticipant ? currentUserParticipant.checkedIn : false;
 
   // Group participants by teams
-  const teamAPlayers = useMemo(() => participants.filter(p => p.team === "A" || p.team === "Team A"), [participants]);
-  const teamBPlayers = useMemo(() => participants.filter(p => p.team === "B" || p.team === "Team B"), [participants]);
-  const unassignedPlayers = useMemo(() => participants.filter(p => p.team !== "A" && p.team !== "Team A" && p.team !== "B" && p.team !== "Team B"), [participants]);
-  const checkedInCount = useMemo(() => participants.filter(p => p.checkedIn).length, [participants]);
-  const hostParticipant = useMemo(() => participants.find(p => p.userId === match.hostId), [participants, match.hostId]);
+  const teamAPlayers = participants.filter(p => p.team === "A" || p.team === "Team A");
+  const teamBPlayers = participants.filter(p => p.team === "B" || p.team === "Team B");
+  const unassignedPlayers = participants.filter(p => p.team !== "A" && p.team !== "Team A" && p.team !== "B" && p.team !== "Team B");
+  const checkedInCount = participants.filter(p => p.checkedIn).length;
+  const hostParticipant = participants.find(p => p.userId === match.hostId);
   const isHost = currentUserId === match.hostId;
   const hostName = hostParticipant?.user?.fullName?.split(" ")[0] || hostParticipant?.user?.username || "Host";
-  const playerFill = useMemo(() => Math.min(100, Math.round((participants.length / Math.max(match.maxPlayers, 1)) * 100)), [participants.length, match.maxPlayers]);
+  const playerFill = Math.min(100, Math.round((participants.length / Math.max(match.maxPlayers, 1)) * 100));
   const statusLabel = match.status === "open" ? "Open Match" : match.status.replace(/_/g, " ");
 
   // Helper to format date
