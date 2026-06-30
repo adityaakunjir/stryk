@@ -78,54 +78,58 @@ const getAutoPosition = (x: number, y: number, team: "A" | "B" | null) => {
 
   if (isTeamA) {
     // Team A (Home/White) plays upwards towards y=0 (Defends Bottom y=100)
-    if (y >= 88) return "GK";
     
-    // Defense (y between 68 and 87)
-    if (y >= 68) {
-      if (x <= 28) return "LB";
-      if (x >= 72) return "RB";
+    // GK (Bottom 17% of pitch to cover penalty box + arc)
+    if (y >= 83) return "GK";
+    
+    // Defense (y between 65 and 82)
+    if (y >= 65) {
+      if (x <= 30) return "LB";
+      if (x >= 70) return "RB";
       return "CB";
     }
     
-    // Midfield (y between 45 and 67)
-    if (y >= 45) {
-      if (x <= 28) return "LMF";
-      if (x >= 72) return "RMF";
-      if (y >= 60) return "DMF";
-      if (y >= 52) return "CMF";
+    // Midfield (y between 35 and 64)
+    if (y >= 35) {
+      if (x <= 30) return "LMF";
+      if (x >= 70) return "RMF";
+      if (y >= 55) return "DMF";
+      if (y >= 45) return "CMF";
       return "AMF";
     }
     
-    // Attack (y < 45)
-    if (x <= 28) return "LWF";
-    if (x >= 72) return "RWF";
-    if (y >= 25) return "SS";
+    // Attack (y < 35)
+    if (x <= 30) return "LWF";
+    if (x >= 70) return "RWF";
+    if (y >= 15) return "SS";
     return "CF";
     
   } else {
     // Team B (Away/Black) plays downwards towards y=100 (Defends Top y=0)
-    if (y <= 12) return "GK";
     
-    // Defense (y between 13 and 32)
-    if (y <= 32) {
-      if (x <= 28) return "RB";
-      if (x >= 72) return "LB";
+    // GK (Top 17% of pitch to cover penalty box + arc)
+    if (y <= 17) return "GK";
+    
+    // Defense (y between 18 and 35)
+    if (y <= 35) {
+      if (x <= 30) return "RB"; // Flipped horizontally
+      if (x >= 70) return "LB";
       return "CB";
     }
     
-    // Midfield (y between 33 and 55)
-    if (y <= 55) {
-      if (x <= 28) return "RMF";
-      if (x >= 72) return "LMF";
-      if (y <= 40) return "DMF";
-      if (y <= 48) return "CMF";
+    // Midfield (y between 36 and 65)
+    if (y <= 65) {
+      if (x <= 30) return "RMF"; // Flipped horizontally
+      if (x >= 70) return "LMF";
+      if (y <= 45) return "DMF";
+      if (y <= 55) return "CMF";
       return "AMF";
     }
     
-    // Attack (y > 55)
-    if (x <= 28) return "RWF";
-    if (x >= 72) return "LWF";
-    if (y <= 75) return "SS";
+    // Attack (y > 65)
+    if (x <= 30) return "RWF"; // Flipped horizontally
+    if (x >= 70) return "LWF";
+    if (y <= 85) return "SS";
     return "CF";
   }
 };
