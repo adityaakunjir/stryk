@@ -87,6 +87,8 @@ input, textarea, select {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  contain: layout paint;
 }
 
 [data-scroll-panel]::-webkit-scrollbar {
@@ -108,6 +110,28 @@ a,
   user-select: none;
   -webkit-user-select: none;
   cursor: pointer;
+}
+
+@media (pointer: coarse) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .glass-panel {
+    box-shadow: 0 8px 18px -12px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.10);
+    transition: none;
+  }
+
+  button.glass-panel:hover,
+  a.glass-panel:hover,
+  .glass-panel-interactive:hover {
+    transform: none;
+    box-shadow: 0 8px 18px -12px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.10);
+  }
+
+  .custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 ::selection {
@@ -195,4 +219,3 @@ a.glass-panel:hover,
     0 0 20px rgba(212, 248, 41, 0.1);
   transform: translateY(-2px);
 }
-

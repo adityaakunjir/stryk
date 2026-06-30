@@ -668,24 +668,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#111111] flex justify-center custom-scrollbar text-white">
-      <AnimatePresence>
-        {actionLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-black/60 backdrop-blur-md"
-          >
-            <Loader2 className="size-12 text-[#D4F829] animate-spin mb-4 drop-shadow-[0_0_15px_rgba(212,248,41,0.5)]" />
-            <div className="text-[#D4F829] font-black tracking-[0.2em] uppercase text-sm drop-shadow-[0_0_10px_rgba(212,248,41,0.5)]">Processing...</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+    <main className="stryk-mobile-shell bg-[#111111] text-white">
       <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.06),transparent_40%)]" />
 
-      <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full overflow-y-auto">
+      <div data-scroll-panel className="relative flex min-h-0 flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full">
         {/* Top Header Navigation */}
         <div className="flex items-center justify-between mb-4 z-10 shrink-0">
           <button 
@@ -713,7 +699,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         </div>
 
         {/* Match Summary Card */}
-        <div className="relative overflow-hidden rounded-[2rem] border border-white/5 bg-[#1A1A1A]/30 backdrop-blur-md p-5 shadow-[0_8px_32px_rgba(0,0,0,0.2)] mb-4 shrink-0 z-10">
+        <div className="relative overflow-hidden rounded-[2rem] border border-white/5 bg-[#1A1A1A]/85 p-5 shadow-[0_8px_32px_rgba(0,0,0,0.2)] mb-4 shrink-0 z-10">
           <div className="flex items-center justify-between gap-3 mb-3">
             <span className="text-[10px] font-black tracking-widest text-[#D4F829] bg-[#D4F829]/10 px-3 py-1 rounded-full uppercase flex items-center gap-1.5 border border-[#D4F829]/10">
               <span className="size-1.5 rounded-full bg-[#D4F829] animate-pulse" />
@@ -851,11 +837,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
         </div>
 
         {/* Roster List / Tactics Board View Selection */}
-        <div className={viewMode === "roster" ? "block w-full" : "hidden"}>
+        {viewMode === "roster" && (
+        <div className="block w-full">
           <div className="shrink-0 flex flex-col gap-3 w-full mb-4">
             <div className="grid grid-cols-2 gap-3">
               {/* Team A Column */}
-              <div className="rounded-[1.75rem] border border-white/5 bg-[#1A1A1A]/20 backdrop-blur-md p-4 flex flex-col min-h-[220px]">
+              <div className="rounded-[1.75rem] border border-white/5 bg-[#1A1A1A]/85 p-4 flex flex-col min-h-[220px]">
                 <div className="flex items-center justify-between pb-2 mb-3 border-b border-white/5">
                   <span className="text-[10px] font-black tracking-wider text-white uppercase truncate">
                     {match.teamAName || "TEAM A"}
@@ -872,7 +859,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                       <div className="flex items-center gap-2 min-w-0">
                         <div className="relative size-6 rounded-full overflow-hidden border border-slate-700/50 bg-[#222]">
                           {p.user.avatarUrl ? (
-                            <img src={p.user.avatarUrl} alt={p.user.username} className="w-full h-full object-cover" />
+                            <img src={p.user.avatarUrl} alt={p.user.username} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                           ) : (
                             <div className="text-[9px] font-black text-white/40 flex items-center justify-center h-full w-full">
                               {p.user.username.charAt(0).toUpperCase()}
@@ -904,7 +891,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               </div>
 
               {/* Team B Column */}
-              <div className="rounded-[1.75rem] border border-white/5 bg-[#1A1A1A]/20 backdrop-blur-md p-4 flex flex-col min-h-[220px]">
+              <div className="rounded-[1.75rem] border border-white/5 bg-[#1A1A1A]/85 p-4 flex flex-col min-h-[220px]">
                 <div className="flex items-center justify-between pb-2 mb-3 border-b border-white/5">
                   <span className="text-[10px] font-black tracking-wider text-white uppercase truncate">
                     {match.teamBName || "TEAM B"}
@@ -921,7 +908,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                       <div className="flex items-center gap-2 min-w-0">
                         <div className="relative size-6 rounded-full overflow-hidden border border-[#D4F829]/20 bg-[#222]">
                           {p.user.avatarUrl ? (
-                            <img src={p.user.avatarUrl} alt={p.user.username} className="w-full h-full object-cover" />
+                            <img src={p.user.avatarUrl} alt={p.user.username} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                           ) : (
                             <div className="text-[9px] font-black text-white/40 flex items-center justify-center h-full w-full">
                               {p.user.username.charAt(0).toUpperCase()}
@@ -964,7 +951,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     <div key={p.user.id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/5">
                       <div className="relative size-4 rounded-full overflow-hidden border border-white/10">
                         {p.user.avatarUrl ? (
-                          <img src={p.user.avatarUrl} alt={p.user.username} className="w-full h-full object-cover" />
+                          <img src={p.user.avatarUrl} alt={p.user.username} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                         ) : (
                           <div className="text-[8px] font-black text-white/40 flex items-center justify-center h-full w-full">
                             {p.user.username.charAt(0).toUpperCase()}
@@ -980,9 +967,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
             )}
           </div>
         </div>
+        )}
 
         {/* Tactical Pitch Board View */}
-        <div className={viewMode === "tactical" ? "block w-full" : "hidden"}>
+        {viewMode === "tactical" && (
+        <div className="block w-full">
           {match && (
             <div className="shrink-0 mt-1 w-full rounded-[2rem] border border-[#151515]/10 glass-panel p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)] mb-4">
               <InlineTeamBuilder
@@ -1002,6 +991,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
             </div>
           )}
         </div>
+        )}
 
         {/* Stats & Verifications Section */}
         {match && match.status === "closed" && (
@@ -1103,7 +1093,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         )}        {/* Bottom Primary CTAs */}
         <div className="shrink-0 mt-4 w-full mb-4">
           {isJoined ? (
-            <div className="relative flex flex-col gap-0 p-5 rounded-[2rem] bg-[#1A1A1A]/30 backdrop-blur-md shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
+            <div className="relative flex flex-col gap-0 p-5 rounded-[2rem] bg-[#1A1A1A]/85 shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4F829]/40 to-transparent" />
               <div className="pointer-events-none absolute left-1/2 -top-10 -translate-x-1/2 size-24 rounded-full bg-[#D4F829]/10 blur-2xl" />
               
@@ -1172,7 +1162,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
               </div>
             </div>
           ) : (
-            <div className="relative p-5 rounded-[2rem] bg-[#1A1A1A]/30 backdrop-blur-md shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
+            <div className="relative p-5 rounded-[2rem] bg-[#1A1A1A]/85 shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4F829]/40 to-transparent" />
               <button
                 onClick={handleJoinMatch}

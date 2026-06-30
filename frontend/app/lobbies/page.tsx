@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Plus, MapPin, Clock, Users, ArrowLeft, X } from "lucide-react";
 
@@ -9,7 +9,6 @@ export default function LobbiesPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showDraftOptions, setShowDraftOptions] = useState(false);
 
   // Lobbies state - empty by default, loaded from localStorage
   const [lobbies, setLobbies] = useState<{
@@ -35,18 +34,12 @@ export default function LobbiesPage() {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        queueMicrotask(() => {
-          setLobbies(parsed);
-        });
+        setLobbies(parsed);
       } catch {
-        queueMicrotask(() => {
-          setLobbies([]);
-        });
+        setLobbies([]);
       }
     } else {
-      queueMicrotask(() => {
-        setLobbies([]); // Empty by default
-      });
+      setLobbies([]); // Empty by default
     }
   }, []);
 
@@ -87,26 +80,34 @@ export default function LobbiesPage() {
     setShowCreateModal(false);
   };
 
-  const filteredLobbies = lobbies.filter((l) => {
-    const matchesSearch = l.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          l.venue.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          l.host.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    if (activeTab === "my") {
-      // Show lobbies hosted by current user
-      let currentHostName = "Player";
-      const storedPlayer = localStorage.getItem("stryk_player_data");
-      if (storedPlayer) {
-        try {
-          const parsed = JSON.parse(storedPlayer);
-          currentHostName = parsed.fullName || currentHostName;
-        } catch {}
+  const currentHostName = useMemo(() => {
+    const storedPlayer = typeof window !== "undefined" ? localStorage.getItem("stryk_player_data") : null;
+    if (storedPlayer) {
+      try {
+        const parsed = JSON.parse(storedPlayer);
+        return parsed.fullName || "Player";
+      } catch {
+        return "Player";
       }
-      return matchesSearch && l.host === currentHostName;
     }
+    return "Player";
+  }, []);
 
-    return matchesSearch;
-  });
+  const filteredLobbies = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return lobbies.filter((l) => {
+      const matchesSearch = !query ||
+        l.name.toLowerCase().includes(query) ||
+        l.venue.toLowerCase().includes(query) ||
+        l.host.toLowerCase().includes(query);
+
+      if (activeTab === "my") {
+        return matchesSearch && l.host === currentHostName;
+      }
+
+      return matchesSearch;
+    });
+  }, [activeTab, currentHostName, lobbies, searchQuery]);
 
   return (
     <main className="stryk-mobile-shell text-white bg-[#151515]">
@@ -116,7 +117,7 @@ export default function LobbiesPage() {
         style={{ background: "radial-gradient(60% 100% at 50% 0%, rgba(198,255,0,0.10), transparent 60%)" }}
       />
 
-      <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-6 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0">
+      <div data-scroll-panel className="relative flex flex-col px-5 pt-6 pb-6 max-w-md mx-auto z-10 w-full">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
