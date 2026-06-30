@@ -982,7 +982,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
                   state={state} 
                   isDraggable={isDraggable} 
                   onLabelClick={handleLabelEdit}
-                  onSwapClick={isHost ? undefined : handleSwapTeam}
+                  onSwapClick={handleSwapTeam}
                   isLargeSquad={isLargeSquad}
                 />
               );
@@ -1017,6 +1017,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
                       state={state}
                       isDraggable={!isLocked && (isHost || p.id === currentUserId)}
                       onLabelClick={handleLabelEdit}
+                      onSwapClick={handleSwapTeam}
                       isLargeSquad={isLargeSquad}
                     />
                   );
