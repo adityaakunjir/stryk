@@ -27,6 +27,7 @@ export default function HomeLobbyPage() {
   const [rotateY, setRotateY] = useState(0);
   const [shineX, setShineX] = useState(50);
   const [shineY, setShineY] = useState(50);
+  const [isHovered, setIsHovered] = useState(false);
 
   const [friends, setFriends] = useState<any[]>([]);
   const [incomingRequests, setIncomingRequests] = useState<any[]>([]);
@@ -166,6 +167,7 @@ export default function HomeLobbyPage() {
           <motion.div 
             className="absolute inset-0 pointer-events-auto cursor-pointer"
             onClick={() => setShowCardDossier(true)}
+            onMouseEnter={() => setIsHovered(true)}
             onMouseMove={(e) => {
               const card = e.currentTarget;
               const rect = card.getBoundingClientRect();
@@ -181,13 +183,26 @@ export default function HomeLobbyPage() {
               setShineY((y / rect.height) * 100);
             }}
             onMouseLeave={() => {
+              setIsHovered(false);
               setRotateX(0);
               setRotateY(0);
               setShineX(50);
               setShineY(50);
             }}
-            animate={{ rotateX, rotateY, scale: rotateX !== 0 ? 1.04 : 1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            animate={
+              isHovered 
+                ? { rotateX, rotateY, scale: 1.04 } 
+                : { 
+                    rotateX: [0, 4, -4, 0, 0], 
+                    rotateY: [0, 8, -8, 0, 0],
+                    scale: 1 
+                  }
+            }
+            transition={
+              isHovered 
+                ? { type: "spring", stiffness: 300, damping: 20 }
+                : { duration: 8, repeat: Infinity, times: [0, 0.04, 0.08, 0.12, 1], ease: "easeInOut" }
+            }
           >
             {/* Main Card Container */}
             
