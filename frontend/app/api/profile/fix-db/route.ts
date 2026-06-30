@@ -10,10 +10,12 @@ export async function GET(req: NextRequest) {
   try {
     const { getToken } = await auth();
     const token = await getToken();
-    const url = `/profile/fix-all-stats-secret-admin`;
+    const url = `${API_BASE_URL}/profile/fix-all-stats-secret-admin`;
 
     const headers = new Headers(req.headers);
-    headers.set("Authorization", "Bearer ");
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
     headers.delete("host");
 
     const response = await fetch(url, {
