@@ -193,9 +193,9 @@ export default function HomeLobbyPage() {
               isHovered 
                 ? { rotateX, rotateY, scale: 1.04 } 
                 : { 
-                    rotateX: [0, 1.5, -1, 0, 0], 
-                    rotateY: [0, 2.5, -2, 0, 0],
-                    scale: [1, 1.01, 1.01, 1, 1]
+                    rotateX: [0, 1.2, -1.2, 0, 0], 
+                    rotateY: [0, -1.8, 1.8, 0, 0],
+                    scale: 1 
                   }
             }
             transition={
