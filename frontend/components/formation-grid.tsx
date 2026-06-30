@@ -11,6 +11,7 @@ import {
   useSensors,
   DragStartEvent,
   DragCancelEvent,
+  useDraggable,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { FIFAPlayerCard } from "./fifa-player-card";
@@ -69,6 +70,7 @@ interface DraggablePlayerToken {
   onRemove: (playerId: string) => void;
   pitchWidth: number;
   pitchHeight: number;
+  disabled: boolean;
 }
 
 function DraggablePlayerToken({
@@ -78,14 +80,22 @@ function DraggablePlayerToken({
   onRemove,
   pitchWidth,
   pitchHeight,
+  disabled,
 }: DraggablePlayerToken) {
   const [showRemove, setShowRemove] = useState(false);
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: position.playerId,
+    disabled,
+  });
 
   const pixelX = (position.x / 100) * pitchWidth;
   const pixelY = (position.y / 100) * pitchHeight;
 
   return (
     <motion.div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
       key={`player-${position.playerId}`}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: isDragging ? 1.1 : 1, opacity: 1 }}
@@ -95,7 +105,10 @@ function DraggablePlayerToken({
         position: "absolute",
         left: `${pixelX}px`,
         top: `${pixelY}px`,
-        transform: "translate(-50%, -50%)",
+        transform: transform
+          ? `translate3d(${transform.x}px, ${transform.y}px, 0) translate(-50%, -50%)`
+          : "translate(-50%, -50%)",
+        willChange: "transform",
       }}
       onMouseEnter={() => setShowRemove(true)}
       onMouseLeave={() => setShowRemove(false)}
@@ -155,11 +168,14 @@ export function FormationGrid({
     if (readOnly || !pitchRef.current) return;
 
     const pitchRect = pitchRef.current.getBoundingClientRect();
-    const clientX = event.delta.x + pitchRect.left;
-    const clientY = event.delta.y + pitchRect.top;
+    const translatedRect = event.active.rect.current.translated;
+    if (!translatedRect) return;
 
-    const x = ((clientX - pitchRect.left) / pitchRect.width) * 100;
-    const y = ((clientY - pitchRect.top) / pitchRect.height) * 100;
+    const dropCenterX = translatedRect.left + translatedRect.width / 2;
+    const dropCenterY = translatedRect.top + translatedRect.height / 2;
+
+    const x = ((dropCenterX - pitchRect.left) / pitchRect.width) * 100;
+    const y = ((dropCenterY - pitchRect.top) / pitchRect.height) * 100;
 
     // Clamp to pitch boundaries
     const clampedX = Math.max(0, Math.min(100, x));
@@ -244,6 +260,7 @@ export function FormationGrid({
                 onRemove={onPlayerRemove}
                 pitchWidth={dims.width}
                 pitchHeight={dims.height}
+                disabled={readOnly}
               />
             ))}
           </AnimatePresence>

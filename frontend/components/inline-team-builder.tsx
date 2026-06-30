@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Check, ChevronUp, Crown, Grip, Loader2, Save, Shield, Sparkles, Users, Pencil } from "lucide-react";
 import {
   DndContext,
@@ -166,6 +166,7 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
   const style: React.CSSProperties = {
     opacity: isDragging ? 0 : 1,
     zIndex: isDragging ? 50 : 10,
+    willChange: isDraggable ? "transform" : undefined,
     ...(state.x !== null && state.y !== null ? {
       position: 'absolute',
       left: `${state.x}%`,
@@ -193,18 +194,18 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
         style={style}
         {...listeners}
         {...attributes}
-        className={`relative flex flex-col items-center justify-center shrink-0 group touch-none transition-transform ${compactWrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing hover:scale-105' : 'cursor-default'}`}
+        className={`relative flex flex-col items-center justify-center shrink-0 group touch-none ${compactWrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'}`}
       >
-        <div className={`relative mx-auto overflow-hidden rounded-full border-[2px] border-white/10 glass-panel shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:border-[#D4F829]/50 transition-colors pointer-events-none ${compactAvatarClass}`}>
+        <div className={`relative mx-auto overflow-hidden rounded-full border-[2px] border-white/10 bg-[#161816] shadow-[0_4px_10px_rgba(0,0,0,0.45)] pointer-events-none ${compactAvatarClass}`}>
           {player.avatarUrl ? (
-            <Image priority src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
+            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
               {player.username.charAt(0).toUpperCase()}
             </div>
           )}
         </div>
-        <div className={`absolute right-0 top-0 flex items-center justify-center rounded-full bg-gradient-to-br from-[#2A2A2A] to-black font-black text-white shadow-md border border-white/20 group-hover:border-[#D4F829]/50 transition-colors ${compactBadgeClass} ${getOvrColor(player.overall)}`}>
+        <div className={`absolute right-0 top-0 flex items-center justify-center rounded-full bg-gradient-to-br from-[#2A2A2A] to-black font-black text-white shadow-md border border-white/20 ${compactBadgeClass} ${getOvrColor(player.overall)}`}>
           {player.overall}
         </div>
         <div
@@ -214,7 +215,7 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
             onLabelClick(player);
           }}
         >
-          <span className={`truncate text-center font-bold tracking-wide text-white/70 group-hover:text-white transition-colors drop-shadow-sm ${compactNameClass}`}>
+          <span className={`truncate text-center font-bold tracking-wide text-white/75 drop-shadow-sm ${compactNameClass}`}>
             {player.username}
           </span>
         </div>
@@ -233,15 +234,15 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
       ref={setNodeRef}
       style={{
         ...style,
-        filter: "drop-shadow(0px 6px 10px rgba(0,0,0,0.4))"
+        filter: isDragging ? undefined : "drop-shadow(0px 4px 8px rgba(0,0,0,0.35))"
       }}
       {...listeners}
       {...attributes}
-      className={`relative flex flex-col items-center justify-start shrink-0 group touch-none transition-all ${wrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing hover:-translate-y-1' : 'cursor-default'}`}
+      className={`relative flex flex-col items-center justify-start shrink-0 group touch-none ${wrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'}`}
     >
       {/* Outer Border Layer */}
       <div 
-        className={`absolute inset-0 opacity-90 group-hover:opacity-100 transition-opacity ${
+        className={`absolute inset-0 opacity-90 ${
           state.team === "A" ? "bg-gradient-to-br from-white/40 via-white/15 to-white/5" 
                              : "bg-gradient-to-br from-[#EAF7AF]/40 via-[#A28B52]/25 to-[#D4F829]/30"
         }`}
@@ -292,7 +293,7 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
             onLabelClick(player);
           }}
         >
-          <span className={`truncate text-center font-black tracking-tight transition-colors ${state.team === "A" ? "text-slate-800 drop-shadow-none group-hover:text-black" : "text-white/90 drop-shadow-md group-hover:text-white"} ${nameClass}`}>
+          <span className={`truncate text-center font-black tracking-tight ${state.team === "A" ? "text-slate-800 drop-shadow-none" : "text-white/90 drop-shadow-md"} ${nameClass}`}>
             {player.username}
           </span>
         </div>
@@ -425,6 +426,8 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
 
   const pitchRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const dragMoveFrameRef = useRef<number | null>(null);
+  const latestDragPosRef = useRef<{ x: number; y: number } | null>(null);
 
   // Label Edit State
   const [editingLabelId, setEditingLabelId] = useState<string | null>(null);
@@ -516,6 +519,14 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
     }
   }, [playerStates, matchId]);
 
+  useEffect(() => {
+    return () => {
+      if (dragMoveFrameRef.current !== null) {
+        cancelAnimationFrame(dragMoveFrameRef.current);
+      }
+    };
+  }, []);
+
   // Listen for real-time external updates from other users
   useEffect(() => {
     if (externalPositionUpdate) {
@@ -567,6 +578,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
     if (!isHost && pId !== currentUserId) return;
     setActiveId(pId);
     setDraggedPos(null);
+    latestDragPosRef.current = null;
   };
 
   const handleDragMove = (event: DragMoveEvent) => {
@@ -585,9 +597,24 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
       let percentY = ((dropCenterY - pitchRect.top) / pitchRect.height) * 100;
       percentX = Math.max(5, Math.min(95, percentX));
       percentY = Math.max(5, Math.min(95, percentY));
-      setDraggedPos({ x: percentX, y: percentY });
+      const previous = latestDragPosRef.current;
+      if (!previous || Math.abs(previous.x - percentX) > 1.5 || Math.abs(previous.y - percentY) > 1.5) {
+        latestDragPosRef.current = { x: percentX, y: percentY };
+        if (dragMoveFrameRef.current === null) {
+          dragMoveFrameRef.current = requestAnimationFrame(() => {
+            dragMoveFrameRef.current = null;
+            setDraggedPos(latestDragPosRef.current);
+          });
+        }
+      }
     } else {
-      setDraggedPos(null);
+      latestDragPosRef.current = null;
+      if (dragMoveFrameRef.current === null) {
+        dragMoveFrameRef.current = requestAnimationFrame(() => {
+          dragMoveFrameRef.current = null;
+          setDraggedPos(null);
+        });
+      }
     }
   };
 
@@ -595,6 +622,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
     if (isLocked) return;
     setActiveId(null);
     setDraggedPos(null);
+    latestDragPosRef.current = null;
     const { active } = event;
     const pId = active.id as string;
     
@@ -748,11 +776,11 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
     return { count: teamPlayers.length, avgOvr };
   };
 
-  const statsA = getTeamStats("A");
-  const statsB = getTeamStats("B");
+  const statsA = useMemo(() => getTeamStats("A"), [players, playerStates]);
+  const statsB = useMemo(() => getTeamStats("B"), [players, playerStates]);
   const activePlayer = activeId ? players.find(p => p.id === activeId) : null;
   const activePlayerState = activeId ? playerStates[activeId] : null;
-  const benchPlayers = players.filter(p => !playerStates[p.id]?.x);
+  const benchPlayers = useMemo(() => players.filter(p => !playerStates[p.id]?.x), [players, playerStates]);
   
   let pitchHeightClass = "h-[680px] md:h-[760px]";
   if (matchFormat === "3v3") pitchHeightClass = "h-[450px] md:h-[500px]";
@@ -781,8 +809,8 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         <TeamChip label={localTeamBName} value={statsB.count} tone="lime" />
       </div>
 
-      <div className={`w-full flex flex-col relative bg-[#080a08] rounded-[1.75rem] overflow-visible shadow-[0_24px_60px_rgba(0,0,0,0.48)] select-none ${pitchHeightClass} border border-[#D4F829]/15`}>
-      <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] overflow-hidden bg-[radial-gradient(circle_at_78%_0%,rgba(212,248,41,0.13),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.045),transparent_30%)]" />
+      <div className={`w-full flex flex-col relative bg-[#080a08] rounded-[1.75rem] overflow-visible shadow-[0_16px_42px_rgba(0,0,0,0.42)] select-none ${pitchHeightClass} border border-[#D4F829]/15`}>
+      <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.035),transparent_30%)]" />
       
       {/* Top Header */}
       {isHost && (
@@ -812,9 +840,8 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         <div className="flex flex-col flex-1 relative bg-transparent">
           {/* The Pitch (Main Content) */}
           <div ref={pitchRef} className="flex-1 relative" 
-               style={{ background: 'radial-gradient(circle at 50% 50%, rgba(212,248,41,0.12), transparent 25%), repeating-linear-gradient(0deg, #31583b, #31583b 52px, #2b5035 52px, #2b5035 104px)' }}>
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(0deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:44px_44px]" />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.12)_58%,rgba(0,0,0,0.32)_100%)]" />
+               style={{ background: 'repeating-linear-gradient(0deg, #31583b, #31583b 52px, #2b5035 52px, #2b5035 104px)' }}>
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.10)_60%,rgba(0,0,0,0.26)_100%)]" />
             
             {/* Pitch Lines Wrapper */}
             <div className="absolute inset-4 border-[1.5px] border-white/35 pointer-events-none shadow-[inset_0_0_40px_rgba(0,0,0,0.18)]" />
