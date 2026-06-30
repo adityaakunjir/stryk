@@ -68,6 +68,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   const [match, setMatch] = useState<MatchDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userLoading, setUserLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -98,6 +99,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       const data = await res.json();
       if (data.success) {
         setMatch(data.data);
+        sessionStorage.setItem(`stryk_match_${matchId}`, JSON.stringify(data.data));
         
         // Fetch stats if match is closed
         if (data.data.status === "closed") {
@@ -134,19 +136,41 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   }, [matchId, currentUserId]);
 
+  // Hydrate from cache immediately
+  useEffect(() => {
+    const cachedMatch = sessionStorage.getItem(`stryk_match_${matchId}`);
+    if (cachedMatch) {
+      try {
+        setMatch(JSON.parse(cachedMatch));
+        setLoading(false);
+      } catch (e) {}
+    }
+  }, [matchId]);
+
   // Sync profile to get current user ID
   useEffect(() => {
     const fetchUserId = async () => {
+      // INSTANT CACHE HIT
+      const cachedId = sessionStorage.getItem("stryk_current_user_id");
+      if (cachedId) {
+        setCurrentUserId(cachedId);
+        setUserLoading(false);
+      }
+
       try {
         const res = await fetch("/api/profile/me");
         const data = await res.json();
         if (data.success && data.player) {
           setCurrentUserId(data.player.id);
+          sessionStorage.setItem("stryk_current_user_id", data.player.id);
         } else if (data && data.id) {
           setCurrentUserId(data.id);
+          sessionStorage.setItem("stryk_current_user_id", data.id);
         }
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
+      } finally {
+        setUserLoading(false);
       }
     };
     fetchUserId();
@@ -547,7 +571,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
 
 
-  if (loading) {
+  if (loading || userLoading) {
     return (
       <main className="relative min-h-[100dvh] overflow-hidden bg-[#151515] flex flex-col items-center justify-center">
         <Loader2 className="size-10 text-white animate-spin mb-4" />
