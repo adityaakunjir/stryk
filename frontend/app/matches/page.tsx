@@ -26,6 +26,7 @@ export default function MatchesPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "open" | "upcoming" | "nearby">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   // Create match modal states
@@ -75,6 +76,13 @@ export default function MatchesPage() {
     fetchUserId();
   }, []);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 250);
+    return () => clearTimeout(timeout);
+  }, [searchQuery]);
+
   const fetchMatches = async () => {
     setLoading(true);
     try {
@@ -83,8 +91,8 @@ export default function MatchesPage() {
       if (filter !== "all") {
         params.append("filter", filter);
       }
-      if (searchQuery.trim()) {
-        params.append("location", searchQuery.trim());
+      if (debouncedSearchQuery.trim()) {
+        params.append("location", debouncedSearchQuery.trim());
       }
       if (params.toString()) {
         url += `?${params.toString()}`;
@@ -110,7 +118,7 @@ export default function MatchesPage() {
   useEffect(() => {
     fetchMatches();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, searchQuery]);
+  }, [filter, debouncedSearchQuery]);
 
   const handleJoinMatch = async (matchId: string, password?: string) => {
     setJoiningId(matchId);
@@ -301,7 +309,7 @@ export default function MatchesPage() {
         
       />
 
-      <div className="relative h-full flex flex-col px-6 pt-6 pb-8 max-w-md mx-auto z-10 w-full overflow-y-auto">
+      <div data-scroll-panel className="relative flex flex-col px-6 pt-6 pb-8 max-w-md mx-auto z-10 w-full">
         {/* Header */}
         <header className="flex items-center justify-between mb-5 relative">
           <button 
@@ -432,7 +440,7 @@ export default function MatchesPage() {
               return (
                 <div 
                   key={match.id}
-                  className="p-5 rounded-[2rem] border border-[#A28B52]/20 glass-panel flex flex-col shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-[#A28B52]/50 transition duration-300 relative overflow-hidden group/card"
+                  className="p-5 rounded-[2rem] border border-[#A28B52]/20 bg-black/30 flex flex-col shadow-[0_8px_20px_rgba(0,0,0,0.22)] relative overflow-hidden group/card"
                 >
                   {/* Status Badge */}
                   <div className="absolute top-5 right-5 flex items-center gap-1.5">
@@ -582,11 +590,11 @@ export default function MatchesPage() {
 
       {/* Organize Modal */}
       {showCreateModal && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md px-5">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 px-5">
           <div className="relative w-full max-w-sm rounded-[2rem] border border-white/10 bg-[#111] shadow-[0_24px_60px_rgba(0,0,0,0.5)] flex flex-col max-h-[85vh] overflow-hidden">
             
             {/* Sticky Header */}
-            <div className="px-6 py-4.5 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#111]/90 backdrop-blur-md z-10">
+            <div className="px-6 py-4.5 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#111] z-10">
               <h3 className="font-display uppercase tracking-widest text-lg italic font-black text-white">
                 ORGANIZE <span className="text-[#A28B52]">MATCH</span>
               </h3>
@@ -758,7 +766,7 @@ export default function MatchesPage() {
         <div className="absolute inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-6 animate-in fade-in duration-200">
           <div className="w-full max-w-md bg-[#111] sm:rounded-[2rem] rounded-t-[2rem] shadow-2xl border border-white/10 overflow-hidden flex flex-col max-h-[90dvh] animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-10 duration-300 relative">
             
-            <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#111]/80 backdrop-blur-md z-10">
+            <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#111] z-10">
               <h2 className="text-white font-black tracking-widest uppercase text-lg italic font-display">
                 JOIN <span className="text-[#A28B52]">LOBBY</span>
               </h2>
