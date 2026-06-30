@@ -858,14 +858,18 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
             {/* Top 6-yard Box */}
             <div className="absolute top-4 left-1/2 w-20 h-8 border-[1.5px] border-t-0 border-white/40 -translate-x-1/2 pointer-events-none" />
             {/* Top Penalty Arc */}
-            <div className="absolute top-[calc(1rem+20px)] left-1/2 w-16 h-8 border-[1.5px] border-b-0 border-white/40 rounded-t-full -translate-x-1/2 pointer-events-none origin-bottom rotate-180" />
+            <svg className="absolute top-[calc(1rem+5rem)] left-1/2 h-12 w-24 -translate-x-1/2 pointer-events-none overflow-visible" viewBox="0 0 96 48" aria-hidden="true">
+              <path d="M0 0 Q48 48 96 0" fill="none" stroke="rgba(255,255,255,0.40)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+            </svg>
 
             {/* Bottom Penalty Box */}
             <div className="absolute bottom-4 left-1/2 w-40 h-20 border-[1.5px] border-b-0 border-white/40 -translate-x-1/2 pointer-events-none" />
             {/* Bottom 6-yard Box */}
             <div className="absolute bottom-4 left-1/2 w-20 h-8 border-[1.5px] border-b-0 border-white/40 -translate-x-1/2 pointer-events-none" />
             {/* Bottom Penalty Arc */}
-            <div className="absolute bottom-[calc(1rem+20px)] left-1/2 w-16 h-8 border-[1.5px] border-b-0 border-white/40 rounded-t-full -translate-x-1/2 pointer-events-none" />
+            <svg className="absolute bottom-[calc(1rem+5rem)] left-1/2 h-12 w-24 -translate-x-1/2 pointer-events-none overflow-visible" viewBox="0 0 96 48" aria-hidden="true">
+              <path d="M0 48 Q48 0 96 48" fill="none" stroke="rgba(255,255,255,0.40)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+            </svg>
 
 
             {/* Pitch Top Header (Team B) */}
