@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use, useCallback, useMemo, type ReactNode } from "react";
+import { useState, useEffect, use, useCallback, useRef, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Calendar, CheckCircle2, Crown, Loader2, LogOut, Mail, MapPin, Swords, Trophy, UserPlus, Users, X, Lock, Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -81,6 +81,18 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [showStatSubmission, setShowStatSubmission] = useState(false);
   const [hasSubmittedStats, setHasSubmittedStats] = useState(false);
   const [viewMode, setViewMode] = useState<"roster" | "tactical">("roster");
+  const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fetchInFlightRef = useRef(false);
+  const currentUserIdRef = useRef<string | null>(null);
+  const hostIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    currentUserIdRef.current = currentUserId;
+  }, [currentUserId]);
+
+  useEffect(() => {
+    hostIdRef.current = match?.hostId || null;
+  }, [match?.hostId]);
 
   const addNotification = useCallback((message: string, type: "info" | "success" | "warning" = "info") => {
     if (type === "success") {
@@ -94,6 +106,10 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   // Fetch match details
   const fetchMatchDetails = useCallback(async () => {
+    if (fetchInFlightRef.current) {
+      return;
+    }
+    fetchInFlightRef.current = true;
     try {
       const res = await fetch(`/api/matches/${matchId}`);
       const data = await res.json();
@@ -119,9 +135,28 @@ export default function MatchDetailsPage({ params }: PageProps) {
       console.error("Failed to fetch match details:", err);
       setMatch(null);
     } finally {
+      fetchInFlightRef.current = false;
       setLoading(false);
     }
   }, [matchId]);
+
+  const scheduleFetchMatchDetails = useCallback((delay = 250) => {
+    if (fetchTimeoutRef.current) {
+      clearTimeout(fetchTimeoutRef.current);
+    }
+    fetchTimeoutRef.current = setTimeout(() => {
+      fetchTimeoutRef.current = null;
+      fetchMatchDetails();
+    }, delay);
+  }, [fetchMatchDetails]);
+
+  useEffect(() => {
+    return () => {
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const checkPendingVerifications = useCallback(async () => {
     if (!matchId || !currentUserId) return;
@@ -197,7 +232,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       if (data.isFull) {
         addNotification("Match is now full!", "warning");
       }
-      fetchMatchDetails();
+      scheduleFetchMatchDetails();
     };
 
     const handleLeft = (data: { userId: string; participantId: string }) => {
@@ -209,7 +244,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         }
         return prevMatch;
       });
-      fetchMatchDetails();
+      scheduleFetchMatchDetails();
     };
 
     const handleTeamAssigned = (data: { participantId: string; userId: string; team: string | null }) => {
@@ -222,12 +257,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
         }
         return prevMatch;
       });
-      fetchMatchDetails();
+      scheduleFetchMatchDetails();
     };
 
     const handleCheckedIn = (data: { userId: string; username: string; fullName: string; participantId: string }) => {
       addNotification(`${data.fullName} has checked in!`, "success");
-      fetchMatchDetails();
+      scheduleFetchMatchDetails();
     };
 
     channel.bind("player-joined", handleJoined);
@@ -236,26 +271,28 @@ export default function MatchDetailsPage({ params }: PageProps) {
     channel.bind("player-checked-in", handleCheckedIn);
     channel.bind("teams-balanced", () => {
       addNotification("Teams have been auto-balanced by AI!", "success");
-      fetchMatchDetails();
+      scheduleFetchMatchDetails();
     });
     channel.bind("teams-saved", () => {
       // Only re-fetch for non-host users. The host already has the
       // correct local state — re-fetching would reset all positions.
-      if (currentUserId && match?.hostId && currentUserId !== match.hostId) {
+      const userId = currentUserIdRef.current;
+      const hostId = hostIdRef.current;
+      if (userId && hostId && userId !== hostId) {
         addNotification("Squad tactics updated", "success");
-        fetchMatchDetails();
+        scheduleFetchMatchDetails();
       }
     });
     channel.bind("match-closed", () => {
       addNotification("Match has been closed! Opening stats submission...", "warning");
-      fetchMatchDetails();
+      scheduleFetchMatchDetails(100);
       setTimeout(() => {
         setShowStatSubmission(true);
       }, 1000);
     });
     channel.bind("match-started", () => {
       addNotification("Match has started!", "success");
-      fetchMatchDetails();
+      scheduleFetchMatchDetails();
     });
     channel.bind("position-updated", (data: { userId: string; x: number; y: number; team: string | null }) => {
       setExternalPositionUpdate({ ...data, ts: Date.now() });
@@ -278,7 +315,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
       channel.unbind("stats-submitted");
       pusher.unsubscribe(channelName);
     };
-  }, [matchId, fetchMatchDetails, addNotification, router, checkPendingVerifications]);
+  }, [matchId, scheduleFetchMatchDetails, addNotification, checkPendingVerifications]);
 
   useEffect(() => {
     if (!showInviteModal) return;
@@ -984,7 +1021,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
-                  <p className="text-white/50 text-xs">You haven't submitted your match stats yet.</p>
+                  <p className="text-white/50 text-xs">You have not submitted your match stats yet.</p>
                   <button
                     onClick={() => setShowStatSubmission(true)}
                     className="w-full h-12 rounded-[1rem] bg-[#D4F829] hover:bg-[#c3e626] text-[#151515] text-[11px] font-black tracking-[0.12em] uppercase transition duration-200 cursor-pointer flex items-center justify-center shadow-lg"
@@ -1104,7 +1141,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                     ) : (
                       <>
                         <CheckCircle2 size={16} strokeWidth={2.5} />
-                        I'm Here (Check In)
+                        I am Here (Check In)
                       </>
                     )}
                   </button>
@@ -1272,4 +1309,3 @@ export function TeamChip({ label, value, tone }: { label: string; value: number;
     </div>
   );
 }
-
