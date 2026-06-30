@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use, useCallback, type ReactNode } from "react";
+import { useState, useEffect, use, useCallback, useMemo, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Calendar, CheckCircle2, Crown, Loader2, LogOut, Mail, MapPin, Swords, Trophy, UserPlus, Users, X, Lock, Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -549,7 +549,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <main className="relative min-h-screen overflow-hidden bg-[#151515] flex flex-col items-center justify-center">
+      <main className="relative min-h-[100dvh] overflow-hidden bg-[#151515] flex flex-col items-center justify-center">
         <Loader2 className="size-10 text-white animate-spin mb-4" />
         <h2 className="text-xl font-display font-black text-white tracking-widest uppercase italic animate-pulse">Loading Match...</h2>
       </main>
@@ -572,21 +572,21 @@ export default function MatchDetailsPage({ params }: PageProps) {
   }
 
   // Parse participants
-  const participants = match.participants || [];
-  const isJoined = currentUserId && participants.some(p => p.userId === currentUserId);
-  const currentUserParticipant = currentUserId && participants.find(p => p.userId === currentUserId);
+  const participants = useMemo(() => match.participants || [], [match.participants]);
+  const isJoined = useMemo(() => currentUserId ? participants.some(p => p.userId === currentUserId) : false, [currentUserId, participants]);
+  const currentUserParticipant = useMemo(() => currentUserId ? participants.find(p => p.userId === currentUserId) : null, [currentUserId, participants]);
   const currentTeam = currentUserParticipant ? currentUserParticipant.team : null;
   const isCheckedIn = currentUserParticipant ? currentUserParticipant.checkedIn : false;
 
   // Group participants by teams
-  const teamAPlayers = participants.filter(p => p.team === "A" || p.team === "Team A");
-  const teamBPlayers = participants.filter(p => p.team === "B" || p.team === "Team B");
-  const unassignedPlayers = participants.filter(p => p.team !== "A" && p.team !== "Team A" && p.team !== "B" && p.team !== "Team B");
-  const checkedInCount = participants.filter(p => p.checkedIn).length;
-  const hostParticipant = participants.find(p => p.userId === match.hostId);
+  const teamAPlayers = useMemo(() => participants.filter(p => p.team === "A" || p.team === "Team A"), [participants]);
+  const teamBPlayers = useMemo(() => participants.filter(p => p.team === "B" || p.team === "Team B"), [participants]);
+  const unassignedPlayers = useMemo(() => participants.filter(p => p.team !== "A" && p.team !== "Team A" && p.team !== "B" && p.team !== "Team B"), [participants]);
+  const checkedInCount = useMemo(() => participants.filter(p => p.checkedIn).length, [participants]);
+  const hostParticipant = useMemo(() => participants.find(p => p.userId === match.hostId), [participants, match.hostId]);
   const isHost = currentUserId === match.hostId;
   const hostName = hostParticipant?.user?.fullName?.split(" ")[0] || hostParticipant?.user?.username || "Host";
-  const playerFill = Math.min(100, Math.round((participants.length / Math.max(match.maxPlayers, 1)) * 100));
+  const playerFill = useMemo(() => Math.min(100, Math.round((participants.length / Math.max(match.maxPlayers, 1)) * 100)), [participants.length, match.maxPlayers]);
   const statusLabel = match.status === "open" ? "Open Match" : match.status.replace(/_/g, " ");
 
   // Helper to format date
@@ -608,6 +608,20 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
   return (
     <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#111111] flex justify-center custom-scrollbar text-white">
+      <AnimatePresence>
+        {actionLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-black/60 backdrop-blur-md"
+          >
+            <Loader2 className="size-12 text-[#D4F829] animate-spin mb-4 drop-shadow-[0_0_15px_rgba(212,248,41,0.5)]" />
+            <div className="text-[#D4F829] font-black tracking-[0.2em] uppercase text-sm drop-shadow-[0_0_10px_rgba(212,248,41,0.5)]">Processing...</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="pointer-events-none fixed inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.06),transparent_40%)]" />
 
       <div className="relative min-h-[100dvh] flex flex-col px-4 pt-4 pb-6 max-w-md mx-auto z-10 w-full overflow-y-auto">

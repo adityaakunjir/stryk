@@ -138,7 +138,7 @@ const getOvrColor = (ovr: number) => {
 };
 
 // --- Draggable Token Component ---
-function DraggablePlayerToken({ 
+const DraggablePlayerToken = React.memo(function DraggablePlayerToken({ 
   player, 
   state, 
   isDraggable, 
@@ -193,7 +193,7 @@ function DraggablePlayerToken({
       >
         <div className={`relative mx-auto overflow-hidden rounded-full border-[2px] border-white/10 glass-panel shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:border-[#D4F829]/50 transition-colors pointer-events-none ${compactAvatarClass}`}>
           {player.avatarUrl ? (
-            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
+            <Image priority src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
               {player.username.charAt(0).toUpperCase()}
@@ -322,7 +322,7 @@ function DraggablePlayerToken({
       </div>
     </div>
   );
-}
+});
 
 // --- Drag Overlay Component ---
 function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { player: Player; state: PlayerState; draggedPos?: {x: number, y: number} | null; isLargeSquad?: boolean; }) {
@@ -392,7 +392,7 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
 
 
 // --- Main Component ---
-export function InlineTeamBuilder({ 
+export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({ 
   participants, 
   onSaveTeams, 
   isHost, 
@@ -1052,4 +1052,4 @@ export function InlineTeamBuilder({
     </div>
     </div>
   );
-}
+});
