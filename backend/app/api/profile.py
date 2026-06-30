@@ -269,6 +269,11 @@ async def fix_all_stats(session: AsyncSession = Depends(get_session)):
         u.dribbling = new_stats.get("dribbling", 60.0)
         u.defending = new_stats.get("defending", 60.0)
         u.physical = new_stats.get("physical", 60.0)
+        u.gkDiving = new_stats.get("gkDiving", 60.0)
+        u.gkHandling = new_stats.get("gkHandling", 60.0)
+        u.gkKicking = new_stats.get("gkKicking", 60.0)
+        u.gkReflexes = new_stats.get("gkReflexes", 60.0)
+        u.gkPositioning = new_stats.get("gkPositioning", 60.0)
         
         stats_dict = {
             "pace": u.pace,
