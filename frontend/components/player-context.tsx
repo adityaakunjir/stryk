@@ -161,6 +161,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           const backendUser = result.data || result;
           
           if (backendUser && backendUser.id) {
+            // Wipe stale localStorage cache FIRST so old wrong stats can never contaminate
+            try { localStorage.removeItem("stryk_player_data"); } catch {}
+
             setPlayerData((prev) => {
               const updated = {
                 ...prev,
@@ -178,17 +181,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 tackles: backendUser.tackles ?? 0,
                 saves: backendUser.saves ?? 0,
                 intercepts: backendUser.intercepts ?? 0,
-                pace: backendUser.pace ?? undefined,
-                shooting: backendUser.shooting ?? undefined,
-                passing: backendUser.passing ?? undefined,
-                dribbling: backendUser.dribbling ?? undefined,
-                defending: backendUser.defending ?? undefined,
-                physical: backendUser.physical ?? undefined,
-                gkDiving: backendUser.gkDiving ?? undefined,
-                gkHandling: backendUser.gkHandling ?? undefined,
-                gkKicking: backendUser.gkKicking ?? undefined,
-                gkReflexes: backendUser.gkReflexes ?? undefined,
-                gkPositioning: backendUser.gkPositioning ?? undefined
+                // Always use exact backend values — never fall back to undefined
+                pace: backendUser.pace,
+                shooting: backendUser.shooting,
+                passing: backendUser.passing,
+                dribbling: backendUser.dribbling,
+                defending: backendUser.defending,
+                physical: backendUser.physical,
+                gkDiving: backendUser.gkDiving,
+                gkHandling: backendUser.gkHandling,
+                gkKicking: backendUser.gkKicking,
+                gkReflexes: backendUser.gkReflexes,
+                gkPositioning: backendUser.gkPositioning,
               };
               updated.rating = backendUser.overall ?? calculateOvr(updated);
               localStorage.setItem("stryk_player_data", JSON.stringify(updated));

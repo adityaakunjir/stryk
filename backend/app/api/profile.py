@@ -145,7 +145,40 @@ async def get_my_profile(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Profile not found"
         )
-        
+
+    # AUTO-HEAL: If this player has never played a match and their OVR is not 60,
+    # their stats were saved with the wrong defaults. Recalculate dynamically now.
+    # This self-heals the database on every login — no secret URL required.
+    if db_user.matchesPlayed == 0 and db_user.position and db_user.playStyle:
+        from app.core.stats import get_initial_stats, calculate_ovr
+        new_stats = get_initial_stats(db_user.position, db_user.playStyle)
+        stats_changed = False
+        for stat_name, stat_val in new_stats.items():
+            if hasattr(db_user, stat_name):
+                current_val = getattr(db_user, stat_name)
+                if abs(float(current_val) - float(stat_val)) > 0.5:
+                    setattr(db_user, stat_name, stat_val)
+                    stats_changed = True
+
+        if stats_changed:
+            stats_dict = {
+                "pace": db_user.pace,
+                "shooting": db_user.shooting,
+                "passing": db_user.passing,
+                "dribbling": db_user.dribbling,
+                "defending": db_user.defending,
+                "physical": db_user.physical,
+                "gkDiving": db_user.gkDiving,
+                "gkHandling": db_user.gkHandling,
+                "gkKicking": db_user.gkKicking,
+                "gkReflexes": db_user.gkReflexes,
+                "gkPositioning": db_user.gkPositioning
+            }
+            db_user.overall = calculate_ovr(db_user.position, stats_dict)
+            session.add(db_user)
+            await session.commit()
+            await session.refresh(db_user)
+
     return db_user
 
 class ProfileUpdate(BaseModel):
