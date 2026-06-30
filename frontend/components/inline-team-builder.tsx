@@ -569,27 +569,10 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 100, tolerance: 5 } }),
     useSensor(KeyboardSensor)
   );
 
-  useEffect(() => {
-    if (!activeId) return;
-
-    const scrollPanel = pitchRef.current?.closest("[data-scroll-panel]") as HTMLElement | null;
-    if (!scrollPanel) return;
-
-    const previousOverflowY = scrollPanel.style.overflowY;
-    const previousTouchAction = scrollPanel.style.touchAction;
-
-    scrollPanel.style.overflowY = "hidden";
-    scrollPanel.style.touchAction = "none";
-
-    return () => {
-      scrollPanel.style.overflowY = previousOverflowY;
-      scrollPanel.style.touchAction = previousTouchAction;
-    };
-  }, [activeId]);
 
   const clearActiveDrag = () => {
     setActiveId(null);
