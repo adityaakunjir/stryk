@@ -16,6 +16,7 @@ import {
   MouseSensor,
   TouchSensor,
 } from "@dnd-kit/core";
+import type { Modifier } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import Image from "next/image";
 
@@ -572,6 +573,25 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
     useSensor(KeyboardSensor)
   );
 
+  const pitchBoundaryModifiers = useMemo<Modifier[]>(() => [
+    ({ transform, activeNodeRect }) => {
+      const pitchRect = pitchRef.current?.getBoundingClientRect();
+      if (!pitchRect || !activeNodeRect) return transform;
+
+      return {
+        ...transform,
+        x: Math.min(
+          pitchRect.right - activeNodeRect.right,
+          Math.max(pitchRect.left - activeNodeRect.left, transform.x)
+        ),
+        y: Math.min(
+          pitchRect.bottom - activeNodeRect.bottom,
+          Math.max(pitchRect.top - activeNodeRect.top, transform.y)
+        ),
+      };
+    },
+  ], []);
+
   const handleDragStart = (event: DragStartEvent) => {
     if (isLocked) return;
     const pId = event.active.id as string;
@@ -836,7 +856,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         </div>
       )}
 
-      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} modifiers={pitchBoundaryModifiers} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
         <div className="flex flex-col flex-1 relative bg-transparent">
           {/* The Pitch (Main Content) */}
           <div ref={pitchRef} className="flex-1 relative" 
@@ -1010,7 +1030,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         </div>
 
         {/* Drag Overlay */}
-        <DragOverlay dropAnimation={null}>
+        <DragOverlay dropAnimation={null} modifiers={pitchBoundaryModifiers}>
           {activePlayer && activePlayerState ? (
             <TokenOverlay player={activePlayer} state={activePlayerState} draggedPos={draggedPos} isLargeSquad={isLargeSquad} />
           ) : null}
