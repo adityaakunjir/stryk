@@ -582,7 +582,7 @@ async def update_match(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    match_result = await session.execute(select(Match).where(Match.id == match_id))
+    match_result = await session.execute(select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
     match = match_result.scalars().first()
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
@@ -1036,7 +1036,7 @@ async def close_match(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    match_result = await session.execute(select(Match).where(Match.id == match_id))
+    match_result = await session.execute(select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
     match = match_result.scalars().first()
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
