@@ -16,6 +16,7 @@ import {
   MouseSensor,
   TouchSensor,
 } from "@dnd-kit/core";
+import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import Image from "next/image";
 
@@ -1033,7 +1034,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         </div>
 
         {/* Drag Overlay */}
-        <DragOverlay dropAnimation={null}>
+        <DragOverlay dropAnimation={null} modifiers={[snapCenterToCursor]}>
           {activePlayer && activePlayerState ? (
             <TokenOverlay player={activePlayer} state={activePlayerState} draggedPos={draggedPos} isLargeSquad={isLargeSquad} />
           ) : null}
