@@ -790,7 +790,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         </div>
 
         {/* Roster List / Tactics Board View Selection */}
-        {viewMode === "roster" ? (
+        <div className={viewMode === "roster" ? "block w-full" : "hidden"}>
           <div className="shrink-0 flex flex-col gap-3 w-full mb-4">
             <div className="grid grid-cols-2 gap-3">
               {/* Team A Column */}
@@ -918,9 +918,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
               </div>
             )}
           </div>
-        ) : (
-          /* Tactical Pitch Board View */
-          match && (
+        </div>
+
+        {/* Tactical Pitch Board View */}
+        <div className={viewMode === "tactical" ? "block w-full" : "hidden"}>
+          {match && (
             <div className="shrink-0 mt-1 w-full rounded-[2rem] border border-[#151515]/10 glass-panel p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)] mb-4">
               <InlineTeamBuilder
                 participants={match.participants}
@@ -937,8 +939,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 isLocked={match.status === "closed"}
               />
             </div>
-          )
-        )}
+          )}
+        </div>
 
         {/* Stats & Verifications Section */}
         {match && match.status === "closed" && (
