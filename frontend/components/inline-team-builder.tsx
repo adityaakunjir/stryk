@@ -209,7 +209,7 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
           {player.overall}
         </div>
         <div
-          className="relative mt-1.5 flex flex-col items-center pointer-events-auto cursor-pointer px-1 w-full"
+          className="relative mt-1.5 flex flex-col items-center pointer-events-auto cursor-pointer px-1 w-full touch-none"
           onDoubleClick={(e) => {
             e.stopPropagation();
             onLabelClick(player);
@@ -287,7 +287,7 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
         
         {/* Name */}
         <div
-          className="relative mt-1 flex flex-col items-center pointer-events-auto cursor-pointer px-1 w-full"
+          className="relative mt-1 flex flex-col items-center pointer-events-auto cursor-pointer px-1 w-full touch-none"
           onDoubleClick={(e) => {
             e.stopPropagation();
             onLabelClick(player);
@@ -568,9 +568,33 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 100, tolerance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor)
   );
+
+  useEffect(() => {
+    if (!activeId) return;
+
+    const scrollPanel = pitchRef.current?.closest("[data-scroll-panel]") as HTMLElement | null;
+    if (!scrollPanel) return;
+
+    const previousOverflowY = scrollPanel.style.overflowY;
+    const previousTouchAction = scrollPanel.style.touchAction;
+
+    scrollPanel.style.overflowY = "hidden";
+    scrollPanel.style.touchAction = "none";
+
+    return () => {
+      scrollPanel.style.overflowY = previousOverflowY;
+      scrollPanel.style.touchAction = previousTouchAction;
+    };
+  }, [activeId]);
+
+  const clearActiveDrag = () => {
+    setActiveId(null);
+    setDraggedPos(null);
+    latestDragPosRef.current = null;
+  };
 
   const handleDragStart = (event: DragStartEvent) => {
     if (isLocked) return;
@@ -619,10 +643,8 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    clearActiveDrag();
     if (isLocked) return;
-    setActiveId(null);
-    setDraggedPos(null);
-    latestDragPosRef.current = null;
     const { active } = event;
     const pId = active.id as string;
     
@@ -836,7 +858,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         </div>
       )}
 
-      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd} onDragCancel={clearActiveDrag}>
         <div className="flex flex-col flex-1 relative bg-transparent">
           {/* The Pitch (Main Content) */}
           <div ref={pitchRef} className="flex-1 relative" 
