@@ -1,10 +1,9 @@
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig = {
-  // Re-enable Vercel's built-in image optimizer (WebP, AVIF, resizing, lazy-load)
+  // Re-enable unoptimized images so external avatars (Clerk/Dicebear) load correctly
   images: {
-    formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 3600,
+    unoptimized: true,
   },
   // Brotli/gzip all responses
   compress: true,
