@@ -5,7 +5,6 @@ import { Check, ChevronUp, Crown, Grip, Loader2, Save, Shield, Sparkles, Users, 
 import {
   DndContext,
   KeyboardSensor,
-  PointerSensor,
   useSensor,
   useSensors,
   DragEndEvent,
@@ -17,7 +16,6 @@ import {
   TouchSensor,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import Image from "next/image";
 
 // --- Types ---
 interface Player {
@@ -141,6 +139,39 @@ const getOvrColor = (ovr: number) => {
   return "from-[#8B3A16] to-[#F97316]";
 };
 
+function AvatarThumb({
+  src,
+  username,
+  className = "",
+  showImage = true,
+}: {
+  src?: string | null;
+  username: string;
+  className?: string;
+  showImage?: boolean;
+}) {
+  const initial = username.charAt(0).toUpperCase();
+
+  return (
+    <div className={`relative overflow-hidden rounded-full bg-[#171a17] ${className}`}>
+      {src && showImage ? (
+        <img
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          className="absolute inset-0 h-full w-full rounded-full object-cover"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
+          {initial}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // --- Draggable Token Component ---
 const DraggablePlayerToken = React.memo(function DraggablePlayerToken({ 
   player, 
@@ -196,15 +227,11 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
         {...attributes}
         className={`relative flex flex-col items-center justify-center shrink-0 group touch-none ${compactWrapperClass} ${isDraggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'}`}
       >
-        <div className={`relative mx-auto overflow-hidden rounded-full border-[2px] border-white/10 bg-[#161816] shadow-[0_4px_10px_rgba(0,0,0,0.45)] pointer-events-none ${compactAvatarClass}`}>
-          {player.avatarUrl ? (
-            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
-              {player.username.charAt(0).toUpperCase()}
-            </div>
-          )}
-        </div>
+        <AvatarThumb
+          src={player.avatarUrl}
+          username={player.username}
+          className={`mx-auto border-[2px] border-white/10 shadow-[0_4px_10px_rgba(0,0,0,0.45)] pointer-events-none ${compactAvatarClass}`}
+        />
         <div className={`absolute right-0 top-0 flex items-center justify-center rounded-full bg-gradient-to-br from-[#2A2A2A] to-black font-black text-white shadow-md border border-white/20 ${compactBadgeClass} ${getOvrColor(player.overall)}`}>
           {player.overall}
         </div>
@@ -228,6 +255,8 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
   const nameClass = isLargeSquad ? "text-[6px] md:text-[7px] max-w-[40px]" : "text-[8px] md:text-[9px] max-w-[48px]";
   
   const clipPathShape = "polygon(15% 0, 85% 0, 100% 15%, 100% 75%, 50% 100%, 0 75%, 0 15%)";
+  const teamAInner = "bg-[#d9ded0]";
+  const teamBInner = "bg-[#11140f]";
 
   return (
     <div
@@ -251,10 +280,7 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
       
       {/* Inner Background Layer */}
       <div 
-        className={`absolute inset-[1.5px] ${
-          state.team === "A" ? "bg-gradient-to-b from-white/60 to-white/20" 
-                             : "bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
-        }`}
+        className={`absolute inset-[1.5px] ${state.team === "A" ? teamAInner : teamBInner}`}
         style={{ clipPath: clipPathShape }}
       />
       
@@ -271,14 +297,12 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
         </div>
         
         {/* Avatar */}
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-black/5" : "border-[#D4F829]/40 glass-panel"}`}>
-          {player.avatarUrl ? (
-            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full pointer-events-none" sizes="44px" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
-              {player.username.charAt(0).toUpperCase()}
-            </div>
-          )}
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 rounded-full border shadow-sm pointer-events-none ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-black/5" : "border-[#D4F829]/40 bg-[#111]"}`}>
+          <AvatarThumb
+            src={player.avatarUrl}
+            username={player.username}
+            className="h-full w-full"
+          />
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
         </div>
         
@@ -341,6 +365,8 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
   const nameClass = isLargeSquad ? "text-[6px] md:text-[7px] max-w-[40px]" : "text-[8px] md:text-[9px] max-w-[48px]";
   
   const clipPathShape = "polygon(15% 0, 85% 0, 100% 15%, 100% 75%, 50% 100%, 0 75%, 0 15%)";
+  const teamAInner = "bg-[#d9ded0]";
+  const teamBInner = "bg-[#11140f]";
 
   return (
     <div
@@ -355,10 +381,7 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
         style={{ clipPath: clipPathShape }}
       />
       <div 
-        className={`absolute inset-[1.5px] ${
-          state.team === "A" ? "bg-gradient-to-b from-white/60 to-white/20 backdrop-blur-md" 
-                             : "bg-gradient-to-b from-[#1C201A] to-[#0A0D0A]"
-        }`}
+        className={`absolute inset-[1.5px] ${state.team === "A" ? teamAInner : teamBInner}`}
         style={{ clipPath: clipPathShape }}
       />
 
@@ -372,14 +395,13 @@ function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { pla
            </span>
         </div>
         
-        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 overflow-hidden rounded-full border shadow-sm ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-black/5" : "border-[#D4F829]/40 glass-panel"}`}>
-          {player.avatarUrl ? (
-            <Image src={player.avatarUrl} alt={player.username} fill className="object-cover rounded-full" sizes="44px" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-sm font-bold text-white/50">
-              {player.username.charAt(0).toUpperCase()}
-            </div>
-          )}
+        <div className={`relative ml-auto mr-1 md:mr-1.5 mt-1 md:mt-1.5 rounded-full border shadow-sm ${avatarClass} ${state.team === "A" ? "border-slate-300 bg-black/5" : "border-[#D4F829]/40 bg-[#111]"}`}>
+          <AvatarThumb
+            src={player.avatarUrl}
+            username={player.username}
+            className="h-full w-full"
+            showImage={false}
+          />
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
         </div>
         
@@ -858,14 +880,18 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
             {/* Top 6-yard Box */}
             <div className="absolute top-4 left-1/2 w-20 h-8 border-[1.5px] border-t-0 border-white/40 -translate-x-1/2 pointer-events-none" />
             {/* Top Penalty Arc */}
-            <div className="absolute top-[calc(1rem+20px)] left-1/2 w-16 h-8 border-[1.5px] border-b-0 border-white/40 rounded-t-full -translate-x-1/2 pointer-events-none origin-bottom rotate-180" />
+            <div className="absolute top-[calc(1rem+5rem-1px)] left-1/2 h-12 w-24 -translate-x-1/2 overflow-hidden pointer-events-none">
+              <div className="absolute -top-12 left-0 h-24 w-24 rounded-full border-[1.5px] border-white/40" />
+            </div>
 
             {/* Bottom Penalty Box */}
             <div className="absolute bottom-4 left-1/2 w-40 h-20 border-[1.5px] border-b-0 border-white/40 -translate-x-1/2 pointer-events-none" />
             {/* Bottom 6-yard Box */}
             <div className="absolute bottom-4 left-1/2 w-20 h-8 border-[1.5px] border-b-0 border-white/40 -translate-x-1/2 pointer-events-none" />
             {/* Bottom Penalty Arc */}
-            <div className="absolute bottom-[calc(1rem+20px)] left-1/2 w-16 h-8 border-[1.5px] border-b-0 border-white/40 rounded-t-full -translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-[calc(1rem+5rem-1px)] left-1/2 h-12 w-24 -translate-x-1/2 overflow-hidden pointer-events-none">
+              <div className="absolute left-0 top-0 h-24 w-24 rounded-full border-[1.5px] border-white/40" />
+            </div>
 
 
             {/* Pitch Top Header (Team B) */}
