@@ -792,7 +792,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
             <div className="flex items-center gap-2">
               <Crown size={13} className="text-[#A28B52] shrink-0" />
               <span>
-                Host: <span className="font-bold text-white">{match.creator?.fullName || match.creator?.username || "Unknown"}</span>
+                Host: <span className="font-bold text-white">{hostName}</span>
               </span>
             </div>
           </div>
