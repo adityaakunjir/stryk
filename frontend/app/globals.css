@@ -95,6 +95,18 @@ input, textarea, select {
   display: none;
 }
 
+@keyframes loading-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(260%);
+  }
+}
+
 /* Force flex containers within the mobile shell to respect viewport boundaries and trigger internal scrolling */
 .stryk-mobile-shell .flex-1,
 .stryk-mobile-shell .flex-col:has([data-scroll-panel]),

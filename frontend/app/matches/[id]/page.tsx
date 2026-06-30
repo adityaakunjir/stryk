@@ -81,6 +81,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [showStatSubmission, setShowStatSubmission] = useState(false);
   const [hasSubmittedStats, setHasSubmittedStats] = useState(false);
   const [viewMode, setViewMode] = useState<"roster" | "tactical">("roster");
+  const [contentReady, setContentReady] = useState(false);
+  const [viewReady, setViewReady] = useState(false);
   const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fetchInFlightRef = useRef(false);
   const currentUserIdRef = useRef<string | null>(null);
@@ -93,6 +95,71 @@ export default function MatchDetailsPage({ params }: PageProps) {
   useEffect(() => {
     hostIdRef.current = match?.hostId || null;
   }, [match?.hostId]);
+
+  useEffect(() => {
+    setContentReady(false);
+    setViewReady(false);
+  }, [matchId]);
+
+  useEffect(() => {
+    if (loading || userLoading || !match) {
+      return;
+    }
+
+    let cancelled = false;
+    const startedAt = performance.now();
+    const avatarUrls = Array.from(new Set(
+      match.participants
+        .map((participant) => participant.user.avatarUrl)
+        .filter((url): url is string => Boolean(url))
+    )).slice(0, 24);
+
+    const waitForAvatars = Promise.all(
+      avatarUrls.map((url) => new Promise<void>((resolve) => {
+        const image = new window.Image();
+        image.decoding = "async";
+        image.onload = () => {
+          image.decode?.().catch(() => undefined).finally(resolve);
+        };
+        image.onerror = () => resolve();
+        image.src = url;
+      }))
+    );
+
+    const timeout = new Promise<void>((resolve) => {
+      window.setTimeout(resolve, 1600);
+    });
+
+    Promise.race([waitForAvatars, timeout]).then(() => {
+      const remainingMinimum = Math.max(0, 900 - (performance.now() - startedAt));
+      window.setTimeout(() => {
+        window.requestAnimationFrame(() => {
+          if (!cancelled) {
+            setContentReady(true);
+          }
+        });
+      }, remainingMinimum);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loading, userLoading, match, matchId]);
+
+  useEffect(() => {
+    if (!contentReady) {
+      setViewReady(false);
+      return;
+    }
+
+    setViewReady(false);
+    const delay = viewMode === "tactical" ? 650 : 320;
+    const timeout = window.setTimeout(() => {
+      window.requestAnimationFrame(() => setViewReady(true));
+    }, delay);
+
+    return () => window.clearTimeout(timeout);
+  }, [contentReady, viewMode]);
 
   const addNotification = useCallback((message: string, type: "info" | "success" | "warning" = "info") => {
     if (type === "success") {
@@ -608,12 +675,12 @@ export default function MatchDetailsPage({ params }: PageProps) {
 
 
 
-  if (loading || userLoading) {
+  if (loading || userLoading || (match && !contentReady)) {
     return (
-      <main className="relative min-h-[100dvh] overflow-hidden bg-[#151515] flex flex-col items-center justify-center">
-        <Loader2 className="size-10 text-white animate-spin mb-4" />
-        <h2 className="text-xl font-display font-black text-white tracking-widest uppercase italic animate-pulse">Loading Match...</h2>
-      </main>
+      <MatchLobbyLoading
+        title={loading || userLoading ? "Loading Match" : "Preparing Lobby"}
+        subtitle={loading || userLoading ? "Fetching match details" : "Loading player cards and tactics"}
+      />
     );
   }
 
@@ -837,7 +904,11 @@ export default function MatchDetailsPage({ params }: PageProps) {
         </div>
 
         {/* Roster List / Tactics Board View Selection */}
-        {viewMode === "roster" && (
+        {!viewReady && (
+          <MatchViewPreparing label={viewMode === "tactical" ? "Preparing tactics board" : "Preparing roster"} />
+        )}
+
+        {viewReady && viewMode === "roster" && (
         <div className="block w-full">
           <div className="shrink-0 flex flex-col gap-3 w-full mb-4">
             <div className="grid grid-cols-2 gap-3">
@@ -970,7 +1041,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
         )}
 
         {/* Tactical Pitch Board View */}
-        {viewMode === "tactical" && (
+        {viewReady && viewMode === "tactical" && (
         <div className="block w-full">
           {match && (
             <div className="shrink-0 mt-1 w-full rounded-[2rem] border border-[#151515]/10 glass-panel p-2 shadow-[0_24px_60px_rgba(0,0,0,0.28)] mb-4">
@@ -1268,6 +1339,41 @@ export default function MatchDetailsPage({ params }: PageProps) {
         />
       )}
     </main>
+  );
+}
+
+function MatchLobbyLoading({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <main className="relative min-h-[100dvh] overflow-hidden bg-[#151515] flex flex-col items-center justify-center px-6 text-center text-white">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(212,248,41,0.10),transparent_42%)]" />
+      <div className="relative flex flex-col items-center">
+        <div className="mb-5 grid size-16 place-items-center rounded-full border border-[#D4F829]/20 bg-[#D4F829]/8 shadow-[0_0_40px_rgba(212,248,41,0.10)]">
+          <Loader2 className="size-7 animate-spin text-[#D4F829]" />
+        </div>
+        <h2 className="font-display text-2xl font-black italic uppercase tracking-widest text-white">
+          {title}
+        </h2>
+        <p className="mt-2 text-[11px] font-black uppercase tracking-[0.22em] text-white/40">
+          {subtitle}
+        </p>
+        <div className="mt-8 h-1 w-44 overflow-hidden rounded-full bg-white/8">
+          <div className="h-full w-1/2 animate-[loading-slide_1.1s_ease-in-out_infinite] rounded-full bg-[#D4F829]" />
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function MatchViewPreparing({ label }: { label: string }) {
+  return (
+    <div className="mb-4 grid min-h-[260px] w-full place-items-center rounded-[2rem] border border-white/5 bg-[#151515]/70 px-6 text-center">
+      <div>
+        <Loader2 className="mx-auto mb-3 size-6 animate-spin text-[#D4F829]" />
+        <div className="text-[10px] font-black uppercase tracking-[0.22em] text-white/45">
+          {label}
+        </div>
+      </div>
+    </div>
   );
 }
 
