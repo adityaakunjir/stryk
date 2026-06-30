@@ -842,7 +842,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         </div>
       )}
 
-      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd} onDragCancel={clearActiveDrag}>
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd} onDragCancel={clearActiveDrag} modifiers={[snapCenterToCursor]}>
         <div className="flex flex-col flex-1 relative bg-transparent">
           {/* The Pitch (Main Content) */}
           <div ref={pitchRef} className="flex-1 relative" 
@@ -1017,7 +1017,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         </div>
 
         {/* Drag Overlay */}
-        <DragOverlay dropAnimation={null} modifiers={[snapCenterToCursor]}>
+        <DragOverlay dropAnimation={null}>
           {activePlayer && activePlayerState ? (
             <TokenOverlay player={activePlayer} state={activePlayerState} draggedPos={draggedPos} isLargeSquad={isLargeSquad} />
           ) : null}
