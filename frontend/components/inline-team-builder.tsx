@@ -108,23 +108,23 @@ const getAutoPosition = (x: number, y: number, team: "A" | "B" | null) => {
     
     // Defense (y between 13 and 32)
     if (y <= 32) {
-      if (x <= 28) return "LB";
-      if (x >= 72) return "RB";
+      if (x <= 28) return "RB";
+      if (x >= 72) return "LB";
       return "CB";
     }
     
     // Midfield (y between 33 and 55)
     if (y <= 55) {
-      if (x <= 28) return "LMF";
-      if (x >= 72) return "RMF";
+      if (x <= 28) return "RMF";
+      if (x >= 72) return "LMF";
       if (y <= 40) return "DMF";
       if (y <= 48) return "CMF";
       return "AMF";
     }
     
     // Attack (y > 55)
-    if (x <= 28) return "LWF";
-    if (x >= 72) return "RWF";
+    if (x <= 28) return "RWF";
+    if (x >= 72) return "LWF";
     if (y <= 75) return "SS";
     return "CF";
   }
