@@ -181,8 +181,12 @@ async def get_available_players(
     result = await session.execute(select(User).where(User.clerkId == clerk_id))
     current_user = result.scalars().first()
     
-    # Get all users except current user
-    stmt = select(User).where(User.id != current_user.id if current_user else User.clerkId != clerk_id)
+    # Get all users except current user — capped at 100 for performance
+    stmt = (
+        select(User)
+        .where(User.id != current_user.id if current_user else User.clerkId != clerk_id)
+        .limit(100)
+    )
     result = await session.execute(stmt)
     players = result.scalars().all()
     
@@ -210,8 +214,21 @@ async def get_available_players(
 
 
 @router.get("/")
-async def get_all_matches(session: AsyncSession = Depends(get_session)):
-    statement = select(Match).where(Match.status != "completed").options(selectinload(Match.players).selectinload(MatchPlayer.user))
+async def get_all_matches(
+    session: AsyncSession = Depends(get_session),
+    limit: int = 30,
+    offset: int = 0,
+):
+    """Return only open matches, newest first, with pagination."""
+    from sqlalchemy import desc
+    statement = (
+        select(Match)
+        .where(Match.status == "open")
+        .order_by(desc(Match.createdAt))
+        .limit(limit)
+        .offset(offset)
+        .options(selectinload(Match.players).selectinload(MatchPlayer.user))
+    )
     result = await session.execute(statement)
     matches = result.scalars().all()
     return [_serialize_match(m) for m in matches]

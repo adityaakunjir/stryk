@@ -174,5 +174,16 @@ async def create_db_tables():
                 
             # Match Verifications
             await conn.execute(text('ALTER TABLE match_verifications ADD COLUMN IF NOT EXISTS "disputeReason" VARCHAR;'))
+
+            # Performance Indexes
+            try:
+                await conn.execute(text('CREATE INDEX IF NOT EXISTS ix_matches_status ON matches (status);'))
+                await conn.execute(text('CREATE INDEX IF NOT EXISTS ix_matches_matchDate ON matches ("matchDate");'))
+                await conn.execute(text('CREATE INDEX IF NOT EXISTS ix_match_stats_status ON match_stats (status);'))
+                await conn.execute(text('CREATE INDEX IF NOT EXISTS ix_match_stats_createdAt ON match_stats ("createdAt");'))
+                await conn.execute(text('CREATE INDEX IF NOT EXISTS ix_users_overall ON users (overall);'))
+                logging.info("Performance indexes created successfully or already exist.")
+            except Exception as index_err:
+                logging.warning(f"Creating performance indexes failed (ignoring): {index_err}")
         except Exception as e:
             logging.error(f"Raw SQL fallback for columns failed (expected on SQLite): {e}")

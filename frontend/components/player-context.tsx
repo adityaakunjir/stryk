@@ -4,13 +4,17 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useStrykAuth } from "./auth-provider";
 import { calculateStats, calculateOvr } from "@/lib/stat-utils";
 
+// Bump this version key whenever the data shape changes.
+// Old caches with different versions are automatically discarded on load.
+const CACHE_KEY = "stryk_player_v4";
+
 export type PlayStyleType = "Speedster" | "Playmaker" | "Poacher" | "Box-to-Box";
 
 export interface PlayerData {
   id?: number;
   fullName: string;
   username: string;
-  avatar: string; // base64 or url
+  avatar: string;
   position: string;
   secondaryPosition: string;
   strongFoot: "Left" | "Right";
@@ -66,81 +70,142 @@ const defaultPlayerData: PlayerData = {
   assists: 0,
   tackles: 0,
   saves: 0,
-  intercepts: 0};
+  intercepts: 0,
+};
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 
+/** Read cache from localStorage — returns null on any error or version mismatch */
+function readCache(): PlayerData | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as PlayerData;
+  } catch {
+    return null;
+  }
+}
+
+/** Write to localStorage — silent on error */
+function writeCache(data: PlayerData) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+  } catch {}
+}
+
+/** Merge backend user payload into a PlayerData shape */
+function mergeBackendUser(prev: PlayerData, backendUser: Record<string, unknown>): PlayerData {
+  const updated: PlayerData = {
+    ...prev,
+    fullName: (backendUser.fullName as string) || (backendUser.full_name as string) || prev.fullName || "",
+    username: (backendUser.username as string) || prev.username || "",
+    avatar: (backendUser.avatarUrl as string) || (backendUser.avatar_url as string) || prev.avatar || "",
+    position: (backendUser.position as string) || prev.position || "CAM",
+    playStyle: ((backendUser.playStyle || backendUser.play_style) as PlayStyleType) || prev.playStyle || "Playmaker",
+    matchesPlayed: (backendUser.matchesPlayed as number) ?? (backendUser.matches_played as number) ?? prev.matchesPlayed ?? 0,
+    wins: (backendUser.wins as number) ?? prev.wins ?? 0,
+    losses: (backendUser.losses as number) ?? prev.losses ?? 0,
+    draws: (backendUser.draws as number) ?? prev.draws ?? 0,
+    goals: (backendUser.goals as number) ?? prev.goals ?? 0,
+    assists: (backendUser.assists as number) ?? prev.assists ?? 0,
+    tackles: (backendUser.tackles as number) ?? prev.tackles ?? 0,
+    saves: (backendUser.saves as number) ?? prev.saves ?? 0,
+    intercepts: (backendUser.intercepts as number) ?? prev.intercepts ?? 0,
+    // Always use exact backend stat values — they are the source of truth
+    pace: backendUser.pace as number,
+    shooting: backendUser.shooting as number,
+    passing: backendUser.passing as number,
+    dribbling: backendUser.dribbling as number,
+    defending: backendUser.defending as number,
+    physical: backendUser.physical as number,
+    gkDiving: backendUser.gkDiving as number,
+    gkHandling: backendUser.gkHandling as number,
+    gkKicking: backendUser.gkKicking as number,
+    gkReflexes: backendUser.gkReflexes as number,
+    gkPositioning: backendUser.gkPositioning as number,
+  };
+  updated.rating = (backendUser.overall as number) ?? calculateOvr(updated);
+  return updated;
+}
+
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
-  const [playerData, setPlayerData] = useState<PlayerData>(defaultPlayerData);
-  const [isLoaded, setIsLoaded] = useState(false);
+  // Initialise state synchronously from cache so the first render shows real data
+  const [playerData, setPlayerData] = useState<PlayerData>(() => readCache() ?? defaultPlayerData);
+  const [isLoaded, setIsLoaded] = useState(() => readCache() !== null);
   const [isBackendSynced, setIsBackendSynced] = useState(false);
-  
+
   const { isSignedIn, getToken, user } = useStrykAuth();
 
   const resetPlayerData = useCallback(() => {
     setPlayerData(defaultPlayerData);
     try {
+      localStorage.removeItem(CACHE_KEY);
+      // Also clear old key versions to avoid accumulation
       localStorage.removeItem("stryk_player_data");
-    } catch (error) {
-      console.error("Error removing player data", error);
-    }
+    } catch {}
     setIsBackendSynced(false);
   }, []);
 
-  // Load from localStorage on mount
+  // Mark as loaded on mount (in case we had no cache)
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("stryk_player_data");
-      if (stored) {
-        const parsedPlayer = JSON.parse(stored);
-        queueMicrotask(() => {
-          setPlayerData(parsedPlayer);
-        });
-      }
-    } catch (e) {
-      console.error("Error loading player data from localStorage", e);
-    }
-    queueMicrotask(() => {
-      setIsLoaded(true);
-    });
+    setIsLoaded(true);
   }, []);
 
-  // Push local changes to the backend
+  // Sync from backend whenever auth state changes
+  useEffect(() => {
+    if (!isSignedIn) return;
+
+    async function syncFromBackend() {
+      try {
+        const response = await fetch("/api/profile/me", { cache: "no-store" });
+
+        if (response.ok) {
+          const result = await response.json();
+          const backendUser = (result.data || result) as Record<string, unknown>;
+
+          if (backendUser?.id) {
+            setPlayerData((prev) => {
+              const updated = mergeBackendUser(prev, backendUser);
+              writeCache(updated);
+              return updated;
+            });
+            setIsBackendSynced(true);
+          }
+        } else if (response.status === 404) {
+          resetPlayerData();
+          const currentPath = window.location.pathname;
+          const isOnboarding = ["/identity", "/position", "/play-style"].includes(currentPath);
+          if (!isOnboarding) {
+            window.location.href = "/identity";
+          }
+        }
+      } catch (err) {
+        console.error("Failed to sync from /api/profile/me:", err);
+      }
+    }
+
+    syncFromBackend();
+  }, [isSignedIn, user?.id, resetPlayerData]);
+
+  // Push local changes to the backend and immediately apply returned stats
   const pushToBackend = async (data: PlayerData, token: string) => {
     try {
-      const backendData = {
-        ...data,
-        overall: data.rating,
-      };
-      
       const res = await fetch("/api/profile/me", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`},
-        body: JSON.stringify(backendData)});
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ ...data, overall: data.rating }),
+      });
       if (res.ok) {
         setIsBackendSynced(true);
         const result = await res.json();
-        const backendUser = result.data || result;
-        if (backendUser && backendUser.pace !== undefined) {
+        const backendUser = (result.data || result) as Record<string, unknown>;
+        if (backendUser?.pace !== undefined) {
           setPlayerData((prev) => {
-            const updated = {
-              ...prev,
-              pace: backendUser.pace,
-              shooting: backendUser.shooting,
-              passing: backendUser.passing,
-              dribbling: backendUser.dribbling,
-              defending: backendUser.defending,
-              physical: backendUser.physical,
-              gkDiving: backendUser.gkDiving,
-              gkHandling: backendUser.gkHandling,
-              gkKicking: backendUser.gkKicking,
-              gkReflexes: backendUser.gkReflexes,
-              gkPositioning: backendUser.gkPositioning,
-            };
-            updated.rating = backendUser.overall ?? calculateOvr(updated);
-            localStorage.setItem("stryk_player_data", JSON.stringify(updated));
+            const updated = mergeBackendUser(prev, backendUser);
+            writeCache(updated);
             return updated;
           });
         }
@@ -150,118 +215,28 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Sync from backend when authentication status changes
-  useEffect(() => {
-    async function syncFromBackend() {
-      if (!isSignedIn) return;
-      try {
-        const response = await fetch("/api/profile/me");
-        if (response.ok) {
-          const result = await response.json();
-          const backendUser = result.data || result;
-          
-          if (backendUser && backendUser.id) {
-            // Wipe stale localStorage cache FIRST so old wrong stats can never contaminate
-            try { localStorage.removeItem("stryk_player_data"); } catch {}
-
-            setPlayerData((prev) => {
-              const updated = {
-                ...prev,
-                fullName: backendUser.fullName || backendUser.full_name || "",
-                username: backendUser.username || "",
-                avatar: backendUser.avatarUrl || backendUser.avatar_url || "",
-                position: backendUser.position || "CAM",
-                playStyle: backendUser.playStyle || backendUser.play_style || "Playmaker",
-                matchesPlayed: backendUser.matchesPlayed ?? backendUser.matches_played ?? 0,
-                wins: backendUser.wins ?? 0,
-                losses: backendUser.losses ?? 0,
-                draws: backendUser.draws ?? 0,
-                goals: backendUser.goals ?? 0,
-                assists: backendUser.assists ?? 0,
-                tackles: backendUser.tackles ?? 0,
-                saves: backendUser.saves ?? 0,
-                intercepts: backendUser.intercepts ?? 0,
-                // Always use exact backend values — never fall back to undefined
-                pace: backendUser.pace,
-                shooting: backendUser.shooting,
-                passing: backendUser.passing,
-                dribbling: backendUser.dribbling,
-                defending: backendUser.defending,
-                physical: backendUser.physical,
-                gkDiving: backendUser.gkDiving,
-                gkHandling: backendUser.gkHandling,
-                gkKicking: backendUser.gkKicking,
-                gkReflexes: backendUser.gkReflexes,
-                gkPositioning: backendUser.gkPositioning,
-              };
-              updated.rating = backendUser.overall ?? calculateOvr(updated);
-              localStorage.setItem("stryk_player_data", JSON.stringify(updated));
-              return updated;
-            });
-            setIsBackendSynced(true);
-          }
-        } else if (response.status === 404) {
-          // New User Flow: User is logged into Clerk, but has no STRYK profile
-          // Clear any stale local data from previous users!
-          resetPlayerData();
-          
-          // Prevent redirect loops if they are already on an onboarding page
-          const currentPath = window.location.pathname;
-          const isOnboarding = ['/identity', '/position', '/play-style'].includes(currentPath);
-          if (!isOnboarding) {
-            window.location.href = "/identity";
-          }
-        }
-      } catch (err) { console.error("Failed to sync from /api/profile/me:", err);
-      }
-    }
-
-    if (isSignedIn) {
-      syncFromBackend();
-    }
-  }, [isSignedIn, user?.id, resetPlayerData]);
-
   const updatePlayerData = async (data: Partial<PlayerData>) => {
     let finalUpdated: PlayerData | undefined;
 
     setPlayerData((prev) => {
       const updated = { ...prev, ...data };
-      
-      // Calculate OVR dynamically
       updated.rating = calculateOvr(updated);
-
-      try {
-        localStorage.setItem("stryk_player_data", JSON.stringify(updated));
-      } catch (e) { console.error("Error saving player data to localStorage", e);
-      }
-
+      writeCache(updated);
       finalUpdated = updated;
       return updated;
     });
 
-    // Sync changes to backend if signed in
     if (isSignedIn && finalUpdated) {
       const token = await getToken();
-      if (token) {
-        await pushToBackend(finalUpdated, token);
-      }
+      if (token) await pushToBackend(finalUpdated, token);
     }
   };
 
-  // Helper to generate football stats based on playstyle
-  const getStats = () => {
-    return calculateStats(playerData);
-  };
+  const getStats = () => calculateStats(playerData);
 
   return (
     <PlayerContext.Provider
-      value={{
-        playerData,
-        updatePlayerData,
-        resetPlayerData,
-        getStats,
-        isLoaded,
-        isBackendSynced}}
+      value={{ playerData, updatePlayerData, resetPlayerData, getStats, isLoaded, isBackendSynced }}
     >
       {children}
     </PlayerContext.Provider>

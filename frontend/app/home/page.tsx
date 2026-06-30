@@ -42,6 +42,14 @@ export default function HomeLobbyPage() {
     }
   }, [isAuthLoaded, isSignedIn, isLoaded, playerData.username, router]);
 
+  // Prefetch common routes so navigation is instant (zero-latency)
+  useEffect(() => {
+    router.prefetch("/matches");
+    router.prefetch("/search");
+    router.prefetch("/settings");
+    router.prefetch("/notifications");
+  }, [router]);
+
   useEffect(() => {
     if (!isLoaded) return;
     async function fetchFriends() {
@@ -154,7 +162,7 @@ export default function HomeLobbyPage() {
         className="absolute left-0 right-0 z-20 flex justify-center items-end pointer-events-none"
         style={{ top: 'calc(1.237 * min(100vw, 448px))' }} /* Tweak this 1.28 number (e.g. to 1.26 or 1.30) to exactly land the card on the podium! */
       >
-        <div className="relative w-[61%] -translate-y-full pointer-events-none" style={{ aspectRatio: '1417/1878', perspective: '1000px' }}>
+        <div className="relative w-[61%] -translate-y-full pointer-events-none" style={{ aspectRatio: '1417/1878', perspective: '1000px', willChange: 'transform', transform: 'translateZ(0)' }}>
           <motion.div 
             className="absolute inset-0 pointer-events-auto cursor-pointer"
             onClick={() => setShowCardDossier(true)}
@@ -385,9 +393,9 @@ export default function HomeLobbyPage() {
             </div>
             {/* Progress Bar */}
             <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden mb-4 border border-white/5">
-              <motion.div 
-                className="h-full bg-gradient-to-r from-[#8E793E] to-[#C3DF1B] rounded-full shadow-[0_0_10px_rgba(195,223,27,0.6)]"
-                initial={{ width: 0 }} animate={{ width: `${(xpCurrent/xpTotal)*100}%` }} transition={{ duration: 1.5, delay: 0.5, type: "spring" }}
+              <div
+                className="h-full bg-gradient-to-r from-[#8E793E] to-[#C3DF1B] rounded-full shadow-[0_0_10px_rgba(195,223,27,0.6)] transition-[width] duration-[1500ms] ease-out"
+                style={{ width: `${(xpCurrent/xpTotal)*100}%` }}
               />
             </div>
 

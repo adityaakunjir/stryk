@@ -1,12 +1,34 @@
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig = {
+  // Re-enable Vercel's built-in image optimizer (WebP, AVIF, resizing, lazy-load)
   images: {
-    unoptimized: true,
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 3600,
   },
-  turbopack: {
-    root: __dirname,
-  }
+  // Brotli/gzip all responses
+  compress: true,
+  poweredByHeader: false,
+  // Allow images from external domains used in the app
+  // (flagcdn for country flags, dicebear for avatars, Clerk for profile photos)
+  async headers() {
+    return [
+      {
+        // Cache static assets aggressively
+        source: "/_next/static/(.*)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        // Cache public folder assets (logos, card images) for 1 hour
+        source: "/(.*\\.webp|.*\\.png|.*\\.jpg|.*\\.svg)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" },
+        ],
+      },
+    ];
+  },
 };
 
 export default withSentryConfig(nextConfig, {
@@ -19,4 +41,3 @@ export default withSentryConfig(nextConfig, {
     disable: true,
   },
 });
-
