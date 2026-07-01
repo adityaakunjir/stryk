@@ -1036,7 +1036,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         {/* Drag Overlay */}
         <DragOverlay dropAnimation={null}>
           {activePlayer && activePlayerState ? (
-            <TokenOverlay player={activePlayer} state={activePlayerState} draggedPos={draggedPos} isLargeSquad={isLargeSquad} matchFormat={matchFormat} playerStates={playerStates} activeId={activeId} />
+            <TokenOverlay player={activePlayer} state={activePlayerState} draggedPos={draggedPos} isLargeSquad={isLargeSquad} matchFormat={matchFormat} playerStates={playerStates} activeId={activeId ?? undefined} />
           ) : null}
         </DragOverlay>
       </DndContext>
