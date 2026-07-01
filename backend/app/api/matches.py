@@ -1202,7 +1202,7 @@ async def submit_stats(
         duelsWon=payload.duelsWon,
         aerialDuelsWon=payload.aerialDuelsWon,
         cleanSheet=clean_sheet,
-        motm=payload.motm,
+        motm=False,
         yellowCards=yellow_cards,
         redCards=red_cards,
         ownGoals=payload.ownGoals,
@@ -1555,7 +1555,7 @@ async def complete_match(
                 stat.user.intercepts += stat.interceptions
 
                 # Update User OVR Attributes using Diminishing Returns
-                from app.core.stats import calculate_stat_gain, calculate_ovr
+                from app.core.stats import calculate_stat_gain, calculate_ovr, calculate_match_rating
 
                 # Goals -> SHO, PAC (small)
                 for _ in range(stat.goals):
@@ -1649,6 +1649,32 @@ async def complete_match(
             stat.status = "voided"
             
         results.append({"userId": target_id, "status": stat.status})
+
+    # MOTM Assignment
+    best_rating = 0.0
+    motm_stat = None
+    for stat in all_stats:
+        if stat.status == "verified":
+            stat_dict = {
+                "goals": stat.goals,
+                "assists": stat.assists,
+                "yellowCards": stat.yellowCards,
+                "redCards": stat.redCards,
+                "ownGoals": stat.ownGoals,
+                "noShow": stat.noShow,
+                "cleanSheet": stat.cleanSheet,
+                "tackles": stat.tackles,
+                "interceptions": stat.interceptions,
+                "saves": stat.saves,
+                "keyPasses": stat.keyPasses
+            }
+            rating = calculate_match_rating(stat.user.position, stat_dict)
+            if rating > best_rating:
+                best_rating = rating
+                motm_stat = stat
+
+    if motm_stat:
+        motm_stat.motm = True
 
     match.status = "completed"
     await session.commit()

@@ -88,3 +88,57 @@ def calculate_stat_gain(base_gain: float, current_stat: float) -> float:
     effective_stat = min(current_stat, 99.0)
     gain = base_gain * (1 - (effective_stat / 100.0))
     return max(0.0, gain)
+
+def calculate_match_rating(position: str, stat_dict: Dict[str, Any]) -> float:
+    """Calculate a match rating from 1.0 to 10.0 based on raw match stats."""
+    base_rating = 6.0
+    
+    # Common stats
+    goals = stat_dict.get("goals", 0)
+    assists = stat_dict.get("assists", 0)
+    yellows = stat_dict.get("yellowCards", 0)
+    reds = stat_dict.get("redCards", 0)
+    own_goals = stat_dict.get("ownGoals", 0)
+    no_show = stat_dict.get("noShow", False)
+    clean_sheet = stat_dict.get("cleanSheet", False)
+    
+    if no_show:
+        return 1.0
+        
+    rating = base_rating
+    
+    # Penalties
+    rating -= yellows * 0.5
+    rating -= reds * 2.0
+    rating -= own_goals * 1.5
+    
+    # Base contributions
+    rating += goals * 1.2
+    rating += assists * 0.8
+    
+    # Advanced stats bonuses
+    tackles = stat_dict.get("tackles", 0)
+    interceptions = stat_dict.get("interceptions", 0)
+    saves = stat_dict.get("saves", 0)
+    key_passes = stat_dict.get("keyPasses", 0)
+    
+    rating += key_passes * 0.1
+    
+    pos = position.upper() if position else "DEFAULT"
+    
+    # Positional adjustments
+    if pos in ["CB", "LB", "RB", "LWB", "RWB"]:
+        rating += tackles * 0.3
+        rating += interceptions * 0.2
+        if clean_sheet:
+            rating += 1.5
+    elif pos in ["CDM", "CM"]:
+        rating += tackles * 0.2
+        rating += interceptions * 0.2
+    elif pos == "GK":
+        rating += saves * 0.4
+        if clean_sheet:
+            rating += 2.0
+            
+    # Cap between 1.0 and 10.0
+    return min(10.0, max(1.0, round(rating, 1)))

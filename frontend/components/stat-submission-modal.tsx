@@ -20,7 +20,6 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
   // Core
   const [goals, setGoals] = useState(0);
   const [assists, setAssists] = useState(0);
-  const [motm, setMotm] = useState(false);
   const [noShow, setNoShow] = useState(false);
   
   // Attack & Midfield
@@ -92,7 +91,6 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
           penaltySaves,
           distributionAssists,
           cleanSheet,
-          motm,
           yellowCards,
           redCards,
           ownGoals,
@@ -182,19 +180,6 @@ export function StatSubmissionModal({ isOpen, onClose, matchId, matchFormat, isG
               <>
                 {renderStatRow("Goals", goals, setGoals, goalCap)}
                 {renderStatRow("Assists", assists, setAssists)}
-                
-                <div 
-                  onClick={() => setMotm(!motm)}
-                  className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition mt-4 ${motm ? 'bg-[#A28B52]/10 border-[#A28B52]/50' : 'bg-white/[0.02] border-white/5'}`}
-                >
-                  <div className="flex items-center gap-2">
-                    <Award size={16} className={motm ? "text-[#A28B52]" : "text-white/40"} />
-                    <div className={`font-bold uppercase tracking-widest text-sm ${motm ? 'text-[#A28B52]' : 'text-white'}`}>Man of the Match</div>
-                  </div>
-                  <div className={`w-12 h-6 rounded-full flex items-center p-1 transition ${motm ? 'bg-[#A28B52]' : 'glass-panel0'}`}>
-                    <div className={`w-4 h-4 rounded-full glass-panel shadow-md transform transition ${motm ? 'translate-x-6' : 'translate-x-0'}`} />
-                  </div>
-                </div>
 
                 <div 
                   onClick={() => setNoShow(!noShow)}
