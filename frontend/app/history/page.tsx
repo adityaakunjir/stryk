@@ -149,8 +149,6 @@ export default function HistoryPage() {
         ) : history.length === 0 ? (
           /* Empty State Body */
           <div className="flex-1 flex flex-col items-center justify-center relative">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#C6FF00]/5 blur-[100px] rounded-full pointer-events-none" />
-
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
