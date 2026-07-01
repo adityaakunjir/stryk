@@ -109,47 +109,47 @@ export default function HistoryPage() {
 
   const getOutcomeColor = (outcome: string) => {
     switch (outcome) {
-      case "Win": return "bg-[#151515] text-[#D4F829] border-transparent shadow-md";
-      case "Loss": return "bg-red-50 text-red-600 border-red-200 shadow-sm";
-      case "Draw": return "bg-[#151515]/5 text-[#151515]/70 border-[#151515]/10 shadow-sm";
-      default: return "bg-[#151515]/5 text-[#151515]/50 border-[#151515]/10 shadow-sm";
+      case "Win": return "text-[#C6FF00] border-[#C6FF00]/30 bg-[#C6FF00]/10";
+      case "Loss": return "text-red-400 border-red-400/30 bg-red-400/10";
+      case "Draw": return "text-white/60 border-white/20 bg-white/5";
+      default: return "text-white/40 border-white/10 bg-white/5";
     }
   };
 
   const getOutcomeBorderColor = (outcome: string) => {
     switch (outcome) {
-      case "Win": return "border-[#151515] bg-[#D4F829]";
-      case "Loss": return "border-red-500 bg-white";
-      case "Draw": return "border-[#151515]/30 bg-white";
-      default: return "border-[#151515]/20 bg-white";
+      case "Win": return "border-[#C6FF00]";
+      case "Loss": return "border-red-500";
+      case "Draw": return "border-white/40";
+      default: return "border-white/20";
     }
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#E5DCC5] text-[#151515] overflow-hidden">
+    <main className="stryk-mobile-shell bg-[#151515] text-white overflow-hidden">
       <div data-scroll-panel className="relative h-full flex flex-col px-5 pt-6 pb-8 max-w-md mx-auto z-10 overflow-y-auto w-full min-h-0 custom-scrollbar">
         {/* Header */}
         <header className="pb-4 flex items-center gap-3 shrink-0 mb-2 relative z-20">
           <button
             onClick={() => router.push("/home")}
-            className="w-10 h-10 rounded-full bg-[#151515]/5 border border-[#151515]/10 flex items-center justify-center text-[#151515]/70 hover:bg-[#151515]/10 hover:text-[#151515] transition cursor-pointer"
+            className="w-10 h-10 rounded-full bg-transparent border border-white/10 flex items-center justify-center text-white/50 hover:bg-white/[0.03] hover:text-white transition cursor-pointer"
           >
             <ArrowLeft size={18} />
           </button>
           <div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-[#151515]/50 font-bold">Match Data</div>
-            <div className="font-display tracking-wider text-xl text-[#151515]">CAREER TIMELINE</div>
+            <div className="text-[10px] uppercase tracking-[0.3em] text-[#A28B52] font-bold">Career</div>
+            <div className="font-display tracking-wider text-2xl uppercase italic">MATCH HISTORY</div>
           </div>
         </header>
 
         {loading ? (
           <div className="flex-1 flex items-center justify-center">
-            <Loader2 className="animate-spin text-[#151515] opacity-50" size={32} />
+            <Loader2 className="animate-spin text-[#C6FF00] opacity-50" size={32} />
           </div>
         ) : history.length === 0 ? (
           /* Empty State Body */
           <div className="flex-1 flex flex-col items-center justify-center relative">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-white/30 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#C6FF00]/5 blur-[100px] rounded-full pointer-events-none" />
 
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -157,12 +157,12 @@ export default function HistoryPage() {
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="flex flex-col items-center text-center relative z-10 w-full"
             >
-              <div className="w-20 h-20 rounded-full bg-[#151515]/5 border border-dashed border-[#151515]/20 flex items-center justify-center mb-6 text-[#151515]/40">
+              <div className="w-20 h-20 rounded-full bg-white/[0.02] border border-dashed border-white/10 flex items-center justify-center mb-6 text-white/30">
                 <Activity size={32} />
               </div>
 
-              <h2 className="font-display text-3xl uppercase italic tracking-wider mb-2 text-[#151515]">No Matches Yet</h2>
-              <p className="text-[13px] text-[#151515]/60 font-medium max-w-[260px] leading-relaxed mb-8">
+              <h2 className="font-display text-3xl uppercase italic tracking-wider mb-2 text-white">No Matches Yet</h2>
+              <p className="text-[13px] text-white/50 font-medium max-w-[260px] leading-relaxed mb-8">
                 Your match history is completely empty. Play your first match to start tracking your performance and improving your stats.
               </p>
 
@@ -170,7 +170,7 @@ export default function HistoryPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => router.push("/matches")}
-                className="w-full h-14 rounded-2xl bg-[#151515] text-[#D4F829] font-display text-[14px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2 cursor-pointer shadow-xl"
+                className="w-full h-14 rounded-2xl bg-[#C6FF00] text-black font-display text-[14px] font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_30px_-5px_rgba(198,255,0,0.4)]"
               >
                 <Play size={16} fill="currentColor" /> FIND MATCH
               </motion.button>
@@ -180,7 +180,7 @@ export default function HistoryPage() {
           /* Timeline Body */
           <div className="flex-1 relative pb-10">
             {/* Timeline Vertical Line */}
-            <div className="absolute left-[19px] top-4 bottom-0 w-[2px] bg-gradient-to-b from-[#151515]/20 via-[#151515]/10 to-transparent" />
+            <div className="absolute left-[19px] top-4 bottom-0 w-[2px] bg-gradient-to-b from-white/20 via-white/10 to-transparent" />
 
             <div className="flex flex-col gap-8 pt-4">
               {history.map((match, idx) => (
@@ -192,23 +192,23 @@ export default function HistoryPage() {
                   className="relative pl-12 pr-1"
                 >
                   {/* Timeline Node */}
-                  <div className={`absolute left-[13px] top-6 w-[14px] h-[14px] rounded-full border-[3px] z-10 ${getOutcomeBorderColor(match.outcome)}`} />
+                  <div className={`absolute left-[13px] top-6 w-[14px] h-[14px] rounded-full border-[3px] bg-[#151515] z-10 ${getOutcomeBorderColor(match.outcome)}`} />
 
                   {/* Match Card */}
-                  <div className="rounded-[1.5rem] bg-white border border-[#151515]/10 shadow-sm overflow-hidden relative">
+                  <div className="rounded-2xl bg-white/[0.02] border border-white/5 shadow-sm overflow-hidden relative transition hover:bg-white/[0.04]">
                     
                     {/* Header Row */}
-                    <div className="p-4 border-b border-[#151515]/5 flex items-start justify-between relative overflow-hidden">
+                    <div className="p-4 border-b border-white/5 flex items-start justify-between relative overflow-hidden">
                       {/* Subdued background glow based on result */}
-                      {match.outcome === "Win" && <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4F829]/20 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />}
+                      {match.outcome === "Win" && <div className="absolute top-0 right-0 w-32 h-32 bg-[#C6FF00]/10 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />}
                       
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-[#151515]/60">{match.format}</span>
-                          <span className="w-1 h-1 rounded-full bg-[#151515]/20" />
-                          <span className="text-[10px] flex items-center gap-1 text-[#151515]/50"><Calendar size={10}/> {formatDate(match.matchDate)}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">{match.format}</span>
+                          <span className="w-1 h-1 rounded-full bg-white/20" />
+                          <span className="text-[10px] flex items-center gap-1 text-white/40"><Calendar size={10}/> {formatDate(match.matchDate)}</span>
                         </div>
-                        <h3 className="font-display text-lg tracking-wide uppercase leading-tight truncate max-w-[200px] text-[#151515]">{match.title}</h3>
+                        <h3 className="font-display text-lg tracking-wide uppercase leading-tight truncate max-w-[200px] text-white">{match.title}</h3>
                       </div>
 
                       <div className="flex items-start gap-2">
@@ -217,8 +217,8 @@ export default function HistoryPage() {
                           onClick={(e) => handleToggleStar(match.matchId, e)}
                           className={`p-1.5 rounded-full border transition cursor-pointer z-10 ${
                             match.isStarred 
-                              ? "bg-[#D4F829] border-[#151515]/10 text-[#151515] shadow-md" 
-                              : "bg-[#151515]/5 border-[#151515]/10 text-[#151515]/40 hover:text-[#151515]/80 hover:bg-[#151515]/10"
+                              ? "bg-[#C6FF00]/20 border-[#C6FF00]/50 text-[#C6FF00] shadow-[0_0_15px_rgba(198,255,0,0.3)]" 
+                              : "bg-white/5 border-white/10 text-white/40 hover:text-white/80 hover:bg-white/10"
                           }`}
                         >
                           <Star size={14} fill={match.isStarred ? "currentColor" : "none"} />
@@ -242,57 +242,57 @@ export default function HistoryPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           {match.stats.motm && (
-                            <div className="flex items-center gap-1.5 text-[#151515] bg-[#D4F829] px-2.5 py-1 rounded-lg border border-[#151515]/10 shadow-sm">
+                            <div className="flex items-center gap-1.5 text-[#C6FF00] bg-[#C6FF00]/10 px-2.5 py-1 rounded-lg border border-[#C6FF00]/20 shadow-[0_0_15px_rgba(198,255,0,0.2)]">
                               <Trophy size={12} strokeWidth={2.5} />
                               <span className="text-[10px] font-bold uppercase tracking-wider">MVP</span>
                             </div>
                           )}
                           <div className="flex flex-col">
-                            <span className="text-[10px] font-bold text-[#151515]/50 uppercase tracking-wider">XP Earned</span>
-                            <span className="text-sm font-display text-[#151515]">+{match.xpGained} XP</span>
+                            <span className="text-[10px] font-bold text-white/40 uppercase tracking-wider">XP Earned</span>
+                            <span className="text-sm font-display text-white">+{match.xpGained} XP</span>
                           </div>
                         </div>
                         
                         <div className="text-right">
-                          <span className="text-[10px] font-bold text-[#151515]/50 uppercase tracking-wider block mb-0.5">Played For</span>
-                          <span className="text-[11px] font-bold text-[#151515]/80 bg-[#151515]/5 px-2 py-0.5 rounded-md border border-[#151515]/10">Team {match.team}</span>
+                          <span className="text-[10px] font-bold text-white/40 uppercase tracking-wider block mb-0.5">Played For</span>
+                          <span className="text-[11px] font-bold text-white/80 bg-white/5 px-2 py-0.5 rounded-md border border-white/5">Team {match.team}</span>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-4 gap-2">
                         {match.stats.goals > 0 && (
-                          <div className="flex flex-col items-center justify-center bg-[#151515]/5 rounded-xl p-2 border border-[#151515]/10">
-                            <Target size={14} className="text-[#151515]/40 mb-1" />
-                            <span className="text-base font-display text-[#151515]">{match.stats.goals}</span>
-                            <span className="text-[9px] uppercase tracking-wider text-[#151515]/50 font-bold">Goals</span>
+                          <div className="flex flex-col items-center justify-center bg-white/[0.02] rounded-xl p-2 border border-white/5">
+                            <Target size={14} className="text-white/40 mb-1" />
+                            <span className="text-base font-display text-white">{match.stats.goals}</span>
+                            <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">Goals</span>
                           </div>
                         )}
                         {match.stats.assists > 0 && (
-                          <div className="flex flex-col items-center justify-center bg-[#151515]/5 rounded-xl p-2 border border-[#151515]/10">
-                            <Flame size={14} className="text-[#151515]/40 mb-1" />
-                            <span className="text-base font-display text-[#151515]">{match.stats.assists}</span>
-                            <span className="text-[9px] uppercase tracking-wider text-[#151515]/50 font-bold">Assists</span>
+                          <div className="flex flex-col items-center justify-center bg-white/[0.02] rounded-xl p-2 border border-white/5">
+                            <Flame size={14} className="text-white/40 mb-1" />
+                            <span className="text-base font-display text-white">{match.stats.assists}</span>
+                            <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">Assists</span>
                           </div>
                         )}
                         {match.stats.tackles > 0 && (
-                          <div className="flex flex-col items-center justify-center bg-[#151515]/5 rounded-xl p-2 border border-[#151515]/10">
-                            <Shield size={14} className="text-[#151515]/40 mb-1" />
-                            <span className="text-base font-display text-[#151515]">{match.stats.tackles}</span>
-                            <span className="text-[9px] uppercase tracking-wider text-[#151515]/50 font-bold">Tackles</span>
+                          <div className="flex flex-col items-center justify-center bg-white/[0.02] rounded-xl p-2 border border-white/5">
+                            <Shield size={14} className="text-white/40 mb-1" />
+                            <span className="text-base font-display text-white">{match.stats.tackles}</span>
+                            <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">Tackles</span>
                           </div>
                         )}
                         {match.stats.saves > 0 && (
-                          <div className="flex flex-col items-center justify-center bg-[#151515]/5 rounded-xl p-2 border border-[#151515]/10">
-                            <Hand size={14} className="text-[#151515]/40 mb-1" />
-                            <span className="text-base font-display text-[#151515]">{match.stats.saves}</span>
-                            <span className="text-[9px] uppercase tracking-wider text-[#151515]/50 font-bold">Saves</span>
+                          <div className="flex flex-col items-center justify-center bg-white/[0.02] rounded-xl p-2 border border-white/5">
+                            <Hand size={14} className="text-white/40 mb-1" />
+                            <span className="text-base font-display text-white">{match.stats.saves}</span>
+                            <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">Saves</span>
                           </div>
                         )}
                         {match.stats.cleanSheet && (
-                          <div className="flex flex-col items-center justify-center bg-[#151515]/5 rounded-xl p-2 border border-[#151515]/10">
-                            <Lock size={14} className="text-[#151515]/40 mb-1" />
-                            <span className="text-base font-display text-[#151515]">1</span>
-                            <span className="text-[9px] uppercase tracking-wider text-[#151515]/50 font-bold">Clean</span>
+                          <div className="flex flex-col items-center justify-center bg-white/[0.02] rounded-xl p-2 border border-white/5">
+                            <Lock size={14} className="text-white/40 mb-1" />
+                            <span className="text-base font-display text-white">1</span>
+                            <span className="text-[9px] uppercase tracking-wider text-white/40 font-bold">Clean</span>
                           </div>
                         )}
                       </div>
