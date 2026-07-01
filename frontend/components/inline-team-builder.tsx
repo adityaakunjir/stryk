@@ -788,11 +788,11 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
   const activePlayerState = activeId ? playerStates[activeId] : null;
   const benchPlayers = useMemo(() => players.filter(p => !playerStates[p.id]?.x), [players, playerStates]);
   
-  let pitchHeightClass = "h-[680px] md:h-[760px]";
-  if (matchFormat === "3v3") pitchHeightClass = "h-[450px] md:h-[500px]";
-  else if (matchFormat === "5v5") pitchHeightClass = "h-[550px] md:h-[600px]";
-  else if (matchFormat === "7v7") pitchHeightClass = "h-[700px] md:h-[750px]";
-  else if (matchFormat === "11v11") pitchHeightClass = "h-[900px] md:h-[950px]";
+  let pitchHeightClass = "h-[730px] md:h-[810px]";
+  if (matchFormat === "3v3") pitchHeightClass = "h-[500px] md:h-[550px]";
+  else if (matchFormat === "5v5") pitchHeightClass = "h-[600px] md:h-[650px]";
+  else if (matchFormat === "7v7") pitchHeightClass = "h-[750px] md:h-[800px]";
+  else if (matchFormat === "11v11") pitchHeightClass = "h-[950px] md:h-[1000px]";
 
   const isLargeSquad = matchFormat === "7v7" || matchFormat === "11v11";
 
@@ -850,7 +850,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.10)_60%,rgba(0,0,0,0.26)_100%)]" />
             
             {/* Pitch Lines Wrapper */}
-            <div className="absolute inset-4 border-[1.5px] border-white/35 pointer-events-none shadow-[inset_0_0_40px_rgba(0,0,0,0.18)]" />
+            <div className="absolute inset-x-4 top-[5rem] bottom-[5rem] border-[1.5px] border-white/35 pointer-events-none shadow-[inset_0_0_40px_rgba(0,0,0,0.18)]" />
             
             {/* Center Line */}
             <div className="absolute top-1/2 left-4 right-4 h-[1.5px] bg-white/40 -translate-y-1/2 pointer-events-none" />
@@ -860,20 +860,20 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
             <div className="absolute top-1/2 left-1/2 w-1.5 h-1.5 rounded-full bg-white/60 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
             {/* Top Penalty Box */}
-            <div className="absolute top-4 left-1/2 w-40 h-20 border-[1.5px] border-t-0 border-white/40 -translate-x-1/2 pointer-events-none" />
+            <div className="absolute top-[5rem] left-1/2 w-40 h-20 border-[1.5px] border-t-0 border-white/40 -translate-x-1/2 pointer-events-none" />
             {/* Top 6-yard Box */}
-            <div className="absolute top-4 left-1/2 w-20 h-8 border-[1.5px] border-t-0 border-white/40 -translate-x-1/2 pointer-events-none" />
+            <div className="absolute top-[5rem] left-1/2 w-20 h-8 border-[1.5px] border-t-0 border-white/40 -translate-x-1/2 pointer-events-none" />
             {/* Top Penalty Arc */}
-            <svg className="absolute top-[calc(1rem+5rem)] left-1/2 h-12 w-24 -translate-x-1/2 pointer-events-none overflow-visible" viewBox="0 0 96 48" aria-hidden="true">
+            <svg className="absolute top-[calc(5rem+5rem)] left-1/2 h-12 w-24 -translate-x-1/2 pointer-events-none overflow-visible" viewBox="0 0 96 48" aria-hidden="true">
               <path d="M0 0 Q48 48 96 0" fill="none" stroke="rgba(255,255,255,0.40)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
             </svg>
 
             {/* Bottom Penalty Box */}
-            <div className="absolute bottom-4 left-1/2 w-40 h-20 border-[1.5px] border-b-0 border-white/40 -translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-[5rem] left-1/2 w-40 h-20 border-[1.5px] border-b-0 border-white/40 -translate-x-1/2 pointer-events-none" />
             {/* Bottom 6-yard Box */}
-            <div className="absolute bottom-4 left-1/2 w-20 h-8 border-[1.5px] border-b-0 border-white/40 -translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-[5rem] left-1/2 w-20 h-8 border-[1.5px] border-b-0 border-white/40 -translate-x-1/2 pointer-events-none" />
             {/* Bottom Penalty Arc */}
-            <svg className="absolute bottom-[calc(1rem+5rem)] left-1/2 h-12 w-24 -translate-x-1/2 pointer-events-none overflow-visible" viewBox="0 0 96 48" aria-hidden="true">
+            <svg className="absolute bottom-[calc(5rem+5rem)] left-1/2 h-12 w-24 -translate-x-1/2 pointer-events-none overflow-visible" viewBox="0 0 96 48" aria-hidden="true">
               <path d="M0 48 Q48 0 96 48" fill="none" stroke="rgba(255,255,255,0.40)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
             </svg>
 
