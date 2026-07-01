@@ -74,65 +74,82 @@ function TeamChip({ label, value, tone }: { label: string; value: number; tone: 
 }
 
 // --- Helpers ---
-const getAutoPosition = (x: number, y: number, team: "A" | "B" | null) => {
+const getAutoPosition = (
+  x: number, 
+  y: number, 
+  team: "A" | "B" | null, 
+  matchFormat: string,
+  currentStates?: Record<string, PlayerState>,
+  currentPlayerId?: string
+) => {
   const isTeamA = team === "A" || (!team && y >= 50);
 
+  let grassHeightPx = 1050 - 80;
+  if (matchFormat === "3v3") grassHeightPx = 650 - 80;
+  else if (matchFormat === "5v5") grassHeightPx = 750 - 80;
+  else if (matchFormat === "7v7") grassHeightPx = 880 - 80;
+
+  const gkPercentageThreshold = (152 / grassHeightPx) * 100;
+  const teamAGkThreshold = 100 - gkPercentageThreshold;
+  const teamBGkThreshold = gkPercentageThreshold;
+
+  let pos = "";
+
   if (isTeamA) {
-    // Team A (Home/White) plays upwards towards y=0 (Defends Bottom y=100)
-    
-    // GK (Bottom 17% of pitch to cover penalty box + arc)
-    if (y >= 83) return "GK";
-    
-    // Defense (y between 65 and 82)
-    if (y >= 65) {
-      if (x <= 30) return "LB";
-      if (x >= 70) return "RB";
-      return "CB";
+    if (y >= teamAGkThreshold) pos = "GK";
+    else if (y >= 65) {
+      if (x <= 30) pos = "LB";
+      else if (x >= 70) pos = "RB";
+      else pos = "CB";
     }
-    
-    // Midfield (y between 35 and 64)
-    if (y >= 35) {
-      if (x <= 30) return "LMF";
-      if (x >= 70) return "RMF";
-      if (y >= 55) return "DMF";
-      if (y >= 45) return "CMF";
-      return "AMF";
+    else if (y >= 35) {
+      if (x <= 30) pos = "LMF";
+      else if (x >= 70) pos = "RMF";
+      else if (y >= 55) pos = "DMF";
+      else if (y >= 45) pos = "CMF";
+      else pos = "AMF";
     }
-    
-    // Attack (y < 35)
-    if (x <= 30) return "LWF";
-    if (x >= 70) return "RWF";
-    if (y >= 15) return "SS";
-    return "CF";
-    
+    else {
+      if (x <= 30) pos = "LWF";
+      else if (x >= 70) pos = "RWF";
+      else if (y >= 15) pos = "SS";
+      else pos = "CF";
+    }
   } else {
-    // Team B (Away/Black) plays downwards towards y=100 (Defends Top y=0)
-    
-    // GK (Top 17% of pitch to cover penalty box + arc)
-    if (y <= 17) return "GK";
-    
-    // Defense (y between 18 and 35)
-    if (y <= 35) {
-      if (x <= 30) return "RB"; // Flipped horizontally
-      if (x >= 70) return "LB";
-      return "CB";
+    if (y <= teamBGkThreshold) pos = "GK";
+    else if (y <= 35) {
+      if (x <= 30) pos = "RB";
+      else if (x >= 70) pos = "LB";
+      else pos = "CB";
     }
-    
-    // Midfield (y between 36 and 65)
-    if (y <= 65) {
-      if (x <= 30) return "RMF"; // Flipped horizontally
-      if (x >= 70) return "LMF";
-      if (y <= 45) return "DMF";
-      if (y <= 55) return "CMF";
-      return "AMF";
+    else if (y <= 65) {
+      if (x <= 30) pos = "RMF";
+      else if (x >= 70) pos = "LMF";
+      else if (y <= 45) pos = "DMF";
+      else if (y <= 55) pos = "CMF";
+      else pos = "AMF";
     }
-    
-    // Attack (y > 65)
-    if (x <= 30) return "RWF"; // Flipped horizontally
-    if (x >= 70) return "LWF";
-    if (y <= 85) return "SS";
-    return "CF";
+    else {
+      if (x <= 30) pos = "RWF";
+      else if (x >= 70) pos = "LWF";
+      else if (y <= 85) pos = "SS";
+      else pos = "CF";
+    }
   }
+
+  if (pos === "GK" && currentStates && team) {
+    const hasOtherGk = Object.entries(currentStates).some(([id, state]) => {
+      if (id === currentPlayerId) return false;
+      if (state.team !== team) return false;
+      const label = state.customLabel || "POS";
+      return label === "GK";
+    });
+    if (hasOtherGk) {
+      pos = "CB";
+    }
+  }
+
+  return pos;
 };
 
 const getOvrColor = (ovr: number) => {
@@ -331,10 +348,10 @@ const DraggablePlayerToken = React.memo(function DraggablePlayerToken({
 });
 
 // --- Drag Overlay Component ---
-function TokenOverlay({ player, state, draggedPos, isLargeSquad = false }: { player: Player; state: PlayerState; draggedPos?: {x: number, y: number} | null; isLargeSquad?: boolean; }) {
+function TokenOverlay({ player, state, draggedPos, isLargeSquad = false, matchFormat = "11v11", playerStates = {}, activeId = "" }: { player: Player; state: PlayerState; draggedPos?: {x: number, y: number} | null; isLargeSquad?: boolean; matchFormat?: string; playerStates?: Record<string, PlayerState>; activeId?: string; }) {
   const newTeam = state.team || (draggedPos ? (draggedPos.y <= 50 ? "A" : "B") : "B");
   const label = draggedPos 
-    ? getAutoPosition(draggedPos.x, draggedPos.y, newTeam) 
+    ? getAutoPosition(draggedPos.x, draggedPos.y, newTeam, matchFormat, playerStates, activeId) 
     : (state.customLabel || player.position || "POS");
 
   const wrapperClass = isLargeSquad ? "w-[44px] md:w-[48px] h-[64px] md:h-[70px]" : "w-[50px] md:w-[56px] h-[72px] md:h-[80px]";
@@ -478,7 +495,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
 
         if (team && p.x != null && p.y != null) {
           // API provided coordinates — use them and compute correct label
-          const label = getAutoPosition(p.x, p.y, team);
+          const label = getAutoPosition(p.x, p.y, team, matchFormat, tempStates, p.id);
           newStates[p.id] = {
             id: p.id,
             x: p.x,
@@ -490,7 +507,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
           // Has team but no coordinates — place in default position
           const defaultX = 20 + Math.random() * 60;
           const defaultY = team === "A" ? (15 + Math.random() * 30) : (65 + Math.random() * 30);
-          const label = getAutoPosition(defaultX, defaultY, team);
+          const label = getAutoPosition(defaultX, defaultY, team, matchFormat, tempStates, p.id);
           newStates[p.id] = {
             id: p.id,
             x: defaultX,
@@ -552,7 +569,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
           };
         }
 
-        const autoPos = getAutoPosition(externalPositionUpdate.x, externalPositionUpdate.y, externalPositionUpdate.team as "A" | "B" | null);
+        const autoPos = getAutoPosition(externalPositionUpdate.x, externalPositionUpdate.y, externalPositionUpdate.team as "A" | "B" | null, matchFormat, playerStates, externalPositionUpdate.playerId);
         return {
           ...prev,
           [externalPositionUpdate.userId]: {
@@ -661,7 +678,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
     if (droppedOnPitch) {
       // Determine team: keep current team if already assigned, otherwise assign based on Y (Team A is bottom half y>=50, Team B is top half y<50)
       const newTeam = currentTeam || (percentY >= 50 ? "A" : "B");
-      const autoPos = getAutoPosition(percentX, percentY, newTeam);
+      const autoPos = getAutoPosition(percentX, percentY, newTeam, matchFormat, playerStates, active.id as string);
       
       nextState = {
         ...nextState,
@@ -753,7 +770,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
           ...currentState,
           team: newTeam,
           customLabel: currentState.x !== null && currentState.y !== null 
-            ? getAutoPosition(currentState.x, currentState.y, newTeam)
+            ? getAutoPosition(currentState.x, currentState.y, newTeam, matchFormat, playerStates, activeId)
             : currentState.customLabel
         }
       };
@@ -1019,7 +1036,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         {/* Drag Overlay */}
         <DragOverlay dropAnimation={null}>
           {activePlayer && activePlayerState ? (
-            <TokenOverlay player={activePlayer} state={activePlayerState} draggedPos={draggedPos} isLargeSquad={isLargeSquad} />
+            <TokenOverlay player={activePlayer} state={activePlayerState} draggedPos={draggedPos} isLargeSquad={isLargeSquad} matchFormat={matchFormat} playerStates={playerStates} activeId={activeId} />
           ) : null}
         </DragOverlay>
       </DndContext>
