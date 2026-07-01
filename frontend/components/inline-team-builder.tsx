@@ -495,7 +495,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
 
         if (team && p.x != null && p.y != null) {
           // API provided coordinates — use them and compute correct label
-          const label = getAutoPosition(p.x, p.y, team, matchFormat, tempStates, p.id);
+          const label = getAutoPosition(p.x, p.y, team, matchFormat, newStates, p.id);
           newStates[p.id] = {
             id: p.id,
             x: p.x,
@@ -507,7 +507,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
           // Has team but no coordinates — place in default position
           const defaultX = 20 + Math.random() * 60;
           const defaultY = team === "A" ? (15 + Math.random() * 30) : (65 + Math.random() * 30);
-          const label = getAutoPosition(defaultX, defaultY, team, matchFormat, tempStates, p.id);
+          const label = getAutoPosition(defaultX, defaultY, team, matchFormat, newStates, p.id);
           newStates[p.id] = {
             id: p.id,
             x: defaultX,
