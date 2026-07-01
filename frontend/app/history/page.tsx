@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Activity, Play, Trophy, Target, Shield, Flame, Hand, Lock, Loader2, Calendar } from "lucide-react";
+import { ArrowLeft, Activity, Play, Trophy, Target, Shield, Flame, Hand, Lock, Loader2, Calendar, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface MatchStat {
@@ -29,6 +29,7 @@ interface MatchHistoryEntry {
   teamBScore: number | null;
   xpGained: number;
   stats: MatchStat;
+  isStarred?: boolean;
 }
 
 export default function HistoryPage() {
@@ -64,6 +65,42 @@ export default function HistoryPage() {
     };
     fetchHistory();
   }, []);
+
+  const handleToggleStar = async (matchId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Optimistic update
+    setHistory(prev => prev.map(m => {
+      if (m.matchId === matchId) {
+        return { ...m, isStarred: !m.isStarred };
+      }
+      return m;
+    }));
+
+    try {
+      const res = await fetch(`/api/profile/me/history/${matchId}/star`, {
+        method: "POST"
+      });
+      if (!res.ok) {
+        // Revert on failure
+        setHistory(prev => prev.map(m => {
+          if (m.matchId === matchId) {
+            return { ...m, isStarred: !m.isStarred };
+          }
+          return m;
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to toggle star:", err);
+      // Revert on error
+      setHistory(prev => prev.map(m => {
+        if (m.matchId === matchId) {
+          return { ...m, isStarred: !m.isStarred };
+        }
+        return m;
+      }));
+    }
+  };
 
   const formatDate = (dateString: string) => {
     const d = new Date(dateString);
@@ -174,8 +211,21 @@ export default function HistoryPage() {
                         <h3 className="font-display text-lg tracking-wide uppercase leading-tight truncate max-w-[200px]">{match.title}</h3>
                       </div>
 
-                      {/* Result Badge */}
-                      <div className={`flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border ${getOutcomeColor(match.outcome)}`}>
+                      <div className="flex items-start gap-2">
+                        {/* Star Button */}
+                        <button 
+                          onClick={(e) => handleToggleStar(match.matchId, e)}
+                          className={`p-1.5 rounded-full border transition cursor-pointer z-10 ${
+                            match.isStarred 
+                              ? "bg-[#D4F829]/20 border-[#D4F829]/50 text-[#D4F829] shadow-[0_0_15px_rgba(212,248,41,0.3)]" 
+                              : "bg-white/5 border-white/10 text-white/40 hover:text-white/80 hover:bg-white/10"
+                          }`}
+                        >
+                          <Star size={14} fill={match.isStarred ? "currentColor" : "none"} />
+                        </button>
+                        
+                        {/* Result Badge */}
+                        <div className={`flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border ${getOutcomeColor(match.outcome)}`}>
                         <span className="text-[10px] font-black uppercase tracking-widest">{match.outcome}</span>
                         {(match.teamAScore !== null && match.teamBScore !== null) && (
                           <span className="text-sm font-display mt-0.5 tracking-wider">
@@ -183,6 +233,7 @@ export default function HistoryPage() {
                           </span>
                         )}
                       </div>
+                    </div>
                     </div>
 
                     {/* Stats Grid */}

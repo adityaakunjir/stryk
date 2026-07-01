@@ -215,8 +215,23 @@ async def get_player_history(
         .options(selectinload(MatchStats.match).selectinload(Match.teams))
         .order_by(MatchStats.id.desc())  # Approximate chronological order if date isn't directly on stats
     )
-    stats_result = await session.execute(stmt)
-    stats_list = stats_result.scalars().all()
+    
+    # Get top 20 recent matches
+    recent_stmt = stmt.limit(20)
+    recent_result = await session.execute(recent_stmt)
+    recent_list = recent_result.scalars().all()
+    
+    # Get all starred matches
+    starred_stmt = stmt.where(MatchStats.isStarred == True)
+    starred_result = await session.execute(starred_stmt)
+    starred_list = starred_result.scalars().all()
+    
+    # Merge and deduplicate
+    stats_dict = {s.id: s for s in recent_list}
+    for s in starred_list:
+        stats_dict[s.id] = s
+        
+    stats_list = list(stats_dict.values())
 
     # Sort them by actual matchDate descending
     stats_list = sorted(stats_list, key=lambda s: s.match.matchDate if s.match else datetime.min, reverse=True)
@@ -285,7 +300,8 @@ async def get_player_history(
                 "redCards": s.redCards,
                 "ownGoals": s.ownGoals,
                 "noShow": s.noShow
-            }
+            },
+            "isStarred": s.isStarred
         })
 
     return {"success": True, "data": history}

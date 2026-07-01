@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Bell, Play, Users, Trophy, MapPin, 
-  Loader2, X, Target, Shield, Star,
+  Loader2, X, Target, Shield, Star, Activity,
   ChevronRight, Home, User, Globe, BarChart3, UserPlus, ChevronDown
 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
@@ -119,6 +119,9 @@ export default function HomeLobbyPage() {
 
             {/* Profile & Notifications */}
             <div className="flex items-center gap-3">
+              <button onClick={() => router.push("/history")} className="relative w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition cursor-pointer">
+                <Activity size={18} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" />
+              </button>
               <button onClick={() => router.push("/notifications")} className="relative w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition cursor-pointer">
                 <Bell size={18} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" />
                 {incomingRequests.length > 0 && (

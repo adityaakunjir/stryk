@@ -146,6 +146,7 @@ class MatchStatsBase(SQLModel):
     createdAt: datetime = Field(default_factory=datetime.utcnow)
     isFlagged: bool = Field(default=False)
     flagReason: Optional[str] = Field(default=None, max_length=500)
+    isStarred: bool = Field(default=False)
 
 
 class MatchStats(MatchStatsBase, table=True):

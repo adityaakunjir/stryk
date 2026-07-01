@@ -251,6 +251,45 @@ async def patch_my_profile(
     await session.refresh(db_user)
     return db_user
 
+@router.post("/profile/me/history/{matchId}/star")
+async def toggle_match_star(
+    matchId: str,
+    session: AsyncSession = Depends(get_session),
+    user: dict = Depends(get_current_user),
+):
+    clerkId = user.get("sub")
+    result = await session.execute(
+        select(User).where(User.clerkId == clerkId)
+    )
+    db_user = result.scalars().first()
+    
+    if not db_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Profile not found"
+        )
+        
+    from app.models.match import MatchStats
+    stats_result = await session.execute(
+        select(MatchStats)
+        .where(MatchStats.userId == db_user.id)
+        .where(MatchStats.matchId == matchId)
+    )
+    db_stats = stats_result.scalars().first()
+    
+    if not db_stats:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Match stats not found for this user."
+        )
+        
+    db_stats.isStarred = not getattr(db_stats, "isStarred", False)
+    session.add(db_stats)
+    await session.commit()
+    await session.refresh(db_stats)
+    
+    return {"success": True, "isStarred": db_stats.isStarred}
+
 @router.get("/profile/fix-all-stats-secret-admin")
 async def fix_all_stats(session: AsyncSession = Depends(get_session)):
     """Secret endpoint to forcefully fix stats for all existing users in production DB"""
