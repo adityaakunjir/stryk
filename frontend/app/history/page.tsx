@@ -131,7 +131,7 @@ export default function HistoryPage() {
         {/* Header */}
         <header className="pb-4 flex items-center gap-3 shrink-0 mb-2 relative z-20">
           <button
-            onClick={() => router.push("/profile")}
+            onClick={() => router.push("/home")}
             className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-white/70 hover:glass-panel0 hover:text-white transition cursor-pointer "
           >
             <ArrowLeft size={18} />
