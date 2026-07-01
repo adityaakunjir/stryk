@@ -1084,7 +1084,8 @@ async def submit_stats(
     player_result = await session.execute(
         select(MatchPlayer).where(MatchPlayer.matchId == match_id, MatchPlayer.userId == db_user.id)
     )
-    if not player_result.scalars().first():
+    match_player = player_result.scalars().first()
+    if not match_player:
         raise HTTPException(status_code=403, detail="You were not part of this match")
 
     # Check if stats already submitted
@@ -1093,6 +1094,32 @@ async def submit_stats(
     )
     if existing_stats_result.scalars().first():
         raise HTTPException(status_code=400, detail="Stats already submitted for this match")
+
+    # Team Goals Validation
+    max_team_goals = None
+    if match_player.team == "A" and match.teamAScore is not None:
+        max_team_goals = match.teamAScore
+    elif match_player.team == "B" and match.teamBScore is not None:
+        max_team_goals = match.teamBScore
+
+    if max_team_goals is not None:
+        # Get all goals already claimed by teammates
+        teammate_stats_result = await session.execute(
+            select(MatchStats).join(MatchPlayer, MatchStats.userId == MatchPlayer.userId)
+            .where(
+                MatchStats.matchId == match_id, 
+                MatchPlayer.matchId == match_id, 
+                MatchPlayer.team == match_player.team
+            )
+        )
+        teammate_stats = teammate_stats_result.scalars().all()
+        already_claimed = sum(s.goals for s in teammate_stats)
+        
+        if payload.goals + already_claimed > max_team_goals:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Team {match_player.team} scored {max_team_goals} goals. Teammates have already claimed {already_claimed} goals. You can claim a maximum of {max_team_goals - already_claimed} goals."
+            )
 
     # 1. Velocity Cap: Max 3 matches per 24 hours
     twenty_four_hours_ago = datetime.utcnow() - timedelta(hours=24)
@@ -1611,6 +1638,7 @@ async def complete_match(
                 }
                 stat.user.overall = calculate_ovr(stat.user.position, stats_dict)
 
+                session.add(stat.user)
 
                 log = XPLog(userId=target_id, matchId=match_id, amount=xp_award, reason="Match Stats Verified")
                 session.add(log)
