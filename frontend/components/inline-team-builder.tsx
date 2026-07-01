@@ -770,7 +770,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
           ...currentState,
           team: newTeam,
           customLabel: currentState.x !== null && currentState.y !== null 
-            ? getAutoPosition(currentState.x, currentState.y, newTeam, matchFormat, playerStates, activeId)
+            ? getAutoPosition(currentState.x, currentState.y, newTeam, matchFormat, playerStates, player.id)
             : currentState.customLabel
         }
       };
