@@ -961,9 +961,21 @@ export default function MatchDetailsPage({ params }: PageProps) {
                           {p.user.username}
                         </span>
                       </div>
-                      <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">
-                        {p.user.overall || 60}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">
+                          {p.user.overall || 60}
+                        </span>
+                        {isHost && p.user.id !== currentUserId && (
+                          <button
+                            onClick={() => handleKickPlayer(p.user.id)}
+                            disabled={actionLoading}
+                            className="p-1 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition disabled:opacity-50"
+                            title="Kick player"
+                          >
+                            <X size={12} />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))}
                   
@@ -1010,9 +1022,21 @@ export default function MatchDetailsPage({ params }: PageProps) {
                           {p.user.username}
                         </span>
                       </div>
-                      <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-[#D4F829]/10 text-[#D4F829]">
-                        {p.user.overall || 60}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-[#D4F829]/10 text-[#D4F829]">
+                          {p.user.overall || 60}
+                        </span>
+                        {isHost && p.user.id !== currentUserId && (
+                          <button
+                            onClick={() => handleKickPlayer(p.user.id)}
+                            disabled={actionLoading}
+                            className="p-1 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition disabled:opacity-50"
+                            title="Kick player"
+                          >
+                            <X size={12} />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))}
                   
@@ -1050,7 +1074,19 @@ export default function MatchDetailsPage({ params }: PageProps) {
                         )}
                       </div>
                       <span className="text-[10px] font-bold text-white/70">{p.user.username}</span>
-                      <span className="text-[9px] font-black text-[#A28B52] ml-0.5">{p.user.overall || 60}</span>
+                      <div className="flex items-center gap-1.5 ml-0.5">
+                        <span className="text-[9px] font-black text-[#A28B52]">{p.user.overall || 60}</span>
+                        {isHost && p.user.id !== currentUserId && (
+                          <button
+                            onClick={() => handleKickPlayer(p.user.id)}
+                            disabled={actionLoading}
+                            className="p-0.5 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition disabled:opacity-50"
+                            title="Kick player"
+                          >
+                            <X size={10} />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
