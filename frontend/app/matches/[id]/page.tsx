@@ -252,22 +252,14 @@ export default function MatchDetailsPage({ params }: PageProps) {
   // Sync profile to get current user ID
   useEffect(() => {
     const fetchUserId = async () => {
-      // INSTANT CACHE HIT
-      const cachedId = sessionStorage.getItem("stryk_current_user_id");
-      if (cachedId) {
-        setCurrentUserId(cachedId);
-        setUserLoading(false);
-      }
-
+      // No local caching for user ID to prevent ghosting across logins
       try {
-        const res = await fetch("/api/profile/me");
+        const res = await fetch("/api/profile/me", { cache: "no-store" });
         const data = await res.json();
         if (data.success && data.player) {
           setCurrentUserId(data.player.id);
-          sessionStorage.setItem("stryk_current_user_id", data.player.id);
         } else if (data && data.id) {
           setCurrentUserId(data.id);
-          sessionStorage.setItem("stryk_current_user_id", data.id);
         }
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
