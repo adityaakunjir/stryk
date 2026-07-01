@@ -569,7 +569,7 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
           };
         }
 
-        const autoPos = getAutoPosition(externalPositionUpdate.x, externalPositionUpdate.y, externalPositionUpdate.team as "A" | "B" | null, matchFormat, playerStates, externalPositionUpdate.playerId);
+        const autoPos = getAutoPosition(externalPositionUpdate.x, externalPositionUpdate.y, externalPositionUpdate.team as "A" | "B" | null, matchFormat, playerStates, externalPositionUpdate.userId);
         return {
           ...prev,
           [externalPositionUpdate.userId]: {
