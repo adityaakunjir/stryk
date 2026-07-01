@@ -483,6 +483,29 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   };
 
+  const handleQuickComplete = async () => {
+    if (!confirm("Are you sure you want to instantly complete this match without collecting stats?")) return;
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/matches/${matchId}/quick-complete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Match completed successfully!");
+        router.push("/history");
+      } else {
+        toast.error(data.message || "Failed to complete match");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleAssignTeam = async (teamName: "Team A" | "Team B" | null) => {
     setActionLoading(true);
     try {
@@ -848,6 +871,15 @@ export default function MatchDetailsPage({ params }: PageProps) {
                       </button>
                     )}
                     
+                    <button 
+                      onClick={handleQuickComplete}
+                      disabled={actionLoading}
+                      title="End Match (No Stats)"
+                      className="w-12 h-12 shrink-0 rounded-[1.25rem] border border-white/10 bg-white/5 text-white hover:bg-[#D4F829]/10 hover:border-[#D4F829]/30 transition flex items-center justify-center cursor-pointer"
+                    >
+                      <CheckCircle2 size={16} className="text-[#D4F829]" />
+                    </button>
+
                     <button 
                       onClick={handleLeaveMatch}
                       disabled={actionLoading}

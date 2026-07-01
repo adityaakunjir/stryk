@@ -1423,6 +1423,69 @@ async def verify_stats(
 
     return {"success": True, "message": "Vote recorded"}
 
+@router.post("/{match_id}/quick-complete")
+async def quick_complete_match(
+    match_id: str,
+    user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    clerk_id = user.get("sub")
+    db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
+    db_user = db_user_result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    match_result = await session.execute(
+        select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user))
+    )
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    if match.hostId != db_user.id:
+        raise HTTPException(status_code=403, detail="Only the host can quick-complete the match")
+
+    if match.status not in ["open", "closed"]:
+        raise HTTPException(status_code=400, detail="Match cannot be quick-completed from this state")
+
+    # Generate empty stats for all checked-in players
+    for player in match.players:
+        if player.status != "checked_in":
+            continue
+
+        stat_result = await session.execute(
+            select(MatchStats).where(MatchStats.matchId == match.id, MatchStats.userId == player.userId)
+        )
+        existing_stat = stat_result.scalars().first()
+
+        if not existing_stat:
+            stats = MatchStats(
+                matchId=match.id,
+                userId=player.userId,
+                status="verified",
+                motm=False
+            )
+            session.add(stats)
+
+            # Base participation XP
+            if not hasattr(player.user, "xp"):
+                player.user.xp = 0
+            player.user.xp += 100
+            session.add(player.user)
+            
+            log = XPLog(userId=player.userId, matchId=match.id, amount=100, reason="Match Participation")
+            session.add(log)
+
+    if match.teamAScore is None:
+        match.teamAScore = 0
+    if match.teamBScore is None:
+        match.teamBScore = 0
+
+    match.status = "completed"
+    await session.commit()
+
+    return {"success": True, "message": "Match quickly completed"}
+
 
 @router.post("/{match_id}/complete")
 async def complete_match(
