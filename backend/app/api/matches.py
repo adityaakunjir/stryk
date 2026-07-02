@@ -4,14 +4,16 @@ STRYK Backend - Matches API
 Endpoints for creating matches, joining, checking in, etc.
 """
 
-from typing import List, Optional
+from typing import List, Optional, Literal
 from datetime import datetime, timedelta
 import statistics
+import math
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from sqlmodel import select, delete
+from sqlalchemy import func
+from sqlmodel import select
 
 from app.core.database import get_session
 from app.models.match import Match, MatchPlayer, MatchInvite, MatchStats, MatchVerification, XPLog, MatchTeam
@@ -21,6 +23,99 @@ from app.core.auth import get_current_user
 router = APIRouter(prefix="/matches", tags=["matches"])
 
 from pydantic import BaseModel
+
+
+def _card_frame_for_level(level: int) -> str:
+    if level >= 16:
+        return "gold"
+    if level >= 6:
+        return "silver"
+    return "bronze"
+
+
+def _sync_user_card_aliases(user: User) -> None:
+    """Keep legacy app fields and explicit card-contract aliases in sync."""
+    if not user.userId:
+        user.userId = user.id
+    user.avatar = user.avatarUrl
+    user.OVR = user.overall
+    user.PAC = user.pace
+    user.SHO = user.shooting
+    user.PAS = user.passing
+    user.DRI = user.dribbling
+    user.DEF = user.defending
+    user.PHY = user.physical
+    user.cardFrame = _card_frame_for_level(user.level or 1)
+
+
+def _append_match_notification(match: Match, user_id: str, kind: str, message: str, deadline: Optional[datetime] = None) -> None:
+    notifications = list(match.notifications or [])
+    notifications.append({
+        "userId": user_id,
+        "kind": kind,
+        "message": message,
+        "deadline": deadline.isoformat() if deadline else None,
+        "createdAt": datetime.utcnow().isoformat(),
+        "read": False,
+    })
+    match.notifications = notifications
+
+
+def _opponent_summary(match: Match, player_team: Optional[str]) -> dict:
+    if player_team == "A":
+        return {
+            "team": match.teamBName,
+            "scoreFor": match.teamAScore,
+            "scoreAgainst": match.teamBScore,
+        }
+    if player_team == "B":
+        return {
+            "team": match.teamAName,
+            "scoreFor": match.teamBScore,
+            "scoreAgainst": match.teamAScore,
+        }
+    return {
+        "team": "Unassigned",
+        "scoreFor": None,
+        "scoreAgainst": None,
+    }
+
+
+def _match_result_for_team(match: Match, player_team: Optional[str]) -> str:
+    if match.teamAScore is None or match.teamBScore is None or not player_team:
+        return "draw"
+    if match.teamAScore == match.teamBScore:
+        return "draw"
+    if player_team == "A":
+        return "win" if match.teamAScore > match.teamBScore else "loss"
+    if player_team == "B":
+        return "win" if match.teamBScore > match.teamAScore else "loss"
+    return "draw"
+
+
+def _append_user_history(
+    user: User,
+    match: Match,
+    player_team: Optional[str],
+    goals: int,
+    assists: int,
+    verified_by_count: int,
+) -> None:
+    history = list(user.matchHistory or [])
+    public_match_id = match.matchId or match.id
+    if any(entry.get("matchId") == public_match_id for entry in history):
+        return
+    history.append({
+        "matchId": public_match_id,
+        "date": (match.matchDate or match.createdAt).isoformat(),
+        "format": match.format,
+        "result": _match_result_for_team(match, player_team),
+        "goals": goals,
+        "assists": assists,
+        "verifiedBy": verified_by_count,
+        "opponentSummary": _opponent_summary(match, player_team),
+    })
+    user.matchHistory = history
 
 class PlayerPositionData(BaseModel):
     playerId: str
@@ -67,6 +162,7 @@ def _serialize_match(match: Match) -> dict:
                     "avatarUrl": p.user.avatarUrl,
                     "position": p.user.position,
                     "playStyle": p.user.playStyle,
+                    "playstyle": p.user.playStyle,
                     "overall": p.user.overall,
                     "xp": getattr(p.user, "xp", 0),
                     "level": getattr(p.user, "level", 1)
@@ -91,7 +187,15 @@ def _serialize_match(match: Match) -> dict:
         "teamAScore": match.teamAScore,
         "teamBScore": match.teamBScore,
         "createdAt": match.createdAt.isoformat() if match.createdAt else None,
+        "scheduledAt": match.scheduledAt.isoformat() if match.scheduledAt else (match.matchDate.isoformat() if match.matchDate else None),
+        "completedAt": match.completedAt.isoformat() if match.completedAt else None,
+        "submissionDeadline": match.submissionDeadline.isoformat() if match.submissionDeadline else None,
+        "verificationDeadline": match.verificationDeadline.isoformat() if match.verificationDeadline else None,
+        "matchId": match.matchId or match.id,
+        "hostUserId": match.hostUserId or match.hostId,
+        "notifications": match.notifications or [],
         "participants": players, # Keeping key as 'participants' for frontend compatibility if needed, or update frontend too
+        "playersArray": players,
         "players": len(players),
     }
 
@@ -110,17 +214,22 @@ async def create_match(
 
     try:
         match = Match(
+            matchId=None,
             title=match_in.title,
             turf=match_in.turf,
             location=match_in.location,
             matchDate=match_in.date_time,
-            format=match_in.format,
-            maxPlayers=match_in.max_players,
+            scheduledAt=match_in.date_time,
+            format="3v3",
+            maxPlayers=6,
             password=match_in.password,
             discordLink=match_in.discordLink,
-            hostId=db_user.id
+            hostId=db_user.id,
+            hostUserId=db_user.id
         )
         session.add(match)
+        await session.flush()
+        match.matchId = match.id
         await session.commit()
         await session.refresh(match)
 
@@ -155,6 +264,11 @@ async def create_match(
         if not match_in.teamA and not match_in.teamB:
             player = MatchPlayer(matchId=match.id, userId=db_user.id)
             session.add(player)
+
+        participant_count = len(all_players) if all_players else 1
+        if participant_count >= match.maxPlayers:
+            match.status = "full"
+            session.add(match)
 
         await session.commit()
 
@@ -198,6 +312,7 @@ async def get_available_players(
                 "username": p.username,
                 "position": p.position,
                 "playStyle": p.playStyle,
+                "playstyle": p.playStyle,
                 "overall": p.overall,
                 "rating": p.overall,  # Alias for compatibility
                 "xp": getattr(p, "xp", 0),
@@ -272,20 +387,16 @@ async def delete_match(
         raise HTTPException(status_code=404, detail="Match not found")
 
     if match.hostId != db_user.id:
-        raise HTTPException(status_code=403, detail="Only the host can delete this match")
+        raise HTTPException(status_code=403, detail="Only the host can archive this match")
 
-    # Manually cascade delete to prevent foreign key constraint failures
-    await session.execute(delete(MatchPlayer).where(MatchPlayer.matchId == match.id))
-    await session.execute(delete(MatchTeam).where(MatchTeam.matchId == match.id))
-    await session.execute(delete(MatchInvite).where(MatchInvite.matchId == match.id))
-    await session.execute(delete(MatchStats).where(MatchStats.matchId == match.id))
-    await session.execute(delete(MatchVerification).where(MatchVerification.matchId == match.id))
-    await session.execute(delete(XPLog).where(XPLog.matchId == match.id))
+    if match.status not in ["open", "full"]:
+        raise HTTPException(status_code=400, detail="Closed and completed matches are retained for history")
 
-    await session.execute(delete(Match).where(Match.id == match.id))
+    match.status = "cancelled"
+    session.add(match)
     await session.commit()
     
-    return {"success": True, "message": "Match deleted successfully"}
+    return {"success": True, "message": "Match archived successfully"}
 
 @router.get("/{match_id}")
 async def get_match_by_id(
@@ -323,8 +434,15 @@ async def join_match(
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
 
+    if match.status not in ["open", "full"]:
+        raise HTTPException(status_code=400, detail="Match is not open for joining")
+
     # Validate Capacity
     if len(match.players) >= match.maxPlayers:
+        if match.status != "full":
+            match.status = "full"
+            session.add(match)
+            await session.commit()
         raise HTTPException(status_code=400, detail="Match is already full")
 
     # Validate Password
@@ -344,13 +462,24 @@ async def join_match(
     session.add(player)
     await session.commit()
     await session.refresh(player)
-    return {"success": True, "data": {
-        "id": player.id,
-        "matchId": player.matchId,
-        "userId": player.userId,
-        "team": player.team,
-        "status": player.status,
-    }}
+    player_count = (await session.execute(select(func.count()).select_from(MatchPlayer).where(MatchPlayer.matchId == match.id))).scalar_one()
+    if player_count >= match.maxPlayers:
+        match.status = "full"
+        session.add(match)
+        await session.commit()
+    stmt = (
+        select(Match)
+        .where(Match.id == match.id)
+        .options(selectinload(Match.players).selectinload(MatchPlayer.user))
+        .execution_options(populate_existing=True)
+    )
+    fresh = (await session.execute(stmt)).scalars().first()
+    if fresh and player_count >= fresh.maxPlayers:
+        fresh.status = "full"
+        session.add(fresh)
+        await session.commit()
+        await session.refresh(fresh)
+    return {"success": True, "data": _serialize_match(fresh or match)}
 
 
 class MatchJoinCode(BaseModel):
@@ -378,10 +507,17 @@ async def join_match_by_code(
     if not match:
         raise HTTPException(status_code=404, detail="Match not found with this code")
 
+    if match.status not in ["open", "full"]:
+        raise HTTPException(status_code=400, detail="Match is not open for joining")
+
     if match.password and match.password != payload.password:
         raise HTTPException(status_code=401, detail="Incorrect password")
 
     if len(match.players) >= match.maxPlayers:
+        if match.status != "full":
+            match.status = "full"
+            session.add(match)
+            await session.commit()
         raise HTTPException(status_code=400, detail="Match is already full")
 
     # Check if already joined
@@ -396,7 +532,24 @@ async def join_match_by_code(
     player = MatchPlayer(matchId=match.id, userId=db_user.id)
     session.add(player)
     await session.commit()
-    return {"success": True, "matchId": match.id}
+    player_count = (await session.execute(select(func.count()).select_from(MatchPlayer).where(MatchPlayer.matchId == match.id))).scalar_one()
+    if player_count >= match.maxPlayers:
+        match.status = "full"
+        session.add(match)
+        await session.commit()
+    stmt = (
+        select(Match)
+        .where(Match.id == match.id)
+        .options(selectinload(Match.players).selectinload(MatchPlayer.user))
+        .execution_options(populate_existing=True)
+    )
+    fresh = (await session.execute(stmt)).scalars().first()
+    if fresh and player_count >= fresh.maxPlayers:
+        fresh.status = "full"
+        session.add(fresh)
+        await session.commit()
+        await session.refresh(fresh)
+    return {"success": True, "matchId": match.id, "data": _serialize_match(fresh or match)}
 
 
 class InviteCreate(BaseModel):
@@ -626,6 +779,9 @@ async def leave_match(
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
 
+    if match.status in ["closed", "completed"]:
+        raise HTTPException(status_code=400, detail="Cannot leave a match after it has been closed")
+
     player_result = await session.execute(
         select(MatchPlayer).where(MatchPlayer.matchId == match.id, MatchPlayer.userId == db_user.id)
     )
@@ -645,7 +801,8 @@ async def leave_match(
     all_players_res = await session.execute(select(MatchPlayer).where(MatchPlayer.matchId == match.id))
     remaining = all_players_res.scalars().all()
     if not remaining:
-        await session.delete(match)
+        match.status = "cancelled"
+        session.add(match)
         await session.commit()
 
     return {"success": True, "message": "Successfully left the match"}
@@ -669,6 +826,9 @@ async def kick_player(
     match = match_result.scalars().first()
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
+
+    if match.status not in ["open", "full"]:
+        raise HTTPException(status_code=400, detail="Can only kick players from an active lobby")
         
     if match.hostId != db_user.id:
         raise HTTPException(status_code=403, detail="Only the host can kick players")
@@ -997,6 +1157,7 @@ async def update_position(
 
 
 class SubmitStatsRequest(BaseModel):
+    userId: Optional[str] = None
     goals: int = 0
     assists: int = 0
     shotsOnTarget: int = 0
@@ -1045,12 +1206,28 @@ async def close_match(
     if match.hostId != db_user.id:
         raise HTTPException(status_code=403, detail="Only the host can close the match")
 
+    if match.status not in ["open", "full"]:
+        raise HTTPException(status_code=400, detail="Only open or full matches can be closed")
+
+    now = datetime.utcnow()
     match.status = "closed"
+    match.completedAt = now
+    match.submissionDeadline = now + timedelta(hours=24)
+    match.verificationDeadline = now + timedelta(hours=24)
     if payload:
         if payload.teamAScore is not None:
             match.teamAScore = payload.teamAScore
         if payload.teamBScore is not None:
             match.teamBScore = payload.teamBScore
+
+    for player in match.players:
+        _append_match_notification(
+            match,
+            player.userId,
+            "submit_stats",
+            "Match closed. Submit your stats for peer verification.",
+            match.submissionDeadline,
+        )
 
     await session.commit()
     await session.refresh(match)
@@ -1069,7 +1246,7 @@ async def submit_stats(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    match_result = await session.execute(select(Match).where(Match.id == match_id))
+    match_result = await session.execute(select(Match).where(Match.id == match_id).options(selectinload(Match.players)))
     match = match_result.scalars().first()
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
@@ -1077,9 +1254,11 @@ async def submit_stats(
     if match.status != "closed":
         raise HTTPException(status_code=400, detail="Stats can only be submitted after the match is closed")
 
-    # Check 24 hour window
-    # if match.createdAt and (datetime.utcnow() - match.createdAt).total_seconds() > 86400:
-    #     raise HTTPException(status_code=400, detail="Stat submission window (24 hours) has expired")
+    if payload.userId and payload.userId != db_user.id:
+        raise HTTPException(status_code=403, detail="Cannot submit stats for another player")
+
+    if match.submissionDeadline and datetime.utcnow() > match.submissionDeadline:
+        raise HTTPException(status_code=400, detail="Stat submission window has expired")
 
     # Verify user was in the match
     player_result = await session.execute(
@@ -1135,12 +1314,25 @@ async def submit_stats(
         raise HTTPException(status_code=400, detail="Velocity limit exceeded: You have already submitted stats for 3 matches in the last 24 hours.")
 
     # 2. Stat Cap Validation
-    if payload.goals > 50 or payload.assists > 50 or payload.saves > 50:
-        raise HTTPException(status_code=400, detail="Submitted stats exceed realistic limits (max 50 for goals/assists/saves).")
+    format_caps = {
+        "3v3": 4,
+        "5v5": 5,
+        "7v7": 5,
+        "11v11": 6
+    }
+    cap = format_caps.get(match.format, 4)
+    if payload.goals > cap:
+        raise HTTPException(status_code=400, detail=f"Goals are capped at {cap} for {match.format}.")
+    if payload.assists > cap:
+        raise HTTPException(status_code=400, detail=f"Assists are capped at {cap} for {match.format}.")
+    if payload.saves > 50:
+        raise HTTPException(status_code=400, detail="Submitted stats exceed realistic limits (max 50 for saves).")
     if payload.tackles > 100 or payload.interceptions > 100 or payload.ballRecoveries > 100:
         raise HTTPException(status_code=400, detail="Submitted stats exceed realistic limits (max 100 for defensive actions).")
     if payload.yellowCards > 2 or payload.redCards > 1:
         raise HTTPException(status_code=400, detail="Invalid discipline stats.")
+    if payload.cleanSheet and (db_user.position or "").upper() != "GK":
+        raise HTTPException(status_code=400, detail="Clean sheets can only be submitted by goalkeepers.")
 
     # 3. Outlier Flagging
     is_flagged = False
@@ -1170,18 +1362,9 @@ async def submit_stats(
             is_flagged = True
             flag_reason = f"Outlier detected: {payload.assists} assists submitted, historical average {avg_assists:.1f} (stddev {std_assists:.1f})."
 
-    # Format goals caps (soft cap for stat progression calculations, but we keep the raw submitted stats below)
-    format_caps = {
-        "3v3": 4,
-        "5v5": 5,
-        "7v7": 5,
-        "11v11": 6
-    }
-    cap = format_caps.get(match.format, 6)
-
-    goals = min(payload.goals, cap)
+    goals = payload.goals
     assists = payload.assists
-    yellow_cards = min(payload.yellowCards, 2)
+    yellow_cards = payload.yellowCards
     red_cards = min(payload.redCards, 1)
     
     clean_sheet = payload.cleanSheet
@@ -1211,12 +1394,23 @@ async def submit_stats(
         redCards=red_cards,
         ownGoals=payload.ownGoals,
         noShow=payload.noShow,
-        status="pending_verification",
+        status="pending",
         isFlagged=is_flagged,
         flagReason=flag_reason
     )
 
     session.add(stats)
+    for player in match.players:
+        if player.userId == db_user.id:
+            continue
+        _append_match_notification(
+            match,
+            player.userId,
+            "verify_stats",
+            f"{db_user.username} submitted stats. Verify or dispute them.",
+            match.verificationDeadline,
+        )
+    session.add(match)
     await session.commit()
     await session.refresh(stats)
 
@@ -1336,7 +1530,7 @@ async def get_pending_verifications(
         select(MatchStats)
         .where(MatchStats.matchId == match_id)
         .where(MatchStats.userId != db_user.id)
-        .where(MatchStats.status.in_(["pending_verification", "flagged_peer_verification"]))
+        .where(MatchStats.status.in_(["pending", "pending_verification", "flagged_peer_verification"]))
         .options(selectinload(MatchStats.user))
     )
     all_other_stats = stats_result.scalars().all()
@@ -1372,59 +1566,28 @@ async def get_pending_verifications(
     return {"success": True, "data": pending}
 
 
-def process_verified_stats(session, stat, match):
-    # Calculate Base XP
+def process_verified_stats(session, stat, match, verified_by_count: int = 0):
+    from app.core.stats import calculate_stat_gain, calculate_ovr
+
+    db_user = stat.user
+    if not db_user:
+        return
+
     is_win = False
     is_draw = False
+    player_team = None
     if match.teamAScore is not None and match.teamBScore is not None:
-        is_win = (match.teamAScore > match.teamBScore and stat.user.id in [p.userId for p in match.players if p.team == "A"]) or \
-                 (match.teamBScore > match.teamAScore and stat.user.id in [p.userId for p in match.players if p.team == "B"])
+        player_team = next((p.team for p in match.players if p.userId == stat.userId), None)
+        is_win = (match.teamAScore > match.teamBScore and player_team == "A") or \
+                 (match.teamBScore > match.teamAScore and player_team == "B")
         is_draw = match.teamAScore == match.teamBScore
 
-    xp_award = 50 # Join Match
-    if not stat.noShow:
-        xp_award += 30 # Finish Match
-    
-    if is_win:
-        xp_award += 50
-    elif is_draw:
-        xp_award += 20
-    
-    xp_award += 20 # Verified Stats
-    if stat.motm:
-        xp_award += 40
-    
-    # Performance XP
-    xp_award += (stat.goals * 25)
-    xp_award += (stat.assists * 18)
-    xp_award += (stat.shotsOnTarget * 5)
-    xp_award += (stat.keyPasses * 8)
-    xp_award += (stat.interceptions * 8)
-    xp_award += (stat.ballRecoveries * 6)
-    xp_award += (stat.progressivePasses * 6)
-    xp_award += (stat.tackles * 10)
-    xp_award += (stat.blocks * 9)
-    xp_award += (stat.clearances * 6)
+    xp_award = (stat.goals * 10) + (stat.assists * 7)
     if stat.cleanSheet:
-        xp_award += 25
-    xp_award += (stat.saves * 12)
-    xp_award += (stat.bigSaves * 18)
-    xp_award += (stat.penaltySaves * 30)
-    xp_award += (stat.distributionAssists * 15)
-    xp_award += (stat.duelsWon * 5)
-    xp_award += (stat.aerialDuelsWon * 6)
-    
-    # Discipline XP
-    xp_award -= (stat.yellowCards * 10)
-    xp_award -= (stat.redCards * 25)
-    xp_award -= (stat.ownGoals * 20)
-    if stat.noShow:
-        xp_award -= 40
-    
-    # Update User XP and Level
+        xp_award += 15
+
     db_user.xp = (db_user.xp or 0) + xp_award
-    
-    # Update Player Card Stats
+
     db_user.matchesPlayed = (db_user.matchesPlayed or 0) + 1
     if is_win:
         db_user.wins = (db_user.wins or 0) + 1
@@ -1439,115 +1602,100 @@ def process_verified_stats(session, stat, match):
     db_user.saves = (db_user.saves or 0) + stat.saves
     db_user.intercepts = (db_user.intercepts or 0) + stat.interceptions
 
-    # Calculate OVR based on stats
-    db_user.overall = calculate_ovr(db_user)
-    
-    new_level = (db_user.xp // 1000) + 1
-    if new_level > stat.user.level:
-        # Check threshold for frame change
-        if (stat.user.level <= 5 and new_level >= 6) or (stat.user.level <= 15 and new_level >= 16):
-            stat.user.needsUpgradeAnimation = True
-        stat.user.level = new_level
-
-    # Update Raw Stats
-    stat.user.matchesPlayed += 1
-    if is_win:
-        stat.user.wins += 1
-    elif is_draw:
-        stat.user.draws += 1
-    else:
-        stat.user.losses += 1
-        
-    stat.user.goals += stat.goals
-    stat.user.assists += stat.assists
-    stat.user.tackles += stat.tackles
-    stat.user.saves += stat.saves
-    stat.user.intercepts += stat.interceptions
-
-    # Update User OVR Attributes using Diminishing Returns
-    from app.core.stats import calculate_stat_gain, calculate_ovr, calculate_match_rating
-
     # Goals -> SHO, PAC (small)
     for _ in range(stat.goals):
-        stat.user.shooting += calculate_stat_gain(4.5, stat.user.shooting)
-        stat.user.pace += calculate_stat_gain(1.5, stat.user.pace)
+        db_user.shooting += calculate_stat_gain(4.5, db_user.shooting)
+        db_user.pace += calculate_stat_gain(1.5, db_user.pace)
     
     # Assists -> PAS, DRI
     for _ in range(stat.assists):
-        stat.user.passing += calculate_stat_gain(3.5, stat.user.passing)
-        stat.user.dribbling += calculate_stat_gain(1.5, stat.user.dribbling)
+        db_user.passing += calculate_stat_gain(3.5, db_user.passing)
+        db_user.dribbling += calculate_stat_gain(1.5, db_user.dribbling)
     
     # Tackles -> DEF
     for _ in range(stat.tackles):
-        stat.user.defending += calculate_stat_gain(4.0, stat.user.defending)
+        db_user.defending += calculate_stat_gain(4.0, db_user.defending)
     
     # Interceptions -> DEF, PAS (small)
     for _ in range(stat.interceptions):
-        stat.user.defending += calculate_stat_gain(3.0, stat.user.defending)
-        stat.user.passing += calculate_stat_gain(1.0, stat.user.passing)
+        db_user.defending += calculate_stat_gain(3.0, db_user.defending)
+        db_user.passing += calculate_stat_gain(1.0, db_user.passing)
     
     # Saves -> gkDiving, gkReflexes, gkHandling
     for _ in range(stat.saves):
-        stat.user.gkDiving += calculate_stat_gain(1.5, stat.user.gkDiving)
-        stat.user.gkReflexes += calculate_stat_gain(1.5, stat.user.gkReflexes)
-        stat.user.gkHandling += calculate_stat_gain(0.5, stat.user.gkHandling)
+        db_user.gkDiving += calculate_stat_gain(1.5, db_user.gkDiving)
+        db_user.gkReflexes += calculate_stat_gain(1.5, db_user.gkReflexes)
+        db_user.gkHandling += calculate_stat_gain(0.5, db_user.gkHandling)
     
     # Distribution Assists -> gkKicking
     for _ in range(stat.distributionAssists):
-        stat.user.gkKicking += calculate_stat_gain(4.0, stat.user.gkKicking)
+        db_user.gkKicking += calculate_stat_gain(4.0, db_user.gkKicking)
     
     # Duels won -> PHY
     for _ in range(stat.duelsWon):
-        stat.user.physical += calculate_stat_gain(2.0, stat.user.physical)
+        db_user.physical += calculate_stat_gain(2.0, db_user.physical)
     
     # Key passes -> PAS
     for _ in range(stat.keyPasses):
-        stat.user.passing += calculate_stat_gain(2.5, stat.user.passing)
+        db_user.passing += calculate_stat_gain(2.5, db_user.passing)
     
     # Blocks -> DEF
     for _ in range(stat.blocks):
-        stat.user.defending += calculate_stat_gain(3.0, stat.user.defending)
+        db_user.defending += calculate_stat_gain(3.0, db_user.defending)
     
     # Clearances -> DEF
     for _ in range(stat.clearances):
-        stat.user.defending += calculate_stat_gain(2.0, stat.user.defending)
+        db_user.defending += calculate_stat_gain(2.0, db_user.defending)
     
     # Clean sheets -> DEF, PHY, gkPositioning
     if stat.cleanSheet:
-        stat.user.defending += calculate_stat_gain(5.0, stat.user.defending)
-        stat.user.physical += calculate_stat_gain(3.0, stat.user.physical)
-        if stat.user.position == "GK":
-            stat.user.gkPositioning += calculate_stat_gain(5.0, stat.user.gkPositioning)
+        db_user.defending += calculate_stat_gain(5.0, db_user.defending)
+        db_user.physical += calculate_stat_gain(3.0, db_user.physical)
+        if db_user.position == "GK":
+            db_user.gkPositioning += calculate_stat_gain(5.0, db_user.gkPositioning)
     
     # Cap attributes at 99.0
-    stat.user.pace = min(99.0, stat.user.pace)
-    stat.user.shooting = min(99.0, stat.user.shooting)
-    stat.user.passing = min(99.0, stat.user.passing)
-    stat.user.dribbling = min(99.0, stat.user.dribbling)
-    stat.user.defending = min(99.0, stat.user.defending)
-    stat.user.physical = min(99.0, stat.user.physical)
-    stat.user.gkDiving = min(99.0, stat.user.gkDiving)
-    stat.user.gkHandling = min(99.0, stat.user.gkHandling)
-    stat.user.gkKicking = min(99.0, stat.user.gkKicking)
-    stat.user.gkReflexes = min(99.0, stat.user.gkReflexes)
-    stat.user.gkPositioning = min(99.0, stat.user.gkPositioning)
+    db_user.pace = min(99.0, db_user.pace)
+    db_user.shooting = min(99.0, db_user.shooting)
+    db_user.passing = min(99.0, db_user.passing)
+    db_user.dribbling = min(99.0, db_user.dribbling)
+    db_user.defending = min(99.0, db_user.defending)
+    db_user.physical = min(99.0, db_user.physical)
+    db_user.gkDiving = min(99.0, db_user.gkDiving)
+    db_user.gkHandling = min(99.0, db_user.gkHandling)
+    db_user.gkKicking = min(99.0, db_user.gkKicking)
+    db_user.gkReflexes = min(99.0, db_user.gkReflexes)
+    db_user.gkPositioning = min(99.0, db_user.gkPositioning)
     
     # Recalculate Overall
     stats_dict = {
-        "pace": stat.user.pace,
-        "shooting": stat.user.shooting,
-        "passing": stat.user.passing,
-        "dribbling": stat.user.dribbling,
-        "defending": stat.user.defending,
-        "physical": stat.user.physical,
-        "gkDiving": stat.user.gkDiving,
-        "gkHandling": stat.user.gkHandling,
-        "gkKicking": stat.user.gkKicking,
-        "gkReflexes": stat.user.gkReflexes,
-        "gkPositioning": stat.user.gkPositioning
+        "pace": db_user.pace,
+        "shooting": db_user.shooting,
+        "passing": db_user.passing,
+        "dribbling": db_user.dribbling,
+        "defending": db_user.defending,
+        "physical": db_user.physical,
+        "gkDiving": db_user.gkDiving,
+        "gkHandling": db_user.gkHandling,
+        "gkKicking": db_user.gkKicking,
+        "gkReflexes": db_user.gkReflexes,
+        "gkPositioning": db_user.gkPositioning
     }
-    stat.user.overall = calculate_ovr(stat.user.position, stats_dict)
-    session.add(stat.user)
+    old_level = db_user.level or 1
+    db_user.overall = calculate_ovr(db_user.position, stats_dict)
+    db_user.level = (db_user.xp // 1000) + 1
+    new_frame = _card_frame_for_level(db_user.level)
+    if db_user.cardFrame != new_frame:
+        db_user.needsUpgradeAnimation = True
+    db_user.cardFrame = new_frame
+    if db_user.level > old_level and _card_frame_for_level(old_level) != new_frame:
+        db_user.needsUpgradeAnimation = True
+
+    _sync_user_card_aliases(db_user)
+
+    _append_user_history(db_user, match, player_team, stat.goals, stat.assists, verified_by_count)
+
+    session.add(db_user)
 
     log = XPLog(userId=stat.userId, matchId=match.id, amount=xp_award, reason="Match Stats Verified")
     session.add(log)
@@ -1555,7 +1703,7 @@ def process_verified_stats(session, stat, match):
 
 class VerifyStatsRequest(BaseModel):
     targetPlayerId: str
-    vote: int  # 1 for approve, -1 for dispute
+    vote: Literal[1, -1]  # 1 for approve, -1 for dispute
     disputeReason: Optional[str] = None
 
 @router.post("/{match_id}/verify")
@@ -1584,6 +1732,19 @@ async def verify_stats(
     if existing_result.scalars().first():
         raise HTTPException(status_code=400, detail="Already voted on this player's stats")
 
+    match_result = await session.execute(
+        select(Match).where(Match.id == match_id).options(selectinload(Match.players))
+    )
+    match = match_result.scalars().first()
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    participant_ids = {p.userId for p in match.players}
+    if db_user.id not in participant_ids:
+        raise HTTPException(status_code=403, detail="Only match participants can verify stats")
+    if payload.targetPlayerId not in participant_ids:
+        raise HTTPException(status_code=400, detail="Target player is not in this match")
+
     # Check if stats exist
     stat_result = await session.execute(
         select(MatchStats)
@@ -1607,14 +1768,9 @@ async def verify_stats(
     await session.flush()  # So we can count the vote immediately
 
     # Check if threshold is met and we should verify stats automatically
-    match_result = await session.execute(
-        select(Match).where(Match.id == match_id).options(selectinload(Match.players))
-    )
-    match = match_result.scalars().first()
-    
     if match and len(match.players) > 1:
         N = len(match.players) - 1
-        quorum_threshold = 0.6 * N
+        quorum_threshold = math.ceil(0.6 * N)
         
         all_verifications = await session.execute(
             select(MatchVerification).where(MatchVerification.matchId == match_id).where(MatchVerification.targetPlayerId == payload.targetPlayerId)
@@ -1635,7 +1791,7 @@ async def verify_stats(
             target_stat = stat_result.scalars().first()
             if target_stat and target_stat.status not in ["verified", "voided"]:
                 target_stat.status = "verified"
-                process_verified_stats(session, target_stat, match)
+                process_verified_stats(session, target_stat, match, approvals)
 
     await session.commit()
 
@@ -1663,7 +1819,7 @@ async def quick_complete_match(
     if match.hostId != db_user.id:
         raise HTTPException(status_code=403, detail="Only the host can quick-complete the match")
 
-    if match.status not in ["open", "closed"]:
+    if match.status not in ["open", "full", "closed"]:
         raise HTTPException(status_code=400, detail="Match cannot be quick-completed from this state")
 
     # Generate empty stats for all checked-in players
@@ -1725,6 +1881,9 @@ async def complete_match(
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
 
+    if match.hostId != db_user.id:
+        raise HTTPException(status_code=403, detail="Only the host can complete the match")
+
     if match.status != "closed":
         raise HTTPException(status_code=400, detail="Match is not closed")
 
@@ -1734,7 +1893,7 @@ async def complete_match(
         return {"success": True, "message": "Not enough players to verify"}
 
     N = total_players - 1  # Total OTHER players
-    quorum_threshold = 0.6 * N
+    quorum_threshold = math.ceil(0.6 * N)
 
     stats_result = await session.execute(
         select(MatchStats)
@@ -1747,6 +1906,22 @@ async def complete_match(
         select(MatchVerification).where(MatchVerification.matchId == match_id)
     )
     all_verifications = verifications_result.scalars().all()
+
+    stats_by_user = {s.userId: s for s in all_stats}
+    missing_stats = [p.userId for p in match.players if p.userId not in stats_by_user]
+    unresolved_stats = [s for s in all_stats if s.status not in ["verified", "voided"]]
+    if (missing_stats or unresolved_stats) and match.verificationDeadline and datetime.utcnow() < match.verificationDeadline:
+        ready_to_finalize = True
+        if missing_stats:
+            ready_to_finalize = False
+        for stat in unresolved_stats:
+            votes_for_target = [v for v in all_verifications if v.targetPlayerId == stat.userId]
+            approvals = sum(1 for v in votes_for_target if v.vote == 1)
+            if len(votes_for_target) < quorum_threshold or approvals < quorum_threshold:
+                ready_to_finalize = False
+                break
+        if not ready_to_finalize:
+            raise HTTPException(status_code=400, detail="Verification window is still open")
 
     results = []
     
@@ -1763,7 +1938,7 @@ async def complete_match(
         if total_votes >= quorum_threshold:
             if approvals >= quorum_threshold:
                 stat.status = "verified"
-                process_verified_stats(session, stat, match)
+                process_verified_stats(session, stat, match, approvals)
             else:
                 stat.status = "voided"
         else:
@@ -1773,6 +1948,7 @@ async def complete_match(
         results.append({"userId": target_id, "status": stat.status})
 
     # MOTM Assignment
+    from app.core.stats import calculate_match_rating
     best_rating = 0.0
     motm_stat = None
     for stat in all_stats:
@@ -1797,6 +1973,22 @@ async def complete_match(
 
     if motm_stat:
         motm_stat.motm = True
+
+    for player in match.players:
+        if not player.user:
+            continue
+        player_stat = stats_by_user.get(player.userId)
+        verified_by_count = 0
+        goals = 0
+        assists = 0
+        if player_stat:
+            votes_for_target = [v for v in all_verifications if v.targetPlayerId == player.userId]
+            verified_by_count = sum(1 for v in votes_for_target if v.vote == 1)
+            goals = player_stat.goals if player_stat.status == "verified" else 0
+            assists = player_stat.assists if player_stat.status == "verified" else 0
+        _append_user_history(player.user, match, player.team, goals, assists, verified_by_count)
+        _sync_user_card_aliases(player.user)
+        session.add(player.user)
 
     match.status = "completed"
     await session.commit()

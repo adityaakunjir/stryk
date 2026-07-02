@@ -103,6 +103,17 @@ async def create_db_tables():
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS xp INTEGER NOT NULL DEFAULT 0;'))
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS level INTEGER NOT NULL DEFAULT 1;'))
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "needsUpgradeAnimation" BOOLEAN NOT NULL DEFAULT FALSE;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "userId" VARCHAR;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar TEXT;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "OVR" INTEGER NOT NULL DEFAULT 60;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "PAC" FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "SHO" FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "PAS" FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "DRI" FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "DEF" FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "PHY" FLOAT NOT NULL DEFAULT 60.0;'))
+            await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS "cardFrame" VARCHAR(20) NOT NULL DEFAULT \'bronze\';'))
+            await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS \"matchHistory\" JSON NOT NULL DEFAULT '[]';"))
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS pace FLOAT NOT NULL DEFAULT 60.0;'))
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS shooting FLOAT NOT NULL DEFAULT 60.0;'))
             await conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS passing FLOAT NOT NULL DEFAULT 60.0;'))
@@ -113,14 +124,21 @@ async def create_db_tables():
             
             # Matches (add missing fields from earlier migrations)
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS format VARCHAR(20) NOT NULL DEFAULT \'11v11\';'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "matchId" VARCHAR;'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "matchDate" TIMESTAMP;'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "scheduledAt" TIMESTAMP;'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS password VARCHAR(50);'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "hostId" VARCHAR;'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "hostUserId" VARCHAR;'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "shortId" VARCHAR(10);'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS turf VARCHAR;'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "discordLink" VARCHAR;'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "teamAScore" INTEGER;'))
             await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "teamBScore" INTEGER;'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "completedAt" TIMESTAMP;'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "submissionDeadline" TIMESTAMP;'))
+            await conn.execute(text('ALTER TABLE matches ADD COLUMN IF NOT EXISTS "verificationDeadline" TIMESTAMP;'))
+            await conn.execute(text("ALTER TABLE matches ADD COLUMN IF NOT EXISTS notifications JSON NOT NULL DEFAULT '[]';"))
             
             # Migrate old creatorId to hostId if hostId is null
             try:
@@ -137,6 +155,13 @@ async def create_db_tables():
             # Fill missing required fields with defaults so NOT NULL constraints pass
             await conn.execute(text('UPDATE matches SET "shortId" = SUBSTR(MD5(RANDOM()::TEXT), 1, 6) WHERE "shortId" IS NULL;'))
             await conn.execute(text('UPDATE matches SET "matchDate" = NOW() WHERE "matchDate" IS NULL;'))
+            await conn.execute(text('UPDATE matches SET "matchId" = id WHERE "matchId" IS NULL;'))
+            await conn.execute(text('UPDATE matches SET "scheduledAt" = "matchDate" WHERE "scheduledAt" IS NULL;'))
+            await conn.execute(text('UPDATE matches SET "hostUserId" = "hostId" WHERE "hostUserId" IS NULL;'))
+            await conn.execute(text('UPDATE users SET "userId" = id WHERE "userId" IS NULL;'))
+            await conn.execute(text('UPDATE users SET avatar = "avatarUrl" WHERE avatar IS NULL;'))
+            await conn.execute(text('UPDATE users SET "OVR" = overall, "PAC" = pace, "SHO" = shooting, "PAS" = passing, "DRI" = dribbling, "DEF" = defending, "PHY" = physical;'))
+            await conn.execute(text("""UPDATE users SET "cardFrame" = CASE WHEN level >= 16 THEN 'gold' WHEN level >= 6 THEN 'silver' ELSE 'bronze' END;"""))
             
             # Ensure old columns are nullable so SQLModel inserts don't fail if Alembic failed to drop them
             try:
@@ -182,6 +207,9 @@ async def create_db_tables():
                 await conn.execute(text('CREATE INDEX IF NOT EXISTS ix_match_stats_status ON match_stats (status);'))
                 await conn.execute(text('CREATE INDEX IF NOT EXISTS ix_match_stats_createdAt ON match_stats ("createdAt");'))
                 await conn.execute(text('CREATE INDEX IF NOT EXISTS ix_users_overall ON users (overall);'))
+                await conn.execute(text('CREATE UNIQUE INDEX IF NOT EXISTS ix_users_userId ON users ("userId");'))
+                await conn.execute(text('CREATE UNIQUE INDEX IF NOT EXISTS ix_matches_matchId ON matches ("matchId");'))
+                await conn.execute(text('CREATE INDEX IF NOT EXISTS ix_matches_hostUserId ON matches ("hostUserId");'))
                 logging.info("Performance indexes created successfully or already exist.")
             except Exception as index_err:
                 logging.warning(f"Creating performance indexes failed (ignoring): {index_err}")

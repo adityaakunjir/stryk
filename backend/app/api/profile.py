@@ -9,6 +9,28 @@ from app.models.player import User, UserRead
 
 router = APIRouter(tags=["profile"])
 
+
+def _card_frame_for_level(level: int) -> str:
+    if level >= 16:
+        return "gold"
+    if level >= 6:
+        return "silver"
+    return "bronze"
+
+
+def _sync_user_card_aliases(user: User) -> None:
+    if not user.userId:
+        user.userId = user.id
+    user.avatar = user.avatarUrl
+    user.OVR = user.overall
+    user.PAC = user.pace
+    user.SHO = user.shooting
+    user.PAS = user.passing
+    user.DRI = user.dribbling
+    user.DEF = user.defending
+    user.PHY = user.physical
+    user.cardFrame = _card_frame_for_level(user.level or 1)
+
 @router.get("/check-username")
 async def check_username(
     username: str,
@@ -117,7 +139,10 @@ async def create_profile(
                 overall=60
             )
             session.add(db_user)
-            
+
+        await session.flush()
+        _sync_user_card_aliases(db_user)
+        session.add(db_user)
         await session.commit()
         await session.refresh(db_user)
         
@@ -179,6 +204,10 @@ async def get_my_profile(
             await session.commit()
             await session.refresh(db_user)
 
+    _sync_user_card_aliases(db_user)
+    session.add(db_user)
+    await session.commit()
+    await session.refresh(db_user)
     return db_user
 
 class ProfileUpdate(BaseModel):
@@ -187,6 +216,7 @@ class ProfileUpdate(BaseModel):
     avatarUrl: Optional[str] = None
     position: Optional[str] = None
     playStyle: Optional[str] = None
+    playstyle: Optional[str] = None
     strongFoot: Optional[str] = None
     bio: Optional[str] = None
 
@@ -209,6 +239,8 @@ async def patch_my_profile(
         )
 
     update_data = profile_update.model_dump(exclude_unset=True)
+    if "playstyle" in update_data:
+        update_data["playStyle"] = update_data.pop("playstyle")
     
     # Check if we should generate new dynamic base stats
     needs_stat_reset = False
@@ -246,6 +278,7 @@ async def patch_my_profile(
         }
         db_user.overall = calculate_ovr(db_user.position, stats_dict)
 
+    _sync_user_card_aliases(db_user)
     session.add(db_user)
     await session.commit()
     await session.refresh(db_user)

@@ -16,6 +16,28 @@ from datetime import datetime
 router = APIRouter(prefix="/players", tags=["players"])
 
 
+def _card_frame_for_level(level: int) -> str:
+    if level >= 16:
+        return "gold"
+    if level >= 6:
+        return "silver"
+    return "bronze"
+
+
+def _sync_user_card_aliases(player: User) -> None:
+    if not player.userId:
+        player.userId = player.id
+    player.avatar = player.avatarUrl
+    player.OVR = player.overall
+    player.PAC = player.pace
+    player.SHO = player.shooting
+    player.PAS = player.passing
+    player.DRI = player.dribbling
+    player.DEF = player.defending
+    player.PHY = player.physical
+    player.cardFrame = _card_frame_for_level(player.level or 1)
+
+
 @router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 async def create_player(
     player_in: UserCreate,
@@ -41,6 +63,8 @@ async def create_player(
         )
 
     player = User.model_validate(player_in)
+    if player_in.playstyle and not player.playStyle:
+        player.playStyle = player_in.playstyle
 
     # Apply Starter Stats based on position
     from app.core.stats import STARTER_STATS, calculate_ovr
@@ -77,6 +101,9 @@ async def create_player(
     }
     player.overall = calculate_ovr(player.position, stats_dict)
 
+    session.add(player)
+    await session.flush()
+    _sync_user_card_aliases(player)
     session.add(player)
     await session.flush()
     await session.refresh(player)
@@ -157,9 +184,12 @@ async def update_my_profile(
         )
 
     update_data = player_update.model_dump(exclude_unset=True)
+    if "playstyle" in update_data:
+        update_data["playStyle"] = update_data.pop("playstyle")
     for key, value in update_data.items():
         setattr(player, key, value)
 
+    _sync_user_card_aliases(player)
     session.add(player)
     await session.flush()
     await session.refresh(player)

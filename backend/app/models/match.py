@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import Optional, List
 from pydantic import ConfigDict
 from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Column, JSON
 
 
 def generate_short_id() -> str:
@@ -22,21 +23,28 @@ def generate_short_id() -> str:
 # --- Core Match ---
 
 class MatchBase(SQLModel):
+    matchId: Optional[str] = Field(default=None, index=True, unique=True)
     title: str = Field(max_length=100)
     turf: Optional[str] = Field(default=None, max_length=100)
     location: str = Field(max_length=200)
-    format: str = Field(default="11v11", max_length=20)
+    format: str = Field(default="3v3", max_length=20)
     matchDate: datetime
-    maxPlayers: int = Field(default=22)
+    scheduledAt: Optional[datetime] = Field(default=None)
+    maxPlayers: int = Field(default=6)
     password: Optional[str] = Field(default=None, max_length=50)
     status: str = Field(default="open", max_length=20)
     discordLink: Optional[str] = Field(default=None, max_length=200)
     hostId: str = Field(index=True, foreign_key="users.id")
+    hostUserId: Optional[str] = Field(default=None, index=True)
     shortId: str = Field(default_factory=generate_short_id, index=True, unique=True, max_length=10)
     teamAName: str = Field(default="Team A", max_length=50)
     teamBName: str = Field(default="Team B", max_length=50)
     teamAScore: Optional[int] = Field(default=None)
     teamBScore: Optional[int] = Field(default=None)
+    completedAt: Optional[datetime] = Field(default=None)
+    submissionDeadline: Optional[datetime] = Field(default=None)
+    verificationDeadline: Optional[datetime] = Field(default=None)
+    notifications: List[dict] = Field(default_factory=list, sa_column=Column(JSON, nullable=False, default=list))
 
 
 class Match(MatchBase, table=True):

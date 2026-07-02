@@ -6,11 +6,14 @@ Run with: uvicorn app.main:app --reload
 """
 
 from contextlib import asynccontextmanager
+import asyncio
+import contextlib
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.core.database import create_db_tables
+from app.core.database import create_db_tables, async_session_factory
+from app.services.match_lifecycle import match_lifecycle_worker
 import app.models  # Important: Register all models with SQLModel before DB creation
 from app.api.health import router as health_router
 from app.api.players import router as players_router
@@ -62,7 +65,13 @@ async def lifespan(app: FastAPI):
     """Startup and shutdown logic."""
     # Startup
     await create_db_tables()
-    yield
+    lifecycle_task = asyncio.create_task(match_lifecycle_worker(async_session_factory))
+    try:
+        yield
+    finally:
+        lifecycle_task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await lifecycle_task
     # Shutdown
     if posthog_client:
         posthog_client.shutdown()

@@ -762,7 +762,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const isHost = currentUserId === match.hostId;
   const hostName = hostParticipant?.user?.fullName?.split(" ")[0] || hostParticipant?.user?.username || "Host";
   const playerFill = Math.min(100, Math.round((participants.length / Math.max(match.maxPlayers, 1)) * 100));
-  const statusLabel = match.status === "open" ? "Open Match" : match.status.replace(/_/g, " ");
+  const statusLabel = match.status === "open" ? "Open Match" : match.status === "full" ? "Full Match" : match.status.replace(/_/g, " ");
 
   // Helper to format date
   const formatDateTime = (dateStr: string) => {
@@ -865,7 +865,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 {/* Host specific actions */}
                 {isHost ? (
                   <>
-                    {match.status === "open" && (
+                    {(match.status === "open" || match.status === "full") && (
                       <button 
                         onClick={handleCloseMatch}
                         disabled={actionLoading}
@@ -1158,7 +1158,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
                 teamBName={match.teamBName}
                 matchFormat={match.format}
                 externalPositionUpdate={externalPositionUpdate}
-                isLocked={match.status === "closed"}
+                isLocked={match.status === "closed" || match.status === "completed"}
               />
             </div>
           )}

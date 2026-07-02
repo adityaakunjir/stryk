@@ -7,8 +7,9 @@ SQLModel schema for player profiles.
 import uuid
 from datetime import datetime
 from typing import Optional, List
-from pydantic import ConfigDict
+from pydantic import ConfigDict, computed_field
 from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Column, JSON
 
 
 class UserBase(SQLModel):
@@ -16,9 +17,11 @@ class UserBase(SQLModel):
     model_config = ConfigDict(populate_by_name=True)
 
     clerkId: str = Field(index=True, unique=True)
+    userId: Optional[str] = Field(default=None, index=True, unique=True)
     username: str = Field(max_length=40, index=True, unique=True)
     fullName: Optional[str] = Field(default=None, max_length=100)
     avatarUrl: Optional[str] = Field(default=None)
+    avatar: Optional[str] = Field(default=None)
     position: Optional[str] = Field(max_length=10, default=None)
     playStyle: Optional[str] = Field(max_length=20, default=None)
     strongFoot: Optional[str] = Field(max_length=10, default=None)
@@ -29,12 +32,19 @@ class UserBase(SQLModel):
     needsUpgradeAnimation: bool = Field(default=False)
 
     overall: int = Field(default=60, ge=1, le=99)
+    OVR: int = Field(default=60, ge=1, le=99)
     pace: float = Field(default=60.0)
+    PAC: float = Field(default=60.0)
     shooting: float = Field(default=60.0)
+    SHO: float = Field(default=60.0)
     passing: float = Field(default=60.0)
+    PAS: float = Field(default=60.0)
     dribbling: float = Field(default=60.0)
+    DRI: float = Field(default=60.0)
     defending: float = Field(default=60.0)
+    DEF: float = Field(default=60.0)
     physical: float = Field(default=60.0)
+    PHY: float = Field(default=60.0)
     gkDiving: float = Field(default=60.0)
     gkHandling: float = Field(default=60.0)
     gkKicking: float = Field(default=60.0)
@@ -50,6 +60,8 @@ class UserBase(SQLModel):
     tackles: int = Field(default=0, ge=0)
     saves: int = Field(default=0, ge=0)
     intercepts: int = Field(default=0, ge=0)
+    cardFrame: str = Field(default="bronze", max_length=20)
+    matchHistory: List[dict] = Field(default_factory=list, sa_column=Column(JSON, nullable=False, default=list))
 
 
 class User(UserBase, table=True):
@@ -102,13 +114,18 @@ class User(UserBase, table=True):
 
 
 class UserCreate(UserBase):
-    pass
+    playstyle: Optional[str] = None
 
 
 class UserRead(UserBase):
     id: str
     createdAt: datetime
     updatedAt: datetime
+
+    @computed_field
+    @property
+    def playstyle(self) -> Optional[str]:
+        return self.playStyle
 
 
 class UserUpdate(SQLModel):
@@ -117,6 +134,7 @@ class UserUpdate(SQLModel):
     avatarUrl: Optional[str] = None
     position: Optional[str] = None
     playStyle: Optional[str] = None
+    playstyle: Optional[str] = None
     strongFoot: Optional[str] = None
     bio: Optional[str] = None
     overall: Optional[int] = None
