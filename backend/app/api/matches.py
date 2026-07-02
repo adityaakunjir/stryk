@@ -282,7 +282,7 @@ async def delete_match(
     await session.execute(delete(MatchVerification).where(MatchVerification.matchId == match.id))
     await session.execute(delete(XPLog).where(XPLog.matchId == match.id))
 
-    await session.delete(match)
+    await session.execute(delete(Match).where(Match.id == match.id))
     await session.commit()
     
     return {"success": True, "message": "Match deleted successfully"}
