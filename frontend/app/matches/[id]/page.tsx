@@ -51,6 +51,7 @@ interface MatchDetails {
   hostId: string;
   createdAt: string;
   format: string;
+  privacy: string;
   teamAName: string;
   teamBName: string;
   participants: MatchParticipant[];
@@ -1431,32 +1432,7 @@ export default function MatchDetailsPage({ params }: PageProps) {
           teamBName={match?.teamBName}
         />
       )}
-    </main>
-  );
-}
 
-function MatchLobbyLoading({ title, subtitle }: { title: string; subtitle: string }) {
-  return (
-    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
-      {/* Premium Marble Background */}
-      <div 
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-      />
-
-      <div className="relative flex min-h-[100dvh] flex-col items-center justify-center">
-        <div className="mb-5 grid size-16 place-items-center rounded-full border border-[#D4F829]/20 bg-[#D4F829]/8 shadow-[0_0_40px_rgba(212,248,41,0.10)]">
-          <Loader2 className="size-7 animate-spin text-[#D4F829]" />
-        </div>
-        <h2 className="font-display text-2xl font-black italic uppercase tracking-widest text-white">
-          {title}
-        </h2>
-        <p className="mt-2 text-[11px] font-black uppercase tracking-[0.22em] text-white/40">
-          {subtitle}
-        </p>
-        <div className="mt-8 h-1 w-44 overflow-hidden rounded-full bg-white/8">
-          <div className="h-full w-1/2 animate-[loading-slide_1.1s_ease-in-out_infinite] rounded-full bg-[#D4F829]" />
-        </div>
-      </div>
       {/* Private Join Modal */}
       <AnimatePresence>
         {showPrivateJoinModal && (
@@ -1521,6 +1497,32 @@ function MatchLobbyLoading({ title, subtitle }: { title: string; subtitle: strin
           </div>
         )}
       </AnimatePresence>
+    </main>
+  );
+}
+
+function MatchLobbyLoading({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
+      {/* Premium Marble Background */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+      />
+
+      <div className="relative flex min-h-[100dvh] flex-col items-center justify-center">
+        <div className="mb-5 grid size-16 place-items-center rounded-full border border-[#D4F829]/20 bg-[#D4F829]/8 shadow-[0_0_40px_rgba(212,248,41,0.10)]">
+          <Loader2 className="size-7 animate-spin text-[#D4F829]" />
+        </div>
+        <h2 className="font-display text-2xl font-black italic uppercase tracking-widest text-white">
+          {title}
+        </h2>
+        <p className="mt-2 text-[11px] font-black uppercase tracking-[0.22em] text-white/40">
+          {subtitle}
+        </p>
+        <div className="mt-8 h-1 w-44 overflow-hidden rounded-full bg-white/8">
+          <div className="h-full w-1/2 animate-[loading-slide_1.1s_ease-in-out_infinite] rounded-full bg-[#D4F829]" />
+        </div>
+      </div>
     </main>
   );
 }
