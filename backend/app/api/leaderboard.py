@@ -134,6 +134,12 @@ async def _build_leaderboard(
         if match_format != "all" and match.format != match_format:
             continue
         completed_at = match.completedAt or match.matchDate
+        if isinstance(completed_at, str):
+            try:
+                completed_at = datetime.fromisoformat(completed_at.replace("Z", "+00:00")).replace(tzinfo=None)
+            except Exception:
+                pass
+
         if start and (not completed_at or completed_at < start):
             continue
         if end and (not completed_at or completed_at >= end):
