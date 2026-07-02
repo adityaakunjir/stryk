@@ -280,6 +280,7 @@ async def delete_match(
     await session.execute(delete(MatchInvite).where(MatchInvite.matchId == match.id))
     await session.execute(delete(MatchStats).where(MatchStats.matchId == match.id))
     await session.execute(delete(MatchVerification).where(MatchVerification.matchId == match.id))
+    await session.execute(delete(XPLog).where(XPLog.matchId == match.id))
 
     await session.delete(match)
     await session.commit()
