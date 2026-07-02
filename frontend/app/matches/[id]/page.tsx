@@ -182,6 +182,14 @@ export default function MatchDetailsPage({ params }: PageProps) {
     fetchInFlightRef.current = true;
     try {
       const res = await fetch(`/api/matches/${matchId}`);
+      if (res.status === 404) {
+        setMatch(null);
+        return;
+      }
+      if (!res.ok) {
+        console.warn(`Fetch returned ${res.status}, keeping existing match state.`);
+        return;
+      }
       const data = await res.json();
       if (data.success) {
         setMatch(data.data);
@@ -190,20 +198,19 @@ export default function MatchDetailsPage({ params }: PageProps) {
         // Fetch stats if match is closed
         if (data.data.status === "closed") {
           const statsRes = await fetch(`/api/matches/${matchId}/my-stats`);
-          const statsData = await statsRes.json();
-          if (statsData.success && statsData.hasSubmitted) {
-            setHasSubmittedStats(true);
-          } else {
-            setHasSubmittedStats(false);
-            setShowStatSubmission(true);
+          if (statsRes.ok) {
+            const statsData = await statsRes.json();
+            if (statsData.success && statsData.hasSubmitted) {
+              setHasSubmittedStats(true);
+            } else {
+              setHasSubmittedStats(false);
+              setShowStatSubmission(true);
+            }
           }
         }
-      } else {
-        setMatch(null);
       }
     } catch (err) {
-      console.error("Failed to fetch match details:", err);
-      setMatch(null);
+      console.error("Failed to fetch match details, keeping existing state:", err);
     } finally {
       fetchInFlightRef.current = false;
       setLoading(false);
