@@ -86,8 +86,8 @@ const getAutoPosition = (
 
   let grassHeightPx = 1050 - 80;
   if (matchFormat === "3v3") grassHeightPx = 650 - 80;
-  else if (matchFormat === "5v5") grassHeightPx = 750 - 80;
-  else if (matchFormat === "7v7") grassHeightPx = 880 - 80;
+  else if (matchFormat === "5v5" || matchFormat === "6v6") grassHeightPx = 750 - 80;
+  else if (matchFormat === "7v7" || matchFormat === "8v8" || matchFormat === "9v9") grassHeightPx = 880 - 80;
 
   const gkPercentageThreshold = (152 / grassHeightPx) * 100;
   const teamAGkThreshold = 100 - gkPercentageThreshold;
@@ -96,43 +96,41 @@ const getAutoPosition = (
   let pos = "";
 
   if (isTeamA) {
-    if (y >= teamAGkThreshold) pos = "GK";
-    else if (y >= 65) {
-      if (x <= 30) pos = "LB";
-      else if (x >= 70) pos = "RB";
+    if (y >= teamAGkThreshold && x > 30 && x < 70) {
+      pos = "GK";
+    } else if (y >= 70) {
+      if (x <= 25) pos = "LB";
+      else if (x >= 75) pos = "RB";
       else pos = "CB";
-    }
-    else if (y >= 35) {
-      if (x <= 30) pos = "LMF";
-      else if (x >= 70) pos = "RMF";
+    } else if (y >= 35) {
+      if (x <= 25) pos = "LMF";
+      else if (x >= 75) pos = "RMF";
       else if (y >= 55) pos = "DMF";
       else if (y >= 45) pos = "CMF";
       else pos = "AMF";
-    }
-    else {
-      if (x <= 30) pos = "LWF";
-      else if (x >= 70) pos = "RWF";
-      else if (y >= 15) pos = "SS";
+    } else {
+      if (x <= 25) pos = "LWF";
+      else if (x >= 75) pos = "RWF";
+      else if (y >= 25) pos = "SS";
       else pos = "CF";
     }
   } else {
-    if (y <= teamBGkThreshold) pos = "GK";
-    else if (y <= 35) {
-      if (x <= 30) pos = "RB";
-      else if (x >= 70) pos = "LB";
+    if (y <= teamBGkThreshold && x > 30 && x < 70) {
+      pos = "GK";
+    } else if (y <= 30) {
+      if (x <= 25) pos = "RB";
+      else if (x >= 75) pos = "LB";
       else pos = "CB";
-    }
-    else if (y <= 65) {
-      if (x <= 30) pos = "RMF";
-      else if (x >= 70) pos = "LMF";
+    } else if (y <= 65) {
+      if (x <= 25) pos = "RMF";
+      else if (x >= 75) pos = "LMF";
       else if (y <= 45) pos = "DMF";
       else if (y <= 55) pos = "CMF";
       else pos = "AMF";
-    }
-    else {
-      if (x <= 30) pos = "RWF";
-      else if (x >= 70) pos = "LWF";
-      else if (y <= 85) pos = "SS";
+    } else {
+      if (x <= 25) pos = "RWF";
+      else if (x >= 75) pos = "LWF";
+      else if (y <= 75) pos = "SS";
       else pos = "CF";
     }
   }
@@ -805,13 +803,13 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
   const activePlayerState = activeId ? playerStates[activeId] : null;
   const benchPlayers = useMemo(() => players.filter(p => !playerStates[p.id]?.x), [players, playerStates]);
   
-  let pitchHeightClass = "h-[800px] md:h-[880px]";
+  let pitchHeightClass = "h-[1050px] md:h-[1100px]";
   if (matchFormat === "3v3") pitchHeightClass = "h-[650px] md:h-[700px]";
-  else if (matchFormat === "5v5") pitchHeightClass = "h-[750px] md:h-[800px]";
-  else if (matchFormat === "7v7") pitchHeightClass = "h-[880px] md:h-[930px]";
+  else if (matchFormat === "5v5" || matchFormat === "6v6") pitchHeightClass = "h-[750px] md:h-[800px]";
+  else if (matchFormat === "7v7" || matchFormat === "8v8" || matchFormat === "9v9") pitchHeightClass = "h-[880px] md:h-[930px]";
   else if (matchFormat === "11v11") pitchHeightClass = "h-[1050px] md:h-[1100px]";
 
-  const isLargeSquad = matchFormat === "7v7" || matchFormat === "11v11";
+  const isLargeSquad = matchFormat === "7v7" || matchFormat === "8v8" || matchFormat === "9v9" || matchFormat === "11v11";
 
   const handleSaveTeamName = async (team: "A" | "B") => {
     if (team === "A") {
