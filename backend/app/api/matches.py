@@ -1101,6 +1101,9 @@ async def submit_stats(
         max_team_goals = match.teamAScore
     elif match_player.team == "B" and match.teamBScore is not None:
         max_team_goals = match.teamBScore
+    elif (match.teamAScore is not None or match.teamBScore is not None) and payload.goals > 0:
+        # If match has scores but player has no team, they cannot claim goals
+        raise HTTPException(status_code=400, detail="You must be assigned to a team to claim goals for a match with scores.")
 
     if max_team_goals is not None:
         # Get all goals already claimed by teammates
@@ -1418,8 +1421,27 @@ def process_verified_stats(session, stat, match):
         xp_award -= 40
     
     # Update User XP and Level
-    stat.user.xp += max(0, xp_award)
-    new_level = (stat.user.xp // 1000) + 1
+    db_user.xp = (db_user.xp or 0) + xp_award
+    
+    # Update Player Card Stats
+    db_user.matchesPlayed = (db_user.matchesPlayed or 0) + 1
+    if is_win:
+        db_user.wins = (db_user.wins or 0) + 1
+    elif is_draw:
+        db_user.draws = (db_user.draws or 0) + 1
+    else:
+        db_user.losses = (db_user.losses or 0) + 1
+        
+    db_user.goals = (db_user.goals or 0) + stat.goals
+    db_user.assists = (db_user.assists or 0) + stat.assists
+    db_user.tackles = (db_user.tackles or 0) + stat.tackles
+    db_user.saves = (db_user.saves or 0) + stat.saves
+    db_user.intercepts = (db_user.intercepts or 0) + stat.interceptions
+
+    # Calculate OVR based on stats
+    db_user.overall = calculate_ovr(db_user)
+    
+    new_level = (db_user.xp // 1000) + 1
     if new_level > stat.user.level:
         # Check threshold for frame change
         if (stat.user.level <= 5 and new_level >= 6) or (stat.user.level <= 15 and new_level >= 16):

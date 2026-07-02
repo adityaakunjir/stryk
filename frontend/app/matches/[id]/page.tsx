@@ -80,6 +80,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
   const [pendingVerifications, setPendingVerifications] = useState<any[]>([]);
   const [showStatSubmission, setShowStatSubmission] = useState(false);
   const [hasSubmittedStats, setHasSubmittedStats] = useState(false);
+  const [showPrivateJoinModal, setShowPrivateJoinModal] = useState(false);
+  const [privateJoinPassword, setPrivateJoinPassword] = useState("");
   const [viewMode, setViewMode] = useState<"roster" | "tactical">("roster");
   const [contentReady, setContentReady] = useState(false);
   const [viewReady, setViewReady] = useState(false);
@@ -439,18 +441,29 @@ export default function MatchDetailsPage({ params }: PageProps) {
   };
 
   const handleJoinMatch = async () => {
+    if (match?.privacy === "private") {
+      setShowPrivateJoinModal(true);
+      return;
+    }
+    await executeJoin(null);
+  };
+
+  const executeJoin = async (password: string | null) => {
     setActionLoading(true);
     try {
       const res = await fetch("/api/matches/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ matchId })});
+        body: JSON.stringify({ matchId, password })});
 
       const data = await res.json();
       if (data.success) {
+        setShowPrivateJoinModal(false);
+        setPrivateJoinPassword("");
+        toast.success("Successfully joined the match!");
         await fetchMatchDetails();
       } else {
-        toast.error(data.message || "Failed to join match");
+        toast.error(data.message || data.detail || "Failed to join match");
       }
     } catch (err) {
       console.error(err);
@@ -1444,6 +1457,70 @@ function MatchLobbyLoading({ title, subtitle }: { title: string; subtitle: strin
           <div className="h-full w-1/2 animate-[loading-slide_1.1s_ease-in-out_infinite] rounded-full bg-[#D4F829]" />
         </div>
       </div>
+      {/* Private Join Modal */}
+      <AnimatePresence>
+        {showPrivateJoinModal && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center p-5 animate-in fade-in duration-200">
+            <div className="absolute inset-0 bg-black/60 " onClick={() => setShowPrivateJoinModal(false)} />
+            <div className="relative w-full max-w-sm rounded-[2rem] bg-[#111] border border-[#A28B52]/20 shadow-2xl p-6 overflow-hidden">
+              <button
+                onClick={() => setShowPrivateJoinModal(false)}
+                className="absolute top-5 right-5 w-8 h-8 rounded-full glass-panel flex items-center justify-center text-white/50 hover:text-white transition z-10 cursor-pointer"
+                type="button"
+              >
+                <X size={16} />
+              </button>
+
+              <h3 className="font-display text-2xl uppercase tracking-wide text-white mb-2 italic">
+                Private Match
+              </h3>
+              <p className="text-white/50 text-sm mb-6 leading-relaxed">
+                This match requires a password to join.
+              </p>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  executeJoin(privateJoinPassword);
+                }}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="text-[10px] tracking-[0.15em] uppercase text-[#A28B52] font-black block mb-2 pl-2 drop-shadow-sm">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="Enter match password"
+                    value={privateJoinPassword}
+                    onChange={(e) => setPrivateJoinPassword(e.target.value)}
+                    className="w-full h-12 px-4 rounded-[1.25rem] border border-[#A28B52]/10 glass-panel text-[15px] text-[#EFE8D6] placeholder-white/20 outline-none focus:border-[#D4F829]/50 focus:ring-1 focus:ring-[#D4F829]/50 transition duration-300 font-medium"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={actionLoading || !privateJoinPassword.trim()}
+                  className={`w-full h-12 rounded-[1.25rem] font-black tracking-[0.15em] flex items-center justify-center gap-2 cursor-pointer transition duration-300 text-[13px] mt-6 uppercase ${
+                    actionLoading || !privateJoinPassword.trim()
+                      ? "bg-white/5 text-white/20 border border-white/5 pointer-events-none"
+                      : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_8px_20px_rgba(212,248,41,0.25)]"
+                  }`}
+                >
+                  {actionLoading ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" /> Joining...
+                    </>
+                  ) : (
+                    "JOIN MATCH"
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
