@@ -1568,7 +1568,9 @@ async def get_pending_verifications(
 
 def process_verified_stats(session, stat, match, verified_by_count: int = 0):
     from app.core.stats import calculate_stat_gain, calculate_ovr
+    from app.api.leaderboard import invalidate_leaderboard_cache
 
+    invalidate_leaderboard_cache()
     db_user = stat.user
     if not db_user:
         return

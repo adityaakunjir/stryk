@@ -432,19 +432,20 @@ export default function HomeLobbyPage() {
               <div className="text-[10px] font-bold text-[#C3DF1B] bg-[#C3DF1B]/10 border border-[#C3DF1B]/20 px-2 py-0.5 rounded-full shadow-[0_0_8px_rgba(195,223,27,0.15)] ml-2 shrink-0">0/1</div>
             </div>
 
-            {/* Action Grid (1 button for now) */}
-            <div className="grid grid-cols-1 gap-3">
+            {/* Action Grid */}
+            <div className="grid grid-cols-2 gap-3">
               <ActionButton icon={<UserPlus size={18} />} label="ADD FRIEND" subtext="Find & invite players" onClick={() => router.push("/search")} isPrimary={true} />
-              {/* Leaderboard removed temporarily */}
+              <ActionButton icon={<Trophy size={18} />} label="LEADERBOARD" subtext="Climb the ranks" onClick={() => router.push("/leaderboards")} />
             </div>
 
           </div>
         </div>
       {/* Bottom Navigation Tab Bar */}
       {/* Premium Glassmorphism Bottom Navigation */}
-      <div className="fixed bottom-0 w-full max-w-md h-[80px] bg-black/40 backdrop-blur-xl border-t border-white/10 z-40 px-8 flex items-center justify-between shadow-[0_-15px_40px_rgba(0,0,0,0.8)] pb-safe">
+      <div className="fixed bottom-0 w-full max-w-md h-[80px] bg-black/40 backdrop-blur-xl border-t border-white/10 z-40 px-3 flex items-center justify-between shadow-[0_-15px_40px_rgba(0,0,0,0.8)] pb-safe">
         <NavTab icon={<Home size={22} />} label="HOME" active={true} onClick={() => router.push("/home")} />
-        <NavTab icon={<Globe size={22} />} label="MATCHES" active={false} onClick={() => router.push("/matches")} />
+        <NavTab icon={<Globe size={22} />} label="MATCH" active={false} onClick={() => router.push("/matches")} />
+        <NavTab icon={<Trophy size={22} />} label="RANKS" active={false} onClick={() => router.push("/leaderboards")} />
         <NavTab icon={<Users size={22} />} label="SQUAD" active={false} onClick={() => setShowSquadModal(true)} />
         <NavTab icon={<User size={22} />} label="PROFILE" active={false} onClick={() => router.push("/settings")} />
       </div>
@@ -574,7 +575,7 @@ function ActionButton({ icon, label, subtext, onClick, isPrimary }: { icon: Reac
 
 function NavTab({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="relative flex flex-col items-center justify-center h-full w-[64px] cursor-pointer group pt-1">
+    <button onClick={onClick} className="relative flex flex-col items-center justify-center h-full w-[56px] cursor-pointer group pt-1">
       {/* Glowing Active Top Indicator */}
       {active && (
         <div className="absolute top-0 w-8 h-[3px] bg-[#C3DF1B] rounded-b-full shadow-[0_0_12px_rgba(195,223,27,0.9)]" />
