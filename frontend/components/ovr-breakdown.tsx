@@ -119,7 +119,7 @@ export default function OVRBreakdown({ userId, isOpen, onClose }: OVRBreakdownPr
               <X size={20} />
             </button>
 
-            <div className="flex-1 overflow-y-auto px-6 pb-8 pt-2">
+            <div className="flex-1 overflow-y-auto px-6 pb-8 pt-2 min-h-[550px]">
               {loading || !data ? (
                 // Skeleton Loader
                 <div className="flex flex-col items-center space-y-6 animate-pulse">
