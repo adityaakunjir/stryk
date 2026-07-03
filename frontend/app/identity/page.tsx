@@ -399,7 +399,7 @@ export default function IdentityPage() {
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               >
-                <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="scale-95 md:scale-100 origin-center z-10 mx-auto w-[250px] shrink-0">
+                <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="scale-95 md:scale-100 origin-center z-10 mx-auto w-[260px] shrink-0">
                   <PlayerCard player={previewPlayer} size="md" onClick={triggerFileUpload} />
                 </motion.div>
               </motion.div>
