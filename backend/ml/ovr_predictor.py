@@ -185,7 +185,7 @@ def _normalise_position(position: str) -> str:
         "DM": "CDM", "AM": "CAM",
         "CF": "ST", "SS": "ST", "FW": "ST",
         "LM": "LW", "RM": "RW",
-        "MF": "CM",
+        "MF": "CM", "WG": "LW"
     }
     if pos in _aliases:
         return _aliases[pos]
