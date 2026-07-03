@@ -264,12 +264,12 @@ export default function StatsPage() {
   }
 
   const sliderProps = (name: keyof typeof stats, label: string) => (
-    <div className="flex flex-col gap-2 w-full mb-5">
+    <div className="flex flex-col gap-3 w-full mb-6">
       <div className="flex justify-between items-center text-xs">
-        <span className="font-bold tracking-widest uppercase text-[#A28B52]">{label}</span>
-        <span className="font-black text-white">{stats[name]}</span>
+        <span className="font-bold tracking-[0.15em] uppercase text-[#A28B52]">{label}</span>
+        <span className="font-black text-white text-sm">{stats[name]}</span>
       </div>
-      <div className="relative w-full h-8 flex items-center">
+      <div className="relative w-full h-6 flex items-center">
         {/* Custom slider input overlay */}
         <input 
           type="range"
@@ -277,10 +277,10 @@ export default function StatsPage() {
           max="99"
           value={stats[name]}
           onChange={(e) => handleSliderChange(name, parseInt(e.target.value))}
-          className="w-full absolute z-20 opacity-0 cursor-pointer h-full"
+          className="w-full absolute z-20 opacity-0 cursor-pointer h-full inset-0"
         />
         {/* Custom Track */}
-        <div className="w-full h-2 bg-[#0c0c0c] border border-white/5 rounded-full overflow-hidden absolute pointer-events-none z-0">
+        <div className="w-full h-1.5 bg-[#1A1A1A] rounded-full overflow-hidden absolute top-1/2 -translate-y-1/2 pointer-events-none z-0">
            <div 
              className="h-full bg-[#D4F829] rounded-full transition-all duration-150 ease-out" 
              style={{ width: `${(stats[name] / 99) * 100}%` }}
@@ -288,7 +288,7 @@ export default function StatsPage() {
         </div>
         {/* Custom Thumb */}
         <div 
-          className="absolute h-5 w-5 bg-[#C89B3C] border-2 border-[#F4E3B5] rounded-full shadow-[0_0_10px_rgba(200,155,60,0.5)] pointer-events-none z-10 -ml-2.5 transition-all duration-150 ease-out"
+          className="absolute h-[18px] w-[18px] bg-[#A28B52] border-[3px] border-[#F4E3B5] rounded-full shadow-[0_0_12px_rgba(212,248,41,0.5)] pointer-events-none z-10 -ml-[9px] top-1/2 -translate-y-1/2 transition-all duration-150 ease-out"
           style={{ left: `${(stats[name] / 99) * 100}%` }}
         />
       </div>
@@ -321,23 +321,23 @@ export default function StatsPage() {
             <h2 className="font-display text-[2.5rem] sm:text-6xl font-black italic uppercase leading-none tracking-tight text-white drop-shadow-sm">
                RATE <span className="text-[#A28B52]">YOURSELF</span>
              </h2>
-             <p className="mt-2 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-[#A28B52]">
+             <p className="mt-3 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-[#A28B52]">
                Be honest. Your card updates as you go.
              </p>
           </motion.div>
 
-          <form onSubmit={handleSubmit} className="mt-6 w-full flex flex-col gap-6 relative z-10 max-w-sm mx-auto">
+          <form onSubmit={handleSubmit} className="mt-8 w-full flex flex-col gap-8 relative z-10 max-w-[28rem] mx-auto">
             
             {/* Card Preview Area */}
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.2 }} className="flex justify-center shrink-0">
-               <div className="w-[180px] transform origin-top relative">
+               <div className="w-[220px] sm:w-[260px] transform origin-top relative">
                  <motion.div
                    animate={{ opacity: isPredicting ? 0.7 : 1 }}
                    transition={{ duration: 0.3 }}
                  >
                    <PlayerCard 
                      player={{...playerData, ...stats, rating: displayOvr} as any}
-                     size="lg"
+                     size="md"
                      disableAnimation={false}
                    />
                  </motion.div>
@@ -346,7 +346,7 @@ export default function StatsPage() {
                    {isPredicting && (
                      <motion.div 
                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                       className="absolute top-10 left-10 w-12 h-12 bg-white/20 blur-xl rounded-full pointer-events-none" 
+                       className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-white/20 blur-2xl rounded-full pointer-events-none" 
                      />
                    )}
                  </AnimatePresence>
@@ -355,11 +355,11 @@ export default function StatsPage() {
 
             {/* Context Hint */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-center px-4 -mt-2">
-              <span className="text-[11px] text-[#A28B52] italic">{contextHint || "Loading analysis..."}</span>
+              <span className="text-xs sm:text-sm text-[#A28B52] italic">{contextHint || "Loading analysis..."}</span>
             </motion.div>
 
             {/* Sliders Container */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-[1.2rem] bg-[#1a1a1a] border border-white/5 p-6 shadow-xl">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-[2.5rem] bg-[#0a0a0a] border border-white/5 p-6 sm:p-8 shadow-[0_28px_50px_rgba(0,0,0,0.5)]">
                
                {sliderProps("pace", "Pace")}
                {sliderProps("shooting", "Shooting")}
@@ -370,8 +370,8 @@ export default function StatsPage() {
 
                {isGK && (
                  <>
-                   <div className="w-full h-px bg-white/10 my-4" />
-                   <div className="text-[10px] font-bold tracking-widest uppercase text-white/40 mb-4">Goalkeeper Attributes</div>
+                   <div className="w-full h-px bg-white/10 my-6" />
+                   <div className="text-[10px] font-bold tracking-widest uppercase text-white/40 mb-6">Goalkeeper Attributes</div>
                    {sliderProps("gkDiving", "GK Diving")}
                    {sliderProps("gkHandling", "GK Handling")}
                    {sliderProps("gkKicking", "GK Kicking")}
@@ -382,9 +382,9 @@ export default function StatsPage() {
             </motion.div>
 
             {/* CTA */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="relative group pb-2 mt-2">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="relative group pb-4">
               {hasChanged && (
-                <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
+                <div className="absolute -inset-1 bg-[#D4F829]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
               )}
               
               <motion.button 
@@ -393,7 +393,7 @@ export default function StatsPage() {
                 disabled={!hasChanged || isSubmitting || launchStep > 0}
                 className={cn(
                   "relative w-full h-[60px] rounded-full font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-3 transition-all duration-300 overflow-hidden cursor-pointer text-[15px]",
-                  (!hasChanged || launchStep > 0 || isSubmitting) ? "bg-[#151515] border border-white/5 text-white/30 cursor-not-allowed" : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
+                  (!hasChanged || launchStep > 0 || isSubmitting) ? "bg-[#0a0a0a] border border-[#1A1A1A] text-white/30 cursor-not-allowed shadow-none" : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
                 )}
                 type="submit"
               >
@@ -405,19 +405,19 @@ export default function StatsPage() {
                   />
                 )}
                 
-                {launchStep === 0 && <>CREATE MY CARD <ArrowRight className="size-4" strokeWidth={3} /></>}
-                {launchStep === 1 && <><Loader2 className="size-4 animate-spin" /> ANALYZING STATS...</>}
-                {launchStep === 2 && <><Loader2 className="size-4 animate-spin" /> BUILDING IDENTITY...</>}
-                {launchStep === 3 && <><Loader2 className="size-4 animate-spin" /> GENERATING CARD...</>}
+                {launchStep === 0 && <>CREATE MY CARD <ArrowRight className="size-5 ml-1" strokeWidth={3} /></>}
+                {launchStep === 1 && <><Loader2 className="size-5 animate-spin" /> ANALYZING STATS...</>}
+                {launchStep === 2 && <><Loader2 className="size-5 animate-spin" /> BUILDING IDENTITY...</>}
+                {launchStep === 3 && <><Loader2 className="size-5 animate-spin" /> GENERATING CARD...</>}
               </motion.button>
 
               {!hasChanged && (
-                <div className="text-center mt-3 text-[10px] text-white/40 uppercase tracking-widest font-bold">
+                <div className="text-center mt-5 text-[10px] text-white/40 uppercase tracking-[0.2em] font-bold">
                   Adjust your stats to continue
                 </div>
               )}
               {submitError && (
-                <div className="text-center mt-3 text-[10px] text-red-400 uppercase tracking-widest font-bold">
+                <div className="text-center mt-5 text-[10px] text-red-400 uppercase tracking-[0.2em] font-bold">
                   {submitError}
                 </div>
               )}
