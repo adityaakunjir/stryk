@@ -66,6 +66,46 @@ _FALLBACK_WEIGHTS: dict[str, dict[str, float]] = {
                 "dribbling": 0.16, "defending": 0.16, "physical": 0.17},
 }
 
+# ── canonical position importance weights (training spec) ──────────────────────
+# Ground-truth weights from the training data generator. Used exclusively for
+# explain_ovr / improvement suggestions — NOT for OVR prediction.
+# GK stats are absent for all non-GK positions (implicit 0 importance).
+_SPEC_RAW: dict[str, dict[str, float]] = {
+    "GK":  {"pace": 0.10, "shooting": 0.05, "passing": 0.10, "dribbling": 0.05,
+             "defending": 0.20, "physical": 0.30,
+             "gkDiving": 0.85, "gkHandling": 0.85, "gkKicking": 0.85,
+             "gkReflexes": 0.85, "gkPositioning": 0.85},
+    "CB":  {"pace": 0.50, "shooting": 0.05, "passing": 0.30, "dribbling": 0.10,
+             "defending": 0.90, "physical": 0.80},
+    "LB":  {"pace": 0.75, "shooting": 0.10, "passing": 0.50, "dribbling": 0.40,
+             "defending": 0.70, "physical": 0.60},
+    "RB":  {"pace": 0.75, "shooting": 0.10, "passing": 0.50, "dribbling": 0.40,
+             "defending": 0.70, "physical": 0.60},
+    "CDM": {"pace": 0.40, "shooting": 0.15, "passing": 0.70, "dribbling": 0.30,
+             "defending": 0.80, "physical": 0.75},
+    "CM":  {"pace": 0.50, "shooting": 0.30, "passing": 0.80, "dribbling": 0.70,
+             "defending": 0.50, "physical": 0.60},
+    "CAM": {"pace": 0.60, "shooting": 0.60, "passing": 0.85, "dribbling": 0.85,
+             "defending": 0.10, "physical": 0.30},
+    "LW":  {"pace": 0.90, "shooting": 0.65, "passing": 0.60, "dribbling": 0.85,
+             "defending": 0.10, "physical": 0.30},
+    "RW":  {"pace": 0.90, "shooting": 0.65, "passing": 0.60, "dribbling": 0.85,
+             "defending": 0.10, "physical": 0.30},
+    "ST":  {"pace": 0.80, "shooting": 0.90, "passing": 0.30, "dribbling": 0.60,
+             "defending": 0.05, "physical": 0.70},
+    "CF":  {"pace": 0.75, "shooting": 0.85, "passing": 0.40, "dribbling": 0.65,
+             "defending": 0.05, "physical": 0.65},
+}
+
+
+def _spec_weights(pos: str) -> dict[str, float]:
+    """Return normalised training-spec weights for `pos`, sorted descending."""
+    raw = _SPEC_RAW.get(pos) or _FALLBACK_WEIGHTS.get("DEFAULT", {})
+    total = sum(raw.values()) or 1.0
+    return {k: round(v / total, 4)
+            for k, v in sorted(raw.items(), key=lambda x: x[1], reverse=True)}
+
+
 # ── friendly display names ──────────────────────────────────────────────────────
 _DISPLAY_NAMES: dict[str, str] = {
     "pace":           "Pace",
@@ -292,13 +332,16 @@ def explain_ovr(position: str, stats_dict: dict[str, float]) -> str:
     stats_dict : dict mapping stat names to current values, e.g.
                  {"pace": 72, "shooting": 65, ...}
     """
-    weights = get_position_weights(position)
+    pos = _normalise_position(position)
+    # Use training-spec weights for explanation: these are the ground-truth
+    # importance values and correctly assign ~0 weight to Defending for ST,
+    # or GK stats for non-GK positions, etc.
+    weights = _spec_weights(pos)
 
-    # Only consider stats the player actually has a value for
+    # Build (weight, current_value) for every stat with a known weight
     relevant = {
         stat: (weights.get(stat, 0.0), stats_dict.get(stat, 60.0))
         for stat in weights
-        if stat in stats_dict or stat in weights
     }
 
     if not relevant:
@@ -314,15 +357,22 @@ def explain_ovr(position: str, stats_dict: dict[str, float]) -> str:
         if weight > 0
     ][:2]
 
-    # Weakest gain opportunity: stat with meaningful weight but lowest value
-    # (exclude already-high stats ≥ 80 to avoid suggesting maxed attributes)
-    improvement_candidates = [
-        (stat, weight, val)
-        for stat, (weight, val) in by_weight
-        if weight > 0.05 and val < 80
-    ]
-    # Sort by (weight * (80-val)) — weighted gap to unlock — descending
-    improvement_candidates.sort(key=lambda x: x[1] * (80 - x[2]), reverse=True)
+    # Improvement suggestion:
+    #   improvement_delta = position_weight × (70 - current_value)  if val < 70, else 0
+    # This ensures only stats that are BOTH important for the position AND underdeveloped
+    # are recommended. A low-weight stat (e.g. Defending for ST) can never win even if
+    # its value is very low, because the weight term keeps its delta small.
+    improvement_candidates = []
+    for stat, (weight, val) in by_weight:
+        if val < 70:
+            delta = weight * (70.0 - val)
+        else:
+            delta = 0.0
+        if delta > 0:
+            improvement_candidates.append((stat, weight, val, delta))
+
+    # Sort by delta descending — highest "weighted gain opportunity" first
+    improvement_candidates.sort(key=lambda x: x[3], reverse=True)
 
     if not top_drivers:
         return "Keep improving all your stats to raise your OVR."
@@ -339,7 +389,7 @@ def explain_ovr(position: str, stats_dict: dict[str, float]) -> str:
     driver_sentence = f"Your OVR is driven primarily by your {driver_str}."
 
     if improvement_candidates:
-        imp_stat, _, imp_val = improvement_candidates[0]
+        imp_stat, _, imp_val, imp_delta = improvement_candidates[0]
         improve_sentence = (
             f" Improve your {_DISPLAY_NAMES.get(imp_stat, imp_stat.title())} "
             f"({int(round(imp_val))}) to unlock significant OVR gains."
