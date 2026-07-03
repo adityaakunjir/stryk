@@ -258,8 +258,8 @@ def _compute_ovr(stats: np.ndarray, weights: dict) -> np.ndarray:
     # normalise to [40, 99]
     ovr = 40.0 + (raw - min_raw) / (max_raw - min_raw + 1e-9) * 59.0
 
-    # add realistic noise ±3
-    noise = rng.normal(0, 1.5, len(ovr))   # σ=1.5 → ~99% of values within ±3
+    # add realistic noise — σ=0.75 keeps 99% of values within ±2.25 OVR points
+    noise = rng.normal(0, 0.75, len(ovr))
     ovr = ovr + noise
 
     return np.clip(ovr, 40.0, 99.0)
