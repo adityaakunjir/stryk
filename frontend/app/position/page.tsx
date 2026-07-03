@@ -80,6 +80,8 @@ function Stepper() {
       </div>
       <div className="w-4 sm:w-6 h-[1px] bg-white/10" />
       <div>Style</div>
+      <div className="w-4 sm:w-6 h-[1px] bg-white/10" />
+      <div>Stats</div>
     </div>
   );
 }

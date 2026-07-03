@@ -1,6 +1,6 @@
 {
   "model_type": "Ridge",
-  "training_date": "2026-07-03T10:27:20.682797+00:00",
+  "training_date": "2026-07-03T11:24:56.004456+00:00",
   "sample_count": 5000,
   "mae": 0.59975,
   "rmse": 0.749704,

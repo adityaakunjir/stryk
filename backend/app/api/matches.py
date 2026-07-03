@@ -1686,6 +1686,8 @@ def process_verified_stats(session, stat, match, verified_by_count: int = 0):
         gk_positioning = db_user.gkPositioning,
     )
     db_user.OVR = db_user.overall
+    
+    old_level = db_user.level or 1
     db_user.level = (db_user.xp // 1000) + 1
     new_frame = _card_frame_for_level(db_user.level)
     if db_user.cardFrame != new_frame:

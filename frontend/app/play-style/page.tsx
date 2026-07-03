@@ -97,6 +97,8 @@ function JourneyStepper() {
         <div className="w-1.5 h-1.5 rounded-full bg-[#D4F829] shadow-[0_0_8px_rgba(212,248,41,0.8)]" />
         Style
       </div>
+      <div className="w-4 sm:w-6 h-[1px] bg-white/10" />
+      <div>Stats</div>
     </div>
   );
 }
@@ -227,9 +229,7 @@ export default function PlayStylePage() {
   const [bio, setBio] = useState(playerData?.bio || "");
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   
-  // Launch Sequence States
-  const [launchStep, setLaunchStep] = useState(0); // 0=Default, 1=Analyzing, 2=Building, 3=Generating, 4=Reveal
-  const [revealStep, setRevealStep] = useState(0); // For the Ultimate Team Reveal
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [showInfoModal, setShowInfoModal] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -277,91 +277,12 @@ export default function PlayStylePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (launchStep > 0) return;
+    if (isSubmitting) return;
     
+    setIsSubmitting(true);
     updatePlayerData({ playStyle: selectedStyle, bio: bio.trim() });
-    
-    // Launch Sequence
-    setLaunchStep(1);
-    setTimeout(() => setLaunchStep(2), 1000);
-    setTimeout(() => setLaunchStep(3), 2000);
-    setTimeout(() => {
-      setLaunchStep(4);
-      // Start Reveal
-      setTimeout(() => setRevealStep(1), 800); // Name
-      setTimeout(() => setRevealStep(2), 1600); // Position
-      setTimeout(() => setRevealStep(3), 2400); // Style
-      setTimeout(() => setRevealStep(4), 3200); // Avatar
-      setTimeout(() => router.push("/home"), 4500); // Finish
-    }, 3000);
+    router.push("/stats");
   };
-
-  // --- RENDER REVEAL SCREEN ---
-  if (launchStep === 4) {
-    const revealPlayer = {
-      fullName: revealStep >= 1 ? (playerData?.fullName || "YOUR NAME") : "???",
-      username: playerData?.username || "username",
-      avatar: revealStep >= 4 ? (playerData?.avatar || "") : "",
-      position: revealStep >= 2 ? (playerData?.position || "CAM") : "???",
-      secondaryPosition: playerData?.secondaryPosition || "",
-      strongFoot: playerData?.strongFoot || ("Left" as const),
-      playStyle: revealStep >= 3 ? (playerData?.playStyle || "PLAYMAKER") : "???",
-      bio: playerData?.bio || "",
-      rating: playerData?.rating || 60,
-    };
-
-    return (
-      <main className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center overflow-hidden">
-        {/* Dynamic Background */}
-        <motion.div 
-          className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-from),transparent_60%)]"
-          style={{ "--tw-gradient-from": `${activeStyleConfig.color}20` } as any}
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        
-        <AnimatePresence>
-          {revealStep === 0 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[#E8E8E8] text-center">
-              <Loader2 className="size-12 animate-spin text-[#D4F829] mx-auto mb-4" />
-              <h2 className="font-display text-2xl uppercase tracking-widest text-[#D4F829]">Compiling Player Identity...</h2>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {revealStep > 0 && (
-          <motion.div 
-            initial={{ scale: 0.7, opacity: 0, rotateY: 180 }} 
-            animate={{ scale: 1, opacity: 1, rotateY: 0 }} 
-            transition={{ type: "spring", stiffness: 80, damping: 15 }}
-            className="relative z-10 w-[280px] sm:w-[320px] aspect-[1417/1878]"
-          >
-            {/* Bright spotlight/glow behind the card */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#D4F829]/25 via-[#A28B52]/10 to-transparent blur-3xl rounded-full scale-125 z-0 pointer-events-none" />
-
-            <div className="relative z-10 w-full h-full">
-              <PlayerCard player={revealPlayer as any} size="lg" disableAnimation={false} />
-            </div>
-
-            {/* Floating indicator/subtitle below the card */}
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              key={revealStep}
-              className="absolute -bottom-16 left-0 right-0 text-center"
-            >
-              <div className="text-[10px] font-bold tracking-[0.35em] text-[#A28B52] uppercase drop-shadow-md">
-                {revealStep === 1 && "Identity Compiled"}
-                {revealStep === 2 && "Tactical Role Set"}
-                {revealStep === 3 && "Signature Play Style"}
-                {revealStep === 4 && "Athlete Card Ready"}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </main>
-    );
-  }
 
   // --- NORMAL PAGE RENDER ---
   return (
@@ -561,20 +482,20 @@ export default function PlayStylePage() {
               </div>
             </motion.div>
 
-            {/* Launch Sequence CTA */}
+            {/* CTA */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="relative group pb-2">
               <div className="absolute -inset-1 bg-[#C6FF00]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
               <motion.button 
-                whileHover={{ scale: launchStep === 0 ? 1.01 : 1 }}
-                whileTap={{ scale: launchStep === 0 ? 0.97 : 1 }}
-                disabled={launchStep > 0}
+                whileHover={{ scale: isSubmitting ? 1 : 1.01 }}
+                whileTap={{ scale: isSubmitting ? 1 : 0.97 }}
+                disabled={isSubmitting}
                 className={cn(
                   "relative w-full h-[60px] rounded-full font-display tracking-[0.15em] uppercase font-bold flex items-center justify-center gap-3 transition-all duration-300 overflow-hidden cursor-pointer text-[15px]",
-                  launchStep > 0 ? "bg-[#151515] border border-white/5 text-white/30" : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
+                  isSubmitting ? "bg-[#151515] border border-white/5 text-white/30" : "bg-[#D4F829] text-[#151515] hover:bg-[#cbf026] shadow-[0_0_30px_-5px_rgba(212,248,41,0.6)]"
                 )}
                 type="submit"
               >
-                {launchStep === 0 && (
+                {!isSubmitting && (
                   <motion.div 
                     className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
                     animate={{ translateX: ["-100%", "200%"] }}
@@ -582,10 +503,8 @@ export default function PlayStylePage() {
                   />
                 )}
                 
-                {launchStep === 0 && <>CREATE MY CARD <ArrowRight className="size-4" strokeWidth={3} /></>}
-                {launchStep === 1 && <><Loader2 className="size-4 animate-spin" /> ANALYZING STYLE...</>}
-                {launchStep === 2 && <><Loader2 className="size-4 animate-spin" /> BUILDING IDENTITY...</>}
-                {launchStep === 3 && <><Loader2 className="size-4 animate-spin" /> GENERATING CARD...</>}
+                {!isSubmitting && <>CONTINUE <ArrowRight className="size-4" strokeWidth={3} /></>}
+                {isSubmitting && <><Loader2 className="size-4 animate-spin" /> SAVING...</>}
               </motion.button>
             </motion.div>
 

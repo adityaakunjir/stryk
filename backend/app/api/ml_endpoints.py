@@ -99,6 +99,7 @@ def _build_breakdown(
 @router.get("/ml/ovr-breakdown")
 async def get_ovr_breakdown(
     userId: Optional[str] = Query(None, description="Player user ID. Omit to use current authenticated user."),
+    position: Optional[str] = Query(None, description="Override position for breakdown."),
     session: AsyncSession = Depends(get_session),
     current_user: dict = Depends(get_current_user),
 ):
@@ -127,7 +128,7 @@ async def get_ovr_breakdown(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     stats = _user_stats_dict(db_user)
-    pos   = db_user.position or "CM"
+    pos   = position or db_user.position or "CM"
 
     # predict with ML model
     current_ovr = predict_ovr(
