@@ -149,12 +149,47 @@ async def get_ovr_breakdown(
     explanation  = explain_ovr(pos, stats)
     breakdown    = _build_breakdown(pos, stats, current_ovr)
 
+    # Calculate UPGRADE PATH (which stat gives max OVR boost if raised by +10)
+    best_delta = 0
+    best_stat = None
+    for stat_name, w in pos_weights.items():
+        if w > 0:
+            test_stats = dict(stats)
+            test_stats[stat_name] = min(99.0, test_stats[stat_name] + 10.0)
+            test_ovr = predict_ovr(
+                position=pos,
+                pace=test_stats["pace"],
+                shooting=test_stats["shooting"],
+                passing=test_stats["passing"],
+                dribbling=test_stats["dribbling"],
+                defending=test_stats["defending"],
+                physical=test_stats["physical"],
+                gk_diving=test_stats["gkDiving"],
+                gk_handling=test_stats["gkHandling"],
+                gk_kicking=test_stats["gkKicking"],
+                gk_reflexes=test_stats["gkReflexes"],
+                gk_positioning=test_stats["gkPositioning"],
+            )
+            delta = test_ovr - current_ovr
+            # tie break by weight if deltas are equal
+            if delta > best_delta or (delta == best_delta and delta > 0 and w > pos_weights.get(best_stat, 0)):
+                best_delta = delta
+                best_stat = stat_name
+
+    upgrade_path = None
+    if best_stat and best_delta > 0:
+        upgrade_path = {
+            "stat": best_stat,
+            "delta": best_delta,
+        }
+
     return {
         "current_ovr":      current_ovr,
         "position":         pos,
         "position_weights": pos_weights,
         "explanation":      explanation,
         "breakdown":        breakdown,
+        "upgrade_path":     upgrade_path,
     }
 
 
