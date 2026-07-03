@@ -23,7 +23,7 @@ interface UpgradePath {
 }
 
 interface BreakdownData {
-  current_ovr: int;
+  current_ovr: number;
   position: string;
   position_weights: Record<string, number>;
   explanation: string;
