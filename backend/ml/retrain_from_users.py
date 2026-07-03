@@ -4,6 +4,13 @@ retrain_from_users.py
 Gradually improves the OVR prediction model as real user data accumulates.
 Combines real user stats (weighted 3x) with synthetic training data, retrains,
 and replaces the current model only if the new MAE is better.
+
+SCHEDULED RETRAINING — This script should be run automatically once per week 
+via a cron job or a scheduled task in Railway/Render. Recommended schedule is 
+every Sunday at 3am when server load is lowest. To add as a Railway cron job 
+set the command to: python backend/ml/retrain_from_users.py. 
+Minimum real data threshold is currently set to 5 verified matches per player. 
+Raise this to 10 once the user base exceeds 1000 players.
 """
 
 import asyncio
