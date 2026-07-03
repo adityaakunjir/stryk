@@ -150,7 +150,7 @@ export default function OVRBreakdown({ userId, isOpen, onClose }: OVRBreakdownPr
                   {/* Explanation */}
                   <div className="mt-6 mb-8 w-full rounded-2xl border border-[#D4AF37]/20 bg-gradient-to-br from-[#D4AF37]/10 to-transparent p-4 text-center">
                     <p className="text-sm font-medium italic leading-relaxed text-[#D4AF37]">
-                      "{data.explanation}"
+                      &quot;{data.explanation}&quot;
                     </p>
                   </div>
 

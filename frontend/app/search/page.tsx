@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Search, Loader2, ChevronDown, User, Activity, Shirt } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePlayer } from "@/components/player-context";
-import { calculateOvr } from "@/lib/stat-utils";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -339,7 +338,7 @@ export default function SearchPage() {
                     
                     <div className="shrink-0 flex flex-col items-center justify-center pl-3 border-l border-white/10 group-hover:border-[#D4F829]/20 transition-colors">
                        <span className="text-[9px] uppercase tracking-[0.2em] text-white/40 mb-0.5 font-bold">OVR</span>
-                       <span className="font-display text-2xl text-[#D4F829] font-black italic">{calculateOvr(player as any)}</span>
+                       <span className="font-display text-2xl text-[#D4F829] font-black italic">{player.overall ?? 60}</span>
                     </div>
                   </div>
                 </Link>

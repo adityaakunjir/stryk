@@ -21,6 +21,8 @@ def _card_frame_for_level(level: int) -> str:
 def _sync_user_card_aliases(user: User) -> None:
     if not user.userId:
         user.userId = user.id
+    if (user.matchesPlayed or 0) == 0:
+        user.overall = 60
     user.avatar = user.avatarUrl
     user.OVR = user.overall
     user.PAC = user.pace
@@ -176,7 +178,6 @@ async def get_my_profile(
     # This self-heals the database on every login — no secret URL required.
     if db_user.matchesPlayed == 0 and db_user.position and db_user.playStyle:
         from app.core.stats import get_initial_stats
-        from ml.ovr_predictor import predict_ovr as _predict_ovr
         new_stats = get_initial_stats(db_user.position, db_user.playStyle)
         stats_changed = False
         for stat_name, stat_val in new_stats.items():
@@ -186,33 +187,16 @@ async def get_my_profile(
                     setattr(db_user, stat_name, stat_val)
                     stats_changed = True
 
-        if stats_changed:
-            stats_dict = {
-                "pace": db_user.pace,
-                "shooting": db_user.shooting,
-                "passing": db_user.passing,
-                "dribbling": db_user.dribbling,
-                "defending": db_user.defending,
-                "physical": db_user.physical,
-                "gkDiving": db_user.gkDiving,
-                "gkHandling": db_user.gkHandling,
-                "gkKicking": db_user.gkKicking,
-                "gkReflexes": db_user.gkReflexes,
-                "gkPositioning": db_user.gkPositioning
-            }
-            db_user.overall = _predict_ovr(
-                position=db_user.position,
-                pace=db_user.pace, shooting=db_user.shooting,
-                passing=db_user.passing, dribbling=db_user.dribbling,
-                defending=db_user.defending, physical=db_user.physical,
-                gk_diving=db_user.gkDiving, gk_handling=db_user.gkHandling,
-                gk_kicking=db_user.gkKicking, gk_reflexes=db_user.gkReflexes,
-                gk_positioning=db_user.gkPositioning,
-            )
-            db_user.OVR = db_user.overall
+        if stats_changed or db_user.overall != 60 or db_user.OVR != 60:
+            db_user.overall = 60
+            db_user.OVR = 60
             session.add(db_user)
             await session.commit()
             await session.refresh(db_user)
+
+    if (db_user.matchesPlayed or 0) == 0:
+        db_user.overall = 60
+        db_user.OVR = 60
 
     _sync_user_card_aliases(db_user)
     session.add(db_user)
@@ -413,15 +397,18 @@ async def fix_all_stats(session: AsyncSession = Depends(get_session)):
         u.gkReflexes = new_stats.get("gkReflexes", 60.0)
         u.gkPositioning = new_stats.get("gkPositioning", 60.0)
         
-        u.overall = _predict_ovr(
-            position=u.position,
-            pace=u.pace, shooting=u.shooting,
-            passing=u.passing, dribbling=u.dribbling,
-            defending=u.defending, physical=u.physical,
-            gk_diving=u.gkDiving, gk_handling=u.gkHandling,
-            gk_kicking=u.gkKicking, gk_reflexes=u.gkReflexes,
-            gk_positioning=u.gkPositioning,
-        )
+        if (u.matchesPlayed or 0) == 0:
+            u.overall = 60
+        else:
+            u.overall = _predict_ovr(
+                position=u.position,
+                pace=u.pace, shooting=u.shooting,
+                passing=u.passing, dribbling=u.dribbling,
+                defending=u.defending, physical=u.physical,
+                gk_diving=u.gkDiving, gk_handling=u.gkHandling,
+                gk_kicking=u.gkKicking, gk_reflexes=u.gkReflexes,
+                gk_positioning=u.gkPositioning,
+            )
         u.OVR = u.overall
         session.add(u)
         count += 1

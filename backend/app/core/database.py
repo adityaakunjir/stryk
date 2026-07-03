@@ -161,6 +161,7 @@ async def create_db_tables():
             await conn.execute(text('UPDATE users SET "userId" = id WHERE "userId" IS NULL;'))
             await conn.execute(text('UPDATE users SET avatar = "avatarUrl" WHERE avatar IS NULL;'))
             await conn.execute(text('UPDATE users SET "OVR" = overall, "PAC" = pace, "SHO" = shooting, "PAS" = passing, "DRI" = dribbling, "DEF" = defending, "PHY" = physical;'))
+            await conn.execute(text('UPDATE users SET overall = 60, "OVR" = 60 WHERE COALESCE("matchesPlayed", 0) = 0;'))
             await conn.execute(text("""UPDATE users SET "cardFrame" = CASE WHEN level >= 16 THEN 'gold' WHEN level >= 6 THEN 'silver' ELSE 'bronze' END;"""))
             
             # Ensure old columns are nullable so SQLModel inserts don't fail if Alembic failed to drop them

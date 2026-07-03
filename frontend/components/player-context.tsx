@@ -2,11 +2,11 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useStrykAuth } from "./auth-provider";
-import { calculateStats, calculateOvr } from "@/lib/stat-utils";
+import { calculateStats } from "@/lib/stat-utils";
 
 // Bump this version key whenever the data shape changes.
 // Old caches with different versions are automatically discarded on load.
-const CACHE_KEY = "stryk_player_v4";
+const CACHE_KEY = "stryk_player_v5";
 
 export type PlayStyleType = "Speedster" | "Playmaker" | "Poacher" | "Box-to-Box";
 
@@ -124,7 +124,7 @@ function mergeBackendUser(prev: PlayerData, backendUser: Record<string, unknown>
     gkReflexes: backendUser.gkReflexes as number,
     gkPositioning: backendUser.gkPositioning as number,
   };
-  updated.rating = (backendUser.overall as number) ?? calculateOvr(updated);
+  updated.rating = (backendUser.OVR as number) ?? (backendUser.overall as number) ?? (backendUser.rating as number) ?? 60;
   return updated;
 }
 
@@ -220,7 +220,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
     setPlayerData((prev) => {
       const updated = { ...prev, ...data };
-      updated.rating = calculateOvr(updated);
+      updated.rating = data.rating ?? prev.rating ?? 60;
       writeCache(updated);
       finalUpdated = updated;
       return updated;

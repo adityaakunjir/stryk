@@ -37,6 +37,8 @@ def _sync_user_card_aliases(user: User) -> None:
     """Keep legacy app fields and explicit card-contract aliases in sync."""
     if not user.userId:
         user.userId = user.id
+    if (user.matchesPlayed or 0) == 0:
+        user.overall = 60
     user.avatar = user.avatarUrl
     user.OVR = user.overall
     user.PAC = user.pace

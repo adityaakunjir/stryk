@@ -27,6 +27,8 @@ def _card_frame_for_level(level: int) -> str:
 def _sync_user_card_aliases(player: User) -> None:
     if not player.userId:
         player.userId = player.id
+    if (player.matchesPlayed or 0) == 0:
+        player.overall = 60
     player.avatar = player.avatarUrl
     player.OVR = player.overall
     player.PAC = player.pace
@@ -67,7 +69,7 @@ async def create_player(
         player.playStyle = player_in.playstyle
 
     # Apply Starter Stats based on position
-    from app.core.stats import STARTER_STATS, calculate_ovr
+    from app.core.stats import STARTER_STATS
     pos = player.position.upper() if player.position else "DEFAULT"
     if pos not in STARTER_STATS:
         pos = "DEFAULT"
@@ -85,21 +87,8 @@ async def create_player(
     player.gkReflexes = starter["gkReflexes"]
     player.gkPositioning = starter["gkPositioning"]
     
-    # Calculate initial OVR
-    stats_dict = {
-        "pace": player.pace,
-        "shooting": player.shooting,
-        "passing": player.passing,
-        "dribbling": player.dribbling,
-        "defending": player.defending,
-        "physical": player.physical,
-        "gkDiving": player.gkDiving,
-        "gkHandling": player.gkHandling,
-        "gkKicking": player.gkKicking,
-        "gkReflexes": player.gkReflexes,
-        "gkPositioning": player.gkPositioning
-    }
-    player.overall = calculate_ovr(player.position, stats_dict)
+    # Every card starts at 60 OVR; verified match progression raises it later.
+    player.overall = 60
 
     session.add(player)
     await session.flush()

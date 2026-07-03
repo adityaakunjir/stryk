@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { PlayerCard } from "@/components/player-card";
-import { calculateOvr } from "@/lib/stat-utils";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -115,9 +114,7 @@ export default async function PublicPlayerPage({ params }: Props) {
     tackles: user.tackles ?? 0,
     saves: user.saves ?? 0,
     intercepts: user.intercepts ?? 0,
-    rating: user.overall ?? 60};
-
-  playerData.rating = calculateOvr(playerData as any);
+    rating: user.OVR ?? user.overall ?? 60};
 
   const wins = playerData.wins;
   const draws = playerData.draws;
