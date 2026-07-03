@@ -229,6 +229,18 @@ class ProfileUpdate(BaseModel):
     playstyle: Optional[str] = None
     strongFoot: Optional[str] = None
     bio: Optional[str] = None
+    pace: Optional[int] = None
+    shooting: Optional[int] = None
+    passing: Optional[int] = None
+    dribbling: Optional[int] = None
+    defending: Optional[int] = None
+    physical: Optional[int] = None
+    gkDiving: Optional[int] = None
+    gkHandling: Optional[int] = None
+    gkKicking: Optional[int] = None
+    gkReflexes: Optional[int] = None
+    gkPositioning: Optional[int] = None
+    overall: Optional[int] = None
 
 @router.patch("/profile/me", response_model=UserRead)
 async def patch_my_profile(
@@ -255,24 +267,38 @@ async def patch_my_profile(
     # Check if we should generate new dynamic base stats
     needs_stat_reset = False
     if "position" in update_data or "playStyle" in update_data:
-        # Only reset if they are a new player (0 matches). 
-        # Alternatively, if they have matches, we could also reset their base stats and simulate progression, 
-        # but for now we only reset if they haven't played anything. Or we can just let it reset their base stats
-        # wait, if they have 0 matches, they definitely need a reset.
         if db_user.matchesPlayed == 0:
             needs_stat_reset = True
+
+    # If the request explicitly provides stats, don't override those specific stats
+    explicit_stats = {k for k in ["pace", "shooting", "passing", "dribbling", "defending", "physical", 
+                                 "gkDiving", "gkHandling", "gkKicking", "gkReflexes", "gkPositioning"] 
+                      if k in update_data}
 
     for key, value in update_data.items():
         setattr(db_user, key, value)
 
-    if needs_stat_reset:
+    if needs_stat_reset and not explicit_stats:
         from app.core.stats import get_initial_stats
         from ml.ovr_predictor import predict_ovr as _predict_ovr
         base_stats = get_initial_stats(db_user.position, db_user.playStyle)
         for stat_name, stat_val in base_stats.items():
-            if hasattr(db_user, stat_name):
+            if hasattr(db_user, stat_name) and stat_name not in explicit_stats:
                 setattr(db_user, stat_name, stat_val)
                 
+        db_user.overall = _predict_ovr(
+            position=db_user.position,
+            pace=db_user.pace, shooting=db_user.shooting,
+            passing=db_user.passing, dribbling=db_user.dribbling,
+            defending=db_user.defending, physical=db_user.physical,
+            gk_diving=db_user.gkDiving, gk_handling=db_user.gkHandling,
+            gk_kicking=db_user.gkKicking, gk_reflexes=db_user.gkReflexes,
+            gk_positioning=db_user.gkPositioning,
+        )
+        db_user.OVR = db_user.overall
+    elif explicit_stats or ("position" in update_data and explicit_stats):
+        # We need to predict OVR using the provided explicit stats, if overall wasn't provided or we want to trust ML
+        from ml.ovr_predictor import predict_ovr as _predict_ovr
         db_user.overall = _predict_ovr(
             position=db_user.position,
             pace=db_user.pace, shooting=db_user.shooting,
