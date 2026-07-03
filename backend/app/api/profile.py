@@ -175,7 +175,8 @@ async def get_my_profile(
     # their stats were saved with the wrong defaults. Recalculate dynamically now.
     # This self-heals the database on every login — no secret URL required.
     if db_user.matchesPlayed == 0 and db_user.position and db_user.playStyle:
-        from app.core.stats import get_initial_stats, calculate_ovr
+        from app.core.stats import get_initial_stats
+        from ml.ovr_predictor import predict_ovr as _predict_ovr
         new_stats = get_initial_stats(db_user.position, db_user.playStyle)
         stats_changed = False
         for stat_name, stat_val in new_stats.items():
@@ -199,7 +200,16 @@ async def get_my_profile(
                 "gkReflexes": db_user.gkReflexes,
                 "gkPositioning": db_user.gkPositioning
             }
-            db_user.overall = calculate_ovr(db_user.position, stats_dict)
+            db_user.overall = _predict_ovr(
+                position=db_user.position,
+                pace=db_user.pace, shooting=db_user.shooting,
+                passing=db_user.passing, dribbling=db_user.dribbling,
+                defending=db_user.defending, physical=db_user.physical,
+                gk_diving=db_user.gkDiving, gk_handling=db_user.gkHandling,
+                gk_kicking=db_user.gkKicking, gk_reflexes=db_user.gkReflexes,
+                gk_positioning=db_user.gkPositioning,
+            )
+            db_user.OVR = db_user.overall
             session.add(db_user)
             await session.commit()
             await session.refresh(db_user)
@@ -256,27 +266,23 @@ async def patch_my_profile(
         setattr(db_user, key, value)
 
     if needs_stat_reset:
-        from app.core.stats import get_initial_stats, calculate_ovr
+        from app.core.stats import get_initial_stats
+        from ml.ovr_predictor import predict_ovr as _predict_ovr
         base_stats = get_initial_stats(db_user.position, db_user.playStyle)
         for stat_name, stat_val in base_stats.items():
             if hasattr(db_user, stat_name):
                 setattr(db_user, stat_name, stat_val)
                 
-        # Recalculate OVR
-        stats_dict = {
-            "pace": db_user.pace,
-            "shooting": db_user.shooting,
-            "passing": db_user.passing,
-            "dribbling": db_user.dribbling,
-            "defending": db_user.defending,
-            "physical": db_user.physical,
-            "gkDiving": db_user.gkDiving,
-            "gkHandling": db_user.gkHandling,
-            "gkKicking": db_user.gkKicking,
-            "gkReflexes": db_user.gkReflexes,
-            "gkPositioning": db_user.gkPositioning
-        }
-        db_user.overall = calculate_ovr(db_user.position, stats_dict)
+        db_user.overall = _predict_ovr(
+            position=db_user.position,
+            pace=db_user.pace, shooting=db_user.shooting,
+            passing=db_user.passing, dribbling=db_user.dribbling,
+            defending=db_user.defending, physical=db_user.physical,
+            gk_diving=db_user.gkDiving, gk_handling=db_user.gkHandling,
+            gk_kicking=db_user.gkKicking, gk_reflexes=db_user.gkReflexes,
+            gk_positioning=db_user.gkPositioning,
+        )
+        db_user.OVR = db_user.overall
 
     _sync_user_card_aliases(db_user)
     session.add(db_user)
@@ -326,7 +332,8 @@ async def toggle_match_star(
 @router.get("/profile/fix-all-stats-secret-admin")
 async def fix_all_stats(session: AsyncSession = Depends(get_session)):
     """Secret endpoint to forcefully fix stats for all existing users in production DB"""
-    from app.core.stats import get_initial_stats, calculate_ovr
+    from app.core.stats import get_initial_stats
+    from ml.ovr_predictor import predict_ovr as _predict_ovr
     from sqlalchemy import text
     
     # Force inject any missing columns into production PostgreSQL just in case it crashed earlier
@@ -380,20 +387,16 @@ async def fix_all_stats(session: AsyncSession = Depends(get_session)):
         u.gkReflexes = new_stats.get("gkReflexes", 60.0)
         u.gkPositioning = new_stats.get("gkPositioning", 60.0)
         
-        stats_dict = {
-            "pace": u.pace,
-            "shooting": u.shooting,
-            "passing": u.passing,
-            "dribbling": u.dribbling,
-            "defending": u.defending,
-            "physical": u.physical,
-            "gkDiving": u.gkDiving,
-            "gkHandling": u.gkHandling,
-            "gkKicking": u.gkKicking,
-            "gkReflexes": u.gkReflexes,
-            "gkPositioning": u.gkPositioning
-        }
-        u.overall = calculate_ovr(u.position, stats_dict)
+        u.overall = _predict_ovr(
+            position=u.position,
+            pace=u.pace, shooting=u.shooting,
+            passing=u.passing, dribbling=u.dribbling,
+            defending=u.defending, physical=u.physical,
+            gk_diving=u.gkDiving, gk_handling=u.gkHandling,
+            gk_kicking=u.gkKicking, gk_reflexes=u.gkReflexes,
+            gk_positioning=u.gkPositioning,
+        )
+        u.OVR = u.overall
         session.add(u)
         count += 1
     await session.commit()

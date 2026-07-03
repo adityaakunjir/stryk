@@ -1567,8 +1567,9 @@ async def get_pending_verifications(
 
 
 def process_verified_stats(session, stat, match, verified_by_count: int = 0):
-    from app.core.stats import calculate_stat_gain, calculate_ovr
+    from app.core.stats import calculate_stat_gain
     from app.api.leaderboard import invalidate_leaderboard_cache
+    from ml.ovr_predictor import predict_ovr
 
     invalidate_leaderboard_cache()
     db_user = stat.user
@@ -1669,22 +1670,22 @@ def process_verified_stats(session, stat, match, verified_by_count: int = 0):
     db_user.gkReflexes = min(99.0, db_user.gkReflexes)
     db_user.gkPositioning = min(99.0, db_user.gkPositioning)
     
-    # Recalculate Overall
-    stats_dict = {
-        "pace": db_user.pace,
-        "shooting": db_user.shooting,
-        "passing": db_user.passing,
-        "dribbling": db_user.dribbling,
-        "defending": db_user.defending,
-        "physical": db_user.physical,
-        "gkDiving": db_user.gkDiving,
-        "gkHandling": db_user.gkHandling,
-        "gkKicking": db_user.gkKicking,
-        "gkReflexes": db_user.gkReflexes,
-        "gkPositioning": db_user.gkPositioning
-    }
-    old_level = db_user.level or 1
-    db_user.overall = calculate_ovr(db_user.position, stats_dict)
+    # Recalculate Overall using the ML position-aware model
+    db_user.overall = predict_ovr(
+        position    = db_user.position,
+        pace        = db_user.pace,
+        shooting    = db_user.shooting,
+        passing     = db_user.passing,
+        dribbling   = db_user.dribbling,
+        defending   = db_user.defending,
+        physical    = db_user.physical,
+        gk_diving   = db_user.gkDiving,
+        gk_handling = db_user.gkHandling,
+        gk_kicking  = db_user.gkKicking,
+        gk_reflexes = db_user.gkReflexes,
+        gk_positioning = db_user.gkPositioning,
+    )
+    db_user.OVR = db_user.overall
     db_user.level = (db_user.xp // 1000) + 1
     new_frame = _card_frame_for_level(db_user.level)
     if db_user.cardFrame != new_frame:
