@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, Award, Shield, Target } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { ClientBackButton } from "@/components/client-back-button";
 
 const BASE_URL_RAW = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 const API_BASE_URL = (!BASE_URL_RAW.endsWith("/api/v1") && !BASE_URL_RAW.endsWith("/api/v1/")) 
@@ -60,11 +61,11 @@ export default async function MatchHistoryPage({ params }: Props) {
         
         {/* Header */}
         <div className="flex items-center justify-between mb-8 z-30 shrink-0">
-          <button className="w-10 h-10 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0 transition  shadow-sm">
-             <Link href={`/player/${username}`} className="flex items-center justify-center w-full h-full">
-               <ArrowLeft size={18} />
-             </Link>
-          </button>
+          <ClientBackButton 
+            fallbackRoute={`/player/${username}`} 
+            className="w-10 h-10 rounded-full glass-panel text-white flex items-center justify-center cursor-pointer hover:glass-panel0 transition shadow-sm" 
+            iconSize={18} 
+          />
           <div className="text-[10px] tracking-[0.35em] uppercase text-white/50 font-bold drop-shadow-md">MATCH HISTORY</div>
           <div className="w-10 h-10" />
         </div>
