@@ -194,10 +194,6 @@ async def get_my_profile(
             await session.commit()
             await session.refresh(db_user)
 
-    if (db_user.matchesPlayed or 0) == 0:
-        db_user.overall = 60
-        db_user.OVR = 60
-
     _sync_user_card_aliases(db_user)
     session.add(db_user)
     await session.commit()
@@ -213,18 +209,6 @@ class ProfileUpdate(BaseModel):
     playstyle: Optional[str] = None
     strongFoot: Optional[str] = None
     bio: Optional[str] = None
-    pace: Optional[int] = None
-    shooting: Optional[int] = None
-    passing: Optional[int] = None
-    dribbling: Optional[int] = None
-    defending: Optional[int] = None
-    physical: Optional[int] = None
-    gkDiving: Optional[int] = None
-    gkHandling: Optional[int] = None
-    gkKicking: Optional[int] = None
-    gkReflexes: Optional[int] = None
-    gkPositioning: Optional[int] = None
-    overall: Optional[int] = None
 
 @router.patch("/profile/me", response_model=UserRead)
 async def patch_my_profile(
@@ -248,51 +232,22 @@ async def patch_my_profile(
     if "playstyle" in update_data:
         update_data["playStyle"] = update_data.pop("playstyle")
     
-    # Check if we should generate new dynamic base stats
     needs_stat_reset = False
     if "position" in update_data or "playStyle" in update_data:
         if db_user.matchesPlayed == 0:
             needs_stat_reset = True
 
-    # If the request explicitly provides stats, don't override those specific stats
-    explicit_stats = {k for k in ["pace", "shooting", "passing", "dribbling", "defending", "physical", 
-                                 "gkDiving", "gkHandling", "gkKicking", "gkReflexes", "gkPositioning"] 
-                      if k in update_data}
-
     for key, value in update_data.items():
         setattr(db_user, key, value)
 
-    if needs_stat_reset and not explicit_stats:
+    if needs_stat_reset:
         from app.core.stats import get_initial_stats
-        from ml.ovr_predictor import predict_ovr as _predict_ovr
         base_stats = get_initial_stats(db_user.position, db_user.playStyle)
         for stat_name, stat_val in base_stats.items():
-            if hasattr(db_user, stat_name) and stat_name not in explicit_stats:
+            if hasattr(db_user, stat_name):
                 setattr(db_user, stat_name, stat_val)
-                
-        db_user.overall = _predict_ovr(
-            position=db_user.position,
-            pace=db_user.pace, shooting=db_user.shooting,
-            passing=db_user.passing, dribbling=db_user.dribbling,
-            defending=db_user.defending, physical=db_user.physical,
-            gk_diving=db_user.gkDiving, gk_handling=db_user.gkHandling,
-            gk_kicking=db_user.gkKicking, gk_reflexes=db_user.gkReflexes,
-            gk_positioning=db_user.gkPositioning,
-        )
-        db_user.OVR = db_user.overall
-    elif explicit_stats or ("position" in update_data and explicit_stats):
-        # We need to predict OVR using the provided explicit stats, if overall wasn't provided or we want to trust ML
-        from ml.ovr_predictor import predict_ovr as _predict_ovr
-        db_user.overall = _predict_ovr(
-            position=db_user.position,
-            pace=db_user.pace, shooting=db_user.shooting,
-            passing=db_user.passing, dribbling=db_user.dribbling,
-            defending=db_user.defending, physical=db_user.physical,
-            gk_diving=db_user.gkDiving, gk_handling=db_user.gkHandling,
-            gk_kicking=db_user.gkKicking, gk_reflexes=db_user.gkReflexes,
-            gk_positioning=db_user.gkPositioning,
-        )
-        db_user.OVR = db_user.overall
+        db_user.overall = 60
+        db_user.OVR = 60
 
     _sync_user_card_aliases(db_user)
     session.add(db_user)
@@ -343,7 +298,6 @@ async def toggle_match_star(
 async def fix_all_stats(session: AsyncSession = Depends(get_session)):
     """Secret endpoint to forcefully fix stats for all existing users in production DB"""
     from app.core.stats import get_initial_stats
-    from ml.ovr_predictor import predict_ovr as _predict_ovr
     from sqlalchemy import text
     
     # Force inject any missing columns into production PostgreSQL just in case it crashed earlier
@@ -400,6 +354,7 @@ async def fix_all_stats(session: AsyncSession = Depends(get_session)):
         if (u.matchesPlayed or 0) == 0:
             u.overall = 60
         else:
+            from ml.ovr_predictor import predict_ovr as _predict_ovr
             u.overall = _predict_ovr(
                 position=u.position,
                 pace=u.pace, shooting=u.shooting,
@@ -414,3 +369,127 @@ async def fix_all_stats(session: AsyncSession = Depends(get_session)):
         count += 1
     await session.commit()
     return {"message": f"Successfully fixed stats for {count} users in the production database."}
+
+class SpendPointsRequest(BaseModel):
+    pace: Optional[int] = 0
+    shooting: Optional[int] = 0
+    passing: Optional[int] = 0
+    dribbling: Optional[int] = 0
+    defending: Optional[int] = 0
+    physical: Optional[int] = 0
+    gkDiving: Optional[int] = 0
+    gkHandling: Optional[int] = 0
+    gkKicking: Optional[int] = 0
+    gkReflexes: Optional[int] = 0
+    gkPositioning: Optional[int] = 0
+
+@router.post("/player/spend-points")
+async def spend_points(
+    req: SpendPointsRequest,
+    session: AsyncSession = Depends(get_session),
+    user: dict = Depends(get_current_user),
+):
+    clerkId = user.get("sub")
+    result = await session.execute(
+        select(User).where(User.clerkId == clerkId)
+    )
+    db_user = result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    spend_data = req.model_dump(exclude_unset=True)
+    total_requested = sum(spend_data.values())
+    if total_requested <= 0:
+        raise HTTPException(status_code=400, detail="Must spend at least 1 point")
+        
+    if total_requested > (db_user.progressionPoints or 0):
+        raise HTTPException(status_code=400, detail="Not enough progression points")
+        
+    stat_cap = db_user.statCap or 75
+    
+    # Validate caps
+    for stat, increment in spend_data.items():
+        if increment > 0:
+            current_val = getattr(db_user, stat, 0)
+            if current_val + increment > stat_cap:
+                raise HTTPException(status_code=400, detail=f"Spending on {stat} would exceed the cap of {stat_cap}")
+                
+    # Apply
+    for stat, increment in spend_data.items():
+        if increment > 0:
+            setattr(db_user, stat, getattr(db_user, stat, 0) + increment)
+            
+    db_user.progressionPoints -= total_requested
+    
+    from ml.ovr_predictor import predict_ovr as _predict_ovr
+    db_user.overall = _predict_ovr(
+        position=db_user.position,
+        pace=db_user.pace, shooting=db_user.shooting,
+        passing=db_user.passing, dribbling=db_user.dribbling,
+        defending=db_user.defending, physical=db_user.physical,
+        gk_diving=db_user.gkDiving, gk_handling=db_user.gkHandling,
+        gk_kicking=db_user.gkKicking, gk_reflexes=db_user.gkReflexes,
+        gk_positioning=db_user.gkPositioning,
+    )
+    db_user.OVR = db_user.overall
+    
+    session.add(db_user)
+    await session.commit()
+    await session.refresh(db_user)
+    
+    return {
+        "success": True,
+        "remainingPoints": db_user.progressionPoints,
+        "newOvr": db_user.overall,
+        "stats": {
+            "pace": db_user.pace,
+            "shooting": db_user.shooting,
+            "passing": db_user.passing,
+            "dribbling": db_user.dribbling,
+            "defending": db_user.defending,
+            "physical": db_user.physical,
+            "gkDiving": db_user.gkDiving,
+            "gkHandling": db_user.gkHandling,
+            "gkKicking": db_user.gkKicking,
+            "gkReflexes": db_user.gkReflexes,
+            "gkPositioning": db_user.gkPositioning,
+        }
+    }
+
+@router.get("/player/progression-status")
+async def get_progression_status(
+    session: AsyncSession = Depends(get_session),
+    user: dict = Depends(get_current_user),
+):
+    clerkId = user.get("sub")
+    result = await session.execute(
+        select(User).where(User.clerkId == clerkId)
+    )
+    db_user = result.scalars().first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Profile not found")
+        
+    stat_cap = db_user.statCap or 75
+    
+    stats = {
+        "pace": {"current": db_user.pace, "toCap": max(0, stat_cap - db_user.pace)},
+        "shooting": {"current": db_user.shooting, "toCap": max(0, stat_cap - db_user.shooting)},
+        "passing": {"current": db_user.passing, "toCap": max(0, stat_cap - db_user.passing)},
+        "dribbling": {"current": db_user.dribbling, "toCap": max(0, stat_cap - db_user.dribbling)},
+        "defending": {"current": db_user.defending, "toCap": max(0, stat_cap - db_user.defending)},
+        "physical": {"current": db_user.physical, "toCap": max(0, stat_cap - db_user.physical)},
+        "gkDiving": {"current": db_user.gkDiving, "toCap": max(0, stat_cap - db_user.gkDiving)},
+        "gkHandling": {"current": db_user.gkHandling, "toCap": max(0, stat_cap - db_user.gkHandling)},
+        "gkKicking": {"current": db_user.gkKicking, "toCap": max(0, stat_cap - db_user.gkKicking)},
+        "gkReflexes": {"current": db_user.gkReflexes, "toCap": max(0, stat_cap - db_user.gkReflexes)},
+        "gkPositioning": {"current": db_user.gkPositioning, "toCap": max(0, stat_cap - db_user.gkPositioning)},
+    }
+    
+    return {
+        "currentPoints": db_user.progressionPoints or 0,
+        "totalPointsEarned": db_user.totalPointsEarned or 0,
+        "verifiedMatchCount": db_user.verifiedMatchCount or 0,
+        "statCap": stat_cap,
+        "stats": stats,
+        "nextMatchRewardPreview": "Base 3 points + bonuses for top scorer/assister"
+    }

@@ -1606,71 +1606,28 @@ def process_verified_stats(session, stat, match, verified_by_count: int = 0):
     db_user.tackles = (db_user.tackles or 0) + stat.tackles
     db_user.saves = (db_user.saves or 0) + stat.saves
     db_user.intercepts = (db_user.intercepts or 0) + stat.interceptions
-
-    # Goals -> SHO, PAC (small)
-    for _ in range(stat.goals):
-        db_user.shooting += calculate_stat_gain(4.5, db_user.shooting)
-        db_user.pace += calculate_stat_gain(1.5, db_user.pace)
     
-    # Assists -> PAS, DRI
-    for _ in range(stat.assists):
-        db_user.passing += calculate_stat_gain(3.5, db_user.passing)
-        db_user.dribbling += calculate_stat_gain(1.5, db_user.dribbling)
+    # Find max goals and assists in the match
+    all_stats = match.stats
+    max_goals = max((s.goals for s in all_stats), default=0)
+    max_assists = max((s.assists for s in all_stats), default=0)
     
-    # Tackles -> DEF
-    for _ in range(stat.tackles):
-        db_user.defending += calculate_stat_gain(4.0, db_user.defending)
+    progression_award = 3
+    reasons = ["Base award (3 pts)"]
     
-    # Interceptions -> DEF, PAS (small)
-    for _ in range(stat.interceptions):
-        db_user.defending += calculate_stat_gain(3.0, db_user.defending)
-        db_user.passing += calculate_stat_gain(1.0, db_user.passing)
+    if stat.goals > 0 and stat.goals == max_goals:
+        progression_award += 2
+        reasons.append("Top scorer bonus (2 pts)")
     
-    # Saves -> gkDiving, gkReflexes, gkHandling
-    for _ in range(stat.saves):
-        db_user.gkDiving += calculate_stat_gain(1.5, db_user.gkDiving)
-        db_user.gkReflexes += calculate_stat_gain(1.5, db_user.gkReflexes)
-        db_user.gkHandling += calculate_stat_gain(0.5, db_user.gkHandling)
+    if stat.assists > 0 and stat.assists == max_assists:
+        progression_award += 1
+        reasons.append("Top assister bonus (1 pt)")
+        
+    db_user.progressionPoints = (db_user.progressionPoints or 0) + progression_award
+    db_user.totalPointsEarned = (db_user.totalPointsEarned or 0) + progression_award
+    db_user.verifiedMatchCount = (db_user.verifiedMatchCount or 0) + 1
     
-    # Distribution Assists -> gkKicking
-    for _ in range(stat.distributionAssists):
-        db_user.gkKicking += calculate_stat_gain(4.0, db_user.gkKicking)
-    
-    # Duels won -> PHY
-    for _ in range(stat.duelsWon):
-        db_user.physical += calculate_stat_gain(2.0, db_user.physical)
-    
-    # Key passes -> PAS
-    for _ in range(stat.keyPasses):
-        db_user.passing += calculate_stat_gain(2.5, db_user.passing)
-    
-    # Blocks -> DEF
-    for _ in range(stat.blocks):
-        db_user.defending += calculate_stat_gain(3.0, db_user.defending)
-    
-    # Clearances -> DEF
-    for _ in range(stat.clearances):
-        db_user.defending += calculate_stat_gain(2.0, db_user.defending)
-    
-    # Clean sheets -> DEF, PHY, gkPositioning
-    if stat.cleanSheet:
-        db_user.defending += calculate_stat_gain(5.0, db_user.defending)
-        db_user.physical += calculate_stat_gain(3.0, db_user.physical)
-        if db_user.position == "GK":
-            db_user.gkPositioning += calculate_stat_gain(5.0, db_user.gkPositioning)
-    
-    # Cap attributes at 99.0
-    db_user.pace = min(99.0, db_user.pace)
-    db_user.shooting = min(99.0, db_user.shooting)
-    db_user.passing = min(99.0, db_user.passing)
-    db_user.dribbling = min(99.0, db_user.dribbling)
-    db_user.defending = min(99.0, db_user.defending)
-    db_user.physical = min(99.0, db_user.physical)
-    db_user.gkDiving = min(99.0, db_user.gkDiving)
-    db_user.gkHandling = min(99.0, db_user.gkHandling)
-    db_user.gkKicking = min(99.0, db_user.gkKicking)
-    db_user.gkReflexes = min(99.0, db_user.gkReflexes)
-    db_user.gkPositioning = min(99.0, db_user.gkPositioning)
+    print(f"Awarded {progression_award} progression points to {db_user.username} for match {match.id}. Reasons: {', '.join(reasons)}")
     
     # Recalculate Overall using the ML position-aware model
     db_user.overall = predict_ovr(

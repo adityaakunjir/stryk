@@ -60,6 +60,12 @@ class UserBase(SQLModel):
     tackles: int = Field(default=0, ge=0)
     saves: int = Field(default=0, ge=0)
     intercepts: int = Field(default=0, ge=0)
+    
+    progressionPoints: int = Field(default=0, ge=0)
+    statCap: int = Field(default=75, ge=1)
+    verifiedMatchCount: int = Field(default=0, ge=0)
+    totalPointsEarned: int = Field(default=0, ge=0)
+    
     cardFrame: str = Field(default="bronze", max_length=20)
     matchHistory: List[dict] = Field(default_factory=list, sa_column=Column(JSON, nullable=False, default=list))
 

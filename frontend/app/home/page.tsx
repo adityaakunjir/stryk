@@ -9,20 +9,24 @@ import {
   ChevronRight, Home, User, Globe, BarChart3, UserPlus, ChevronDown
 } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 import { useStrykAuth } from "@/components/auth-provider";
 import { CardDetail } from "@/components/card-detail";
+import { ProgressionSpend } from "@/components/progression-spend";
 import { cn } from "@/lib/utils";
 
 export default function HomeLobbyPage() {
   const router = useRouter();
   const { user } = useUser();
+  const { getToken } = useAuth();
   const { isLoaded: isAuthLoaded, isSignedIn } = useStrykAuth();
   const { playerData, isLoaded, getStats } = usePlayer();
   
   const [showCardDossier, setShowCardDossier] = useState(false);
   const [showSquadModal, setShowSquadModal] = useState(false);
   const [showOvrModal, setShowOvrModal] = useState(false);
+  const [showProgressionModal, setShowProgressionModal] = useState(false);
+  const [progressionPoints, setProgressionPoints] = useState(0);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
   const [shineX, setShineX] = useState(50);
@@ -42,6 +46,24 @@ export default function HomeLobbyPage() {
       router.replace("/sync");
     }
   }, [isAuthLoaded, isSignedIn, isLoaded, playerData.username, router]);
+
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+    async function fetchProgression() {
+      try {
+        const token = await getToken();
+        if (!token) return;
+        const res = await fetch("/api/v1/player/progression-status", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setProgressionPoints(data.currentPoints || 0);
+        }
+      } catch (e) {}
+    }
+    fetchProgression();
+  }, [isLoaded, isSignedIn, getToken]);
 
   // Prefetch common routes so navigation is instant (zero-latency)
   useEffect(() => {
@@ -135,29 +157,43 @@ export default function HomeLobbyPage() {
             </div>
           </div>
 
-        <div className="flex justify-between items-start mt-2">
-          <div className="flex flex-col">
-            <div className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none flex items-center gap-2">
-              HEY, {firstName}
-            </div>
-            <div className="text-[10px] font-bold tracking-[0.2em] text-[#A28B52] uppercase mt-2 mb-0.5">
-              READY FOR TODAY&apos;S MATCH?
-            </div>
-            <div className="text-[10px] text-[#151515]/70 font-medium">
-              Level up, compete, and build your legacy.
-            </div>
-          </div>
-
-            {/* Streak Badge (Only visible if they've played matches) */}
-            {playerData.matchesPlayed && playerData.matchesPlayed > 0 ? (
-              <div className="flex flex-col items-center justify-center glass-panel text-[#E8D196] rounded-xl px-4 py-2 shadow-xl border border-[#8E793E]/30 min-w-[70px]">
-                <div className="flex items-center gap-1 font-display text-2xl leading-none">
-                  <span>🔥</span>
-                  <span>1</span>
-                </div>
-                <div className="text-[7px] font-bold tracking-[0.15em] mt-1 text-[#E8D196]/70 uppercase">DAY STREAK</div>
+          <div className="flex justify-between items-start mt-2">
+            <div className="flex flex-col">
+              <div className="font-display text-[2.5rem] font-black italic uppercase tracking-tight text-[#151515] drop-shadow-sm leading-none flex items-center gap-2">
+                HEY, {firstName}
               </div>
-            ) : null}
+              <div className="text-[10px] font-bold tracking-[0.2em] text-[#A28B52] uppercase mt-2 mb-0.5">
+                READY FOR TODAY&apos;S MATCH?
+              </div>
+              <div className="text-[10px] text-[#151515]/70 font-medium">
+                Level up, compete, and build your legacy.
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              {progressionPoints > 0 && (
+                <button
+                  onClick={() => setShowProgressionModal(true)}
+                  className="flex flex-col items-center justify-center bg-[#D4F829] text-[#111] rounded-xl px-4 py-2 shadow-[0_0_15px_rgba(212,248,41,0.4)] border border-[#D4F829]/50 min-w-[70px] cursor-pointer hover:bg-[#cbf026] hover:scale-105 transition-all"
+                >
+                  <div className="flex items-center gap-1 font-display text-2xl leading-none">
+                    <span>⚡</span>
+                    <span>{progressionPoints}</span>
+                  </div>
+                  <div className="text-[7px] font-bold tracking-[0.15em] mt-1 uppercase">UPGRADE</div>
+                </button>
+              )}
+              {/* Streak Badge (Only visible if they've played matches) */}
+              {playerData.matchesPlayed && playerData.matchesPlayed > 0 ? (
+                <div className="flex flex-col items-center justify-center glass-panel text-[#E8D196] rounded-xl px-4 py-2 shadow-xl border border-[#8E793E]/30 min-w-[70px]">
+                  <div className="flex items-center gap-1 font-display text-2xl leading-none">
+                    <span>🔥</span>
+                    <span>1</span>
+                  </div>
+                  <div className="text-[7px] font-bold tracking-[0.15em] mt-1 text-[#E8D196]/70 uppercase">DAY STREAK</div>
+                </div>
+              ) : null}
+            </div>
           </div>
       </div>
 
@@ -454,6 +490,8 @@ export default function HomeLobbyPage() {
       <AnimatePresence>
         {showCardDossier && <CardDetail player={playerData} onClose={() => setShowCardDossier(false)} />}
       </AnimatePresence>
+      
+      <ProgressionSpend isOpen={showProgressionModal} onClose={() => setShowProgressionModal(false)} />
 
       {/* Squad Modal (Empty State Upgraded) */}
       <AnimatePresence>

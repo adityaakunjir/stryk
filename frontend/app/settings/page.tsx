@@ -2,10 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft, User, LogOut, ChevronRight, Bell, Loader2 } from "lucide-react";
+import { ArrowLeft, User, LogOut, ChevronRight, Bell, Loader2, Zap } from "lucide-react";
 import { usePlayer } from "@/components/player-context";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { ProgressionSpend } from "@/components/progression-spend";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function SettingsPage() {
   const { signOut } = useAuth();
 
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [showProgressionModal, setShowProgressionModal] = useState(false);
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -33,8 +35,15 @@ export default function SettingsPage() {
           icon: User,
           label: "Edit Profile",
           meta: "Manage your personal information",
-          iconColor: "text-[#D4F829]",
+          iconColor: "text-white",
           onClick: () => router.push("/identity")
+        },
+        {
+          icon: Zap,
+          label: "Progression",
+          meta: "Upgrade your attributes",
+          iconColor: "text-[#D4F829]",
+          onClick: () => setShowProgressionModal(true)
         },
         {
           icon: Bell,
@@ -165,6 +174,8 @@ export default function SettingsPage() {
         </div>
 
       </div>
+      
+      <ProgressionSpend isOpen={showProgressionModal} onClose={() => setShowProgressionModal(false)} />
     </main>
   );
 }

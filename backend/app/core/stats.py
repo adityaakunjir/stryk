@@ -1,21 +1,18 @@
 from typing import Dict, Any
 
-# Starter stats based on user spec + extrapolated for missing positions
+# Starter stats based on user spec
 STARTER_STATS = {
-    "ST": {"pace": 60.0, "shooting": 62.0, "passing": 50.0, "dribbling": 58.0, "defending": 35.0, "physical": 48.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "CF": {"pace": 58.0, "shooting": 60.0, "passing": 55.0, "dribbling": 60.0, "defending": 35.0, "physical": 45.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "LW": {"pace": 65.0, "shooting": 55.0, "passing": 55.0, "dribbling": 62.0, "defending": 35.0, "physical": 40.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "RW": {"pace": 65.0, "shooting": 55.0, "passing": 55.0, "dribbling": 62.0, "defending": 35.0, "physical": 40.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "CAM": {"pace": 55.0, "shooting": 50.0, "passing": 65.0, "dribbling": 62.0, "defending": 42.0, "physical": 45.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "CM": {"pace": 52.0, "shooting": 45.0, "passing": 60.0, "dribbling": 58.0, "defending": 55.0, "physical": 55.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "CDM": {"pace": 50.0, "shooting": 35.0, "passing": 55.0, "dribbling": 50.0, "defending": 62.0, "physical": 62.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "LM": {"pace": 62.0, "shooting": 45.0, "passing": 60.0, "dribbling": 60.0, "defending": 45.0, "physical": 45.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "RM": {"pace": 62.0, "shooting": 45.0, "passing": 60.0, "dribbling": 60.0, "defending": 45.0, "physical": 45.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "LB": {"pace": 62.0, "shooting": 35.0, "passing": 50.0, "dribbling": 52.0, "defending": 60.0, "physical": 55.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "RB": {"pace": 62.0, "shooting": 35.0, "passing": 50.0, "dribbling": 52.0, "defending": 60.0, "physical": 55.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "CB": {"pace": 42.0, "shooting": 30.0, "passing": 48.0, "dribbling": 35.0, "defending": 65.0, "physical": 60.0, "gkDiving": 20.0, "gkHandling": 20.0, "gkKicking": 20.0, "gkReflexes": 20.0, "gkPositioning": 20.0},
-    "GK": {"pace": 40.0, "shooting": 20.0, "passing": 40.0, "dribbling": 20.0, "defending": 30.0, "physical": 50.0, "gkDiving": 60.0, "gkHandling": 58.0, "gkKicking": 55.0, "gkReflexes": 62.0, "gkPositioning": 61.0},
-    "DEFAULT": {"pace": 50.0, "shooting": 50.0, "passing": 50.0, "dribbling": 50.0, "defending": 50.0, "physical": 50.0, "gkDiving": 50.0, "gkHandling": 50.0, "gkKicking": 50.0, "gkReflexes": 50.0, "gkPositioning": 50.0},
+    "ST": {"pace": 55.0, "shooting": 55.0, "passing": 40.0, "dribbling": 50.0, "defending": 25.0, "physical": 45.0, "gkDiving": 10.0, "gkHandling": 10.0, "gkKicking": 10.0, "gkReflexes": 10.0, "gkPositioning": 10.0},
+    "CAM": {"pace": 48.0, "shooting": 45.0, "passing": 55.0, "dribbling": 55.0, "defending": 25.0, "physical": 40.0, "gkDiving": 10.0, "gkHandling": 10.0, "gkKicking": 10.0, "gkReflexes": 10.0, "gkPositioning": 10.0},
+    "LW": {"pace": 58.0, "shooting": 45.0, "passing": 45.0, "dribbling": 55.0, "defending": 22.0, "physical": 40.0, "gkDiving": 10.0, "gkHandling": 10.0, "gkKicking": 10.0, "gkReflexes": 10.0, "gkPositioning": 10.0},
+    "RW": {"pace": 58.0, "shooting": 45.0, "passing": 45.0, "dribbling": 55.0, "defending": 22.0, "physical": 40.0, "gkDiving": 10.0, "gkHandling": 10.0, "gkKicking": 10.0, "gkReflexes": 10.0, "gkPositioning": 10.0},
+    "CM": {"pace": 45.0, "shooting": 40.0, "passing": 55.0, "dribbling": 50.0, "defending": 45.0, "physical": 48.0, "gkDiving": 10.0, "gkHandling": 10.0, "gkKicking": 10.0, "gkReflexes": 10.0, "gkPositioning": 10.0},
+    "CDM": {"pace": 42.0, "shooting": 30.0, "passing": 52.0, "dribbling": 42.0, "defending": 58.0, "physical": 55.0, "gkDiving": 10.0, "gkHandling": 10.0, "gkKicking": 10.0, "gkReflexes": 10.0, "gkPositioning": 10.0},
+    "LB": {"pace": 50.0, "shooting": 28.0, "passing": 48.0, "dribbling": 42.0, "defending": 55.0, "physical": 50.0, "gkDiving": 10.0, "gkHandling": 10.0, "gkKicking": 10.0, "gkReflexes": 10.0, "gkPositioning": 10.0},
+    "RB": {"pace": 50.0, "shooting": 28.0, "passing": 48.0, "dribbling": 42.0, "defending": 55.0, "physical": 50.0, "gkDiving": 10.0, "gkHandling": 10.0, "gkKicking": 10.0, "gkReflexes": 10.0, "gkPositioning": 10.0},
+    "CB": {"pace": 40.0, "shooting": 25.0, "passing": 42.0, "dribbling": 35.0, "defending": 60.0, "physical": 58.0, "gkDiving": 10.0, "gkHandling": 10.0, "gkKicking": 10.0, "gkReflexes": 10.0, "gkPositioning": 10.0},
+    "GK": {"pace": 35.0, "shooting": 20.0, "passing": 38.0, "dribbling": 30.0, "defending": 40.0, "physical": 45.0, "gkDiving": 50.0, "gkHandling": 50.0, "gkKicking": 45.0, "gkReflexes": 50.0, "gkPositioning": 50.0},
+    "DEFAULT": {"pace": 45.0, "shooting": 35.0, "passing": 45.0, "dribbling": 40.0, "defending": 45.0, "physical": 45.0, "gkDiving": 10.0, "gkHandling": 10.0, "gkKicking": 10.0, "gkReflexes": 10.0, "gkPositioning": 10.0},
 }
 
 PLAYSTYLE_MODIFIERS = {
@@ -26,7 +23,7 @@ PLAYSTYLE_MODIFIERS = {
 }
 
 def get_initial_stats(position: str, play_style: str) -> dict:
-    """Get the dynamic initial starting stats based on position and play style, normalized to EXACTLY 60 OVR."""
+    """Get the dynamic initial starting stats based on position and play style."""
     pos = position.upper() if position else "DEFAULT"
     if pos not in STARTER_STATS:
         pos = "DEFAULT"
@@ -37,17 +34,6 @@ def get_initial_stats(position: str, play_style: str) -> dict:
         for stat, val in PLAYSTYLE_MODIFIERS[play_style].items():
             if stat in base:
                 base[stat] += val
-                
-    # Calculate the raw exact OVR of this modified profile
-    weights = OVR_WEIGHTS.get(pos, OVR_WEIGHTS["DEFAULT"])
-    raw_ovr = sum(base.get(stat_name, 60.0) * weight for stat_name, weight in weights.items())
-    
-    # Normalize all stats so the final OVR is exactly 60.0
-    if raw_ovr > 0:
-        multiplier = 60.0 / raw_ovr
-        for stat in base:
-            # Rounding to 2 decimal places ensures database accuracy without losing OVR precision
-            base[stat] = round(base[stat] * multiplier, 2)
             
     return base
 
