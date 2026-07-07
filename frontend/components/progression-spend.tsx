@@ -67,7 +67,7 @@ export function ProgressionSpend({ isOpen, onClose }: ProgressionSpendProps) {
     setIsLoading(true);
     try {
       const token = await getToken();
-      const res = await fetch("/api/v1/player/progression-status", {
+      const res = await fetch("/api/player/progression-status", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -143,7 +143,7 @@ export function ProgressionSpend({ isOpen, onClose }: ProgressionSpendProps) {
     
     try {
       const token = await getToken();
-      const res = await fetch("/api/v1/player/spend-points", {
+      const res = await fetch("/api/player/spend-points", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -221,6 +221,15 @@ export function ProgressionSpend({ isOpen, onClose }: ProgressionSpendProps) {
                     </div>
                   </div>
 
+                  {status.currentPoints === 0 && pointsSpent === 0 && (
+                    <div className="text-center p-4 bg-white/5 rounded-xl border border-[#D4F829]/20 text-[#D4F829]/80 shadow-[0_0_15px_rgba(212,248,41,0.05)] mt-4">
+                      <p className="text-xs tracking-wide">
+                        You don't have enough progression points to upgrade your stats. 
+                        Complete matches and level up to earn more points!
+                      </p>
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between bg-[#1a1a1a] rounded-xl p-4 border border-white/5">
                     <span className="text-sm font-bold uppercase tracking-wider text-[#808080]">Projected OVR</span>
                     <div className="flex items-center gap-3">
@@ -290,7 +299,10 @@ export function ProgressionSpend({ isOpen, onClose }: ProgressionSpendProps) {
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-10 text-red-400">Failed to load progression data</div>
+                <div className="text-center py-10 text-red-400">
+                  <p>Failed to load progression data.</p>
+                  <p className="text-xs opacity-70 mt-2">Make sure you have completed the onboarding and check your connection.</p>
+                </div>
               )}
             </div>
 

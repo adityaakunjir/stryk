@@ -53,7 +53,7 @@ export default function HomeLobbyPage() {
       try {
         const token = await getToken();
         if (!token) return;
-        const res = await fetch("/api/v1/player/progression-status", {
+        const res = await fetch("/api/player/progression-status", {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {
