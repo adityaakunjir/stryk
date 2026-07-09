@@ -287,16 +287,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
     }
   }, [currentUserId, match?.status, checkPendingVerifications]);
 
-  // Auto-update match details every 3 seconds ONLY when viewMode is "tactical" (squad builder view)
-  useEffect(() => {
-    if (viewMode !== "tactical") return;
-
-    const interval = setInterval(() => {
-      fetchMatchDetails();
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [viewMode, fetchMatchDetails]);
+  // Auto-update match details via polling is disabled. We rely on Pusher for real-time updates
+  // to avoid race conditions with local drag-and-drop state.
 
   // Listen for real-time updates via Pusher
   useEffect(() => {

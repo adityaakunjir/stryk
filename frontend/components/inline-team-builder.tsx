@@ -440,6 +440,9 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
   const [isEditingB, setIsEditingB] = useState(false);
   const [draggedPos, setDraggedPos] = useState<{x: number, y: number} | null>(null);
 
+  const activeIdRef = useRef<string | null>(null);
+  useEffect(() => { activeIdRef.current = activeId; }, [activeId]);
+
   const pitchRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const dragMoveFrameRef = useRef<number | null>(null);
@@ -481,8 +484,13 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
         // For non-hosts, the API's coordinates are the source of truth for 
         // everyone else's cards (especially when the host moves them).
         const existing = prev[p.id];
-        if (isHost && existing && existing.x !== null && existing.y !== null) {
-          newStates[p.id] = existing;
+        if (existing && existing.x !== null && existing.y !== null) {
+          // Always preserve local coordinates if they exist. We trust our local state 
+          // (built via drag & Pusher) over the polling API to prevent bouncing.
+          const team: "A" | "B" | null = 
+            (p.team === "Team A" || p.team === "A") ? "A" :
+            (p.team === "Team B" || p.team === "B") ? "B" : null;
+          newStates[p.id] = { ...existing, team };
           return;
         }
 
@@ -547,8 +555,8 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
   useEffect(() => {
     if (externalPositionUpdate) {
       setPlayerStates(prev => {
-        // Do not overwrite if we are not the host and this is our own update (we already have local state)
-        if (!isHost && externalPositionUpdate.userId === currentUserId) return prev;
+        // Do not overwrite if we are currently dragging this exact player locally
+        if (activeIdRef.current === externalPositionUpdate.userId) return prev;
         
         const existing = prev[externalPositionUpdate.userId];
         if (!existing) return prev;
