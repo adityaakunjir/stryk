@@ -510,26 +510,38 @@ export const InlineTeamBuilder = React.memo(function InlineTeamBuilder({
             customLabel: label,
           };
         } else if (team) {
-          // Has team but no coordinates — place in default position
-          const defaultX = 20 + Math.random() * 60;
-          const defaultY = team === "A" ? (15 + Math.random() * 30) : (65 + Math.random() * 30);
-          const label = getAutoPosition(defaultX, defaultY, team, matchFormat, newStates, p.id);
-          newStates[p.id] = {
-            id: p.id,
-            x: defaultX,
-            y: defaultY,
-            team,
-            customLabel: label,
-          };
+          // Has team but no API coordinates — first check if we already have local coords
+          if (existing && existing.x != null && existing.y != null) {
+            // Keep the existing local position exactly — never randomise on re-render
+            newStates[p.id] = { ...existing, team };
+          } else {
+            // Very first time seeing this player on-pitch with no coords:
+            // Use a deterministic default based on the player id so it is stable across re-renders.
+            const hash = p.id.split("").reduce((acc: number, c: string) => acc + c.charCodeAt(0), 0);
+            const defaultX = 20 + (hash % 61); // 20–80
+            const defaultY = team === "A" ? (15 + (hash % 31)) : (65 + (hash % 31));
+            const label = getAutoPosition(defaultX, defaultY, team, matchFormat, newStates, p.id);
+            newStates[p.id] = {
+              id: p.id,
+              x: defaultX,
+              y: defaultY,
+              team,
+              customLabel: label,
+            };
+          }
         } else {
-          // No team — on the bench
-          newStates[p.id] = {
-            id: p.id,
-            x: null,
-            y: null,
-            team: null,
-            customLabel: p.position || "CMF",
-          };
+          // No team — on the bench. Keep existing bench state if already present.
+          if (existing && existing.x === null) {
+            newStates[p.id] = existing;
+          } else {
+            newStates[p.id] = {
+              id: p.id,
+              x: null,
+              y: null,
+              team: null,
+              customLabel: p.position || "CMF",
+            };
+          }
         }
       });
 

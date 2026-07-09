@@ -367,6 +367,20 @@ export default function MatchDetailsPage({ params }: PageProps) {
       scheduleFetchMatchDetails();
     });
     channel.bind("position-updated", (data: { userId: string; x: number; y: number; team: string | null }) => {
+      // Immediately patch the position in our local match state so that any
+      // subsequent fetchMatchDetails re-render already has the correct coords
+      // and the InlineTeamBuilder never sees stale API values.
+      setMatch(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          participants: prev.participants.map(p =>
+            p.userId === data.userId
+              ? { ...p, x: data.x, y: data.y, team: data.team }
+              : p
+          )
+        };
+      });
       setExternalPositionUpdate({ ...data, ts: Date.now() });
     });
     channel.bind("stats-submitted", () => {
