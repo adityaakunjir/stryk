@@ -1697,7 +1697,10 @@ async def verify_stats(
         raise HTTPException(status_code=400, detail="Already voted on this player's stats")
 
     match_result = await session.execute(
-        select(Match).where(Match.id == match_id).options(selectinload(Match.players))
+        select(Match).where(Match.id == match_id).options(
+            selectinload(Match.players),
+            selectinload(Match.stats).selectinload(MatchStats.user)
+        )
     )
     match = match_result.scalars().first()
     if not match:
