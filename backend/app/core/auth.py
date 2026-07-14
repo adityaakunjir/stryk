@@ -68,7 +68,7 @@ async def get_current_user(
     Verifies the JWT token securely using Clerk's RS256 public keys.
     """
     if credentials is None:
-        if settings.allow_demo_auth and not settings.is_production:
+        if settings.allow_demo_auth :
             return _demo_user()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -76,7 +76,7 @@ async def get_current_user(
         )
 
     token = credentials.credentials
-    if token.startswith("mock_") and settings.allow_demo_auth and not settings.is_production:
+    if token.startswith("mock_") and settings.allow_demo_auth :
         user = _demo_user()
         user["sub"] = token.split("_", 1)[1] or user["sub"]
         return user
