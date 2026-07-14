@@ -52,18 +52,7 @@ export function ProgressionSpend({ isOpen, onClose }: ProgressionSpendProps) {
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      loadStatus();
-      setSpendState({
-        pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0,
-        gkDiving: 0, gkHandling: 0, gkKicking: 0, gkReflexes: 0, gkPositioning: 0
-      });
-      setPredictedOvr(playerData?.rating || null);
-    }
-  }, [isOpen]);
-
-  const loadStatus = async () => {
+  async function loadStatus() {
     setIsLoading(true);
     try {
       const token = await getToken();
@@ -79,7 +68,18 @@ export function ProgressionSpend({ isOpen, onClose }: ProgressionSpendProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      loadStatus();
+      setSpendState({
+        pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0,
+        gkDiving: 0, gkHandling: 0, gkKicking: 0, gkReflexes: 0, gkPositioning: 0
+      });
+      setPredictedOvr(playerData?.rating || null);
+    }
+  }, [isOpen]);
 
   const pointsSpent = Object.values(spendState).reduce((a, b) => a + b, 0);
   const availablePoints = status ? status.currentPoints - pointsSpent : 0;
@@ -224,7 +224,7 @@ export function ProgressionSpend({ isOpen, onClose }: ProgressionSpendProps) {
                   {status.currentPoints === 0 && pointsSpent === 0 && (
                     <div className="text-center p-4 bg-white/5 rounded-xl border border-[#D4F829]/20 text-[#D4F829]/80 shadow-[0_0_15px_rgba(212,248,41,0.05)] mt-4">
                       <p className="text-xs tracking-wide">
-                        You don't have enough progression points to upgrade your stats. 
+                        You don&apos;t have enough progression points to upgrade your stats. 
                         Complete matches and level up to earn more points!
                       </p>
                     </div>
