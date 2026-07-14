@@ -1884,7 +1884,7 @@ async def complete_match(
         for stat in unresolved_stats:
             votes_for_target = [v for v in all_verifications if v.targetPlayerId == stat.userId]
             approvals = sum(1 for v in votes_for_target if v.vote == 1)
-            rejections = sum(1 for v in votes_for_target if v.vote == 0)
+            rejections = sum(1 for v in votes_for_target if v.vote == -1)
             if not (approvals >= quorum_threshold or rejections >= quorum_threshold):
                 ready_to_finalize = False
                 break
