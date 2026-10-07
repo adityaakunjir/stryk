@@ -4,6 +4,7 @@ from sqlmodel import select
 from typing import Optional
 
 from app.core.auth import get_current_user
+from app.core.config import settings
 from app.core.database import get_session
 from app.models.player import User, UserRead
 
@@ -176,6 +177,39 @@ async def get_my_profile(
         select(User).where(User.clerkId == clerkId)
     )
     db_user = result.scalars().first()
+
+    # Recover the main developer profile if Clerk rotated/recreated the
+    # account ID.  This prevents a valid Google login from being treated as
+    # a brand-new player after a Clerk instance/session migration.
+    recovery_email = user.get("email")
+    if not db_user and not recovery_email and settings.clerk_secret_key:
+        try:
+            import httpx
+            async with httpx.AsyncClient(timeout=5.0) as client:
+                clerk_response = await client.get(
+                    f"https://api.clerk.com/v1/users/{clerkId}",
+                    headers={"Authorization": f"Bearer {settings.clerk_secret_key}"},
+                )
+            if clerk_response.is_success:
+                clerk_data = clerk_response.json()
+                recovery_email = next(
+                    (item.get("email_address") for item in clerk_data.get("email_addresses", [])
+                     if item.get("id") == clerk_data.get("primary_email_address_id")),
+                    None,
+                )
+        except Exception:
+            recovery_email = None
+
+    if not db_user and recovery_email == "adikunjir19@gmail.com":
+        recovery = await session.execute(
+            select(User).where(User.username.in_(["aditya", "adityaakunjir"]))
+        )
+        db_user = recovery.scalars().first()
+        if db_user:
+            db_user.clerkId = clerkId
+            session.add(db_user)
+            await session.commit()
+            await session.refresh(db_user)
     
     if not db_user:
         raise HTTPException(
