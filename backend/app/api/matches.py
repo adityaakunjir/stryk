@@ -21,6 +21,9 @@ from app.models.player import User
 from app.core.auth import get_current_user
 
 router = APIRouter(prefix="/matches", tags=["matches"])
+from app.api.waitlist import router as waitlist_router
+from app.services.waitlist import promote_waitlist
+router.include_router(waitlist_router)
 
 from pydantic import BaseModel
 
@@ -387,7 +390,7 @@ async def delete_match(
         raise HTTPException(status_code=404, detail="User not found")
 
     match_result = await session.execute(
-        select(Match).where((Match.id == match_id) | (Match.shortId == match_id))
+        select(Match).where((Match.id == match_id) | (Match.shortId == match_id)).with_for_update()
     )
     match = match_result.scalars().first()
     if not match:
@@ -808,6 +811,8 @@ async def leave_match(
 
     await session.delete(player)
     await session.flush()
+
+    await promote_waitlist(session, match)
     
     # Clean up empty matches
     all_players_res = await session.execute(select(MatchPlayer).where(MatchPlayer.matchId == match.id))
@@ -857,6 +862,7 @@ async def kick_player(
         
     await session.delete(player)
     await session.flush()
+    await promote_waitlist(session, match)
     count = (await session.execute(select(func.count()).select_from(MatchPlayer).where(MatchPlayer.matchId == match.id))).scalar_one()
     if match.status == "full" and count < match.maxPlayers:
         match.status = "open"
@@ -876,7 +882,7 @@ async def start_match(
     db_user = db_user_result.scalars().first()
     
     match_result = await session.execute(
-        select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user))
+        select(Match).where(Match.id == match_id).with_for_update().options(selectinload(Match.players).selectinload(MatchPlayer.user))
     )
     match = match_result.scalars().first()
     if not match:

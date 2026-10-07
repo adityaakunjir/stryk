@@ -6,6 +6,7 @@ from app.models.match import Match, MatchPlayer, MatchTeam, MatchInvite, MatchSt
 from app.models.friend import FriendRequest
 from app.models.recurring import RecurringGame, RecurringOccurrence
 from app.models.reminder import ReminderPreference, PushDevice, MatchReminder, ReminderSnapshot, PushDelivery
+from app.models.waitlist import MatchWaitlist
 
 __all__ = [
     "User", "UserCreate", "UserRead", "UserUpdate",

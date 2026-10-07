@@ -132,7 +132,7 @@ async def stop_schedule(series_id: str, auth: dict = Depends(get_current_user), 
         raise HTTPException(403, "Only the host can stop this schedule")
     matches = (await session.execute(select(Match).join(RecurringOccurrence, RecurringOccurrence.matchId == Match.id)
         .where(RecurringOccurrence.seriesId == series.id, Match.matchDate > datetime.utcnow(),
-            Match.status.in_(["open", "full"])))).scalars().all()
+            Match.status.in_(["open", "full"])).with_for_update(of=Match))).scalars().all()
     for match in matches:
         match.status = "cancelled"
         session.add(match)

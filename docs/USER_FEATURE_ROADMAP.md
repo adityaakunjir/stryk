@@ -78,6 +78,19 @@ SQLite tests prove endpoint/capacity behavior, not live PostgreSQL concurrency;
 PostgreSQL SELECT FOR UPDATE is the serialization mechanism. No frontend changes
 in this batch. Queue/promotion implementation and mobile gate are still pending.
 
+Feature 4 implemented: match-scoped FIFO standby with one place per player,
+explicit mobile consent to automatic replacement, private password/invitation
+checks, personal queue position/removal and host-only standby names. Leave/kick
+promotes the next player within the same match transaction and creates a real
+replacement notice; standby itself creates no roster/stat participation.
+New queue entries and automatic promotion stop at kickoff/start/cancellation.
+Twenty-two isolated backend checks passed, plus TypeScript and component ESLint.
+Mobile browser at 390 x 844 verified join, remove, rejoin, reload persistence and
+automatic promotion after the fixture counterpart left. The roster refreshed
+without reload; no horizontal overflow. Screenshots: docs/waitlist-mobile-queued.jpg
+and docs/waitlist-mobile-promoted.jpg. Fixture writes were loopback/in-memory only.
+Production frontend/backend deployment verification remains required before feature 5.
+
 ## Validation principles
 
 - Isolated database fixtures for write flows; never fabricate real-user match results.

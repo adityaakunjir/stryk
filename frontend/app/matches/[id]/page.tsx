@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { InlineTeamBuilder } from "@/components/inline-team-builder";
 import { StatSubmissionModal } from "@/components/stat-submission-modal";
 import { CloseMatchModal } from "@/components/close-match-modal";
+import { MatchWaitlist } from "@/components/match-waitlist";
 
 interface MatchParticipant {
   id: string;
@@ -852,6 +853,8 @@ export default function MatchDetailsPage({ params }: PageProps) {
         </div>
 
         {/* Action Bar (Join/Leave, Share) */}
+        {currentUserId && <MatchWaitlist matchId={match.id} privateGame={match.privacy === "private"}
+          revision={`${match.status}:${participants.length}`} onRosterChange={fetchMatchDetails} />}
         <div className="shrink-0 flex items-center gap-2 mb-4">
           <div className="flex-1 flex gap-2">
             {!isJoined ? (
