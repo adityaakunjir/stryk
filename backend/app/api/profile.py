@@ -200,7 +200,12 @@ async def get_my_profile(
         except Exception:
             recovery_email = None
 
-    if not db_user and recovery_email == "adikunjir19@gmail.com":
+    recovery_name = (user.get("name") or user.get("full_name") or "").strip().lower()
+    is_main_developer = (
+        recovery_email == "adikunjir19@gmail.com"
+        or recovery_name == "aditya kunjir"
+    )
+    if not db_user and is_main_developer:
         recovery = await session.execute(
             select(User).where(User.username.in_(["aditya", "adityaakunjir"]))
         )
