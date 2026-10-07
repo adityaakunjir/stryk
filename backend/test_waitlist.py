@@ -107,5 +107,20 @@ class WaitlistTests(unittest.IsolatedAsyncioTestCase):
         await self.client.post("/matches/leave", json={"matchId": "game"})
         self.assertEqual((await self.enqueue("two")).status_code, 409)
 
+    async def test_start_closes_standby_and_cannot_restart_cancelled_game(self):
+        await self.enqueue("two")
+        self.as_user("host")
+        started = await self.client.post("/matches/game/start")
+        self.assertEqual(started.status_code, 200, started.text)
+        self.assertFalse((await self.client.get("/matches/game/waitlist")).json()["active"])
+        self.assertEqual((await self.enqueue("three")).status_code, 409)
+        async with self.factory() as session:
+            match = await session.get(Match, "game")
+            match.status = "cancelled"
+            session.add(match)
+            await session.commit()
+        self.as_user("host")
+        self.assertEqual((await self.client.post("/matches/game/start")).status_code, 400)
+
 if __name__ == "__main__":
     unittest.main()

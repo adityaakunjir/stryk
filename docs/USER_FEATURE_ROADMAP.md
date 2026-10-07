@@ -90,6 +90,9 @@ automatic promotion after the fixture counterpart left. The roster refreshed
 without reload; no horizontal overflow. Screenshots: docs/waitlist-mobile-queued.jpg
 and docs/waitlist-mobile-promoted.jpg. Fixture writes were loopback/in-memory only.
 Production frontend/backend deployment verification remains required before feature 5.
+Follow-up lifecycle audit: start/close/quick-complete share the match lock with roster
+updates. Starting a cancelled/finished game is rejected. Six standby tests passed,
+including start cutoff and cancelled-game restart rejection.
 
 ## Validation principles
 

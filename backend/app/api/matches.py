@@ -891,6 +891,9 @@ async def start_match(
     if match.hostId != db_user.id:
         raise HTTPException(status_code=403, detail="Only the host can start the match")
 
+    if match.status not in ["open", "full"]:
+        raise HTTPException(status_code=400, detail="Only an active lobby can be started")
+
     match.status = "in_progress"
     await session.commit()
     await session.refresh(match)
@@ -1224,7 +1227,7 @@ async def close_match(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    match_result = await session.execute(select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user)))
+    match_result = await session.execute(select(Match).where(Match.id == match_id).with_for_update().options(selectinload(Match.players).selectinload(MatchPlayer.user)))
     match = match_result.scalars().first()
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
@@ -1801,7 +1804,7 @@ async def quick_complete_match(
         raise HTTPException(status_code=404, detail="User not found")
 
     match_result = await session.execute(
-        select(Match).where(Match.id == match_id).options(selectinload(Match.players).selectinload(MatchPlayer.user))
+        select(Match).where(Match.id == match_id).with_for_update().options(selectinload(Match.players).selectinload(MatchPlayer.user))
     )
     match = match_result.scalars().first()
     if not match:
