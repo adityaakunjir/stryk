@@ -59,6 +59,8 @@ class Match(MatchBase, table=True):
     invites: List["MatchInvite"] = Relationship(back_populates="match")
     stats: List["MatchStats"] = Relationship(back_populates="match")
     verifications: List["MatchVerification"] = Relationship(back_populates="match")
+    recurring: Optional["RecurringOccurrence"] = Relationship(
+        back_populates="match", sa_relationship_kwargs={"lazy": "selectin", "uselist": False})
 
 
 # --- Match Player (Participant) ---

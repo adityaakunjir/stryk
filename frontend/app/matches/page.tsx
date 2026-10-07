@@ -324,6 +324,7 @@ export default function MatchesPage() {
           <div className="flex-1" />
 
           <div className="flex items-center gap-3 relative z-10">
+            <button onClick={() => router.push("/recurring")} className="min-h-10 rounded-full border border-white/15 px-3 text-xs text-[#C3DF1B]" type="button">Weekly</button>
             <button 
               onClick={() => setShowJoinModal(true)}
               className="w-10 h-10 rounded-full glass-panel border border-white/10 text-white flex items-center justify-center cursor-pointer hover:border-white/20 transition shadow-lg relative z-10"

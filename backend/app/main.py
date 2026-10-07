@@ -19,6 +19,7 @@ from app.api.health import router as health_router
 from app.api.players import router as players_router
 from app.api.balance import router as balance_router
 from app.api.dashboard import router as dashboard_router
+from app.api.recurring import router as recurring_router
 
 
 # ─── Sentry (Error Monitoring) ────────────────────────────────────
@@ -108,6 +109,7 @@ app.include_router(health_router)
 app.include_router(players_router, prefix="/api/v1")
 app.include_router(balance_router, prefix="/api/v1")
 app.include_router(dashboard_router, prefix="/api/v1")
+app.include_router(recurring_router, prefix="/api/v1")
 
 from app.api.teams import router as teams_router
 from app.api.matches import router as matches_router

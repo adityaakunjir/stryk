@@ -25,7 +25,14 @@ Mobile browser checked at 390 x 844: existing Aditya profile loaded; a pending s
 and upcoming/open-spots empty states rendered; Find or create a game navigated to matches.
 Unauthenticated production endpoint returns 401. Populated upcoming/open-spots filtering
 is covered by isolated API fixtures, not fabricated production matches.
-Feature 2 (recurring games) is next. Its own automated and mobile gate remains required.
+Feature 2 implemented: 2–12 weekly public games at a local kickoff time, independent
+rosters/invitations through existing match pages, idempotent creation retries, and
+host-only stop of future unstarted occurrences without deleting history.
+Seven isolated backend checks (including feature 1 regression) passed, plus TypeScript
+and new-page ESLint. Mobile browser at 390 x 844 created three fixtures, displayed
+weekly local dates/capacity, and confirmed all future games cancelled after stop.
+Fixture API uses an in-memory database on loopback; no fake production games created.
+Deployment verification remains pending before advancing to feature 3.
 
 ## Validation principles
 

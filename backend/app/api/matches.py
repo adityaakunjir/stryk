@@ -140,6 +140,10 @@ class MatchCreate(BaseModel):
 
 def _serialize_match(match: Match) -> dict:
     """Serialize a Match ORM object to a plain dict including players."""
+    # Weekly schedules store UTC; preserve legacy naive dates for older matches.
+    recurring = match.recurring
+    def kickoff(value):
+        return value.isoformat() + ("Z" if recurring and value.tzinfo is None else "") if value else None
     players = []
     if match.players:
         for p in match.players:
@@ -178,7 +182,8 @@ def _serialize_match(match: Match) -> dict:
         "turf": match.turf,
         "location": match.location,
         "format": match.format,
-        "matchDate": match.matchDate.isoformat() if match.matchDate else None,
+        "matchDate": kickoff(match.matchDate),
+        "recurringSeriesId": recurring.seriesId if recurring else None,
         "maxPlayers": match.maxPlayers,
         "status": match.status,
         "privacy": "private" if match.password else "public",
@@ -189,7 +194,7 @@ def _serialize_match(match: Match) -> dict:
         "teamAScore": match.teamAScore,
         "teamBScore": match.teamBScore,
         "createdAt": match.createdAt.isoformat() if match.createdAt else None,
-        "scheduledAt": match.scheduledAt.isoformat() if match.scheduledAt else (match.matchDate.isoformat() if match.matchDate else None),
+        "scheduledAt": kickoff(match.scheduledAt or match.matchDate),
         "completedAt": match.completedAt.isoformat() if match.completedAt else None,
         "submissionDeadline": match.submissionDeadline.isoformat() if match.submissionDeadline else None,
         "verificationDeadline": match.verificationDeadline.isoformat() if match.verificationDeadline else None,
