@@ -1,6 +1,9 @@
 # User feature implementation and verification gates
 
 Requested: implement each feature individually and verify in a mobile browser before moving to the next.
+Each new/changed screen must match STRYK's existing design: Bebas Neue display headings,
+Inter body, dark glass/gold surfaces, tracked uppercase labels and lime primary actions.
+Shared feature styles live in frontend/lib/feature-ui.ts; no unrelated visual redesigns.
 
 ## Required scope (all retained)
 

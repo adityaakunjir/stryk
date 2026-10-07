@@ -1,5 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap");
 @import "tailwindcss";
+@source "../lib/feature-ui.ts";
+
+/* Shared feature actions keep STRYK contrast and mobile touch sizing. */
+.stryk-feature-primary {
+  min-height: 56px;
+  color: #111111;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
 :root {
   --background: #151515;

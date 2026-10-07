@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
+import { featureUI } from "@/lib/feature-ui";
 
 type Game = { id: string; title: string; location: string; date: string; format: string; spotsLeft: number };
 type Week = { upcoming: Game[]; available: Game[]; actions: { kind: string; matchId: string; title: string; label: string }[]; pendingInvites: number };
@@ -34,7 +35,7 @@ export function PlayThisWeek() {
   return (
     <section aria-label="Play this week" className="mb-6 space-y-3">
       <div className="flex justify-between items-center gap-3">
-        <h2 className="text-xl font-black">Play this week</h2>
+        <h2 className={featureUI.sectionHeading}>Play this week</h2>
         <Link href="/matches" className="text-xs text-[#D4F829] py-3">All games →</Link>
       </div>
       {loading ? <p role="status" className="text-sm text-white/60">Loading your football week…</p> :
@@ -46,13 +47,13 @@ export function PlayThisWeek() {
           {data.actions.map(action => <Link key={action.kind + action.matchId} href={`/matches/${action.matchId}`} className="block rounded-xl border border-[#A28B52]/40 p-3 text-sm">
             <span className="block text-[#D4F829]">{action.label} →</span><span className="text-xs text-white/60">{action.title}</span>
           </Link>)}
-          <h3 className="text-xs uppercase tracking-widest text-white/50">Your next games</h3>
+          <h3 className={featureUI.label}>Your next games</h3>
           {data.upcoming.length ? data.upcoming.map(m => game(m, true)) :
             <p className="text-sm text-white/65">No upcoming game yet. Find a match or organize one with your squad.</p>}
-          <h3 className="pt-2 text-xs uppercase tracking-widest text-white/50">Open spots · next 7 days</h3>
+          <h3 className={`${featureUI.label} pt-2`}>Open spots · next 7 days</h3>
           {data.available.length ? data.available.map(m => game(m, false)) :
             <p className="text-sm text-white/65">No public games with open spots this week.</p>}
-          <Link href="/matches" className="block rounded-full bg-[#D4F829] px-4 py-3 text-center text-sm font-bold text-[#151515]">Find or create a game</Link>
+          <Link href="/matches" className={`${featureUI.primary} flex items-center justify-center`}>Find or create a game</Link>
         </>}
     </section>
   );

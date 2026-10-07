@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { featureUI } from "@/lib/feature-ui";
 
 type Occurrence = { id: string; week: number; date: string; status: string; players: number; maxPlayers: number; joined: boolean };
 type Schedule = { id: string; title: string; location: string; timezone: string; active: boolean; isHost: boolean; occurrences: Occurrence[] };
@@ -65,15 +67,15 @@ export default function RecurringGamesPage() {
     finally { setBusy(false); }
   }
 
-  const inputClass = "mt-2 w-full min-h-12 rounded-xl border border-white/20 bg-white/5 px-3 text-white [color-scheme:dark]";
-  return <main className="fixed inset-0 overflow-y-auto bg-[#101010] text-white overscroll-contain">
-    <div className="mx-auto max-w-lg px-5 pt-6 pb-14 space-y-6">
-      <Link href="/matches" className="inline-flex min-h-11 items-center text-[#C3DF1B]">← Matches</Link>
-      <header><h1 className="text-3xl font-bold">Weekly games</h1><p className="mt-2 text-sm text-white/65">Same squad ritual. A separate roster every week.</p></header>
+  const inputClass = featureUI.input;
+  return <main className={featureUI.screen}>
+    <div className="mx-auto max-w-md px-6 pt-8 pb-14 space-y-6">
+      <Link href="/matches" aria-label="Back to matches" className={featureUI.back}><ArrowLeft size={18} /></Link>
+      <header><p className={`${featureUI.label} mb-2`}>Your squad ritual</p><h1 className={featureUI.heading}>Weekly games</h1><p className="mt-3 text-sm text-white/65">Same squad ritual. A separate roster every week.</p></header>
       {error && <div role="alert" className="rounded-xl border border-red-400/40 p-4 text-sm">{error}<button onClick={load} className="block min-h-11 text-[#C3DF1B]">Retry loading</button></div>}
-      <section aria-labelledby="my-schedules"><h2 id="my-schedules" className="mb-3 text-lg font-semibold">Your schedules</h2>
-        {loading ? <p role="status">Loading weekly games…</p> : schedules.length === 0 ? <p className="text-sm text-white/65">No weekly games yet. Create your first schedule below.</p> : schedules.map(schedule => <article key={schedule.id} className="mb-4 rounded-2xl border border-white/15 p-4">
-          <h3 className="font-bold">{schedule.title}</h3><p className="mt-1 text-sm text-white/65">{schedule.location} · {schedule.timezone}</p>
+      <section aria-labelledby="my-schedules"><h2 id="my-schedules" className={`${featureUI.label} mb-3`}>Your schedules</h2>
+        {loading ? <p role="status">Loading weekly games…</p> : schedules.length === 0 ? <p className="text-sm text-white/65">No weekly games yet. Create your first schedule below.</p> : schedules.map(schedule => <article key={schedule.id} className={`${featureUI.panel} mb-4 p-5`}>
+          <h3 className={featureUI.sectionHeading}>{schedule.title}</h3><p className="mt-1 break-words text-xs text-white/65">{schedule.location} · {schedule.timezone}</p>
           {!schedule.active && <p className="mt-2 text-amber-300 text-sm">Schedule stopped</p>}
           <ul className="mt-3 space-y-2">{schedule.occurrences.map(game => <li key={game.id}><Link href={`/matches/${game.id}`} className="flex min-h-16 justify-between gap-3 rounded-xl bg-white/5 p-3">
             <span><span className="block text-sm font-semibold">Week {game.week} · {new Date(game.date).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", timeZone: schedule.timezone })}</span>
@@ -84,9 +86,9 @@ export default function RecurringGamesPage() {
           {schedule.isHost && schedule.active && (stopping === schedule.id ? <div className="mt-3 rounded-xl border border-amber-300/30 p-3"><p className="text-sm">Cancel all future, unstarted games? Past games and results stay saved.</p><button disabled={busy} onClick={() => stop(schedule.id)} className="min-h-12 text-amber-300 mr-5">Confirm stop</button><button disabled={busy} onClick={() => setStopping(null)} className="min-h-12">Keep schedule</button></div> : <button onClick={() => setStopping(schedule.id)} className="mt-2 min-h-11 text-sm text-amber-300">Stop future games</button>)}
         </article>)}
       </section>
-      <section className="rounded-2xl border border-white/15 p-4"><h2 className="text-lg font-semibold">Create a weekly schedule</h2>
+      <section className={`${featureUI.panel} p-5`}><h2 className={featureUI.sectionHeading}>Create a weekly schedule</h2>
         <p className="mt-2 text-sm text-white/65">Creates 2–12 public games. You join as host; friends choose each week separately.</p>
-        <form onSubmit={create} className="mt-4 space-y-4">
+        <form onSubmit={create} className="mt-5 space-y-5 [&_label]:text-[10px] [&_label]:font-bold [&_label]:uppercase [&_label]:tracking-[0.15em] [&_label]:text-[#A28B52]">
           <label className="block text-sm">Game name<input name="title" required maxLength={100} className={inputClass} placeholder="Sunday squad" /></label>
           <label className="block text-sm">Location<input name="location" required maxLength={200} className={inputClass} placeholder="Venue address" /></label>
           <label className="block text-sm">Turf name (optional)<input name="turf" maxLength={100} className={inputClass} /></label>
@@ -94,7 +96,7 @@ export default function RecurringGamesPage() {
           <label className="block text-sm">Timezone<input value={timezone} onChange={e => setTimezone(e.target.value)} required className={inputClass} /><span className="mt-1 block text-xs text-white/60">Every week at this local time. Example: Asia/Kolkata.</span></label>
           <div className="grid grid-cols-2 gap-3"><label className="block text-sm">Format<select name="format" defaultValue="5v5" className={inputClass}>{["3v3", "5v5", "6v6", "7v7", "11v11"].map(format => <option key={format}>{format}</option>)}</select></label>
           <label className="block text-sm">Weeks<select name="weeks" defaultValue="4" className={inputClass}>{Array.from({ length: 11 }, (_, i) => i + 2).map(n => <option key={n}>{n}</option>)}</select></label></div>
-          <button disabled={busy || !requestKey} className="min-h-12 w-full rounded-full bg-[#C3DF1B] font-bold text-black disabled:opacity-50">{busy ? "Saving…" : "Create weekly games"}</button>
+          <button disabled={busy || !requestKey} className={featureUI.primary}>{busy ? "Saving…" : "Create weekly games"}</button>
         </form>
       </section>
     </div>

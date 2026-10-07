@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { featureUI } from "@/lib/feature-ui";
 
 type Reminder = { id: string; matchId: string; message: string; read: boolean };
 type Inbox = { enabled: boolean; pushAvailable: boolean; publicKey: string; items: Reminder[] };
@@ -68,14 +69,15 @@ export function MatchReminders() {
       setInbox(current => current ? { ...current, items: current.items.map(item => item.id === id ? { ...item, read: true } : item) } : current);
     } catch { setError("Couldn’t mark this reminder read. Please retry."); }
   }
-  return <section aria-label="Match reminders" className="rounded-2xl border border-white/15 bg-[#151515] p-4 mb-6 text-white">
-    <h2 className="text-xl font-bold">Match reminders</h2>
+  return <section aria-label="Match reminders" className={`${featureUI.panel} p-5 mb-6 text-[#EFE8D6]`}>
+    <p className={`${featureUI.label} mb-1`}>Stay match ready</p>
+    <h2 className={featureUI.sectionHeading}>Match reminders</h2>
     <p className="mt-2 text-sm text-white/65">Kickoff within 24 hours and 1 hour, game changes/cancellations, and stat deadlines. Only for games you host or join.</p>
     {error && <div role="alert" className="mt-3 text-sm text-red-300">{error}<button onClick={load} className="block min-h-11 text-[#C3DF1B]">Retry</button></div>}
     {message && <p role="status" className="mt-3 text-sm text-[#C3DF1B]">{message}</p>}
     {!inbox ? <p className="mt-3 text-sm">Loading reminders…</p> : <>
       <button role="switch" aria-checked={inbox.enabled} disabled={busy} onClick={toggle} className="mt-3 flex min-h-12 w-full items-center justify-between rounded-xl border border-white/20 px-3 text-sm disabled:opacity-50"><span>Match reminders</span><span className="text-[#C3DF1B]">{inbox.enabled ? "On" : "Off"}</span></button>
-      {inbox.enabled && <><button disabled={busy} onClick={phoneNotifications} className="mt-3 min-h-12 w-full rounded-full bg-[#C3DF1B] px-4 font-semibold text-black disabled:opacity-50">{busy ? "Saving…" : subscribed ? "Disable phone notifications" : "Enable phone notifications"}</button>
+      {inbox.enabled && <><button disabled={busy} onClick={phoneNotifications} className={`${featureUI.primary} mt-3`}>{busy ? "Saving…" : subscribed ? "Disable phone notifications" : "Enable phone notifications"}</button>
         <p className="mt-2 text-xs text-white/60">Phone alerts need your permission. On iPhone, open the installed Home Screen app. <Link href="/install" className="text-[#C3DF1B]">Installation guide →</Link></p>
         {!inbox.pushAvailable && <p className="mt-2 text-xs text-amber-300">Phone push setup is pending. In-app reminders are available.</p>}</>}
       <div className="mt-4 space-y-3">{inbox.items.length === 0 ? <p className="text-sm text-white/60">No match reminders yet.</p> : inbox.items.map(item => <article key={item.id} className={`rounded-xl border p-3 ${item.read ? "border-white/10" : "border-[#C3DF1B]/30"}`}>
