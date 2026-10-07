@@ -12,7 +12,7 @@ from app.core.auth import get_current_user
 from app.core.database import get_session
 from app.models.player import User
 from app.models.match import Match, MatchPlayer
-from app.api.matches import _serialize_match
+from app.api.matches import _serialize_match, router as matches_router
 
 
 class RecurringTests(unittest.IsolatedAsyncioTestCase):
@@ -23,6 +23,7 @@ class RecurringTests(unittest.IsolatedAsyncioTestCase):
         self.factory = async_sessionmaker(self.engine, expire_on_commit=False)
         self.app = FastAPI()
         self.app.include_router(router)
+        self.app.include_router(matches_router)
         async def sessions():
             async with self.factory() as session:
                 yield session
@@ -77,6 +78,20 @@ class RecurringTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(stopped["active"])
         self.assertEqual([g["status"] for g in stopped["occurrences"]], ["in_progress", "cancelled", "cancelled", "cancelled"])
         self.assertEqual((await self.client.post(f'/recurring/{schedule["id"]}/stop')).status_code, 200)
+
+    async def test_existing_match_join_path_and_cancelled_game(self):
+        schedule = (await self.client.post("/recurring", json=self.payload)).json()
+        first = schedule["occurrences"][0]["id"]
+        self.app.dependency_overrides[get_current_user] = lambda: {"sub": "other-clerk"}
+        joined = await self.client.post("/matches/join", json={"matchId": first})
+        self.assertEqual(joined.status_code, 200, joined.text)
+        self.assertTrue(joined.json()["data"]["matchDate"].endswith("Z"))
+        self.assertEqual(joined.json()["data"]["recurringSeriesId"], schedule["id"])
+        self.app.dependency_overrides[get_current_user] = lambda: {"sub": "host-clerk"}
+        await self.client.post(f'/recurring/{schedule["id"]}/stop')
+        self.app.dependency_overrides[get_current_user] = lambda: {"sub": "other-clerk"}
+        cancelled = await self.client.post("/matches/join", json={"matchId": schedule["occurrences"][1]["id"]})
+        self.assertEqual(cancelled.status_code, 400)
 
     async def test_invalid_schedule_and_account_isolation(self):
         for changes in ({"timezone": "not/a-zone"}, {"weeks": 13}, {"title": "  "},

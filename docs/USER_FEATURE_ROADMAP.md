@@ -28,11 +28,14 @@ is covered by isolated API fixtures, not fabricated production matches.
 Feature 2 implemented: 2–12 weekly public games at a local kickoff time, independent
 rosters/invitations through existing match pages, idempotent creation retries, and
 host-only stop of future unstarted occurrences without deleting history.
-Seven isolated backend checks (including feature 1 regression) passed, plus TypeScript
+Eight isolated backend checks (including feature 1 regression) passed, plus TypeScript
 and new-page ESLint. Mobile browser at 390 x 844 created three fixtures, displayed
 weekly local dates/capacity, and confirmed all future games cancelled after stop.
 Fixture API uses an in-memory database on loopback; no fake production games created.
-Deployment verification remains pending before advancing to feature 3.
+Commit c3c58a3 deployed successfully on Vercel and Railway. The live mobile screen
+loaded its authenticated schedule list and displayed the full form/submit button.
+Existing match join endpoint also tested: recurring dates include UTC offsets and
+cancelled occurrences reject joins. Feature 3 (match reminders) is next.
 
 ## Validation principles
 
