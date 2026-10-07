@@ -68,6 +68,16 @@ font and no horizontal overflow. Screenshot: docs/reminder-test-mobile.jpg.
 Push-service acceptance is not proof of visible device delivery. User must send
 the test on the subscribed phone and confirm the notification tray before feature 4.
 
+User confirmed the test notification arrives perfectly on the subscribed phone.
+Feature 3 delivery gate passed; feature 4 is now in progress.
+First feature 4 foundation batch: normal/code/invite joins lock the match row and
+commit roster insertion and capacity state together. Leaving/kicking reopens a full
+lobby, cancelled games reject invitation acceptance, and leave errors no longer
+expose other player IDs. Seventeen isolated backend regression tests passed.
+SQLite tests prove endpoint/capacity behavior, not live PostgreSQL concurrency;
+PostgreSQL SELECT FOR UPDATE is the serialization mechanism. No frontend changes
+in this batch. Queue/promotion implementation and mobile gate are still pending.
+
 ## Validation principles
 
 - Isolated database fixtures for write flows; never fabricate real-user match results.

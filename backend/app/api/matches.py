@@ -435,7 +435,7 @@ async def join_match(
         raise HTTPException(status_code=404, detail="User not found")
 
     # Fetch Match
-    stmt = select(Match).where(((Match.id == payload.matchId) | (Match.shortId == payload.matchId))).options(selectinload(Match.players).selectinload(MatchPlayer.user))
+    stmt = select(Match).where(((Match.id == payload.matchId) | (Match.shortId == payload.matchId))).with_for_update().options(selectinload(Match.players).selectinload(MatchPlayer.user))
     match_res = await session.execute(stmt)
     match = match_res.scalars().first()
     if not match:
@@ -467,13 +467,13 @@ async def join_match(
         
     player = MatchPlayer(matchId=match.id, userId=db_user.id)
     session.add(player)
-    await session.commit()
+    await session.flush()
     await session.refresh(player)
     player_count = (await session.execute(select(func.count()).select_from(MatchPlayer).where(MatchPlayer.matchId == match.id))).scalar_one()
     if player_count >= match.maxPlayers:
         match.status = "full"
         session.add(match)
-        await session.commit()
+    await session.commit()
     stmt = (
         select(Match)
         .where(Match.id == match.id)
@@ -507,7 +507,7 @@ async def join_match_by_code(
         raise HTTPException(status_code=404, detail="User not found")
 
     # Find the match
-    stmt = select(Match).where(Match.shortId == payload.code.upper()).options(selectinload(Match.players).selectinload(MatchPlayer.user))
+    stmt = select(Match).where(Match.shortId == payload.code.upper()).with_for_update().options(selectinload(Match.players).selectinload(MatchPlayer.user))
     match_result = await session.execute(stmt)
     match = match_result.scalars().first()
 
@@ -538,12 +538,12 @@ async def join_match_by_code(
 
     player = MatchPlayer(matchId=match.id, userId=db_user.id)
     session.add(player)
-    await session.commit()
+    await session.flush()
     player_count = (await session.execute(select(func.count()).select_from(MatchPlayer).where(MatchPlayer.matchId == match.id))).scalar_one()
     if player_count >= match.maxPlayers:
         match.status = "full"
         session.add(match)
-        await session.commit()
+    await session.commit()
     stmt = (
         select(Match)
         .where(Match.id == match.id)
@@ -624,9 +624,14 @@ async def accept_match_invite(
     if invite.status != "pending":
         raise HTTPException(status_code=400, detail="Invite is no longer pending")
 
-    match = invite.match
+    # All roster writers lock the same match row until their final commit.
+    match = (await session.execute(select(Match).where(Match.id == invite.matchId)
+        .with_for_update().execution_options(populate_existing=True))).scalars().first()
     if not match:
         raise HTTPException(status_code=404, detail="Associated match not found")
+
+    if match.status not in ["open", "full"]:
+        raise HTTPException(status_code=400, detail="Match is not open for joining")
 
     # Refresh match to get players count
     await session.refresh(match, ["players"])
@@ -649,6 +654,11 @@ async def accept_match_invite(
     player = MatchPlayer(matchId=match.id, userId=db_user.id)
     invite.status = "accepted"
     session.add(player)
+    await session.flush()
+    count = (await session.execute(select(func.count()).select_from(MatchPlayer).where(MatchPlayer.matchId == match.id))).scalar_one()
+    if count >= match.maxPlayers:
+        match.status = "full"
+        session.add(match)
     await session.commit()
     return {"success": True, "matchId": match.id}
 
@@ -780,7 +790,7 @@ async def leave_match(
         raise HTTPException(status_code=404, detail="User not found")
 
     match_result = await session.execute(
-        select(Match).where((((Match.id == payload.matchId) | (Match.shortId == payload.matchId))) | (Match.shortId == payload.matchId))
+        select(Match).where((((Match.id == payload.matchId) | (Match.shortId == payload.matchId))) | (Match.shortId == payload.matchId)).with_for_update()
     )
     match = match_result.scalars().first()
     if not match:
@@ -793,16 +803,11 @@ async def leave_match(
         select(MatchPlayer).where(MatchPlayer.matchId == match.id, MatchPlayer.userId == db_user.id)
     )
     player = player_result.scalars().first()
-    print(f"DEBUG LEAVE: matchId={match.id}, db_user.id={db_user.id}, player={player}")
     if not player:
-        # Fetch all players for this match just to see
-        all_players_res = await session.execute(select(MatchPlayer).where(MatchPlayer.matchId == match.id))
-        all_players = all_players_res.scalars().all()
-        debug_msg = f"You are not in this match. Match: {match.id}, You: {db_user.id}, Players: {[p.userId for p in all_players]}"
-        raise HTTPException(status_code=400, detail=debug_msg)
+        raise HTTPException(status_code=400, detail="You are not in this match")
 
     await session.delete(player)
-    await session.commit()
+    await session.flush()
     
     # Clean up empty matches
     all_players_res = await session.execute(select(MatchPlayer).where(MatchPlayer.matchId == match.id))
@@ -810,7 +815,10 @@ async def leave_match(
     if not remaining:
         match.status = "cancelled"
         session.add(match)
-        await session.commit()
+    elif match.status == "full" and len(remaining) < match.maxPlayers:
+        match.status = "open"
+        session.add(match)
+    await session.commit()
 
     return {"success": True, "message": "Successfully left the match"}
 
@@ -829,7 +837,7 @@ async def kick_player(
     db_user_result = await session.execute(select(User).where(User.clerkId == clerk_id))
     db_user = db_user_result.scalars().first()
     
-    match_result = await session.execute(select(Match).where(Match.id == match_id))
+    match_result = await session.execute(select(Match).where(Match.id == match_id).with_for_update())
     match = match_result.scalars().first()
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
@@ -848,6 +856,11 @@ async def kick_player(
         raise HTTPException(status_code=404, detail="Player not in match")
         
     await session.delete(player)
+    await session.flush()
+    count = (await session.execute(select(func.count()).select_from(MatchPlayer).where(MatchPlayer.matchId == match.id))).scalar_one()
+    if match.status == "full" and count < match.maxPlayers:
+        match.status = "open"
+        session.add(match)
     await session.commit()
     return {"success": True, "message": "Player kicked"}
 
