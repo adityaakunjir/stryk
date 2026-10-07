@@ -20,8 +20,12 @@ Requested: implement each feature individually and verify in a mobile browser be
 
 ## Current gate
 
-Feature 1 is implemented in the working tree. Automated and mobile-browser validation pending.
-Do not advance to feature 2 until feature 1 is checked.
+Feature 1 deployed in commit 1d3db5c. Three isolated API tests and TypeScript checks passed.
+Mobile browser checked at 390 x 844: existing Aditya profile loaded; a pending stat action
+and upcoming/open-spots empty states rendered; Find or create a game navigated to matches.
+Unauthenticated production endpoint returns 401. Populated upcoming/open-spots filtering
+is covered by isolated API fixtures, not fabricated production matches.
+Feature 2 (recurring games) is next. Its own automated and mobile gate remains required.
 
 ## Validation principles
 
