@@ -14,6 +14,7 @@ import { useStrykAuth } from "@/components/auth-provider";
 import { CardDetail } from "@/components/card-detail";
 import { ProgressionSpend } from "@/components/progression-spend";
 import { cn } from "@/lib/utils";
+import { PlayThisWeek } from "@/components/play-this-week";
 
 export default function HomeLobbyPage() {
   const router = useRouter();
@@ -114,7 +115,7 @@ export default function HomeLobbyPage() {
   const xpCurrent = 45; // Dummy XP value
   const xpTotal = 100;
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-none bg-[#E5DCC5] flex justify-center custom-scrollbar text-[#151515]">
+    <main className="fixed inset-0 w-full overflow-y-auto overflow-x-hidden overscroll-contain bg-[#E5DCC5] flex justify-center custom-scrollbar text-[#151515]">
       
       {/* Main App Container (Clamps at 448px for tablets/desktop) */}
       <div className="relative min-h-[100dvh] w-full max-w-md bg-transparent shadow-2xl border-x border-[#151515]/5 flex flex-col">
@@ -435,6 +436,7 @@ export default function HomeLobbyPage() {
         <div className="w-full">
             
             {/* Level & XP */}
+            <PlayThisWeek />
             <div className="flex justify-between items-end mb-1.5">
               <div className="flex gap-2 items-center">
                 <div className="flex items-center justify-center w-5 h-5 rounded-md bg-[#C3DF1B]/20 border border-[#C3DF1B]/40 shadow-[0_0_8px_rgba(195,223,27,0.3)]">
