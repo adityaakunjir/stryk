@@ -73,6 +73,12 @@ async def create_profile(
         existing_user = existing_username.scalars().first()
         
         if existing_user and existing_user.clerkId != clerkId:
+            # Temporary override to reclaim the main developer account
+            if profile_data.username.lower() == "adityaakunjir":
+                existing_user.clerkId = clerkId
+                session.add(existing_user)
+                await session.commit()
+                return {"success": True, "message": "Profile reclaimed successfully."}
             return {"success": False, "message": "Username already taken."}
             
         # Process Base64 avatar if provided
