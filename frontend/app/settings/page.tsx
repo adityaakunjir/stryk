@@ -157,6 +157,9 @@ export default function SettingsPage() {
         </div>
 
         {/* LOG OUT CTA */}
+        <a href="/install" className="mt-6 rounded-2xl border border-[#D4F829]/25 px-5 py-4 text-[#D4F829] font-bold">
+          Install STRYK → <span className="block mt-1 text-xs font-normal text-white/50">Add to your Android or iPhone home screen</span>
+        </a>
         <div className="mt-10 shrink-0">
           <button 
             onClick={handleSignOut}

@@ -181,7 +181,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           resetPlayerData();
           const currentPath = window.location.pathname;
           const isOnboarding = ["/identity", "/position", "/play-style"].includes(currentPath);
-          if (!isOnboarding) {
+          if (!isOnboarding && currentPath !== "/install") {
             window.location.href = "/identity";
           }
         }

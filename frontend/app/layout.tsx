@@ -5,6 +5,7 @@ import { PlayerProvider } from "@/components/player-context";
 import { RealtimeProvider } from "@/components/realtime-provider";
 import { DraftProvider } from "@/lib/draft-context";
 import { AuroraBackground } from "@/components/aurora-background";
+import { PwaRegister } from "@/components/pwa-register";
 
 export const viewport: Viewport = {
   themeColor: "#151515",
@@ -15,7 +16,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://stryk.games"),
+  applicationName: "STRYK",
+  appleWebApp: { capable: true, title: "STRYK", statusBarStyle: "default" },
   title: "STRYK | Your Football Identity",
   description:
     "Build your football identity with real matches, real stats, and premium player cards.",
@@ -41,6 +44,7 @@ export default function RootLayout({
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
+        <PwaRegister />
         <AuthProvider>
           <PlayerProvider>
             <DraftProvider>

@@ -1,0 +1,14 @@
+"use client";
+
+import { useEffect } from "react";
+
+export function PwaRegister() {
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production" || !("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" })
+      .catch(() => {
+        // Installation is progressive enhancement; registration must not block login.
+      });
+  }, []);
+  return null;
+}
