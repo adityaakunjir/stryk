@@ -18,6 +18,7 @@ class PushDevice(SQLModel, table=True):
     p256dh: str = Field(max_length=200)
     auth: str = Field(max_length=100)
     active: bool = True
+    lastTestAt: Optional[datetime] = None
 
 class MatchReminder(SQLModel, table=True):
     __tablename__ = "match_reminders"

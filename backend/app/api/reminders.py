@@ -1,15 +1,20 @@
 """Account-scoped reminder settings and Web Push subscriptions."""
 import base64
+import asyncio
+import uuid
+from datetime import datetime, timedelta
 from urllib.parse import urlparse
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
+from sqlalchemy import update, or_
 from app.api.recurring import player
 from app.core.auth import get_current_user
 from app.core.database import get_session
 from app.core.config import settings
 from app.models.reminder import ReminderPreference, PushDevice, MatchReminder
+from app.services.reminders import deliver_push
 
 router = APIRouter(prefix="/reminders", tags=["reminders"])
 
@@ -19,6 +24,44 @@ class PreferenceInput(BaseModel):
 class SubscriptionInput(BaseModel):
     endpoint: str = Field(max_length=2048)
     keys: dict[str, str]
+
+class DeviceTestInput(BaseModel):
+    endpoint: str = Field(max_length=2048)
+
+@router.post("/devices/test")
+async def test_device(data: DeviceTestInput, auth: dict = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    user = await player(session, auth)
+    if not settings.vapid_public_key or not settings.vapid_private_key:
+        raise HTTPException(503, "Phone notifications are not configured yet")
+    preference = await session.get(ReminderPreference, user.id)
+    if not preference or not preference.enabled:
+        raise HTTPException(409, "Turn match reminders on first")
+    device = (await session.execute(select(PushDevice).where(PushDevice.endpoint == data.endpoint,
+        PushDevice.userId == user.id, PushDevice.active == True))).scalars().first()
+    if not device:
+        raise HTTPException(404, "Enable phone notifications on this device first")
+    now = datetime.utcnow()
+    claimed = await session.execute(update(PushDevice).where(PushDevice.id == device.id,
+        or_(PushDevice.lastTestAt == None, PushDevice.lastTestAt <= now - timedelta(seconds=60)))
+        .values(lastTestAt=now))
+    await session.commit()
+    if not claimed.rowcount:
+        raise HTTPException(429, "Wait one minute before sending another test")
+    try:
+        await asyncio.to_thread(deliver_push, device, {"title": "STRYK notification test",
+            "body": "Your STRYK phone notifications are connected. This is only a test.",
+            "url": "/notifications", "tag": "stryk-test-" + uuid.uuid4().hex})
+    except Exception as error:
+        status = getattr(error, "status_code", None)
+        if status is None and getattr(error, "response", None) is not None:
+            status = error.response.status_code
+        if status in (404, 410):
+            device.active = False
+            session.add(device)
+            await session.commit()
+            raise HTTPException(410, "This subscription expired. Disable and enable phone notifications again")
+        raise HTTPException(502, "Push service could not accept the test. Retry in one minute")
+    return {"accepted": True, "message": "Test accepted by the push service. Check your notification tray; this does not confirm it appeared on your phone."}
 
 def validate_subscription(data):
     try:

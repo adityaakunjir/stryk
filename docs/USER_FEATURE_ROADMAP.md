@@ -57,6 +57,17 @@ entry form is prepared for user handoff; follow docs/PUSH_SETUP.md. Actual phone
 delivery remains the feature 3 gate; do not advance to waitlist implementation yet.
 Screenshot: docs/reminders-mobile-live-design.jpg.
 
+VAPID variables were added by the user and Railway returned Online. User reports
+the phone shows Disable phone notifications, but no notification has been received.
+Added an explicit current-device test action without fake matches/inbox entries.
+Authenticated ownership and opt-in checks, atomic persisted 60-second cooldown,
+safe upstream errors and expired-subscription invalidation covered by isolated tests.
+Fourteen backend checks passed; TypeScript and targeted ESLint passed. Mobile
+390 x 844 verified the missing-subscription guard, 48px touch target, Bebas Neue
+font and no horizontal overflow. Screenshot: docs/reminder-test-mobile.jpg.
+Push-service acceptance is not proof of visible device delivery. User must send
+the test on the subscribed phone and confirm the notification tray before feature 4.
+
 ## Validation principles
 
 - Isolated database fixtures for write flows; never fabricate real-user match results.

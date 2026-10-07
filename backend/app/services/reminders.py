@@ -10,6 +10,14 @@ from app.models.match import Match, MatchPlayer, MatchStats, MatchVerification
 from app.models.reminder import ReminderPreference, PushDevice, MatchReminder, ReminderSnapshot, PushDelivery
 from app.core.config import settings
 
+def deliver_push(device, payload, ttl=60):
+    """Shared encrypted transport for real reminders and explicit device tests."""
+    from pywebpush import webpush
+    return webpush(subscription_info={"endpoint": device.endpoint,
+        "keys": {"p256dh": device.p256dh, "auth": device.auth}},
+        data=json.dumps(payload), vapid_private_key=settings.vapid_private_key,
+        vapid_claims={"sub": settings.vapid_subject}, ttl=ttl, timeout=10)
+
 async def generate_reminders(session, now=None):
     now = now or datetime.utcnow()
     enabled = (await session.execute(select(ReminderPreference).where(ReminderPreference.enabled == True))).scalars().all()
@@ -61,13 +69,10 @@ async def send_push(session, now=None, sender=None):
     if sender is None:
         if not settings.vapid_private_key or not settings.vapid_public_key:
             return
-        from pywebpush import webpush
         def sender(device, reminder):
-            return webpush(subscription_info={"endpoint": device.endpoint, "keys": {"p256dh": device.p256dh, "auth": device.auth}},
-                data=json.dumps({"title": "STRYK match reminder", "body": reminder.message,
-                    "url": f"/matches/{reminder.matchId}", "tag": reminder.id}),
-                vapid_private_key=settings.vapid_private_key, vapid_claims={"sub": settings.vapid_subject},
-                ttl=max(1, min(86400, int((reminder.expiresAt - now).total_seconds()))), timeout=10)
+            return deliver_push(device, {"title": "STRYK match reminder", "body": reminder.message,
+                "url": f"/matches/{reminder.matchId}", "tag": reminder.id},
+                ttl=max(1, min(86400, int((reminder.expiresAt - now).total_seconds()))))
     reminders = (await session.execute(select(MatchReminder).join(ReminderPreference, ReminderPreference.userId == MatchReminder.userId)
         .where(ReminderPreference.enabled == True, MatchReminder.read == False, MatchReminder.expiresAt > now)
         .order_by(MatchReminder.createdAt).limit(100))).scalars().all()

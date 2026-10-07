@@ -104,5 +104,41 @@ class ReminderTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(HTTPException):
             validate_subscription(SubscriptionInput(endpoint="https://fcm.googleapis.com/test", keys={"p256dh": "bad", "auth": "bad"}))
 
+    async def test_explicit_device_test_is_scoped_and_rate_limited(self):
+        endpoint = "https://fcm.googleapis.com/test-device"
+        async with self.factory() as session:
+            session.add(PushDevice(id="test-device", userId="one", endpoint=endpoint, p256dh="test", auth="test"))
+            await session.commit()
+        with patch("app.api.reminders.settings.vapid_public_key", "public"), patch("app.api.reminders.settings.vapid_private_key", "private"), patch("app.api.reminders.deliver_push") as sender:
+            self.assertEqual((await self.client.post("/reminders/devices/test", json={"endpoint": endpoint})).status_code, 409)
+            await self.client.patch("/reminders/preferences", json={"enabled": True})
+            result = await self.client.post("/reminders/devices/test", json={"endpoint": endpoint})
+            self.assertEqual(result.status_code, 200)
+            self.assertTrue(result.json()["accepted"])
+            self.assertEqual(sender.call_count, 1)
+            self.assertEqual(sender.call_args.args[1]["url"], "/notifications")
+            self.assertEqual((await self.client.post("/reminders/devices/test", json={"endpoint": endpoint})).status_code, 429)
+            self.app.dependency_overrides[get_current_user] = lambda: {"sub": "clerk-two"}
+            await self.client.patch("/reminders/preferences", json={"enabled": True})
+            self.assertEqual((await self.client.post("/reminders/devices/test", json={"endpoint": endpoint})).status_code, 404)
+            self.assertEqual(sender.call_count, 1)
+        async with self.factory() as session:
+            self.assertEqual((await session.execute(select(MatchReminder))).scalars().all(), [])
+
+    async def test_device_test_invalidates_expired_subscription(self):
+        endpoint = "https://fcm.googleapis.com/expired"
+        await self.client.patch("/reminders/preferences", json={"enabled": True})
+        async with self.factory() as session:
+            session.add(PushDevice(id="expired", userId="one", endpoint=endpoint, p256dh="test", auth="test"))
+            await session.commit()
+        error = RuntimeError("Do not expose push-service response")
+        error.status_code = 410
+        with patch("app.api.reminders.settings.vapid_public_key", "public"), patch("app.api.reminders.settings.vapid_private_key", "private"), patch("app.api.reminders.deliver_push", side_effect=error):
+            response = await self.client.post("/reminders/devices/test", json={"endpoint": endpoint})
+            self.assertEqual(response.status_code, 410)
+            self.assertNotIn("Do not expose", response.text)
+        async with self.factory() as session:
+            self.assertFalse((await session.get(PushDevice, "expired")).active)
+
 if __name__ == "__main__":
     unittest.main()
