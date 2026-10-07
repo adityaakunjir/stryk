@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Bell, Check, X, Mail, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { MatchReminders } from "@/components/match-reminders";
 
 interface Notification {
   id: string;
@@ -133,14 +134,14 @@ export default function NotificationsPage() {
   };
 
   return (
-    <main className="stryk-mobile-shell bg-[#151515] min-h-[100dvh] text-white">
+    <main className="fixed inset-0 overflow-y-auto overscroll-contain bg-[#151515] text-white">
       {/* Premium Marble Background */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
         
       />
 
-      <div className="relative h-full flex flex-col px-6 pt-12 pb-8 max-w-md mx-auto z-10 w-full min-h-0">
+      <div className="relative flex flex-col px-6 pt-12 pb-12 max-w-md mx-auto z-10 w-full">
         {/* Header */}
         <header className="flex items-center justify-between mb-6 relative">
           <button
@@ -174,6 +175,7 @@ export default function NotificationsPage() {
         )}
 
         {/* Content */}
+        <MatchReminders />
         {loading ? (
           <div className="flex-1 flex items-center justify-center py-20">
             <Loader2 className="size-8 text-white animate-spin" />
@@ -198,7 +200,7 @@ export default function NotificationsPage() {
             </div>
             
             <h3 className="font-display text-2xl tracking-[0.15em] text-white font-black mb-3 text-center">
-              ALL CAUGHT UP
+              NO PENDING INVITES
             </h3>
             
             <p className="text-[13px] text-white/50 text-center max-w-[240px] leading-relaxed font-medium">

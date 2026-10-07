@@ -37,6 +37,14 @@ loaded its authenticated schedule list and displayed the full form/submit button
 Existing match join endpoint also tested: recurring dates include UTC offsets and
 cancelled occurrences reject joins. Feature 3 (match reminders) is next.
 
+Feature 3 in progress: opt-in inbox reminders, kickoff/change/deadline scheduler,
+account-scoped preferences, per-device push subscriptions/delivery, and service-worker
+notification handling implemented. TypeScript/new-component lint passed.
+Twelve isolated backend tests passed. Mobile fixture at 390 x 844 displayed an inbox
+reminder, marked it read and persisted opt-out. Validated inbox/scheduler code is being
+pushed; VAPID production configuration, live deployment and actual phone push delivery
+verification remain required before advancing to feature 4.
+
 ## Validation principles
 
 - Isolated database fixtures for write flows; never fabricate real-user match results.

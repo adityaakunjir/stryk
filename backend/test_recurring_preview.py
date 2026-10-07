@@ -11,6 +11,8 @@ from sqlmodel import SQLModel
 import app.models
 from app.api.recurring import router, create_schedule, ScheduleCreate
 from app.api.matches import router as matches_router
+from app.api.reminders import router as reminders_router
+from app.models.reminder import ReminderPreference, MatchReminder
 from app.core.auth import get_current_user
 from app.core.database import get_session
 from app.models.player import User
@@ -29,6 +31,14 @@ async def lifespan(app):
         await create_schedule(ScheduleCreate(title="Preview weekly squad", location="Disposable fixture venue",
             firstLocal=datetime.now() + timedelta(days=3), timezone="Asia/Kolkata", weeks=3,
             requestKey="preview-seed-123"), {"sub": "preview-clerk"}, session)
+        from sqlmodel import select
+        from app.models.match import Match
+        match = (await session.execute(select(Match))).scalars().first()
+        session.add(ReminderPreference(userId="preview-host", enabled=True))
+        session.add(MatchReminder(userId="preview-host", matchId=match.id,
+            dedupeKey="preview-reminder", kind="kickoff", message="Preview weekly squad: kickoff within an hour. Check your game details.",
+            expiresAt=datetime.now() + timedelta(hours=1)))
+        await session.commit()
     yield
     await engine.dispose()
 
@@ -36,6 +46,7 @@ async def lifespan(app):
 app = FastAPI(lifespan=lifespan)
 app.include_router(router, prefix="/api/v1")
 app.include_router(matches_router, prefix="/api/v1")
+app.include_router(reminders_router, prefix="/api/v1")
 
 
 async def sessions():

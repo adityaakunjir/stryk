@@ -14,12 +14,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import create_db_tables, async_session_factory
 from app.services.match_lifecycle import match_lifecycle_worker
+from app.services.reminders import reminder_worker
 import app.models  # Important: Register all models with SQLModel before DB creation
 from app.api.health import router as health_router
 from app.api.players import router as players_router
 from app.api.balance import router as balance_router
 from app.api.dashboard import router as dashboard_router
 from app.api.recurring import router as recurring_router
+from app.api.reminders import router as reminders_router
 
 
 # ─── Sentry (Error Monitoring) ────────────────────────────────────
@@ -67,10 +69,14 @@ async def lifespan(app: FastAPI):
     # Startup
     await create_db_tables()
     lifecycle_task = asyncio.create_task(match_lifecycle_worker(async_session_factory))
+    reminder_task = asyncio.create_task(reminder_worker(async_session_factory))
     try:
         yield
     finally:
         lifecycle_task.cancel()
+        reminder_task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await reminder_task
         with contextlib.suppress(asyncio.CancelledError):
             await lifecycle_task
     # Shutdown
@@ -110,6 +116,7 @@ app.include_router(players_router, prefix="/api/v1")
 app.include_router(balance_router, prefix="/api/v1")
 app.include_router(dashboard_router, prefix="/api/v1")
 app.include_router(recurring_router, prefix="/api/v1")
+app.include_router(reminders_router, prefix="/api/v1")
 
 from app.api.teams import router as teams_router
 from app.api.matches import router as matches_router

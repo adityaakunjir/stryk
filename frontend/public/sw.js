@@ -22,3 +22,28 @@ self.addEventListener("fetch", (event) => {
     (await caches.match("/offline.html")) ||
     new Response("STRYK is offline. Please reconnect.", { status: 503 })));
 });
+
+self.addEventListener("push", (event) => {
+  let payload = {};
+  try { payload = event.data ? event.data.json() : {}; } catch {}
+  const url = typeof payload.url === "string" && /^\/matches\/[a-zA-Z0-9_-]+$/.test(payload.url) ? payload.url : "/notifications";
+  event.waitUntil(self.registration.showNotification(payload.title || "STRYK", {
+    body: payload.body || "You have a match reminder.", icon: "/pwa/icon-192.png",
+    badge: "/pwa/icon-192.png", tag: payload.tag || "stryk-reminder", data: { url },
+  }));
+});
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const path = event.notification.data?.url || "/notifications";
+  const target = new URL(path, self.location.origin).href;
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const client of windows) {
+      if (new URL(client.url).origin === self.location.origin) {
+        await client.navigate(target);
+        return client.focus();
+      }
+    }
+    return self.clients.openWindow(target);
+  })());
+});

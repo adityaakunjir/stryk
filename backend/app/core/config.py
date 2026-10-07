@@ -55,6 +55,9 @@ class Settings(BaseSettings):
     # --- PostHog ---
     posthog_api_key: str = Field(default="", validation_alias="POSTHOG_API_KEY")
     posthog_host: str = Field(default="https://us.i.posthog.com", validation_alias="POSTHOG_HOST")
+    vapid_public_key: str = Field(default="", validation_alias="VAPID_PUBLIC_KEY")
+    vapid_private_key: str = Field(default="", validation_alias="VAPID_PRIVATE_KEY")
+    vapid_subject: str = Field(default="https://stryk.games", validation_alias="VAPID_SUBJECT")
 
     @property
     def is_production(self) -> bool:
