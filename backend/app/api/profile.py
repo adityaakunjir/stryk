@@ -47,6 +47,10 @@ async def check_username(
     )
     user = result.scalars().first()
     
+    # Temporary override for main developer accounts so the UI doesn't block the button
+    if username.lower() in ["aditya", "adityaakunjir"]:
+        return {"available": True}
+        
     return {"available": user is None}
 
 
@@ -74,7 +78,7 @@ async def create_profile(
         
         if existing_user and existing_user.clerkId != clerkId:
             # Temporary override to reclaim the main developer account
-            if profile_data.username.lower() == "adityaakunjir":
+            if profile_data.username.lower() in ["aditya", "adityaakunjir"]:
                 existing_user.clerkId = clerkId
                 session.add(existing_user)
                 await session.commit()

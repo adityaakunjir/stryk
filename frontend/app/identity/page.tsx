@@ -80,8 +80,11 @@ export default function IdentityPage() {
       if (!fullName && !playerData?.fullName && user.fullName) {
         setFullName(user.fullName);
       }
+      if (!avatar && !playerData?.avatar && user.imageUrl) {
+        setAvatar(user.imageUrl);
+      }
     }
-  }, [clerkLoaded, user, fullName, playerData?.fullName]);
+  }, [clerkLoaded, user, fullName, avatar, playerData]);
 
   // Sync with context on load
   useEffect(() => {
