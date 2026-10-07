@@ -48,3 +48,11 @@ actions-log/
 *.zip
 
 /generated/prisma
+
+# Large binary tools and backups
+pgsql_tools/
+backend/pgsql/
+backend/stryk backup/
+graphify-out/
+*.db
+backend/restore.py
