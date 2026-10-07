@@ -48,6 +48,15 @@ reminder, marked it read and persisted opt-out. Validated inbox/scheduler code i
 pushed; VAPID production configuration, live deployment and actual phone push delivery
 verification remain required before advancing to feature 4.
 
+UI consistency update 9a194da verified Ready on Vercel and rendered on authenticated
+production Notifications at 390 x 844. Gold labels, Bebas Neue display headings,
+dark panels and existing Inter body typography render correctly. Reminder preference
+remains Off; no production test matches or account-preference changes made.
+Railway Variables still lacks VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY. The private-key
+entry form is prepared for user handoff; follow docs/PUSH_SETUP.md. Actual phone
+delivery remains the feature 3 gate; do not advance to waitlist implementation yet.
+Screenshot: docs/reminders-mobile-live-design.jpg.
+
 ## Validation principles
 
 - Isolated database fixtures for write flows; never fabricate real-user match results.
