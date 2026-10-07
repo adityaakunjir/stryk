@@ -29,9 +29,10 @@ export default function SyncPage() {
         if (res.ok) {
           // Profile exists
           router.replace("/home");
-        } else if (res.status === 404 || res.status === 401) {
-          // Profile does not exist (404) or token issue (401) requiring setup
-          router.replace("/identity");
+        } else if (res.status === 404) {
+          const data = await res.json().catch(() => null);
+          if (data?.detail === "Profile not found") router.replace("/identity");
+          else setError(true);
         } else {
           // Some other server error
           setError(true);
@@ -42,7 +43,7 @@ export default function SyncPage() {
     };
     
     checkProfile();
-  }, [isLoaded, isSignedIn, router]);
+  }, [isLoaded, isSignedIn, router, getToken]);
 
   return (
     <main className="relative h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center bg-[#151515]">
@@ -91,7 +92,7 @@ export default function SyncPage() {
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           className="font-display text-[clamp(10px,3vw,12px)] tracking-[0.15em] uppercase font-bold text-[#6A5A3B] drop-shadow-sm"
         >
-          {error ? "Error connecting. Retrying..." : "Checking athlete profile..."}
+          {error ? "Unable to load your profile. Please refresh to retry." : "Checking athlete profile..."}
         </motion.p>
       </div>
     </main>

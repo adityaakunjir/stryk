@@ -176,6 +176,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             setIsBackendSynced(true);
           }
         } else if (response.status === 404) {
+          const error = await response.json().catch(() => null);
+          if (error?.detail !== "Profile not found") return;
           resetPlayerData();
           const currentPath = window.location.pathname;
           const isOnboarding = ["/identity", "/position", "/play-style"].includes(currentPath);

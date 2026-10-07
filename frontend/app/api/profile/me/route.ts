@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 
-let API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+let API_BASE_URL = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 if (!API_BASE_URL.endsWith("/api/v1") && !API_BASE_URL.endsWith("/api/v1/")) {
   API_BASE_URL = API_BASE_URL.replace(/\/$/, "") + "/api/v1";
 }
@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
   try {
     const { getToken } = await auth();
     const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") || await getToken();
+    if (!token) return NextResponse.json({ detail: "Authentication required" }, { status: 401 });
 
     const searchParams = req.nextUrl.searchParams.toString();
     const url = `${API_BASE_URL}/profile/me${searchParams ? `?${searchParams}` : ""}`;
@@ -25,6 +26,9 @@ export async function GET(req: NextRequest) {
     });
 
     const data = await response.text();
+    if (!response.headers.get("Content-Type")?.includes("application/json")) {
+      return NextResponse.json({ detail: "Backend connection failed" }, { status: 502 });
+    }
     
     return new NextResponse(data, {
       status: response.status,

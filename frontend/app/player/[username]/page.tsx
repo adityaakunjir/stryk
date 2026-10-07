@@ -10,7 +10,7 @@ import { ClientBackButton } from "@/components/client-back-button";
 
 export const dynamic = "force-dynamic";
 
-const BASE_URL_RAW = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+const BASE_URL_RAW = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 const API_BASE_URL = (!BASE_URL_RAW.endsWith("/api/v1") && !BASE_URL_RAW.endsWith("/api/v1/")) 
   ? BASE_URL_RAW.replace(/\/$/, "") + "/api/v1"
   : BASE_URL_RAW;
