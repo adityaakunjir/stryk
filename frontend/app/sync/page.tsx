@@ -6,7 +6,7 @@ import { useAuth } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 
 export default function SyncPage() {
-  const { isSignedIn, isLoaded } = useAuth();
+  const { isSignedIn, isLoaded, getToken } = useAuth();
   const router = useRouter();
   const [error, setError] = useState(false);
 
@@ -20,7 +20,11 @@ export default function SyncPage() {
 
     const checkProfile = async () => {
       try {
-        const res = await fetch("/api/profile/me");
+        const token = await getToken();
+        const res = await fetch("/api/profile/me", {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+          cache: "no-store",
+        });
         
         if (res.ok) {
           // Profile exists

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 import {
   ArrowLeft,
   AtSign,
@@ -55,6 +55,7 @@ function useDebounce<T>(value: T, delay: number): T {
 export default function IdentityPage() {
   const router = useRouter();
   const { user, isLoaded: clerkLoaded } = useUser();
+  const { getToken } = useAuth();
   const { playerData, updatePlayerData } = usePlayer();
 
   const [fullName, setFullName] = useState(playerData?.fullName || "");
@@ -120,7 +121,10 @@ export default function IdentityPage() {
       
       setUsernameStatus("checking");
       try {
-        const response = await fetch(`/api/check-username?username=${encodeURIComponent(cleanUsername)}`);
+        const token = await getToken();
+        const response = await fetch(`/api/check-username?username=${encodeURIComponent(cleanUsername)}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        });
         if (!response.ok) throw new Error("Failed to check");
         const data = await response.json();
         setUsernameStatus(data.available ? "available" : "taken");

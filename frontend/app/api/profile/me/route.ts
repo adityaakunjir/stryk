@@ -9,7 +9,7 @@ if (!API_BASE_URL.endsWith("/api/v1") && !API_BASE_URL.endsWith("/api/v1/")) {
 export async function GET(req: NextRequest) {
   try {
     const { getToken } = await auth();
-    const token = await getToken();
+    const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") || await getToken();
 
     const searchParams = req.nextUrl.searchParams.toString();
     const url = `${API_BASE_URL}/profile/me${searchParams ? `?${searchParams}` : ""}`;

@@ -157,7 +157,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
     async function syncFromBackend() {
       try {
-        const response = await fetch("/api/profile/me", { cache: "no-store" });
+        const token = await getToken();
+        const response = await fetch("/api/profile/me", {
+          cache: "no-store",
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        });
 
         if (response.ok) {
           const result = await response.json();
