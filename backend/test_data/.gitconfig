@@ -1,0 +1,8 @@
+[credential "https://github.com"]
+	helper = 
+	helper = !'C:\\Users\\Aditya\\scoop\\apps\\gh\\current\\bin\\gh.exe' auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !'C:\\Users\\Aditya\\scoop\\apps\\gh\\current\\bin\\gh.exe' auth git-credential
+[user]
+	email = adikunjir19@gmail.com

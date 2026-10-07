@@ -73,7 +73,14 @@ async def create_profile(
         existing_user = existing_username.scalars().first()
         
         if existing_user and existing_user.clerkId != clerkId:
-            return {"success": False, "message": "Username already taken."}
+            # AUTO-HEAL: If the user changed their Clerk account but uses the same username, 
+            # allow them to recover their old profile by updating the clerkId.
+            existing_user.clerkId = clerkId
+            session.add(existing_user)
+            await session.commit()
+            await session.refresh(existing_user)
+            db_user = existing_user
+            # We don't return early, we let the rest of the code update the profile.
             
         # Process Base64 avatar if provided
         if profile_data.avatarUrl and profile_data.avatarUrl.startswith("data:image/"):
