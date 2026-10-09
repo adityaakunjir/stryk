@@ -27,7 +27,7 @@ export default function Home() {
       <div
         className="absolute inset-0 z-0 bg-cover bg-[position:74%_center] sm:bg-center bg-no-repeat pointer-events-none"
         style={{
-          backgroundImage: "url('/landing_page_bg.webp')",
+          backgroundImage: "url('/landing_page_bg.mobile.webp')",
         }}
       />
 
@@ -43,7 +43,7 @@ export default function Home() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="flex flex-col items-start mb-4"
           >
-            <img src="/logo.webp" alt="STRYK Logo" className="h-[42px] w-auto mb-2" />
+            <img src="/logo.mobile.webp" alt="STRYK Logo" className="h-[42px] w-auto mb-2" />
           </motion.div>
 
           {/* Headline Copy Container (centered vertically side-by-side with the player card) */}

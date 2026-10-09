@@ -12,6 +12,7 @@ import app.models
 from app.api.recurring import router, create_schedule, ScheduleCreate
 from app.api.matches import router as matches_router, leave_match, LeaveMatchRequest
 from app.api.reminders import router as reminders_router
+from app.api.dashboard import router as dashboard_router
 from app.models.reminder import ReminderPreference, MatchReminder
 from app.core.auth import get_current_user
 from app.core.database import get_session
@@ -52,6 +53,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(router, prefix="/api/v1")
 app.include_router(matches_router, prefix="/api/v1")
 app.include_router(reminders_router, prefix="/api/v1")
+app.include_router(dashboard_router, prefix="/api/v1")
 
 
 async def sessions():

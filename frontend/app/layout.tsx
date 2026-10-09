@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth-provider";
 import { PlayerProvider } from "@/components/player-context";
@@ -6,6 +7,9 @@ import { RealtimeProvider } from "@/components/realtime-provider";
 import { DraftProvider } from "@/lib/draft-context";
 import { AuroraBackground } from "@/components/aurora-background";
 import { PwaRegister } from "@/components/pwa-register";
+
+const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--stryk-font-inter" });
+const bebas = Bebas_Neue({ subsets: ["latin"], weight: "400", display: "swap", variable: "--stryk-font-bebas" });
 
 export const viewport: Viewport = {
   themeColor: "#151515",
@@ -41,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="h-full antialiased"
+      className={`h-full antialiased ${inter.variable} ${bebas.variable}`}
     >
       <body className="min-h-full flex flex-col">
         <PwaRegister />

@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap");
 @import "tailwindcss";
 @source "../lib/feature-ui.ts";
 
@@ -14,8 +13,8 @@
 :root {
   --background: #151515;
   --foreground: #F5F7FA;
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Bebas Neue", "Inter", sans-serif;
+  --font-sans: var(--stryk-font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--stryk-font-bebas), var(--stryk-font-inter), sans-serif;
 
   /* STRYK palette */
   --stryk-bg: #151515;
@@ -67,6 +66,7 @@ input, textarea, select {
   font-size: 16px !important;
 }
 body {
+  font-family: var(--font-sans);
   background: var(--stryk-bg);
   color: var(--foreground);
   touch-action: manipulation;

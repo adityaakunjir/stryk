@@ -6,6 +6,7 @@ import { Gauge, Sparkles, Crosshair, Zap, Shield } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { PlayerData } from "./player-context";
 import { calculateStats } from "@/lib/stat-utils";
+import { useLiteEffects } from "@/lib/use-lite-effects";
 
 export type PlayerStats = {
   PAC: number;
@@ -64,6 +65,7 @@ const getStyleConfig = (styleName: string) => {
 };
 
 export function PlayerCard({ player, size = "md", onClick, customStats, disableAnimation = false }: Props) {
+  const liteEffects = useLiteEffects();
   const isMock = "stats" in player && "ovr" in player;
   
   const name = isMock ? player.name : player.fullName;
@@ -100,14 +102,19 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
   const controls = useAnimation();
   
   useEffect(() => {
-    if (disableAnimation) return;
+    if (disableAnimation || liteEffects) {
+      controls.stop();
+      controls.set({ rotateX: 0, rotateY: 0, y: 0 });
+      return;
+    }
     controls.start({
       rotateX: [0, 2, 0, -2, 0],
       rotateY: [0, -3, 0, 3, 0],
       y: [0, -4, 0, 4, 0],
       transition: { duration: 8, repeat: Infinity, ease: "easeInOut" }
     });
-  }, [controls, disableAnimation]);
+    return () => controls.stop();
+  }, [controls, disableAnimation, liteEffects]);
 
   return (
     <motion.div
@@ -123,7 +130,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
       
       {/* 1. Card Base (Crystal Texture) - Bottom Layer */}
       <img 
-        src="/player_card.webp" 
+        src="/player_card.mobile.webp"
         alt="Card Base" 
         className="absolute inset-0 z-10 h-full w-full object-contain pointer-events-none" 
       />
@@ -154,11 +161,11 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
           <div 
             className="absolute inset-0 flex justify-center pointer-events-none translate-y-[0.8px]"
             style={{
-              WebkitMaskImage: "url('/player_card.webp')",
+              WebkitMaskImage: "url('/player_card.mobile.webp')",
               WebkitMaskSize: "contain",
               WebkitMaskRepeat: "no-repeat",
               WebkitMaskPosition: "center",
-              maskImage: "url('/player_card.webp')",
+              maskImage: "url('/player_card.mobile.webp')",
               maskSize: "contain",
               maskRepeat: "no-repeat",
               maskPosition: "center",
@@ -192,7 +199,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
         {/* ========================================= */}
         <div className="absolute top-[15%] left-[13%] flex flex-col items-center gap-1 z-50">
           <div className="font-display text-[clamp(44px,12vw,60px)] font-bold text-[#F4E3B5] leading-[0.82] tracking-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-            {!disableAnimation ? <AnimatedCounter value={ovr} duration={2.5} /> : ovr}
+            {!disableAnimation && !liteEffects ? <AnimatedCounter value={ovr} duration={2.5} /> : ovr}
           </div>
           <div className="font-display text-[clamp(20px,5vw,26px)] text-[#D8C18E] leading-none font-bold drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">{position || "POS"}</div>
           <img src={`https://flagcdn.com/w40/${nation.toLowerCase() === 'ind' ? 'in' : nation.toLowerCase()}.png`} alt={nation} className="mt-2 h-[16px] w-[26px] object-cover shadow-[0_2px_8px_rgba(0,0,0,0.8)] border border-white/10" />
@@ -226,7 +233,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
               {statsToDisplay.slice(0,3).map(({ label, value }) => (
                 <div key={label} className="flex gap-1 items-baseline w-[32%] justify-center">
                   <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">
-                    {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
+                    {!disableAnimation && !liteEffects ? <AnimatedCounter value={value} duration={1.5} /> : value}
                   </span>
                   <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
                 </div>
@@ -237,7 +244,7 @@ export function PlayerCard({ player, size = "md", onClick, customStats, disableA
               {statsToDisplay.slice(3,6).map(({ label, value }) => (
                 <div key={label} className="flex gap-1 items-baseline w-[32%] justify-center">
                   <span className="font-display font-bold text-[clamp(16px,4vw,22px)] text-[#E8D196] leading-none">
-                    {!disableAnimation ? <AnimatedCounter value={value} duration={1.5} /> : value}
+                    {!disableAnimation && !liteEffects ? <AnimatedCounter value={value} duration={1.5} /> : value}
                   </span>
                   <span className="font-display text-[clamp(10px,2.5vw,14px)] text-[#E8D196]/80 leading-none">{label}</span>
                 </div>

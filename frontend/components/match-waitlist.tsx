@@ -15,9 +15,13 @@ export function MatchWaitlist({ matchId, privateGame, revision, onRosterChange }
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const lastJoined = useRef<boolean | null>(null);
+  const loading = useRef(false);
   const load = useCallback(async () => {
+    // Slow connections must not accumulate overlapping polling requests.
+    if (loading.current) return;
+    loading.current = true;
     try {
-      const response = await fetch(`/api/matches/${matchId}/waitlist`, { cache: "no-store" });
+      const response = await fetch(`/api/matches/${matchId}/waitlist`, { cache: "no-store", signal: AbortSignal.timeout(12000) });
       if (!response.ok) throw new Error("Couldn’t load standby. Please retry when connected.");
       const state: Queue = await response.json();
       if (lastJoined.current !== null && state.joined !== lastJoined.current) {
@@ -27,6 +31,7 @@ export function MatchWaitlist({ matchId, privateGame, revision, onRosterChange }
       lastJoined.current = state.joined;
       setQueue(state); setError("");
     } catch (e) { setError(e instanceof Error ? e.message : "Couldn’t load standby."); }
+    finally { loading.current = false; }
   }, [matchId, onRosterChange]);
   useEffect(() => {
     lastJoined.current = null; setQueue(null);
@@ -34,7 +39,7 @@ export function MatchWaitlist({ matchId, privateGame, revision, onRosterChange }
   }, [matchId]);
   useEffect(() => {
     void load();
-    const timer = window.setInterval(() => { if (!document.hidden) void load(); }, 15000);
+    const timer = window.setInterval(() => { if (!document.hidden && navigator.onLine) void load(); }, 15000);
     return () => window.clearInterval(timer);
   }, [load, revision]);
   async function change(join: boolean) {

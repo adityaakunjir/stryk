@@ -4,6 +4,7 @@ import { ArrowLeft, Share2, Trophy, TrendingUp, ShieldCheck, Flame } from "lucid
 import { PlayerCard, type PlayerMockType } from "./player-card";
 import { PlayerData } from "./player-context";
 import { toast } from "sonner";
+import { useLiteEffects } from "@/lib/use-lite-effects";
 
 type Props = {
   player: PlayerData | PlayerMockType;
@@ -11,14 +12,15 @@ type Props = {
 };
 
 export function CardDetail({ player, onClose }: Props) {
+  const liteEffects = useLiteEffects();
   const [flipped, setFlipped] = useState(false);
 
   return (
     <motion.div
       initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-      animate={{ opacity: 1, backdropFilter: "blur(40px)" }}
+      animate={{ opacity: 1, backdropFilter: liteEffects ? "none" : "blur(40px)" }}
       exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-      className="fixed inset-0 z-50 flex flex-col bg-black/60"
+      className={`fixed inset-0 z-50 flex flex-col ${liteEffects ? "bg-black/95" : "bg-black/60"}`}
     >
       {/* Full Screen Texture Overlay */}
       <div 

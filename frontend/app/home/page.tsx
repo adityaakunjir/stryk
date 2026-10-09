@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Bell, Play, Users, Trophy, MapPin, 
@@ -11,12 +12,18 @@ import {
 import { usePlayer } from "@/components/player-context";
 import { useUser, useAuth } from "@clerk/nextjs";
 import { useStrykAuth } from "@/components/auth-provider";
-import { CardDetail } from "@/components/card-detail";
-import { ProgressionSpend } from "@/components/progression-spend";
 import { cn } from "@/lib/utils";
 import { PlayThisWeek } from "@/components/play-this-week";
+import { useLiteEffects } from "@/lib/use-lite-effects";
+
+function ModalLoading() {
+  return <div role="status" className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 text-[#D4F829]"><Loader2 className="size-8 animate-spin" /><span className="sr-only">Loading panel…</span></div>;
+}
+const CardDetail = dynamic(() => import("@/components/card-detail").then(m => m.CardDetail), { loading: ModalLoading });
+const ProgressionSpend = dynamic(() => import("@/components/progression-spend").then(m => m.ProgressionSpend), { loading: ModalLoading });
 
 export default function HomeLobbyPage() {
+  const liteEffects = useLiteEffects();
   const router = useRouter();
   const { user } = useUser();
   const { getToken } = useAuth();
@@ -66,13 +73,7 @@ export default function HomeLobbyPage() {
     fetchProgression();
   }, [isLoaded, isSignedIn, getToken]);
 
-  // Prefetch common routes so navigation is instant (zero-latency)
-  useEffect(() => {
-    router.prefetch("/matches");
-    router.prefetch("/search");
-    router.prefetch("/settings");
-    router.prefetch("/notifications");
-  }, [router]);
+  // Do not compete with the current screen by eagerly downloading four routes.
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -124,7 +125,7 @@ export default function HomeLobbyPage() {
         <div
           className="absolute top-0 left-0 right-0 h-[100dvh] z-0 bg-no-repeat pointer-events-none"
           style={{
-            backgroundImage: "url('/home_page_bg.webp')",
+            backgroundImage: "url('/home_page_bg.mobile.webp')",
             backgroundSize: "109% auto",
             backgroundPosition: "top center",
           }}
@@ -137,7 +138,7 @@ export default function HomeLobbyPage() {
           <div className="flex justify-between items-center">
             {/* Left: Logo & Title */}
           <div className="flex items-center gap-2">
-            <img src="/logo.webp" alt="STRYK Logo" className="h-10 w-auto" />
+            <img src="/logo.mobile.webp" alt="STRYK Logo" className="h-10 w-auto" />
           </div>
 
             {/* Profile & Notifications */}
@@ -230,7 +231,7 @@ export default function HomeLobbyPage() {
               setShineY(50);
             }}
             animate={
-              isHovered 
+              liteEffects ? { rotateX: 0, rotateY: 0, scale: 1 } : isHovered
                 ? { rotateX, rotateY, scale: 1.04 } 
                 : { 
                     rotateX: [0, 1.2, -1.2, 0, 0], 
@@ -239,7 +240,7 @@ export default function HomeLobbyPage() {
                   }
             }
             transition={
-              isHovered 
+              liteEffects ? { duration: 0 } : isHovered
                 ? { type: "spring", stiffness: 300, damping: 20 }
                 : { duration: 8, repeat: Infinity, times: [0, 0.04, 0.08, 0.12, 1], ease: "easeInOut" }
             }
@@ -248,7 +249,7 @@ export default function HomeLobbyPage() {
             
             {/* 1. Card Base (Crystal Texture) - Bottom Layer */}
             <img 
-              src="/player_card.webp" 
+              src="/player_card.mobile.webp"
               alt="Card Base" 
               className="absolute inset-0 z-10 h-full w-full object-contain pointer-events-none" 
             />
@@ -260,7 +261,7 @@ export default function HomeLobbyPage() {
               <div className="absolute top-[18%] w-[55%] h-[55%] rounded-full bg-[#E5B95C]/20 blur-3xl z-10" />
 
               {/* Blurred duplicate for depth */}
-              {playerData.avatar && (
+              {playerData.avatar && !liteEffects && (
                 <img
                   src={playerData.avatar}
                   alt=""
@@ -279,11 +280,11 @@ export default function HomeLobbyPage() {
                 <div 
                   className="absolute inset-0 flex justify-center pointer-events-none translate-y-[1px] scale-[0.99]"
                   style={{
-                    WebkitMaskImage: "url('/player_card.webp')",
+                    WebkitMaskImage: "url('/player_card.mobile.webp')",
                     WebkitMaskSize: "contain",
                     WebkitMaskRepeat: "no-repeat",
                     WebkitMaskPosition: "center",
-                    maskImage: "url('/player_card.webp')",
+                    maskImage: "url('/player_card.mobile.webp')",
                     maskSize: "contain",
                     maskRepeat: "no-repeat",
                     maskPosition: "center",
@@ -317,17 +318,17 @@ export default function HomeLobbyPage() {
                 background: "linear-gradient(105deg, transparent 20%, rgba(255, 215, 0, 0.1) 30%, rgba(255, 255, 255, 0.35) 50%, rgba(255, 215, 0, 0.1) 70%, transparent 80%)",
                 backgroundSize: "200% 200%",
                 backgroundRepeat: "no-repeat",
-                WebkitMaskImage: "url('/player_card.webp')",
+                WebkitMaskImage: "url('/player_card.mobile.webp')",
                 WebkitMaskSize: "contain",
                 WebkitMaskRepeat: "no-repeat",
                 WebkitMaskPosition: "center",
-                maskImage: "url('/player_card.webp')",
+                maskImage: "url('/player_card.mobile.webp')",
                 maskSize: "contain",
                 maskRepeat: "no-repeat",
                 maskPosition: "center",
               }}
-              animate={{ backgroundPosition: ["200% 0%", "-100% 0%", "-100% 0%"] }}
-              transition={{ duration: 8, repeat: Infinity, times: [0, 0.12, 1], ease: ["linear", "linear"] }}
+              animate={liteEffects ? { opacity: 0 } : { opacity: 1, backgroundPosition: ["200% 0%", "-100% 0%", "-100% 0%"] }}
+              transition={liteEffects ? { duration: 0 } : { duration: 8, repeat: Infinity, times: [0, 0.12, 1], ease: ["linear", "linear"] }}
             />
 
             {/* Dynamic Reflective Glass Shine Layer */}
@@ -335,11 +336,11 @@ export default function HomeLobbyPage() {
               className="absolute inset-0 z-[36] pointer-events-none opacity-45 mix-blend-overlay transition-opacity duration-300"
               style={{
                 background: `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255, 255, 255, 0.5) 0%, transparent 60%)`,
-                WebkitMaskImage: "url('/player_card.webp')",
+                WebkitMaskImage: "url('/player_card.mobile.webp')",
                 WebkitMaskSize: "contain",
                 WebkitMaskRepeat: "no-repeat",
                 WebkitMaskPosition: "center",
-                maskImage: "url('/player_card.webp')",
+                maskImage: "url('/player_card.mobile.webp')",
                 maskSize: "contain",
                 maskRepeat: "no-repeat",
                 maskPosition: "center",
@@ -422,8 +423,8 @@ export default function HomeLobbyPage() {
       {/* Spacer to push the drawer strictly below the absolute-positioned card */}
       <div style={{ height: 'calc(1.35 * min(100vw, 448px))' }} className="w-full shrink-0 pointer-events-none flex flex-col justify-end items-center pb-6">
         <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          animate={liteEffects ? { y: 0 } : { y: [0, 6, 0] }}
+          transition={liteEffects ? { duration: 0 } : { repeat: Infinity, duration: 2, ease: "easeInOut" }}
           className="flex flex-col items-center opacity-50"
         >
           <div className="text-[8px] tracking-[0.3em] font-black uppercase text-[#A28B52] mb-1">Scroll</div>
@@ -493,7 +494,7 @@ export default function HomeLobbyPage() {
         {showCardDossier && <CardDetail player={playerData} onClose={() => setShowCardDossier(false)} />}
       </AnimatePresence>
       
-      <ProgressionSpend isOpen={showProgressionModal} onClose={() => setShowProgressionModal(false)} />
+      {showProgressionModal && <ProgressionSpend isOpen onClose={() => setShowProgressionModal(false)} />}
 
       {/* Squad Modal (Empty State Upgraded) */}
       <AnimatePresence>

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from sqlalchemy import exists, func, or_
 from sqlmodel import select
 from app.core.auth import get_current_user
 from app.core.database import get_session
@@ -30,9 +31,17 @@ async def week(session: AsyncSession = Depends(get_session), user: dict = Depend
         raise HTTPException(404, "Profile not found")
     now = datetime.now(timezone.utc)
     end = now + timedelta(days=7)
-    # Active matches plus unfinished personal match actions. Eager load participants.
+    # Load personal games plus this week's public discovery window, not every
+    # historical closed game and its roster for every home-screen request.
+    personal = or_(Match.hostId == player.id, exists().where(
+        MatchPlayer.matchId == Match.id, MatchPlayer.userId == player.id))
+    scheduled = func.coalesce(Match.scheduledAt, Match.matchDate)
     matches = (await session.execute(select(Match).where(
-        Match.status.in_(["open", "in_progress", "closed"])
+        Match.status.in_(["open", "in_progress", "closed"]),
+        or_(personal, (Match.status == "open") &
+            ((Match.password == None) | (Match.password == "")) &
+            (scheduled >= now.replace(tzinfo=None)) &
+            (scheduled < end.replace(tzinfo=None)))
     ).options(selectinload(Match.players)))).scalars().all()
     mine = [m for m in matches if m.hostId == player.id or any(p.userId == player.id for p in m.players)]
     my_ids = [m.id for m in mine]

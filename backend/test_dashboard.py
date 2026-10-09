@@ -72,5 +72,20 @@ class DashboardTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("mine", [m["id"] for m in data["upcoming"]])
         self.assertEqual(data["pendingInvites"], 0)
 
+    async def test_unrelated_history_not_materialized(self):
+        from sqlalchemy import event
+        loaded = set()
+        def track(match, context):
+            loaded.add(match.id)
+        event.listen(Match, "load", track)
+        try:
+            self.assertEqual((await self.request()).status_code, 200)
+        finally:
+            event.remove(Match, "load", track)
+        self.assertIn("closed", loaded)  # Personal pending actions remain available.
+        self.assertIn("public", loaded)
+        self.assertNotIn("old", loaded)
+        self.assertNotIn("private", loaded)
+
 if __name__ == "__main__":
     unittest.main()
